@@ -1,0 +1,302 @@
+\documentclass[12pt]{article}
+\usepackage[slovak]{babel}
+\usepackage[utf8x]{inputenc}
+\usepackage{kpfonts}
+\usepackage{hyperref}
+\usepackage{amsthm}
+\newtheorem{mydef}{Definition}
+
+\newcommand{\mysection}[1]{{\newpage\centering\Large\textbf{#1}\\}\normalsize\vspace{0.5cm}}
+\newcommand{\mysmallsection}[1]{\vspace{0.5cm}\large\textbf{#1}\normalsize\vspace{0.5cm}}
+
+\begin{document}
+
+\mysection{Extended BCSL syntax}
+
+With this definition, we are allowed to use `::' operator also between two complexes. For this reason, we can extend the syntax of the language as following:
+
+\begin{center}
+{\small
+\hspace*{-1cm}\begin{tabular}{ ll ll }
+ rules& $\mathtt{R} ::= \emptyset ~|~ r, \mathtt{R} $\\
+ rule equation & $r ::= \Gamma ~\odot~\Gamma$\\
+ direction & $\odot ::=~ \Rightarrow~|~\Leftrightarrow $\\
+ rule expression & $\Gamma ::= \emptyset~|~\varrho~\epsilon::\mathtt{c}~|~ \varrho~\epsilon::\mathtt{c}~ +~\Gamma$\\
+ stoichiometry & $\varrho ::= n \in \mathbb{N}^+$\\
+ rule expression item & $\epsilon :: = \epsilon_1~|~\epsilon_1::\xi$\\
+ rule agent & $\epsilon_1  ~::=~  \mathtt{a}~|~\mathtt{T}~|~\mathtt{X}~|~\mathtt{a}::\mathtt{T}$\\
+ \textbf{nested complex} & $\xi  ~::=~  \mathtt{X}::\xi~|~\mathtt{X}$
+\end{tabular}
+}
+\end{center}
+
+Extended complex agent definition:
+
+\begin{center}
+{\small
+\hspace*{-1cm}\begin{tabular}{ ll ll }
+ complex agent & $\mathtt{X}::=\gamma_f::\mathtt{c}~|~n\in{N}_{x}::\mathtt{c}$\\
+ full composition & $\gamma_f ::= \mathtt{T}.\mathtt{T}~|~\mathtt{a}.\mathtt{a}~|~\mathtt{T}.\gamma_{f}~|~\mathtt{a}.\gamma_{f}$
+
+\end{tabular}
+}
+\end{center}
+
+\begin{mydef}
+Let $\mathtt{X}=\gamma_f::\mathtt{c}$ for some full composition $\gamma_f$. We denote $\mathtt{T}\in \mathtt{X}$ (resp. $\mathtt{a}\in \mathtt{X}$) the fact that~$\mathtt{T}$ (resp. $\mathtt{a}$) is a structure agent (resp. atomic agent) included in~$\gamma_f$. 
+Moreover, we denote $\#\mathtt{T}[\mathtt{X}]$ (resp. $\#\mathtt{a}[\mathtt{X}]$) the number of occurrences of~$\mathtt{T}$ (resp. $\mathtt{a}$) in $\gamma_f$. 
+\end{mydef}
+
+\begin{mydef}
+Let $\mathtt{X}=\gamma_f::\mathtt{c}$ for some full composition $\gamma_f$ and $\mathtt{X}'=\gamma'_f::\mathtt{c}$ for some full composition $\gamma'_f$. We denote $\mathtt{X} \in \mathtt{X}'$ the fact that each structure agent $\mathtt{T}$ (resp. atomic agent $\mathtt{a}$) $\in \gamma_f$ is included in~$\gamma'_f$, i.e. $\mathtt{X}$ is included in $\mathtt{X}'$.
+\end{mydef}
+
+\begin{mydef}
+Let $\mathtt{X},\mathtt{X}'$ be complex agents. We define \emph{structural equivalence} of \emph{complex agents} by claiming $\mathtt{X}\equiv\mathtt{X}'$ iff either of the following conditions holds:
+\begin{enumerate}
+\item There exist a compartment $\mathtt{c}$ and $n,n'\in\mathcal{N}_x$ such that $\mathtt{X}=n::\mathtt{c},\mathtt{X}'=n'::\mathtt{c}$ and $n=n'$.
+\item If both $\mathtt{X},\mathtt{X}'$ are specified as full compositions then the following four conditions must be satisfied:
+
+\begin{itemize}
+\item for each $\mathtt{T}\in\mathtt{X}$ there exists $\mathtt{T}'\in\mathtt{X}'$ such that  $\mathtt{T}\equiv\mathtt{T}'$ and $\#\mathtt{T}[\mathtt{X}]=\#\mathtt{T}'[\mathtt{X}']$,
+\item for each $\mathtt{T}'\in\mathtt{X}'$ there exists $\mathtt{T}\in\mathtt{X}$ such that  $\mathtt{T}'\equiv\mathtt{T}$ and $\#\mathtt{T}'[\mathtt{X}']=\#\mathtt{T}[\mathtt{X}]$,
+\item for each $\mathtt{a}\in\mathtt{X}$ there exists $\mathtt{a}'\in\mathtt{X}'$ such that  $\mathtt{a}\equiv\mathtt{a}'$ and $\#\mathtt{a}[\mathtt{X}]=\#\mathtt{a}'[\mathtt{X}']$,
+\item for each $\mathtt{a}'\in\mathtt{X}'$ there exists $\mathtt{a}\in\mathtt{X}$ such that  $\mathtt{a}'\equiv\mathtt{a}$ and $\#\mathtt{a}'[\mathtt{X}']=\#\mathtt{a}[\mathtt{X}]$.
+\end{itemize}
+\end{enumerate}
+\end{mydef}
+
+\begin{mydef}
+Let $\mathtt{X},\mathtt{X}'$ be complex agents. We say $\mathtt{X}$ \emph{is compatible} with $\mathtt{X}'$, written $\mathtt{X} \lhd \mathtt{X}'$, iff $\mathtt{X} \equiv \mathtt{X}'$ or iff for each $\mathtt{T} \in \mathtt{X}$ (resp. $\mathtt{a} \in \mathtt{X}$)  there exist $\mathtt{T}' \in \mathtt{X}'$ (resp. $\mathtt{a}' \in \mathtt{X}'$) such that $\mathtt{T} \lhd \mathtt{T}'$ (resp. $\mathtt{a} \lhd \mathtt{a}'$).
+\end{mydef}
+
+\begin{mydef}
+Let $\epsilon$ be a rule expression item that appears in a rule $r\in\mathtt{R}$. The \emph{rule expression} $\epsilon$ is \emph{well-defined} iff the following constrains are satisfied:
+
+\begin{enumerate}
+ \item If $\mathtt{a}::\tau(\gamma_p)$ is a subexpression of $\epsilon$ for some $\mathtt{a},\tau,\gamma_p$ then there must exist $\mathtt{a}' \in \gamma_p$ such that $\mathtt{a} \lhd \mathtt{a}'$.
+
+\item If $\mathtt{T}::\mathtt{X}$ is a subexpression of $\epsilon$ for some $\mathtt{T},\mathtt{X}$ then there must exist $\mathtt{T}' \in \mathtt{X}$ such that $\mathtt{T} \lhd \mathtt{T}'$.
+
+\item If $\mathtt{a}::\mathtt{X}$ is a subexpression of $\epsilon$ for some $\mathtt{a},\mathtt{X}$ then there must exist $\mathtt{a}' \in \mathtt{X}$ such that $\mathtt{a} \lhd \mathtt{a}'$.
+
+\item If $\mathtt{X}'::\mathtt{X}$ is a subexpression of $\epsilon$ for some $\mathtt{X}',\mathtt{X}$ then there must exist $\mathtt{X}'' \in \mathtt{X}$ such that $\mathtt{X}' \lhd \mathtt{X}''$.
+
+\end{enumerate}
+ 
+If one of above subexpressions is inside a rule expression then it is called \emph{nested} rule agent else it is a \emph{basic} rule agent.
+\end{mydef}
+
+\begin{mydef}[Rule Flattening]
+Let $(\Sigma_\tau,\Sigma_x)$ be a signature and $\mathtt{R}$ a set of rules. Every rule $r\in\mathtt{R}$ that includes some \emph{nested} rule agents can be reduced to a rule $r'\in\mathtt{R}$ where every rule agent is in \emph{basic} form. For every rule agent $\epsilon$ in $r$, the reduction is done by replacing $\epsilon$ with $\epsilon'$ in the following way:
+\begin{enumerate}
+\item If $\epsilon=\mathtt{a}::\mathtt{T}$ where $\mathtt{T}=\tau(\gamma_p)$ for some $\tau,\gamma_p$ then there must exist $\mathtt{a}'\in\gamma_p$ such that $\mathtt{a}\lhd\mathtt{a}'$. Then we set $\epsilon'={\tau}(\gamma'_p)$ where $\gamma'_p$ is constructed from $\gamma_p$ by replacing $\mathtt{a}'\in\gamma_p$ with $\mathtt{a}$.
+\item If $\epsilon=\mathtt{T}::\mathtt{X}$ where $\mathtt{X}=\gamma_f$ then there must exist $\mathtt{T}'\in\gamma_f$ such that $\mathtt{T}\lhd\mathtt{T}'$. Then we set $\epsilon'=\gamma'_f$ where $\gamma'_f$ is constructed from $\gamma_f$ by replacing $\mathtt{T}'\in\gamma_f$ with $\mathtt{T}$. 
+\item If $\epsilon=\mathtt{a}::\mathtt{T}::\mathtt{X}$ then the steps (1,2) above are applied successively.
+\item If $\epsilon=\mathtt{a}::\mathtt{X}$ where $\mathtt{X}=\gamma_f$ then there must exist $\mathtt{a}'\in\gamma_f$ such that $\mathtt{a}\lhd\mathtt{a}'$. Then we set $\epsilon'=\gamma'_f$ where $\gamma'_f$ is constructed from $\gamma_f$ by replacing $\mathtt{a}'\in\gamma_f$ with $\mathtt{a}$. 
+\item If $\epsilon=\mathtt{X}'::\mathtt{X}$ where $\mathtt{X}=\gamma_f$ and $\mathtt{X}'= \gamma'_f$ then for every $\mathtt{T} \in \gamma_f$ (resp. $\mathtt{a} \in \gamma_f$) there must exist $\mathtt{T}' \in \gamma'_f$ (resp. $\mathtt{a}' \in \gamma'_f$) such that $\mathtt{T} \lhd \mathtt{T}'$ (resp. $\mathtt{a} \lhd \mathtt{a}'$). Then we set $\epsilon'=\gamma_{f'}$ where $\gamma_{f'}$ is constructed from $\gamma_f$ by replacing all $\mathtt{T} \in \gamma_f$ (resp. $\mathtt{a} \in \gamma_f$) with appropriate $\mathtt{T}' \in \gamma'_f$  (resp. $\mathtt{a}' \in \gamma'_f$).
+\end{enumerate} 
+\end{mydef}
+
+
+\noindent 
+\framebox{
+\begin{minipage}{1.05\textwidth}
+The extended syntax with variables is the following: 
+
+\begin{center}
+{\small
+\hspace*{-1cm}\begin{tabular}{ l l }
+ rules& $\mathtt{R} ::= \emptyset ~|~ r, \mathtt{R} $\\
+ rule equation & $r ::= \Gamma ~\odot~\Gamma~|~ \Gamma ~\odot~\Gamma~;~var$\\
+ direction & $\odot ::=~ \Rightarrow~|~\Leftrightarrow $\\
+ rule expression & $\Gamma ::= \emptyset~|~\varrho~\epsilon::\mathtt{c}~|~ \varrho~\epsilon::\mathtt{c}~ +~\Gamma$\\
+ stoichiometry & $\varrho ::= n \in \mathbb{N}^+$\\
+ rule expression item & $\epsilon :: = \epsilon_1~|~\epsilon_2~|~\epsilon_1::\xi~|~\epsilon_2::\xi'~|~\xi'$\\
+ extended rule agent & $\epsilon_1  ~::=~  ?\nu_1~|~?\nu_2~|~?\nu_3~|~\mathtt{a}::?\nu_2~|~?\nu_1::\mathtt{T}$\\
+ extended nested complex & $\xi' ~::=~ \mathtt{X}::\xi'~|~?\nu_3::\xi~|~?\nu_3~|~\xi$\\
+ rule agent & $\epsilon_2  ~::=~  \mathtt{a}~|~\mathtt{T}~|~\mathtt{X}~|~\mathtt{a}::\mathtt{T}$\\
+ nested complex & $\xi  ~::=~  \mathtt{X}::\xi~|~\mathtt{X}$\\
+ variable & $var ::=~?\nu_1=\{\phi_1\}~|~?\nu_2=\{\phi_2\}~|~?\nu_3=\{\phi_3\}$\\
+ atomic variable value & $\phi_1 ::= \mathtt{a},~\phi_1~|~\mathtt{a}$\\
+ structure variable value & $\phi_2 ::= \mathtt{T},~\phi_2~|~\mathtt{T}$\\
+ complex variable value & $\phi_3 ::= \mathtt{X},~\phi_3~|~\mathtt{X}$\\
+\end{tabular}
+}
+\end{center}
+\end{minipage}
+}
+
+\vspace{1cm}
+\textbf{TBA} well-defined rule expression item might be incorrect !
+
+\mysection{Border between human-readable\\ and executable part of BCSL}
+
+The main difference between these two parts of BCSL is that the executable part can have operational semantics while human-readable cannot. For operational semantics there must be clear relations between both sides of a rule. This can't be achieved in human-readable part because it represents abstract chemical reactions. 
+
+The executable rule can be in one of three reaction types:
+
+\begin{itemize}
+\item state change
+	\begin{itemize}	
+		\item one agent is changing its state (or states)
+		\item number of reactants on both sides of the rule cannot change
+	\end{itemize}
+\item complex formation/dissociation 
+	\begin{itemize}
+		\item the result of the rule must be creation of one complex (or dissociation of one complex)
+		\item number of structure agents on both sides must be equal
+	\end{itemize} 
+\item degradation/translation 
+	\begin{itemize}
+		\item similar to complex formation/dissociation -- difference is empty rule side instead of a complex
+		\item only object agents can be translated
+		\item degradation can be specified also for classes
+	\end{itemize} 
+\end{itemize}
+
+\noindent 
+\framebox{
+\begin{minipage}{1.05\textwidth}
+\textbf{To determine whether a rule is executable, it has to meet these conditions:}
+
+\begin{enumerate}
+\item the rule has to be in \textbf{flattened form} - it means each agent involved in the rule is in basic form, i.e. it is atomic, structure or complex agent (the operator `::' can be used only in sense of compartmentalisation)
+\item the number of interacting molecules must be \textbf{fixed} ($\#(LHS)~=~\#(RHS)$). Exceptions:
+	\begin{enumerate}
+		\item translation/degradation - one of the rule sides must be empty
+		\item (de)complexation - number of new agents is different BUT number of all structure agents must be fixed
+	\end{enumerate}
+\item according to the reaction types of rules, the rule must be \textbf{unary operation} - only one change can happen in one step
+\item all complexes must be \textbf{expanded} according to its specification
+\end{enumerate}
+If at least one of the conditions is not satisfied, then the rule is only in human-readable form.
+\end{minipage}
+}
+
+\vspace*{1cm}
+Then, if a human-readable rule is defined, exact mapping to executable rule(s) must be specified. The following steps are applied:
+
+\begin{enumerate}
+\item flattering can be resolved \textbf{automatically} - each rule expression item can be reduced to flattered form
+\item if number is not \textbf{fixed}, then do following until it is not fixed (user's specification):
+	\begin{enumerate}
+		\item some of the agents put to \textit{MODIFIERS} field or
+		\item remove some of the agents 
+		\item (advanced: or each item could have a tag$^1$ which connects items from both sides and expresses exact rule behaviour)
+	\end{enumerate}
+\item if more than one operations is applied in the rule (combination of more reaction types or its multiplication), then the rule must be \textbf{expanded into more rules} (user's specification):
+	\begin{enumerate}
+		\item then, each created rule represents unary operation
+		\item i.e., one human-readable rule triggers more executable rules
+		\item note \textit{state change} reaction type can include change of more states at once
+	\end{enumerate}
+\item complexes can be expanded \textbf{automatically}
+\end{enumerate}
+
+\mysmallsection{Examples:}
+\begin{itemize}
+\item $S\{u\}::KaiC::KaiC2::cyt \Leftrightarrow S\{p\}::KaiC::KaiC2::cyt$
+	\begin{itemize}
+		\item An KaiC protein involved in KaiC2 dimer can change its phosphorylation state on serine residue
+		\item \textbf{human-readable} rule, because:
+			\begin{itemize}
+				\item rule expression item are \textbf{not} in flattered form
+				\item complexes are \textbf{not} expanded
+			\end{itemize}
+		\item both deficiencies can be fixed automatically
+		\item resulting rule:\\
+	$KaiC(S\{u\}).KaiC::cyt \Leftrightarrow KaiC(S\{p\}).KaiC::cyt$
+	\end{itemize}
+\item $FRS(T\{p\})::cyt + GS(T\{u\})::cyt \Leftrightarrow FRS(T\{p\}).GS(T\{u\})::cyt$
+	\begin{itemize}
+		\item threonine phosphorylated FRS enzyme and threonine unphosphorylated GS enzyme forms a complex
+		\item \textbf{executable} rule, all conditions are satisfied
+	\end{itemize}
+\item $ps2(oec\{3+\}|yz\{+\})::tlm \Leftrightarrow ps2(oec\{4+\}|yz\{n\})::tlm$
+	\begin{itemize}
+		\item oxidation of S3-state of the oxygen-evolving complex OEC\{3+\} by Yz\{+\} in PSII RC
+		\item it is allowed to change more states in one structure (complex) agent at once (it is considered as \textbf{one} change of ps2)
+		\item \textbf{executable} rule, all conditions are satisfied
+	\end{itemize}
+\item {\small $pq\{n\}::tlm + 2 h\{+\}::tlm + bhc\{2-\}::cytb6f::tlm \\ \hspace*{1.9cm} \Leftrightarrow pqh2::tlm + bhc\{n\}::cytb6f::tlm$}
+	\begin{itemize}
+		\item \textbf{human-readable} rule, because:
+			\begin{itemize}
+				\item there are more operations happening at once
+				\item uncertain $pqh2$ agent - might be complex, but it cannot be constructed from atomic agents
+				\item (actually not even human-readable...)
+			\end{itemize}
+		\item possible \textbf{solution} in old BCS definition:
+			\begin{itemize}
+				\item there must be defined structure agent $pqh2(pq|h1|h2)$ where $h1$ and $h2$ can have $+$ or $n$ state and $pq$ can be omitted since it does not change its state during the rule
+				\item expand the rule to following two executable rules:\vspace*{0.2cm}\\
+				$> pqh2::tlm + cytb6f::tlm \Leftrightarrow pqh2.cytb6f::tlm $\vspace*{0.2cm}\\
+				$> pqh2(h1\{+\}|h2\{+\}).cytb6f(bhc\{2-\})::tlm \\ \hspace*{.9cm} \Leftrightarrow pqh2(h1\{n\}|h2\{n\}).cytb6f(bhc\{n\})::tlm$
+			\end{itemize}
+		\item possible \textbf{solution} in \textbf{new} BCS definition:
+			\begin{itemize}
+			    \item there must be defined complex agent $pqh2 = pq.h.h$
+				\item expand the rule to following two executable rules:\vspace*{0.2cm}\\
+				$> pq::tlm + 2 h::tlm \Leftrightarrow pq.h.h::tlm $\vspace*{0.2cm}\\
+				$> pqh2::tlm + cytb6f::tml \Leftrightarrow pqh2.cytb6f::tml$\\
+				$> pq\{n\}.h\{+\}.h\{+\}.cytb6f(bhc\{2-\})::tlm \\ \hspace*{.9cm} \Leftrightarrow pq\{n\}.h\{n\}.h\{n\}.cytb6f(bhc\{n\})::tlm$
+			\end{itemize}
+	\end{itemize}
+\end{itemize}
+
+\newpage
+
+\mysection{Matching and Replacement}
+
+\textbf{TBA} complex can be formed from atomic and also structure agents, check if it has any influence!
+
+Let $\mathtt{A}$ be an agent, $\{\mathtt{A}\}$ be a list of agents and $\mathtt{A}_s, \mathtt{A}_l, \mathtt{A}_r$ be agents from given solution, left-hand-side and right-hand-side of a rule, respectively.
+
+\textbf{Note:} Meaning of $a \in \mathtt{A}$ changes considering different types of agents, but it always expresses fact that the agent $a$ is present in agent $\mathtt{A}$.
+
+With assumption all rules ($\{\mathtt{A}_l\} \Rightarrow \{\mathtt{A}_r\}$) are well-formed, we can define \textbf{Replacement}, what is a function $\{\mathtt{A}_s\} \times \{\mathtt{A}_l\} \rightarrow \{\mathtt{A}_r\}$. Before replacement can be applied, matching must be satisfied. \textbf{Matching} is defined as a relation $\models \mathtt{A}_s \times \mathtt{A}_l $ according to reaction type of the rule:
+
+\begin{enumerate}
+\item state change: $\mathtt{A}_l \Rightarrow \mathtt{A}_r$
+
+\begin{tabular}{ l l }
+\textbf{if} & $\mathtt{A}_s \models \mathtt{A}_l$ iff $\mathtt{A}_s \lhd \mathtt{A}_l$\\
+\textbf{then} & $\forall a\{t\} \in \mathtt{A}_r : a\{t\} \notin \mathtt{A}_l$ and $a_s \in \mathtt{A}_s : a\{t\} \neq a_s$: $ a_s [a\{t\}] = a_s\{t\}$\\
+\textbf{solution} & agent $\mathtt{A}_s$ with changed state(s)
+\end{tabular}
+
+\item complex formation: $\{\mathtt{A}_l\} \Rightarrow \mathtt{A}_r$
+
+\begin{tabular}{ l l }
+\textbf{if} & $\{\mathtt{A}_s\} \models \{\mathtt{A}_l\}$ iff $\forall \mathtt{A}_s \in \{\mathtt{A}_s\}: \exists \mathtt{A}_l \in \{\mathtt{A}_l\}: \mathtt{A}_s \lhd \mathtt{A}_l$\\
+\textbf{then} & $\forall \mathtt{A}_s \in \{\mathtt{A}_s\}: \mathtt{A}_s \rightarrow \gamma_f$ ($\mathtt{X} = \mathtt{A}_r = \gamma_f$)\\
+\textbf{solution} & agent $\mathtt{A}_r = \gamma_f$
+\end{tabular}
+
+\item complex dissociation: $\mathtt{A}_l \Rightarrow \{\mathtt{A}_r\}$
+
+\begin{tabular}{ l l }
+\textbf{if} & $\mathtt{A}_s \models \mathtt{A}_l$ iff $\mathtt{A}_s \lhd \mathtt{A}_l$\\
+\textbf{then} & $\forall \mathtt{A}_r \in \{\mathtt{A}_r\}: \mathtt{A} \in \mathtt{A}_s: \mathtt{A} = \mathtt{A}_r: \mathtt{A} \rightarrow \{\mathtt{A}\} $\\
+\textbf{solution} & list of agents $\{\mathtt{A}\}$ 
+\end{tabular}
+
+\item degradation $\{\mathtt{A}_l\} \Rightarrow$
+
+\begin{tabular}{ l l }
+\textbf{if} & $\{\mathtt{A}_s\} \models \{\mathtt{A}_l\}$ iff $\forall \mathtt{A}_s \in \{\mathtt{A}_s\}: \exists \mathtt{A}_l \in \{\mathtt{A}_l\}: \mathtt{A}_s \lhd \mathtt{A}_l$\\
+\textbf{then} & $\forall \mathtt{A}_s \in \{\mathtt{A}_s\}: \mathtt{A}_s \rightarrow \emptyset $\\
+\textbf{solution} & $ \emptyset $
+\end{tabular}
+
+\item translation $\Rightarrow \{\mathtt{A}_r\}$
+
+\begin{tabular}{ l l }
+\textbf{if} & True\\
+\textbf{then} & $\forall \mathtt{A}_r \in \{\mathtt{A}_r\}: \mathtt{A}_r \rightarrow \{\mathtt{A}\}$\\
+\textbf{solution} & list of agents $\{\mathtt{A}\}$ 
+\end{tabular}
+\end{enumerate}
+
+\end{document}
