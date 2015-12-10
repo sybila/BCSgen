@@ -78,7 +78,7 @@ Let $\epsilon$ be a rule expression item that appears in a rule $r\in\mathtt{R}$
 
 \item If $\mathtt{T}::\mathtt{X}$ is a subexpression of $\epsilon$ for some $\mathtt{T},\mathtt{X}$ then there must exist $\mathtt{T}' \in \mathtt{X}$ such that $\mathtt{T} \lhd \mathtt{T}'$.
 
-\item If $\mathtt{a}::\mathtt{X}$ is a subexpression of $\epsilon$ for some $\mathtt{a},\mathtt{X}$ then there must exist $\mathtt{a}' \in \mathtt{X}$ such that $\mathtt{a} \lhd \mathtt{a}'$.
+\item If $\mathtt{a}::\mathtt{X}$ is a subexpression of $\epsilon$ for some $\mathtt{a},\mathtt{X}$ then there must exist $\mathtt{a}' \in \mathtt{X}$ such that $\mathtt{a} \lhd \mathtt{a}'$ or there must exist $\mathtt{T} \in \mathtt{X}$ where $ \mathtt{a}' \in \mathtt{T}$ such that $\mathtt{a} \lhd \mathtt{a}'$.
 
 \item If $\mathtt{X}'::\mathtt{X}$ is a subexpression of $\epsilon$ for some $\mathtt{X}',\mathtt{X}$ then there must exist $\mathtt{X}'' \in \mathtt{X}$ such that $\mathtt{X}' \lhd \mathtt{X}''$.
 
@@ -249,54 +249,61 @@ Then, if a human-readable rule is defined, exact mapping to executable rule(s) m
 
 \mysection{Matching and Replacement}
 
-\textbf{TBA} complex can be formed from atomic and also structure agents, check if it has any influence!
-
 Let $\mathtt{A}$ be an agent, $\{\mathtt{A}\}$ be a list of agents and $\mathtt{A}_s, \mathtt{A}_l, \mathtt{A}_r$ be agents from given solution, left-hand-side and right-hand-side of a rule, respectively.
 
-\textbf{Note:} Meaning of $a \in \mathtt{A}$ changes considering different types of agents, but it always expresses fact that the agent $a$ is present in agent $\mathtt{A}$.
+With assumption all rules of form $\{\mathtt{A}_l\} \Rightarrow \{\mathtt{A}_r\}$ are well-formed, we can define \textbf{Matching} as a relation $\models \subseteq \{\mathtt{A}_s\} \times \{\mathtt{A}_l\} $:
 
-With assumption all rules ($\{\mathtt{A}_l\} \Rightarrow \{\mathtt{A}_r\}$) are well-formed, we can define \textbf{Replacement}, what is a function $\{\mathtt{A}_s\} \times \{\mathtt{A}_l\} \rightarrow \{\mathtt{A}_r\}$. Before replacement can be applied, matching must be satisfied. \textbf{Matching} is defined as a relation $\models \mathtt{A}_s \times \mathtt{A}_l $ according to reaction type of the rule:
+\begin{center}
+$\{\mathtt{A}_s\} \models \{\mathtt{A}_l\}$ iff $\forall \mathtt{A}_s \in \{\mathtt{A}_s\}: \exists \mathtt{A}_l \in \{\mathtt{A}_l\}: \mathtt{A}_s \lhd \mathtt{A}_l$
+\end{center}
+
+\textbf{Replacement}, what is a function $\{\mathtt{A}_s\} \times \{\mathtt{A}_l\} \rightarrow \{\mathtt{A}_r\}$. Before replacement can be applied, matching must be satisfied. Then, five replacement categories can be distinguished:
 
 \begin{enumerate}
-\item state change: $\mathtt{A}_l \Rightarrow \mathtt{A}_r$
+\item \textit{state change}: $\mathtt{A}_s~;~\mathtt{A}_l \Rightarrow \mathtt{A}_r$
 
-\begin{tabular}{ l l }
-\textbf{if} & $\mathtt{A}_s \models \mathtt{A}_l$ iff $\mathtt{A}_s \lhd \mathtt{A}_l$\\
-\textbf{then} & $\forall a\{t\} \in \mathtt{A}_r : a\{t\} \notin \mathtt{A}_l$ and $a_s \in \mathtt{A}_s : a\{t\} \neq a_s$: $ a_s [a\{t\}] = a_s\{t\}$\\
-\textbf{solution} & agent $\mathtt{A}_s$ with changed state(s)
-\end{tabular}
+\begin{itemize}
 
-\item complex formation: $\{\mathtt{A}_l\} \Rightarrow \mathtt{A}_r$
+\item {[}\textit{change atomic agents}{]}\\ if $\mathtt{A}_l, \mathtt{A}_r$ are atomic agents: 
 
-\begin{tabular}{ l l }
-\textbf{if} & $\{\mathtt{A}_s\} \models \{\mathtt{A}_l\}$ iff $\forall \mathtt{A}_s \in \{\mathtt{A}_s\}: \exists \mathtt{A}_l \in \{\mathtt{A}_l\}: \mathtt{A}_s \lhd \mathtt{A}_l$\\
-\textbf{then} & $\forall \mathtt{A}_s \in \{\mathtt{A}_s\}: \mathtt{A}_s \rightarrow \gamma_f$ ($\mathtt{X} = \mathtt{A}_r = \gamma_f$)\\
-\textbf{solution} & agent $\mathtt{A}_r = \gamma_f$
-\end{tabular}
+\hspace{1cm} $a_s\{p\}[a_r\{t\}] \rightarrow a_s\{t\}$
 
-\item complex dissociation: $\mathtt{A}_l \Rightarrow \{\mathtt{A}_r\}$
+\item  {[}\textit{change structure agents}{]}\\ if $\mathtt{A}_l, \mathtt{A}_r$ are structure agents: 
 
-\begin{tabular}{ l l }
-\textbf{if} & $\mathtt{A}_s \models \mathtt{A}_l$ iff $\mathtt{A}_s \lhd \mathtt{A}_l$\\
-\textbf{then} & $\forall \mathtt{A}_r \in \{\mathtt{A}_r\}: \mathtt{A} \in \mathtt{A}_s: \mathtt{A} = \mathtt{A}_r: \mathtt{A} \rightarrow \{\mathtt{A}\} $\\
-\textbf{solution} & list of agents $\{\mathtt{A}\}$ 
-\end{tabular}
+\hspace{1cm} $\forall a_r\{t\} \in \gamma_p(\mathtt{A}_r) \wedge a_r\{t\} \notin \gamma_p(\mathtt{A}_l):$
 
-\item degradation $\{\mathtt{A}_l\} \Rightarrow$
+\hspace{2cm} first $ a_s\{p\} \in \mathtt{A}_s$ such that $ a_s = a_r \wedge p \neq t:$
 
-\begin{tabular}{ l l }
-\textbf{if} & $\{\mathtt{A}_s\} \models \{\mathtt{A}_l\}$ iff $\forall \mathtt{A}_s \in \{\mathtt{A}_s\}: \exists \mathtt{A}_l \in \{\mathtt{A}_l\}: \mathtt{A}_s \lhd \mathtt{A}_l$\\
-\textbf{then} & $\forall \mathtt{A}_s \in \{\mathtt{A}_s\}: \mathtt{A}_s \rightarrow \emptyset $\\
-\textbf{solution} & $ \emptyset $
-\end{tabular}
+\hspace{3cm} \textit{change atomic agents}
 
-\item translation $\Rightarrow \{\mathtt{A}_r\}$
+\item  {[}\textit{change complex agents}{]}\\ if $\mathtt{A}_l, \mathtt{A}_r$ are complex agents: 
 
-\begin{tabular}{ l l }
-\textbf{if} & True\\
-\textbf{then} & $\forall \mathtt{A}_r \in \{\mathtt{A}_r\}: \mathtt{A}_r \rightarrow \{\mathtt{A}\}$\\
-\textbf{solution} & list of agents $\{\mathtt{A}\}$ 
-\end{tabular}
+\hspace{1cm} $\forall \mathtt{T}_r \in \gamma_f(\mathtt{A}_r) \wedge \mathtt{T}_r \not\in \gamma_f(\mathtt{A}_l): $
+
+\hspace{2cm} first $\mathtt{T}_s \in \mathtt{A}_s$ such that $\mathtt{T}_r = \mathtt{T}_s \wedge \gamma_p(\mathtt{T}_s) \neq \gamma_p(\mathtt{T}_r):$
+
+\hspace{3cm}  \textit{change structure agents}
+
+\end{itemize}
+
+\item complex formation: $\{\mathtt{A}_s\}~;~\{\mathtt{A}_l\} \Rightarrow \mathtt{A}_r$
+
+\hspace{1cm} $\{\mathtt{A}_s\}[\mathtt{A}_r] \rightarrow \gamma_f(\{\mathtt{A}_s\}) $
+
+\item complex dissociation: $\mathtt{A}_s~;~\mathtt{A}_l \Rightarrow \{\mathtt{A}_r\}$
+
+\hspace{1cm} $\mathtt{A}_s[\{\mathtt{A}_r\}] \rightarrow \{\mathtt{A}_s\} $
+
+\item degradation $\{\mathtt{A}_s\}~;~\{\mathtt{A}_l\} \Rightarrow \emptyset$
+
+\hspace{1cm} $\{\mathtt{A}_s\}[\emptyset] \rightarrow \emptyset $
+
+\item translation $\mathtt{A}_s = \emptyset~;~\emptyset \Rightarrow \{\mathtt{A}_r\}$
+
+\hspace{1cm} $\emptyset[\{\mathtt{A}_r\}] \rightarrow \{\mathtt{A}_r\} $
+
 \end{enumerate}
+
+\textbf{TBA} maybe matching should not be the general one
 
 \end{document}
