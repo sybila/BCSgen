@@ -88,12 +88,12 @@ If one of above subexpressions is inside a rule expression then it is called \em
 \end{mydef}
 
 \begin{mydef}[Rule Flattening]
-Let $(\Sigma_\tau,\Sigma_x)$ be a signature and $\mathtt{R}$ a set of rules. Every rule $r\in\mathtt{R}$ that includes some \emph{nested} rule agents can be reduced to a rule $r'\in\mathtt{R}$ where every rule agent is in \emph{basic} form. For every subexpression $\epsilon$ in every rule agent in $r$, the reduction is done by replacing $\epsilon$ with $\epsilon'$ in the following way:
+Let $(\Sigma_\tau,\Sigma_x)$ be a signature and $\mathtt{R}$ a set of rules. Every rule $r\in\mathtt{R}$ that includes some \emph{nested} rule agents can be reduced to a rule $r'\in\mathtt{R}$ where every rule agent is in \emph{basic} form. For every subexpression $\beta$ in every rule agent $\epsilon$ in $r$, the reduction is done recursively by replacing $\beta$ with $\beta'$ in the following way:
 \begin{enumerate}
-\item If $\epsilon=\mathtt{a}::\mathtt{T}$ where $\mathtt{T}=\tau(\gamma_p)$ for some $\tau,\gamma_p$ then there must exist $\mathtt{a}'\in\gamma_p$ such that $\mathtt{a}\lhd\mathtt{a}'$. Then we set $\epsilon'={\tau}(\gamma'_p)$ where $\gamma'_p$ is constructed from $\gamma_p$ by replacing $\mathtt{a}'\in\gamma_p$ with $\mathtt{a}$.
-\item If $\epsilon=\mathtt{T}::\mathtt{X}$ where $\mathtt{X}=\gamma_f$ then there must exist $\mathtt{T}'\in\gamma_f$ such that $\mathtt{T}\lhd\mathtt{T}'$. Then we set $\epsilon'=\gamma'_f$ where $\gamma'_f$ is constructed from $\gamma_f$ by replacing $\mathtt{T}'\in\gamma_f$ with $\mathtt{T}$. 
-\item If $\epsilon=\mathtt{a}::\mathtt{X}$ where $\mathtt{X}=\gamma_f$ then there must exist $\mathtt{a}'\in\gamma_f$ such that $\mathtt{a}\lhd\mathtt{a}'$. Then we set $\epsilon'=\gamma'_f$ where $\gamma'_f$ is constructed from $\gamma_f$ by replacing $\mathtt{a}'\in\gamma_f$ with $\mathtt{a}$. 
-\item If $\epsilon=\mathtt{X}'::\mathtt{X}$ where $\mathtt{X}=\gamma_f$ and $\mathtt{X}'= \gamma'_f$ then for every $\mathtt{T} \in \gamma_f$ (resp. $\mathtt{a} \in \gamma_f$) there must exist $\mathtt{T}' \in \gamma'_f$ (resp. $\mathtt{a}' \in \gamma'_f$) such that $\mathtt{T} \lhd \mathtt{T}'$ (resp. $\mathtt{a} \lhd \mathtt{a}'$). Then we set $\epsilon'=\gamma_{f'}$ where $\gamma_{f'}$ is constructed from $\gamma_f$ by replacing all $\mathtt{T} \in \gamma_f$ (resp. $\mathtt{a} \in \gamma_f$) with appropriate $\mathtt{T}' \in \gamma'_f$  (resp. $\mathtt{a}' \in \gamma'_f$).
+\item If $\beta=\mathtt{a}::\mathtt{T}$ where $\mathtt{T}=\tau(\gamma_p)$ for some $\tau,\gamma_p$ then there must exist $\mathtt{a}'\in\gamma_p$ such that $\mathtt{a}\lhd\mathtt{a}'$. Then we set $\beta'={\tau}(\gamma'_p)$ where $\gamma'_p$ is constructed from $\gamma_p$ by replacing $\mathtt{a}'\in\gamma_p$ with $\mathtt{a}$.
+\item If $\beta=\mathtt{T}::\mathtt{X}$ where $\mathtt{X}=\gamma_f$ then there must exist $\mathtt{T}'\in\gamma_f$ such that $\mathtt{T}\lhd\mathtt{T}'$. Then we set $\beta'=\gamma'_f$ where $\gamma'_f$ is constructed from $\gamma_f$ by replacing $\mathtt{T}'\in\gamma_f$ with $\mathtt{T}$. 
+\item If $\beta=\mathtt{a}::\mathtt{X}$ where $\mathtt{X}=\gamma_f$ then there must exist $\mathtt{a}'\in\gamma_f$ such that $\mathtt{a}\lhd\mathtt{a}'$. Then we set $\beta'=\gamma'_f$ where $\gamma'_f$ is constructed from $\gamma_f$ by replacing $\mathtt{a}'\in\gamma_f$ with $\mathtt{a}$. 
+\item If $\beta=\mathtt{X}'::\mathtt{X}$ where $\mathtt{X}=\gamma_f$ and $\mathtt{X}'= \gamma'_f$ then for every $\mathtt{T} \in \gamma_f$ (resp. $\mathtt{a} \in \gamma_f$) there must exist $\mathtt{T}' \in \gamma'_f$ (resp. $\mathtt{a}' \in \gamma'_f$) such that $\mathtt{T} \lhd \mathtt{T}'$ (resp. $\mathtt{a} \lhd \mathtt{a}'$). Then we set $\beta'=\gamma_{f'}$ where $\gamma_{f'}$ is constructed from $\gamma_f$ by replacing all $\mathtt{T} \in \gamma_f$ (resp. $\mathtt{a} \in \gamma_f$) with appropriate $\mathtt{T}' \in \gamma'_f$  (resp. $\mathtt{a}' \in \gamma'_f$).
 \end{enumerate} 
 \end{mydef}
 
@@ -125,9 +125,6 @@ The extended syntax with variables is the following:
 \end{center}
 \end{minipage}
 }
-
-\vspace{1cm}
-\textbf{TBA} well-defined rule expression item might be incorrect !
 
 \mysection{Border between human-readable\\ and executable part of BCSL}
 
@@ -164,7 +161,7 @@ The executable rule can be in one of three reaction types:
 \item the number of interacting molecules must be \textbf{fixed} ($\#(LHS)~=~\#(RHS)$). Exceptions:
 	\begin{enumerate}
 		\item translation/degradation - one of the rule sides must be empty
-		\item (de)complexation - number of new agents is different BUT number of all structure agents must be fixed
+		\item (de)complexation - number of new agents is different BUT number of all structure (resp. atomic) agents must be fixed
 	\end{enumerate}
 \item according to the reaction types of rules, the rule must be \textbf{unary operation} - only one change can happen in one step
 \item all complexes must be \textbf{expanded} according to its specification
@@ -249,9 +246,9 @@ Then, if a human-readable rule is defined, exact mapping to executable rule(s) m
 
 \mysection{Matching and Replacement}
 
-Let $\alpha$ be an agent and $\Gamma_s, \Gamma_l, \Gamma_r$ be agents from given solution, left-hand-side and right-hand-side of a rule, respectively.
+Let $\alpha$ be an agent and $\Gamma_s, \Gamma_l, \Gamma_r$ be given solution, left-hand-side and right-hand-side of a rule, respectively.
 
-With assumption all rules of form $\Gamma_l~\Rightarrow~\Gamma_r$ are well-formed, we can define \textbf{Matching} as a relation $\models \subseteq \Gamma_s~\times~\Gamma_l $. We denote agent $\alpha_1$ \textit{matches} agent $\alpha_2$ ($\alpha_1 \models \alpha_2$) iff $\alpha_1$ is \textit{compatible} with agent $\alpha_2$ ($\alpha_1 \lhd \alpha_2$).
+With assumption all rules of form $\Gamma_l\Rightarrow\Gamma_r$ are well-formed, we can define \textbf{Matching} as a relation $\models \subseteq \Gamma_s~\times~\Gamma_l $. We denote agent $\alpha_1$ \textit{matches} agent $\alpha_2$ ($\alpha_1 \models \alpha_2$) iff $\alpha_1$ is \textit{compatible} with agent $\alpha_2$ ($\alpha_1 \lhd \alpha_2$).
 \textbf{Replacement} is a function $\Gamma_s~\times~\Gamma_r~\rightarrow~\Gamma_s[\Gamma_r]$. Before replacement can be applied, matching in left column must be satisfied. Then, five replacement categories can be distinguished:
 
 \begin{enumerate}
