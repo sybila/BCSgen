@@ -251,7 +251,7 @@ Then, if a human-readable rule is defined, exact mapping to executable rule(s) m
 
 Let $\alpha$ be an agent and $\Gamma_s, \Gamma_l, \Gamma_r$ be agents from given solution, left-hand-side and right-hand-side of a rule, respectively.
 
-With assumption all rules of form $\Gamma_l~\Rightarrow~\Gamma_r$ are well-formed, we can define \textbf{Matching} as a relation $\models \subseteq \Gamma_s~\times~\Gamma_l $.
+With assumption all rules of form $\Gamma_l~\Rightarrow~\Gamma_r$ are well-formed, we can define \textbf{Matching} as a relation $\models \subseteq \Gamma_s~\times~\Gamma_l $. We denote agent $\alpha_1$ \textit{matches} agent $\alpha_2$ ($\alpha_1 \models \alpha_2$) iff $\alpha_1$ is \textit{compatible} with agent $\alpha_2$ ($\alpha_1 \lhd \alpha_2$).
 \textbf{Replacement} is a function $\Gamma_s~\times~\Gamma_r~\rightarrow~\Gamma_s[\Gamma_r]$. Before replacement can be applied, matching in left column must be satisfied. Then, five replacement categories can be distinguished:
 
 \begin{enumerate}
@@ -260,12 +260,12 @@ With assumption all rules of form $\Gamma_l~\Rightarrow~\Gamma_r$ are well-forme
 \begin{center}
 \begin{tabular}{ l l }
 	$ a_s\{p\} \models a_l $ & $ a_s\{p\}[a_r\{t\}] = a_s\{t\} $\\
-	$ \mathtt{T}_s \models \mathtt{T}_l $ & $ \mathtt{T}_s[\mathtt{T}_r] = \mathtt{T}_s:  \forall a\{t\} \in \mathtt{T}_r: a_s\{p\}[a_r\{t\}] $\\
+	$ \mathtt{T}_s \models \mathtt{T}_l $ & $ \mathtt{T}_s[\mathtt{T}_r] = \mathtt{T}_s:  \forall a_r\{t\} \in \mathtt{T}_r: a_s\{p\}[a_r\{t\}] $\\
 	$ \mathtt{X}_s \models \mathtt{X}_l $ & $ \mathtt{X}_s[\mathtt{X}_r] = \mathtt{X}_s: \forall \alpha_r \in \mathtt{X}_r: \alpha_s[\alpha_r] $
 \end{tabular}
 \end{center}
 
-where $ a_s \in \Gamma_s, a_l \in \Gamma_l, a_r \in \Gamma_r, a_s = a_l = a_r, \alpha_s \in \mathtt{X}_s $
+where $ a_s, \mathtt{T}_s, \mathtt{X}_s \in \Gamma_s;~a_l, \mathtt{T}_l, \mathtt{X}_l \in \Gamma_l;~a_r, \mathtt{T}_r, \mathtt{X}_r \in \Gamma_r;~a_s = a_l = a_r;~\alpha_s \in \mathtt{X}_s $
 
 \item \textit{complex formation}:
 
