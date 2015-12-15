@@ -88,7 +88,7 @@ If one of above subexpressions is inside a rule expression then it is called \em
 \end{mydef}
 
 \begin{mydef}[Rule Flattening]
-Let $(\Sigma_\tau,\Sigma_x)$ be a signature and $\mathtt{R}$ a set of rules. Every rule $r\in\mathtt{R}$ that includes some \emph{nested} rule agents can be reduced to a rule $r'\in\mathtt{R}$ where every rule agent is in \emph{basic} form. For every subexpression $\beta$ in every rule agent $\epsilon$ in $r$, the reduction is done recursively by replacing $\beta$ with $\beta'$ in the following way:
+Let $(\Sigma_\tau,\Sigma_x)$ be a signature and $\mathtt{R}$ a set of rules. Every rule $r\in\mathtt{R}$ that includes some \emph{nested} rule agents $\epsilon$ can be reduced to a rule $r'\in\mathtt{R}$ where every rule agent $\epsilon$ is in \emph{basic} form. For every subexpression $\beta$ in every rule agent $\epsilon$ in $r$, the reduction is done recursively by replacing $\beta$ with $\beta'$ in the following way:
 \begin{enumerate}
 \item If $\beta=\mathtt{a}::\mathtt{T}$ where $\mathtt{T}=\tau(\gamma_p)$ for some $\tau,\gamma_p$ then there must exist $\mathtt{a}'\in\gamma_p$ such that $\mathtt{a}\lhd\mathtt{a}'$. Then we set $\beta'={\tau}(\gamma'_p)$ where $\gamma'_p$ is constructed from $\gamma_p$ by replacing $\mathtt{a}'\in\gamma_p$ with $\mathtt{a}$.
 \item If $\beta=\mathtt{T}::\mathtt{X}$ where $\mathtt{X}=\gamma_f$ then there must exist $\mathtt{T}'\in\gamma_f$ such that $\mathtt{T}\lhd\mathtt{T}'$. Then we set $\beta'=\gamma'_f$ where $\gamma'_f$ is constructed from $\gamma_f$ by replacing $\mathtt{T}'\in\gamma_f$ with $\mathtt{T}$. 
@@ -248,58 +248,57 @@ Then, if a human-readable rule is defined, exact mapping to executable rule(s) m
 
 Let $\alpha$ be an agent and $\Gamma_s, \Gamma_l, \Gamma_r$ be given solution, left-hand-side and right-hand-side of a rule, respectively.
 
-With assumption all rules of form $\Gamma_l\Rightarrow\Gamma_r$ are well-formed, we can define \textbf{Matching} as a relation $\models \subseteq \Gamma_s~\times~\Gamma_l $. We denote agent $\alpha_1$ \textit{matches} agent $\alpha_2$ ($\alpha_1 \models \alpha_2$) iff $\alpha_1$ is \textit{compatible} with agent $\alpha_2$ ($\alpha_1 \lhd \alpha_2$).
-\textbf{Replacement} is a function $\Gamma_s~\times~\Gamma_r~\rightarrow~\Gamma_s[\Gamma_r]$. Before replacement can be applied, matching in left column must be satisfied. Then, five replacement categories can be distinguished:
+With assumption all rules of form $\Gamma_l\Rightarrow\Gamma_r$ are well-formed, we can define \textbf{Matching} as a relation via \textit{compatibility} operator $\lhd \subseteq \Gamma_s~\times~\Gamma_l $. We denote agent $\alpha_1$ \textit{matches} agent $\alpha_2$ iff $\alpha_1$ is \textit{compatible} with agent $\alpha_2$ ($\alpha_1 \lhd \alpha_2$).
+\textbf{Replacement} is a function $\Gamma_s~\times~\Gamma_r~\rightarrow~\Gamma_s[\Gamma_r]$. Each of the $\Gamma$ constructs might be one of atomic agent $a$, structure agent $\mathtt{T}$, complex agent $\mathtt{X}$, a list of them or $\emptyset$. Before replacement can be applied, matching in left column must be satisfied. Then, five match/replacement categories can be distinguished:
 
 \begin{enumerate}
 \item \textit{state change}:
 
 \begin{itemize}
-\item Let $\gamma^{\mathtt{T}^-}_{p}$ be the difference between $\mathtt{T}_l$ and $\mathtt{T}_r$ partial compositions and $\gamma^{\mathtt{T}^+}_{p}$ is their intersection. Then $\gamma^{s^-}_{p}$ is part of $\mathtt{T}_s$ partial composition $\gamma^{s}_{p}$ such that $\forall a_1 \in \gamma^{s^-}_{p} \exists a_2 \in \gamma^{\mathtt{T}^-}_{p}: a_1 \lhd a_2 $ and $\gamma^{s^+}_{p}$ is part of $\mathtt{T}_s$ partial composition $\gamma^{s}_{p}$ such that $\forall a_1 \in \gamma^{s^+}_{p} \exists a_2 \in \gamma^{\mathtt{T}^+}_{p}: a_1 \lhd a_2 $. Moreover, $\gamma^{s^-}_{p}~\cup~\gamma^{s^+}_{p}~=~\gamma^{s}_{p}$ and $\gamma^{s^-}_{p}~\cap~\gamma^{s^+}_{p}~=~\emptyset$. 
+\item	\begin{tabular}{ l l }
+				$ a_s\{p\} \lhd a_l $ & \hspace*{0.6cm} $ a_s\{p\}[a_r\{t\}] = a_s\{t\} $
+		\end{tabular}
+	  
+where $ a_s = a_l = a_r $.
+\item   \begin{tabular}{ l l }
+				$ \mathtt{T}_s \lhd \mathtt{T}_l $ & \hspace*{1cm} $ \mathtt{T}_s[\mathtt{T}_r] = \mathtt{T}_s: \forall a_r\{t\} \in \gamma^{\mathtt{T}^-}_{p}: a_s\{p\} \in \gamma^{s^-}_{p}: a_s\{p\}[a_r\{t\}] $
+		\end{tabular}
 
-\item Let $\gamma^{\mathtt{X}^-}_{f}$ be the difference between $\mathtt{X}_l$ and $\mathtt{X}_r$ full compositions and $\gamma^{\mathtt{X}^+}_{f}$ is their intersection. Then $\gamma^{s^-}_{f}$ is part of $\mathtt{X}_s$ partial composition $\gamma^{s}_{f}$ such that $\forall \alpha_1 \in \gamma^{s^-}_{f} \exists \alpha_2 \in \gamma^{\mathtt{X}^-}_{f}: \alpha_1 \lhd \alpha_2 $ and $\gamma^{s^+}_{f}$ is part of $\mathtt{X}_s$ partial composition $\gamma^{s}_{f}$ such that $\forall \alpha_1 \in \gamma^{s^+}_{f} \exists \alpha_2 \in \gamma^{\mathtt{X}^+}_{f}: \alpha_1 \lhd \alpha_2 $. Moreover, $\gamma^{s^-}_{f}~\cup~\gamma^{s^+}_{f}~=~\gamma^{s}_{f}$ and $\gamma^{s^-}_{f}~\cap~\gamma^{s^+}_{f}~=~\emptyset$. 
+where $\gamma^{\mathtt{T}^-}_{p}$ is the difference between $\mathtt{T}_l$ and $\mathtt{T}_r$ partial compositions and $\gamma^{\mathtt{T}^+}_{p}$ is their intersection. Then $\gamma^{s^-}_{p}$ is part of $\mathtt{T}_s$ partial composition $\gamma^{s}_{p}$ such that $\forall a_1 \in \gamma^{s^-}_{p} \exists a_2 \in \gamma^{\mathtt{T}^-}_{p}: a_1 \lhd a_2 $ and $\gamma^{s^+}_{p}$ is part of $\mathtt{T}_s$ partial composition $\gamma^{s}_{p}$ such that $\forall a_1 \in \gamma^{s^+}_{p} \exists a_2 \in \gamma^{\mathtt{T}^+}_{p}: a_1 \lhd a_2 $. Moreover, $\gamma^{s^-}_{p}~\cup~\gamma^{s^+}_{p}~=~\gamma^{s}_{p}$ and $\gamma^{s^-}_{p}~\cap~\gamma^{s^+}_{p}~=~\emptyset$. Additionally, $ a_s = a_r $.
+
+\item   \begin{tabular}{ l l }
+			$ \mathtt{X}_s \lhd \mathtt{X}_l $ & \hspace*{1cm} $ \mathtt{X}_s[\mathtt{X}_r] = \mathtt{X}_s: \forall \alpha_r \in \gamma^{\mathtt{X}^-}_{f}: \alpha_s \in \gamma^{s^-}_{f} : \alpha_s[\alpha_r] $
+		\end{tabular}
+
+where $\gamma^{\mathtt{X}^-}_{f}$ is the difference between $\mathtt{X}_l$ and $\mathtt{X}_r$ full compositions and $\gamma^{\mathtt{X}^+}_{f}$ is their intersection. Then $\gamma^{s^-}_{f}$ is part of $\mathtt{X}_s$ full composition $\gamma^{s}_{f}$ such that $\forall \alpha_1 \in \gamma^{s^-}_{f} \exists \alpha_2 \in \gamma^{\mathtt{X}^-}_{f}: \alpha_1 \lhd \alpha_2 $ and $\gamma^{s^+}_{f}$ is part of $\mathtt{X}_s$ full composition $\gamma^{s}_{f}$ such that $\forall \alpha_1 \in \gamma^{s^+}_{f} \exists \alpha_2 \in \gamma^{\mathtt{X}^+}_{f}: \alpha_1 \lhd \alpha_2 $. Moreover, $\gamma^{s^-}_{f}~\cup~\gamma^{s^+}_{f}~=~\gamma^{s}_{f}$ and $\gamma^{s^-}_{f}~\cap~\gamma^{s^+}_{f}~=~\emptyset$. 
 
 \end{itemize}
 
-\begin{center}
-\begin{tabular}{ l l }
-	$ a_s\{p\} \models a_l $ & $ a_s\{p\}[a_r\{t\}] = a_s\{t\} $\\
-	$ \mathtt{T}_s \models \mathtt{T}_l $ & $ \mathtt{T}_s[\mathtt{T}_r] = \mathtt{T}_s: \forall a_r\{t\} \in \gamma^{\mathtt{T}^-}_{p}: a_s\{p\} \in \gamma^{s^-}_{p}: a_s\{p\}[a_r\{t\}] $\\
-	$ \mathtt{X}_s \models \mathtt{X}_l $ & $ \mathtt{X}_s[\mathtt{X}_r] = \mathtt{X}_s: \forall \alpha_r \in \gamma^{\mathtt{X}^-}_{f}: \alpha_s \in \gamma^{s^-}_{f} : \alpha_s[\alpha_r] $
-\end{tabular}
-\end{center}
-
-where $ a_s, \mathtt{T}_s, \mathtt{X}_s \in \Gamma_s;~a_l, \mathtt{T}_l, \mathtt{X}_l \in \Gamma_l;~a_r, \mathtt{T}_r, \mathtt{X}_r \in \Gamma_r;~a_s = a_l = a_r;~\alpha_s \in \mathtt{X}_s $ and resulting agent $\Gamma_s \lhd \Gamma_r$.
-
 \item \textit{complex formation}:
-
 \begin{center}
 \begin{tabular}{ l l }
-	$ \forall \alpha_l \in \Gamma_l: \alpha_s \in \Gamma_s: \alpha_s \models \alpha_l $ & $\Gamma_s[\Gamma_r] = \gamma_f(\Gamma_s)$
+	$ \forall \alpha_l \in \Gamma_l: \alpha_s \in \Gamma_s: \alpha_s \lhd \alpha_l $ & \hspace*{1cm} $\Gamma_s[\Gamma_r] = \gamma_f(\Gamma_s)$
 \end{tabular}
 \end{center}
 
 \item \textit{complex dissociation}:
-
 \begin{center}
 \begin{tabular}{ l l }
-	$ \Gamma_s \models \Gamma_l $ & $ \Gamma_s[\Gamma_r] = \Gamma_s $
+	$ \Gamma_s \lhd \Gamma_l $ & \hspace*{1cm} $ \Gamma_s[\Gamma_r] = \Gamma_s $
 \end{tabular}
 \end{center}
 
 \item \textit{degradation}
-
 \begin{center}
 \begin{tabular}{ l l }
-	$ \Gamma_s \models \Gamma_l $ & $ \Gamma_s[\emptyset] = \emptyset $
+	$ \Gamma_s \lhd \Gamma_l $ & \hspace*{1cm} $ \Gamma_s[\emptyset] = \emptyset $
 \end{tabular}
 \end{center}
 
 \item \textit{translation}
-
 \begin{center}
 \begin{tabular}{ l l }
-	$ \emptyset \models \emptyset $ & $ \emptyset[\Gamma_r] = \Gamma_r $
+	$ \emptyset \lhd \emptyset $ & \hspace*{1cm} $ \emptyset[\Gamma_r] = \Gamma_r $
 \end{tabular}
 \end{center}
 
