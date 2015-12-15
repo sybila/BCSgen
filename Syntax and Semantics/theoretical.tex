@@ -254,15 +254,22 @@ With assumption all rules of form $\Gamma_l\Rightarrow\Gamma_r$ are well-formed,
 \begin{enumerate}
 \item \textit{state change}:
 
+\begin{itemize}
+\item Let $\gamma^{\mathtt{T}^-}_{p}$ be the difference between $\mathtt{T}_l$ and $\mathtt{T}_r$ partial compositions and $\gamma^{\mathtt{T}^+}_{p}$ is their intersection. Then $\gamma^{s^-}_{p}$ is part of $\mathtt{T}_s$ partial composition $\gamma^{s}_{p}$ such that $\forall a_1 \in \gamma^{s^-}_{p} \exists a_2 \in \gamma^{\mathtt{T}^-}_{p}: a_1 \lhd a_2 $ and $\gamma^{s^+}_{p}$ is part of $\mathtt{T}_s$ partial composition $\gamma^{s}_{p}$ such that $\forall a_1 \in \gamma^{s^+}_{p} \exists a_2 \in \gamma^{\mathtt{T}^+}_{p}: a_1 \lhd a_2 $. Moreover, $\gamma^{s^-}_{p}~\cup~\gamma^{s^+}_{p}~=~\gamma^{s}_{p}$ and $\gamma^{s^-}_{p}~\cap~\gamma^{s^+}_{p}~=~\emptyset$. 
+
+\item Let $\gamma^{\mathtt{X}^-}_{f}$ be the difference between $\mathtt{X}_l$ and $\mathtt{X}_r$ full compositions and $\gamma^{\mathtt{X}^+}_{f}$ is their intersection. Then $\gamma^{s^-}_{f}$ is part of $\mathtt{X}_s$ partial composition $\gamma^{s}_{f}$ such that $\forall \alpha_1 \in \gamma^{s^-}_{f} \exists \alpha_2 \in \gamma^{\mathtt{X}^-}_{f}: \alpha_1 \lhd \alpha_2 $ and $\gamma^{s^+}_{f}$ is part of $\mathtt{X}_s$ partial composition $\gamma^{s}_{f}$ such that $\forall \alpha_1 \in \gamma^{s^+}_{f} \exists \alpha_2 \in \gamma^{\mathtt{X}^+}_{f}: \alpha_1 \lhd \alpha_2 $. Moreover, $\gamma^{s^-}_{f}~\cup~\gamma^{s^+}_{f}~=~\gamma^{s}_{f}$ and $\gamma^{s^-}_{f}~\cap~\gamma^{s^+}_{f}~=~\emptyset$. 
+
+\end{itemize}
+
 \begin{center}
 \begin{tabular}{ l l }
 	$ a_s\{p\} \models a_l $ & $ a_s\{p\}[a_r\{t\}] = a_s\{t\} $\\
-	$ \mathtt{T}_s \models \mathtt{T}_l $ & $ \mathtt{T}_s[\mathtt{T}_r] = \mathtt{T}_s:  \forall a_r\{t\} \in \mathtt{T}_r: a_s\{p\}[a_r\{t\}] $\\
-	$ \mathtt{X}_s \models \mathtt{X}_l $ & $ \mathtt{X}_s[\mathtt{X}_r] = \mathtt{X}_s: \forall \alpha_r \in \mathtt{X}_r: \alpha_s[\alpha_r] $
+	$ \mathtt{T}_s \models \mathtt{T}_l $ & $ \mathtt{T}_s[\mathtt{T}_r] = \mathtt{T}_s: \forall a_r\{t\} \in \gamma^{\mathtt{T}^-}_{p}: a_s\{p\} \in \gamma^{s^-}_{p}: a_s\{p\}[a_r\{t\}] $\\
+	$ \mathtt{X}_s \models \mathtt{X}_l $ & $ \mathtt{X}_s[\mathtt{X}_r] = \mathtt{X}_s: \forall \alpha_r \in \gamma^{\mathtt{X}^-}_{f}: \alpha_s \in \gamma^{s^-}_{f} : \alpha_s[\alpha_r] $
 \end{tabular}
 \end{center}
 
-where $ a_s, \mathtt{T}_s, \mathtt{X}_s \in \Gamma_s;~a_l, \mathtt{T}_l, \mathtt{X}_l \in \Gamma_l;~a_r, \mathtt{T}_r, \mathtt{X}_r \in \Gamma_r;~a_s = a_l = a_r;~\alpha_s \in \mathtt{X}_s $
+where $ a_s, \mathtt{T}_s, \mathtt{X}_s \in \Gamma_s;~a_l, \mathtt{T}_l, \mathtt{X}_l \in \Gamma_l;~a_r, \mathtt{T}_r, \mathtt{X}_r \in \Gamma_r;~a_s = a_l = a_r;~\alpha_s \in \mathtt{X}_s $ and resulting agent $\Gamma_s \lhd \Gamma_r$.
 
 \item \textit{complex formation}:
 
