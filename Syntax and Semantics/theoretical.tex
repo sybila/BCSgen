@@ -106,17 +106,18 @@ The extended syntax with variables is the following:
 \begin{center}
 {\small
 \hspace*{-1cm}\begin{tabular}{ l l }
- rules& $\mathtt{R} ::= \emptyset ~|~ r, \mathtt{R} $\\
- rule equation & $r ::= \Gamma ~\odot~\Gamma~|~ \Gamma ~\odot~\Gamma~;~var$\\
+ rules& $\mathtt{R} ::= r, \mathtt{R} ~|~ r $\\
+ rule equation & $r ::= \zeta ~|~ \zeta~;~\upsilon$\\
+ rule sides & $\zeta ::= \Gamma~\odot~\Gamma ~|~ \Gamma~\odot ~|~ \odot~\Gamma$\\
  direction & $\odot ::=~ \Rightarrow~|~\Leftrightarrow $\\
- rule expression & $\Gamma ::= \emptyset~|~\varrho~\epsilon::\mathtt{c}~|~ \varrho~\epsilon::\mathtt{c}~ +~\Gamma$\\
+ rule expression & $\Gamma ::= \varrho~\epsilon::\mathtt{c}~ +~\Gamma ~|~ \varrho~\epsilon::\mathtt{c}$\\
  stoichiometry & $\varrho ::= n \in \mathbb{N}^+$\\
  rule expression item & $\epsilon :: = \epsilon_1~|~\epsilon_2~|~\epsilon_1::\xi~|~\epsilon_2::\xi'~|~\xi'$\\
- extended rule agent & $\epsilon_1  ~::=~  ?\nu_1~|~?\nu_2~|~?\nu_3~|~\mathtt{a}::?\nu_2~|~?\nu_1::\mathtt{T}$\\
+ extended rule agent & $\epsilon_1  ~::=~  ?\nu_1~|~?\nu_2~|~?\nu_3~|~\mathtt{a}::~?\nu_2~|~?\nu_1::\mathtt{T}$\\
  extended nested complex & $\xi' ~::=~ \mathtt{X}::\xi'~|~?\nu_3::\xi~|~?\nu_3~|~\xi$\\
  rule agent & $\epsilon_2  ~::=~  \mathtt{a}~|~\mathtt{T}~|~\mathtt{X}~|~\mathtt{a}::\mathtt{T}$\\
  nested complex & $\xi  ~::=~  \mathtt{X}::\xi~|~\mathtt{X}$\\
- variable & $var ::=~?\nu_1=\{\phi_1\}~|~?\nu_2=\{\phi_2\}~|~?\nu_3=\{\phi_3\}$\\
+ variable & $\upsilon ::=~?\nu_1=\{\phi_1\}~|~?\nu_2=\{\phi_2\}~|~?\nu_3=\{\phi_3\}$\\
  atomic variable value & $\phi_1 ::= \mathtt{a},~\phi_1~|~\mathtt{a}$\\
  structure variable value & $\phi_2 ::= \mathtt{T},~\phi_2~|~\mathtt{T}$\\
  complex variable value & $\phi_3 ::= \mathtt{X},~\phi_3~|~\mathtt{X}$\\
@@ -125,6 +126,9 @@ The extended syntax with variables is the following:
 \end{center}
 \end{minipage}
 }
+
+\vspace{0.5cm}
+If a variable is used, then it has to be involved in both sides of the rule (if they exist) and also in `; $\upsilon$' part.
 
 \mysection{Border between human-readable\\ and executable part of BCSL}
 
