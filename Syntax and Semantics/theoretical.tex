@@ -34,10 +34,9 @@ Extended complex agent definition:
 
 \begin{center}
 {\small
-\hspace*{-1cm}\begin{tabular}{ ll ll }
+\hspace*{-1 cm}\begin{tabular}{ ll ll }
  complex agent & $\mathtt{X}::=\gamma_f::\mathtt{c}~|~n\in{N}_{x}::\mathtt{c}$\\
  full composition & $\gamma_f ::= \mathtt{T}.\mathtt{T}~|~\mathtt{a}.\mathtt{a}~|~\mathtt{T}.\gamma_{f}~|~\mathtt{a}.\gamma_{f}$
-
 \end{tabular}
 }
 \end{center}
@@ -58,11 +57,12 @@ Let $\mathtt{X},\mathtt{X}'$ be complex agents. We define \emph{structural equiv
 \item If both $\mathtt{X},\mathtt{X}'$ are specified as full compositions then the following four conditions must be satisfied:
 
 \begin{itemize}
-\item for each $\mathtt{T}\in\mathtt{X}$ there exists $\mathtt{T}'\in\mathtt{X}'$ such that  $\mathtt{T}\equiv\mathtt{T}'$ and $\#\mathtt{T}[\mathtt{X}]=\#\mathtt{T}'[\mathtt{X}']$,
-\item for each $\mathtt{T}'\in\mathtt{X}'$ there exists $\mathtt{T}\in\mathtt{X}$ such that  $\mathtt{T}'\equiv\mathtt{T}$ and $\#\mathtt{T}'[\mathtt{X}']=\#\mathtt{T}[\mathtt{X}]$,
-\item for each $\mathtt{a}\in\mathtt{X}$ there exists $\mathtt{a}'\in\mathtt{X}'$ such that  $\mathtt{a}\equiv\mathtt{a}'$ and $\#\mathtt{a}[\mathtt{X}]=\#\mathtt{a}'[\mathtt{X}']$,
-\item for each $\mathtt{a}'\in\mathtt{X}'$ there exists $\mathtt{a}\in\mathtt{X}$ such that  $\mathtt{a}'\equiv\mathtt{a}$ and $\#\mathtt{a}'[\mathtt{X}']=\#\mathtt{a}[\mathtt{X}]$.
+\item for each $\mathtt{T}\in\mathtt{X}$ there exists $\mathtt{T}'\in\mathtt{X}'$ such that $\mathtt{T}\equiv\mathtt{T}'$ and $\#\mathtt{T}[\mathtt{X}]=\#\mathtt{T}'[\mathtt{X}']$,
+\item for each $\mathtt{T}'\in\mathtt{X}'$ there exists $\mathtt{T}\in\mathtt{X}$ such that $\mathtt{T}'\equiv\mathtt{T}$ and $\#\mathtt{T}'[\mathtt{X}']=\#\mathtt{T}[\mathtt{X}]$,
+\item for each $\mathtt{a}\in\mathtt{X}$ there exists $\mathtt{a}'\in\mathtt{X}'$ such that $\mathtt{a}\equiv\mathtt{a}'$ and $\#\mathtt{a}[\mathtt{X}]=\#\mathtt{a}'[\mathtt{X}']$,
+\item for each $\mathtt{a}'\in\mathtt{X}'$ there exists $\mathtt{a}\in\mathtt{X}$ such that $\mathtt{a}'\equiv\mathtt{a}$ and $\#\mathtt{a}'[\mathtt{X}']=\#\mathtt{a}[\mathtt{X}]$.
 \end{itemize}
+
 \end{enumerate}
 \end{mydef}
 
@@ -167,7 +167,7 @@ The executable rule can be in one of three reaction types:
 		\item translation/degradation - one of the rule sides must be empty
 		\item (de)complexation - number of new agents is different BUT number of all structure (resp. atomic) agents must be fixed
 	\end{enumerate}
-\item according to the reaction types of rules, the rule must be \textbf{unary operation} - only one change can happen in one step
+\item according to the reaction types of rules, the rule must be \textbf{unary operation} - only one agent can change in one step
 \item all complexes must be \textbf{expanded} according to its specification
 \end{enumerate}
 If at least one of the conditions is not satisfied, then the rule is only in human-readable form.
@@ -253,61 +253,62 @@ Then, if a human-readable rule is defined, exact mapping to executable rule(s) m
 Let $\alpha$ be an agent and $\Gamma_s, \Gamma_l, \Gamma_r$ be given solution, left-hand-side and right-hand-side of a rule, respectively.
 
 With assumption all rules of form $\Gamma_l\Rightarrow\Gamma_r$ are well-formed, we can define \textbf{Matching} as a relation via \textit{compatibility} operator $\lhd \subseteq \Gamma_s~\times~\Gamma_l $. We denote agent $\alpha_1$ \textit{matches} agent $\alpha_2$ iff $\alpha_1$ is \textit{compatible} with agent $\alpha_2$ ($\alpha_1 \lhd \alpha_2$).
-\textbf{Replacement} is a function $\Gamma_s~\times~\Gamma_r~\rightarrow~\Gamma_s[\Gamma_r]$. Each of the $\Gamma$ constructs might be one of atomic agent $a$, structure agent $\mathtt{T}$, complex agent $\mathtt{X}$, a list of them or $\emptyset$. Before replacement can be applied, matching in left column must be satisfied. Then, five match/replacement categories can be distinguished:
+\textbf{Replacement} is a function $\Gamma_s~\times~\Gamma_r~\rightarrow~\Gamma_s[\Gamma_r]$. Each of the $\Gamma$ constructs might be one of atomic agent $a$, structure agent $\mathtt{T}$, complex agent $\mathtt{X}$, a list of them or $\emptyset$ (what follows from flattening of the rules). Before replacement can be applied, matching in left column must be satisfied. Then, five match/replacement categories can be distinguished:
 
 \begin{enumerate}
 \item \textit{state change}:
 
+Let $\gamma^{l-r}$ is the difference between $\gamma^{l}$ and $\gamma^{r}$ compositions (in traditional list meaning). Then $\gamma^{s^-}$ is part of $\gamma^{s}$ composition such that $\forall~\alpha_1~\in~\gamma^{s^-}~\exists~\alpha_2~\in~\gamma^{l-r}:~\alpha_1~\lhd~\alpha_2 $ and $\gamma^{s^+}$ is part of $\gamma^{s}$ composition such that $\forall~\alpha_1~\in~\gamma^{s^+}~\exists~\alpha_2~\in~\gamma^{s}:~\alpha_1~\lhd~\alpha_2 $ where $\gamma^{s^-}~\cup~\gamma^{s^+}~=~\gamma^{s}$ and $\gamma^{s^-}~\cap~\gamma^{s^+}~=~\emptyset$. 
+
 \begin{itemize}
 \item	\begin{tabular}{ l l }
-				$ a_s\{p\} \lhd a_l $ & \hspace*{0.6cm} $ a_s\{p\}[a_r\{t\}] = a_s\{t\} $
+				$ a_s\{p\} \lhd a_l $ & \hspace*{0.6 cm} $ a_s\{p\}[a_r\{t\}] = a_s\{t\} $
 		\end{tabular}
 	  
 where $ a_s = a_l = a_r $.
 \item   \begin{tabular}{ l l }
-				$ \mathtt{T}_s \lhd \mathtt{T}_l $ & \hspace*{1cm} $ \mathtt{T}_s[\mathtt{T}_r] = \mathtt{T}_s: \forall a_r\{t\} \in \gamma^{\mathtt{T}^-}_{p}: a_s\{p\} \in \gamma^{s^-}_{p}: a_s\{p\}[a_r\{t\}] $
+				$ \mathtt{T}_s \lhd \mathtt{T}_l $ & \hspace*{1 cm} $ \mathtt{T}_s[\mathtt{T}_r] = \mathtt{T}_s: \forall a_r\{t\} \in \gamma^{l-r}: a_s\{p\} \in \gamma^{s^-}: a_s\{p\}[a_r\{t\}] $
 		\end{tabular}
-
-where $\gamma^{\mathtt{T}^-}_{p}$ is the difference between $\mathtt{T}_l$ and $\mathtt{T}_r$ partial compositions and $\gamma^{\mathtt{T}^+}_{p}$ is their intersection. Then $\gamma^{s^-}_{p}$ is part of $\mathtt{T}_s$ partial composition $\gamma^{s}_{p}$ such that $\forall a_1 \in \gamma^{s^-}_{p} \exists a_2 \in \gamma^{\mathtt{T}^-}_{p}: a_1 \lhd a_2 $ and $\gamma^{s^+}_{p}$ is part of $\mathtt{T}_s$ partial composition $\gamma^{s}_{p}$ such that $\forall a_1 \in \gamma^{s^+}_{p} \exists a_2 \in \gamma^{\mathtt{T}^+}_{p}: a_1 \lhd a_2 $. Moreover, $\gamma^{s^-}_{p}~\cup~\gamma^{s^+}_{p}~=~\gamma^{s}_{p}$ and $\gamma^{s^-}_{p}~\cap~\gamma^{s^+}_{p}~=~\emptyset$. Additionally, $ a_s = a_r $.
+		
+where $\mathtt{T}_s = \tau_s(\gamma^{s})$, $\mathtt{T}_l = \tau_l(\gamma^{l})$ and $\mathtt{T}_r = \tau_r(\gamma^{r})$.
 
 \item   \begin{tabular}{ l l }
-			$ \mathtt{X}_s \lhd \mathtt{X}_l $ & \hspace*{1cm} $ \mathtt{X}_s[\mathtt{X}_r] = \mathtt{X}_s: \forall \alpha_r \in \gamma^{\mathtt{X}^-}_{f}: \alpha_s \in \gamma^{s^-}_{f} : \alpha_s[\alpha_r] $
+			$ \mathtt{X}_s \lhd \mathtt{X}_l $ & \hspace*{1 cm} $ \mathtt{X}_s[\mathtt{X}_r] = \mathtt{X}_s: \forall \alpha_r \in \gamma^{l-r}: \alpha_s \in \gamma^{s^-} : \alpha_s[\alpha_r] $
 		\end{tabular}
-
-where $\gamma^{\mathtt{X}^-}_{f}$ is the difference between $\mathtt{X}_l$ and $\mathtt{X}_r$ full compositions and $\gamma^{\mathtt{X}^+}_{f}$ is their intersection. Then $\gamma^{s^-}_{f}$ is part of $\mathtt{X}_s$ full composition $\gamma^{s}_{f}$ such that $\forall \alpha_1 \in \gamma^{s^-}_{f} \exists \alpha_2 \in \gamma^{\mathtt{X}^-}_{f}: \alpha_1 \lhd \alpha_2 $ and $\gamma^{s^+}_{f}$ is part of $\mathtt{X}_s$ full composition $\gamma^{s}_{f}$ such that $\forall \alpha_1 \in \gamma^{s^+}_{f} \exists \alpha_2 \in \gamma^{\mathtt{X}^+}_{f}: \alpha_1 \lhd \alpha_2 $. Moreover, $\gamma^{s^-}_{f}~\cup~\gamma^{s^+}_{f}~=~\gamma^{s}_{f}$ and $\gamma^{s^-}_{f}~\cap~\gamma^{s^+}_{f}~=~\emptyset$. 
+		
+where $\mathtt{X}_s = \gamma^{s}$, $\mathtt{X}_l = \gamma^{l}$ and $\mathtt{X}_r = \gamma^{r}$.
 
 \end{itemize}
 
 \item \textit{complex formation}:
 \begin{center}
 \begin{tabular}{ l l }
-	$ \forall \alpha_l \in \Gamma_l: \alpha_s \in \Gamma_s: \alpha_s \lhd \alpha_l $ & \hspace*{1cm} $\Gamma_s[\Gamma_r] = \gamma_f(\Gamma_s)$
+	$ \forall \alpha_l \in \Gamma_l: \exists \alpha_s \in \Gamma_s: \alpha_s \lhd \alpha_l $ & \hspace*{1 cm} $\Gamma_s[\Gamma_r] = \gamma_f(\Gamma_s)$
 \end{tabular}
 \end{center}
 
 \item \textit{complex dissociation}:
 \begin{center}
 \begin{tabular}{ l l }
-	$ \Gamma_s \lhd \Gamma_l $ & \hspace*{1cm} $ \Gamma_s[\Gamma_r] = \Gamma_s $
+	$ \Gamma_s \lhd \Gamma_l $ & \hspace*{1 cm} $ \gamma_f(\Gamma_s)[\Gamma_r] = \Gamma_s $
 \end{tabular}
 \end{center}
 
 \item \textit{degradation}
 \begin{center}
 \begin{tabular}{ l l }
-	$ \Gamma_s \lhd \Gamma_l $ & \hspace*{1cm} $ \Gamma_s[\emptyset] = \emptyset $
+	$ \Gamma_s \lhd \Gamma_l $ & \hspace*{1 cm} $ \Gamma_s[\emptyset] = \emptyset $
 \end{tabular}
 \end{center}
 
 \item \textit{translation}
 \begin{center}
 \begin{tabular}{ l l }
-	$ \emptyset \lhd \emptyset $ & \hspace*{1cm} $ \emptyset[\Gamma_r] = \Gamma_r $
+	$ \emptyset \lhd \emptyset $ & \hspace*{1 cm} $ \emptyset[\Gamma_r] = \Gamma_r $
 \end{tabular}
 \end{center}
 
 \end{enumerate}
-
 
 \textbf{TBA} lexicographically sorted is not working yet
 
