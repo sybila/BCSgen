@@ -255,7 +255,10 @@ Let $\alpha$ be an agent and $\Gamma_s,~\Gamma_l,~\Gamma_r$ be given solution, l
 
 \mydefinition{Let $l_1$ and $l_2$ be lists. We define difference between two lists $l~=~l_1~-~l_2$ as $[ x~|~x~\not\in~l_1~\cap~l_2 ]$.}
 
-With assumption all rules of form $\Gamma_l\Rightarrow\Gamma_r$ are well-formed, we can define \textbf{Matching} as a relation via \textit{compatibility} operator $\models \subseteq \Gamma_s~\times~\Gamma_l $. We denote agent $\alpha_1$ \textit{matches} agent $\alpha_2$ iff $\alpha_1$ is \textit{compatible} with agent $\alpha_2$ ($\alpha_1 \lhd \alpha_2$).
+\mydefinition{
+With assumption all rules of form $\Gamma_l\Rightarrow\Gamma_r$ are well-formed, we can define \textbf{Matching} is relation $\models \subseteq \Gamma_s~\times~\Gamma_l $ defined via \textit{compatibility} operator. We denote $\Gamma_s$ \textit{matches} $\Gamma_l$ ($ \Gamma_s~\models~\Gamma_l$) iff $\forall \alpha_l \in \Gamma_l: \exists \alpha_s \in \Gamma_s: \alpha_s \lhd \alpha_l$.}
+
+
 \textbf{Replacement} is a function $\Gamma_s~\times~\Gamma_r~\rightarrow~\Gamma_s[\Gamma_r]$. Each of the $\Gamma$ constructs might be one of atomic agent $a$, structure agent $\mathtt{T}$, complex agent $\mathtt{X}$, a list of them or $\emptyset$ (what follows from flattening of the rules). Before replacement can be applied, matching in left column must be satisfied. Then, five match/replacement categories can be distinguished:
 
 \begin{enumerate}
@@ -286,33 +289,37 @@ where $\mathtt{X}_s = \gamma^{s}$, $\mathtt{X}_l = \gamma^{l}$ and $\mathtt{X}_r
 \item \textit{complex formation}:
 \begin{center}
 \begin{tabular}{ l l }
-	$ \forall \alpha_l \in \Gamma_l: \exists \alpha_s \in \Gamma_s: \alpha_s \lhd \alpha_l $ & \hspace*{1 cm} $\Gamma_s[\Gamma_r] = \gamma_f(\Gamma_s)$
+	$ \Gamma_s \models \Gamma_l $ & \hspace*{1 cm} $\Gamma_s[\Gamma_r] = \gamma_f(\Gamma_s)$
 \end{tabular}
 \end{center}
 
 \item \textit{complex dissociation}:
 \begin{center}
 \begin{tabular}{ l l }
-	$ \Gamma_s \lhd \Gamma_l $ & \hspace*{1 cm} $ \gamma_f(\Gamma_s)[\Gamma_r] = \Gamma_s $
+	$  \Gamma_s \models \Gamma_l $ & \hspace*{1 cm} $ \gamma_f(\Gamma_s)[\Gamma_r] = \Gamma_s $
 \end{tabular}
 \end{center}
 
 \item \textit{degradation}
 \begin{center}
 \begin{tabular}{ l l }
-	$ \Gamma_s \lhd \Gamma_l $ & \hspace*{1 cm} $ \Gamma_s[\emptyset] = \emptyset $
+	$ \Gamma_s \models \Gamma_l $ & \hspace*{1 cm} $ \Gamma_s[\emptyset] = \emptyset $
 \end{tabular}
 \end{center}
 
 \item \textit{translation}
 \begin{center}
 \begin{tabular}{ l l }
-	$ \emptyset \lhd \emptyset $ & \hspace*{1 cm} $ \emptyset[\Gamma_r] = \Gamma_r $
+	$ \Gamma_s \models \Gamma_l ~(\emptyset \lhd \emptyset) $ & \hspace*{1 cm} $ \emptyset[\Gamma_r] = \Gamma_r $
 \end{tabular}
 \end{center}
 
 \end{enumerate}
 
 \textbf{TBA} lexicographically sorted is not working yet
+
+\textbf{TBA} not sure about $\emptyset \lhd \emptyset$
+
+\textbf{TBA} what to choose as $\Gamma_s$ ???
 
 \end{document}
