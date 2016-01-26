@@ -8,6 +8,7 @@
 
 \newcommand{\mysection}[1]{{\newpage\centering\Large\textbf{#1}\\}\normalsize\vspace{0.5cm}}
 \newcommand{\mysmallsection}[1]{\vspace{0.5cm}\large\textbf{#1}\normalsize\vspace{0.5cm}}
+\newcommand{\mydefinition}[1]{\vspace{0.5cm}\large\textbf{Definition} \normalsize{#1}\vspace{0.5cm}}
 
 \begin{document}
 
@@ -250,27 +251,29 @@ Then, if a human-readable rule is defined, exact mapping to executable rule(s) m
 
 \mysection{Matching and Replacement}
 
-Let $\alpha$ be an agent and $\Gamma_s, \Gamma_l, \Gamma_r$ be given solution, left-hand-side and right-hand-side of a rule, respectively.
+Let $\alpha$ be an agent and $\Gamma_s,~\Gamma_l,~\Gamma_r$ be given solution, left-hand-side and right-hand-side of a rule, respectively.
 
-With assumption all rules of form $\Gamma_l\Rightarrow\Gamma_r$ are well-formed, we can define \textbf{Matching} as a relation via \textit{compatibility} operator $\lhd \subseteq \Gamma_s~\times~\Gamma_l $. We denote agent $\alpha_1$ \textit{matches} agent $\alpha_2$ iff $\alpha_1$ is \textit{compatible} with agent $\alpha_2$ ($\alpha_1 \lhd \alpha_2$).
+\mydefinition{Let $l_1$ and $l_2$ be lists. We define difference between two lists $l~=~l_1~-~l_2$ as $[ x~|~x~\not\in~l_1~\cap~l_2 ]$.}
+
+With assumption all rules of form $\Gamma_l\Rightarrow\Gamma_r$ are well-formed, we can define \textbf{Matching} as a relation via \textit{compatibility} operator $\models \subseteq \Gamma_s~\times~\Gamma_l $. We denote agent $\alpha_1$ \textit{matches} agent $\alpha_2$ iff $\alpha_1$ is \textit{compatible} with agent $\alpha_2$ ($\alpha_1 \lhd \alpha_2$).
 \textbf{Replacement} is a function $\Gamma_s~\times~\Gamma_r~\rightarrow~\Gamma_s[\Gamma_r]$. Each of the $\Gamma$ constructs might be one of atomic agent $a$, structure agent $\mathtt{T}$, complex agent $\mathtt{X}$, a list of them or $\emptyset$ (what follows from flattening of the rules). Before replacement can be applied, matching in left column must be satisfied. Then, five match/replacement categories can be distinguished:
 
 \begin{enumerate}
 \item \textit{state change}:
 
-Let $\gamma^{l-r}$ is the difference between $\gamma^{l}$ and $\gamma^{r}$ compositions (in traditional list meaning). Then $\gamma^{s^-}$ is part of $\gamma^{s}$ composition such that $\forall~\alpha_1~\in~\gamma^{s^-}~\exists~\alpha_2~\in~\gamma^{l-r}:~\alpha_1~\lhd~\alpha_2 $ and $\gamma^{s^+}$ is part of $\gamma^{s}$ composition such that $\forall~\alpha_1~\in~\gamma^{s^+}~\exists~\alpha_2~\in~\gamma^{s}:~\alpha_1~\lhd~\alpha_2 $ where $\gamma^{s^-}~\cup~\gamma^{s^+}~=~\gamma^{s}$ and $\gamma^{s^-}~\cap~\gamma^{s^+}~=~\emptyset$. 
+Let $\gamma^{l-r}$ is the difference between $\gamma^{l}$ and $\gamma^{r}$ compositions. Then $\gamma^{s^-}$ is part of $\gamma^{s}$ composition such that $\forall~\alpha_1~\in~\gamma^{s^-}~\exists~\alpha_2~\in~\gamma^{l-r}:~\alpha_1~\lhd~\alpha_2 $ and $\gamma^{s^+}$ is part of $\gamma^{s}$ composition such that $\forall~\alpha_1~\in~\gamma^{s^+}~\exists~\alpha_2~\in~\gamma^{s}:~\alpha_1~\lhd~\alpha_2 $ where $\gamma^{s^-}~\cup~\gamma^{s^+}~=~\gamma^{s}$ and $\gamma^{s^-}~\cap~\gamma^{s^+}~=~\emptyset$. 
 
 \begin{itemize}
 \item	\begin{tabular}{ l l }
-				$ a_s\{p\} \lhd a_l $ & \hspace*{0.6 cm} $ a_s\{p\}[a_r\{t\}] = a_s\{t\} $
+				$ \mathtt{a}_s\{p\} \lhd \mathtt{a}_l $ & \hspace*{0.6 cm} $ \mathtt{a}_s\{p\}[\mathtt{a}_r\{t\}] = \mathtt{a}_s\{t\} $
 		\end{tabular}
 	  
-where $ a_s = a_l = a_r $.
+where $ \mathtt{a}_s = \mathtt{a}_l = \mathtt{a}_r $.
 \item   \begin{tabular}{ l l }
-				$ \mathtt{T}_s \lhd \mathtt{T}_l $ & \hspace*{1 cm} $ \mathtt{T}_s[\mathtt{T}_r] = \mathtt{T}_s: \forall a_r\{t\} \in \gamma^{l-r}: a_s\{p\} \in \gamma^{s^-}: a_s\{p\}[a_r\{t\}] $
+				$ \mathtt{T}_s \lhd \mathtt{T}_l $ & \hspace*{1 cm} $ \mathtt{T}_s[\mathtt{T}_r] = \mathtt{T}_s: \forall \mathtt{a}_r\{t\} \in \gamma^{l-r}: \mathtt{a}_s\{p\} \in \gamma^{s^-}: \mathtt{a}_s\{p\}[\mathtt{a}_r\{t\}] $
 		\end{tabular}
 		
-where $\mathtt{T}_s = \tau_s(\gamma^{s})$, $\mathtt{T}_l = \tau_l(\gamma^{l})$ and $\mathtt{T}_r = \tau_r(\gamma^{r})$.
+where $\mathtt{T}_s = \tau_s(\gamma^{s})$, $\mathtt{T}_l = \tau_l(\gamma^{l})$, $\mathtt{T}_r = \tau_r(\gamma^{r})$ and $\tau_s = \tau_l = \tau_r$.
 
 \item   \begin{tabular}{ l l }
 			$ \mathtt{X}_s \lhd \mathtt{X}_l $ & \hspace*{1 cm} $ \mathtt{X}_s[\mathtt{X}_r] = \mathtt{X}_s: \forall \alpha_r \in \gamma^{l-r}: \alpha_s \in \gamma^{s^-} : \alpha_s[\alpha_r] $
