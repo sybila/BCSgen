@@ -14,7 +14,13 @@ class Atomic_Agent:
             return self.name + "{" + list(self.states)[0] + "}::" + self.compartment
 
     def __repr__(self):
-        return self.__str__()
+        if len(self.states) > 1:
+            return self.name
+        else:
+            return self.name + "{" + list(self.states)[0] + "}"
+
+    def __hash__(self):
+        return hash((self.name, str(self.states), self.compartment))
 
     def getName(self):
         return self.name
@@ -28,5 +34,5 @@ class Atomic_Agent:
     def setStates(states):
         self.states = states
 
-    def isCompatible(self, other):
+    def isCompatibleWith(self, other):
         return self.__eq__(other) or ( self.name == other.name and self.compartment == other.compartment and list(self.states)[0] in other.states )
