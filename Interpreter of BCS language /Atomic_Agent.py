@@ -1,9 +1,7 @@
-import collections
-
 class Atomic_Agent:
     def __init__(self, name, states, compartment):
         self.name = name
-        self.states = collections.Counter(states)
+        self.states = set(states)
         self.compartment = compartment
 
     def __eq__(self, other):
@@ -13,7 +11,7 @@ class Atomic_Agent:
         if len(self.states) > 1:
             return self.name + "::" + self.compartment
         else:
-            return self.name + "{" + self.states.keys()[0] + "}::" + self.compartment
+            return self.name + "{" + list(self.states)[0] + "}::" + self.compartment
 
     def __repr__(self):
         return self.__str__()
@@ -31,4 +29,4 @@ class Atomic_Agent:
         self.states = states
 
     def isCompatible(self, other):
-        return self.__eq__(other) or ( self.name == other.name and self.compartment == other.compartment and self.states.keys()[0] in other.states.keys() )
+        return self.__eq__(other) or ( self.name == other.name and self.compartment == other.compartment and list(self.states)[0] in other.states )
