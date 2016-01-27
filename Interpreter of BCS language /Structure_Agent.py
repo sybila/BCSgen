@@ -5,6 +5,7 @@ from Atomic_Agent import *
 '''
 change this to something more elegant OMG !!!
 '''
+
 def compareTwoPartialCompositions(partial_composition_s, partial_composition_l):
     fake_compostion = []
     for agent_s in partial_composition_s:
@@ -14,7 +15,6 @@ def compareTwoPartialCompositions(partial_composition_s, partial_composition_l):
                 fake_compostion.append(agent_s)
                 break
     return len(partial_composition_s) == len(fake_compostion)
-
 
 class Structure_Agent:
     def __init__(self, name, partial_composition, compartment):
@@ -49,12 +49,9 @@ class Structure_Agent:
     def getCompartment(self):
         return self.compartment
 
-    def setPartialComposition(partial_compostion):
-        self.partial_composition = partial_compostion
+    def setPartialComposition(self, partial_compostion):
+        self.partial_composition = collections.Counter(partial_compostion)
 
     def isCompatibleWith(self, other):
         return self.__eq__(other) or ( self.name == other.name and self.compartment == other.compartment
                 and compareTwoPartialCompositions(copy.deepcopy(list(self.partial_composition.elements())), copy.deepcopy(list(other.partial_composition.elements()))) )
-
-
-#self.states.keys()[0]

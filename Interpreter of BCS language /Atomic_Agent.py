@@ -35,4 +35,4 @@ class Atomic_Agent:
         self.states = states
 
     def isCompatibleWith(self, other):
-        return self.__eq__(other) or ( self.name == other.name and self.compartment == other.compartment and list(self.states)[0] in other.states )
+        return self.__eq__(other) or ( self.name == other.name and self.compartment == other.compartment and self.states.issubset(other.states) )

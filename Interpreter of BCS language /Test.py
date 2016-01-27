@@ -22,6 +22,8 @@ class TestAtomicAgent(unittest.TestCase):
     def test_isCompatibleWith(self):
         self.assertTrue(self.agent1.isCompatibleWith(self.agent2))
         self.assertFalse((self.agent1.isCompatibleWith(self.agent4)))
+        self.assertFalse((self.agent2.isCompatibleWith(self.agent1)))
+
 
     def test_hash(self):
         self.assertEqual(hash(self.agent1), hash(self.agent1))
@@ -54,7 +56,6 @@ class TestStructureAgent(unittest.TestCase):
         self.assertEqual(self.Sagent3.__str__(), 'agent::c')
         self.assertEqual(self.Sagent4.__str__(), 'agent(a)::c')
 
-
     def test_hash(self):
         self.assertEqual(hash(self.Sagent1), hash(self.Sagent1))
         self.assertEqual(hash(self.Sagent1), hash(self.Sagent2))
@@ -63,8 +64,14 @@ class TestStructureAgent(unittest.TestCase):
     def test_isCompatibleWith(self):
         self.assertTrue(self.Sagent4.isCompatibleWith(self.Sagent2))
         self.assertTrue(self.Sagent5.isCompatibleWith(self.Sagent6))
+        self.assertFalse(self.Sagent6.isCompatibleWith(self.Sagent5))
         self.assertTrue(self.Sagent1.isCompatibleWith(self.Sagent6))
+        self.assertFalse(self.Sagent6.isCompatibleWith(self.Sagent1))
+        self.assertTrue(self.Sagent1.isCompatibleWith(self.Sagent2))
 
+    def test_setter(self):
+        self.Sagent1.setPartialComposition([self.Aagent1, self.Aagent4])
+        self.assertTrue(self.Sagent5.__eq__(self.Sagent1))
 
 suite = unittest.TestLoader().loadTestsFromTestCase(TestStructureAgent)
 unittest.TextTestRunner(verbosity=2).run(suite)
