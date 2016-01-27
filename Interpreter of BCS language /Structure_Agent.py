@@ -2,19 +2,16 @@ import collections
 import copy
 from Atomic_Agent import *
 
-'''
-change this to something more elegant OMG !!!
-'''
-
 def compareTwoPartialCompositions(partial_composition_s, partial_composition_l):
-    fake_compostion = []
+    if len(partial_composition_s) == 0:
+        return True
     for agent_s in partial_composition_s:
         for agent_l in partial_composition_l:
             if agent_s.isCompatibleWith(agent_l):
+                partial_composition_s.remove(agent_s)
                 partial_composition_l.remove(agent_l)
-                fake_compostion.append(agent_s)
-                break
-    return len(partial_composition_s) == len(fake_compostion)
+                return compareTwoPartialCompositions(partial_composition_s, partial_composition_l)
+        return False
 
 class Structure_Agent:
     def __init__(self, name, partial_composition, compartment):
