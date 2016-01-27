@@ -256,7 +256,7 @@ Let $\alpha$ be an agent and $\Gamma_s,~\Gamma_l,~\Gamma_r$ be given solution, l
 \mydefinition{Let $l_1$ and $l_2$ be lists. We define difference between two lists $l~=~l_1~-~l_2$ as $[ x~|~x~\not\in~l_1~\cap~l_2 ]$.}
 
 \mydefinition{
-With assumption all rules of form $\Gamma_l\Rightarrow\Gamma_r$ are well-formed, we can define \textbf{Matching} is relation $\models \subseteq \Gamma_s~\times~\Gamma_l $ defined via \textit{compatibility} operator. We denote $\Gamma_s$ \textit{matches} $\Gamma_l$ ($ \Gamma_s~\models~\Gamma_l$) iff $\forall \alpha_l \in \Gamma_l: \exists \alpha_s \in \Gamma_s: \alpha_s \lhd \alpha_l$.}
+With assumption all rules of form $\Gamma_l\Rightarrow\Gamma_r$ are well-formed, we can define \textbf{Matching} is relation $\models \subseteq \Gamma_s~\times~\Gamma_l $ defined via \textit{compatibility} operator. We denote $\Gamma_s$ \textit{matches} $\Gamma_l$ ($ \Gamma_s~\models~\Gamma_l$) iff $\forall \alpha_l \in \Gamma_l: \exists~\pmb{unique}~\alpha_s~\in~\Gamma_s: \alpha_s \lhd \alpha_l$.}
 
 
 \textbf{Replacement} is a function $\Gamma_s~\times~\Gamma_r~\rightarrow~\Gamma_s[\Gamma_r]$. Each of the $\Gamma$ constructs might be one of atomic agent $a$, structure agent $\mathtt{T}$, complex agent $\mathtt{X}$, a list of them or $\emptyset$ (what follows from flattening of the rules). Before replacement can be applied, matching in left column must be satisfied. Then, five match/replacement categories can be distinguished:
