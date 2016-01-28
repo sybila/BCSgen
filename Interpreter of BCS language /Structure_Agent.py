@@ -9,7 +9,6 @@ Should be usable for both kinds of compositions
 :param composition_l: list of left-hand-side composition
 :return: True if the requirement is satisfied
 """
-
 def compareCompositions(composition_s, composition_l):
     if not composition_s:
         return True
