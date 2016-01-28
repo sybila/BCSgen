@@ -2,8 +2,15 @@ import collections
 import copy
 from Atomic_Agent import *
 
+"""
+Checks if for every agent from the first list there exist unique compatible agent from the second list
+:param partial_composition_s: list of solution partial composition
+:param partial_composition_l: list of left-hand-side partial composition
+:return:
+"""
+
 def compareTwoPartialCompositions(partial_composition_s, partial_composition_l):
-    if len(partial_composition_s) == 0:
+    if not partial_composition_s:
         return True
     for agent_s in partial_composition_s:
         for agent_l in partial_composition_l:
@@ -49,6 +56,11 @@ class Structure_Agent:
     def setPartialComposition(self, partial_compostion):
         self.partial_composition = collections.Counter(partial_compostion)
 
+    """
+    Checks if the first structural agent is compatible with the second one
+    :param other: the second agent
+    :return: True if it is compatible
+    """
     def isCompatibleWith(self, other):
         return self.__eq__(other) or ( self.name == other.name and self.compartment == other.compartment
                 and compareTwoPartialCompositions(copy.deepcopy(list(self.partial_composition.elements())), copy.deepcopy(list(other.partial_composition.elements()))) )

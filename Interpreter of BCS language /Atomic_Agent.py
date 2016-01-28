@@ -31,8 +31,13 @@ class Atomic_Agent:
     def getCompartment(self):
         return self.compartment
 
-    def setStates(states):
-        self.states = states
+    def setStates(self, states):
+        self.states = set(states)
 
+    """
+    Checks if the first atomic agent is compatible with the second one
+    :param other: the second agent
+    :return: True if it is compatible
+    """
     def isCompatibleWith(self, other):
         return self.__eq__(other) or ( self.name == other.name and self.compartment == other.compartment and self.states.issubset(other.states) )
