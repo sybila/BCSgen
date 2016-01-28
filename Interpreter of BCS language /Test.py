@@ -1,6 +1,7 @@
 import unittest
 from Atomic_Agent import *
 from Structure_Agent import *
+from Complex_Agent import *
 
 class TestAtomicAgent(unittest.TestCase):
     def setUp(self):
@@ -67,7 +68,7 @@ class TestStructureAgent(unittest.TestCase):
         self.assertEqual(self.Sagent1.__str__(), self.Sagent2.__str__())
         self.assertEqual(self.Sagent3.__str__(), 'agent::c')
         self.assertEqual(self.Sagent4.__str__(), 'agent(a)::c')
-        self.assertEqual(self.Sagent7.__str__(), 'theWorstPossibleAgent(a | a | a{s} | a{t})::cyt')
+        self.assertEqual(self.Sagent7.__str__(), 'theWorstPossibleAgent(a|a|a{s}|a{t})::cyt')
 
     def test_hash(self):
         self.assertEqual(hash(self.Sagent1), hash(self.Sagent1))
@@ -94,4 +95,63 @@ class TestStructureAgent(unittest.TestCase):
         self.assertFalse(self.Sagent7 < self.Sagent1)
 
 suite = unittest.TestLoader().loadTestsFromTestCase(TestStructureAgent)
+unittest.TextTestRunner(verbosity=2).run(suite)
+
+class TestComplexAgent(unittest.TestCase):
+    def setUp(self):
+        self.Aagent1 = Atomic_Agent('S', ['p'], 'cyt')
+        self.Aagent12 = Atomic_Agent('S', ['u'], 'cyt')
+        self.Aagent2 = Atomic_Agent('T', ['u'], 'cyt')
+        self.Aagent22 = Atomic_Agent('T', ['p'], 'cyt')
+        self.Aagent3 = Atomic_Agent('S', ['u', 'p'], 'cyt')
+        self.Aagent4 = Atomic_Agent('T', ['u', 'p'], 'cyt')
+        self.Sagent1 = Structure_Agent('KaiC', [self.Aagent1, self.Aagent2], 'cyt')
+        self.Sagent2 = Structure_Agent('KaiC', [self.Aagent2, self.Aagent1], 'cyt')
+        self.Sagent3 = Structure_Agent('KaiC', [self.Aagent3, self.Aagent22, self.Aagent12], 'cyt')
+        self.Sagent4 = Structure_Agent('KaiC', [self.Aagent3, self.Aagent4], 'cyt')
+        self.Sagent5 = Structure_Agent('KaiC', [self.Aagent3, self.Aagent4, self.Aagent3], 'cyt')
+        self.Sagent6 = Structure_Agent('KaiC', [self.Aagent1, self.Aagent2, self.Aagent3], 'cyt')
+        self.Sagent7 = Structure_Agent('KaiC', [self.Aagent3, self.Aagent2], 'cyt')
+        self.Xagent1 = Complex_Agent([self.Aagent1, self.Aagent2, self.Sagent1, self.Sagent2], 'cyt')
+        self.Xagent2 = Complex_Agent([self.Sagent1, self.Aagent2, self.Sagent2, self.Aagent1], 'cyt')
+        self.Xagent3 = Complex_Agent([self.Sagent1, self.Aagent2, self.Aagent1], 'cyt')
+        self.Xagent4 = Complex_Agent([self.Sagent1, self.Aagent1], 'cyt')
+        self.Xagent5 = Complex_Agent([self.Sagent3, self.Sagent4], 'cyt')
+        self.Xagent6 = Complex_Agent([self.Sagent4, self.Sagent5, self.Sagent6], 'cyt')
+        self.Xagent7 = Complex_Agent([self.Aagent1, self.Aagent4, self.Sagent7], 'cyt')
+        self.Xagent8 = Complex_Agent([self.Aagent12, self.Aagent4, self.Sagent4], 'cyt')
+
+    def test_equal(self):
+        self.assertTrue(self.Xagent1.__eq__(self.Xagent1))
+        self.assertTrue(self.Xagent1.__eq__(self.Xagent2))
+        self.assertFalse(self.Xagent1.__eq__(self.Xagent3))
+
+    def test_print(self):
+        self.assertEqual(self.Xagent1.__str__(), self.Xagent2.__str__())
+        self.assertNotEqual(self.Xagent1.__str__(), self.Xagent3.__str__())
+        self.assertNotEqual(self.Xagent4.__str__(), "KaiC(S{u}|T{p}).S{p}::cyt")
+
+    def test_hash(self):
+        self.assertEqual(hash(self.Xagent1), hash(self.Xagent1))
+        self.assertEqual(hash(self.Xagent1), hash(self.Xagent2))
+        self.assertNotEqual(hash(self.Xagent1), hash(self.Xagent3))
+
+    def test_comparing(self):
+        self.assertFalse(self.Xagent2 > self.Xagent1)
+        self.assertTrue(self.Xagent4 > self.Xagent1)
+
+    def test_setter(self):
+        self.Xagent1.setFullComposition([self.Sagent1, self.Aagent2, self.Aagent1])
+        self.assertTrue(self.Xagent1.__eq__(self.Xagent3))
+
+    def test_isCompatibleWith(self):
+        self.assertTrue(self.Xagent4.isCompatibleWith(self.Xagent2))
+        self.assertFalse(self.Xagent2.isCompatibleWith(self.Xagent4))
+        self.assertTrue(self.Xagent2.isCompatibleWith(self.Xagent1))
+        self.assertTrue(self.Xagent4.isCompatibleWith(self.Xagent3))
+        self.assertTrue(self.Xagent5.isCompatibleWith(self.Xagent6))
+        self.assertFalse(self.Xagent6.isCompatibleWith(self.Xagent5))
+        self.assertFalse(self.Xagent7.isCompatibleWith(self.Xagent8))
+
+suite = unittest.TestLoader().loadTestsFromTestCase(TestComplexAgent)
 unittest.TextTestRunner(verbosity=2).run(suite)
