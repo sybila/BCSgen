@@ -6,7 +6,7 @@ class Atomic_Agent:
 
     def __eq__(self, other):
         return self.name == other.name and self.states == other.states and self.compartment == other.compartment
-
+    '''
     def __str__(self):
         if len(self.states) > 1:
             return self.name + "::" + self.compartment
@@ -18,6 +18,15 @@ class Atomic_Agent:
             return self.name
         else:
             return self.name + "{" + list(self.states)[0] + "}"
+    '''
+    def __str__(self):
+        return self.__repr__("::" + self.compartment)
+
+    def __repr__(self, part = ""):
+        if len(self.states) > 1:
+            return self.name + part
+        else:
+            return self.name + "{" + list(self.states)[0] + "}" + part
 
     def __hash__(self):
         return hash((self.name, str(self.states), self.compartment))

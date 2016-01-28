@@ -25,7 +25,6 @@ class TestAtomicAgent(unittest.TestCase):
         self.assertFalse((self.agent1.isCompatibleWith(self.agent4)))
         self.assertFalse((self.agent2.isCompatibleWith(self.agent1)))
 
-
     def test_hash(self):
         self.assertEqual(hash(self.agent1), hash(self.agent1))
         self.assertNotEqual(hash(self.agent1), hash(self.agent2))
