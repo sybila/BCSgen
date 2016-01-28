@@ -10,6 +10,7 @@ class TestAtomicAgent(unittest.TestCase):
         self.agent4 = Atomic_Agent('a', ['p', 't'], 'c')
         self.agent5 = Atomic_Agent('a', ['u'], 'c')
         #self.agent6 = Atomic_Agent('a', [], 'c') CANNOT BE EMPTY !
+        self.agent7 = Atomic_Agent('a', ['u'], 'cell')
 
     def test_print(self):
         self.assertEqual(self.agent1.__str__(), 'a{s}::c')
@@ -32,6 +33,12 @@ class TestAtomicAgent(unittest.TestCase):
     def test_setter(self):
         self.agent1.setStates(['u'])
         self.assertTrue(self.agent1.__eq__(self.agent5))
+        self.agent1.setCompartment('cell')
+        self.assertTrue(self.agent1.__eq__(self.agent7))
+
+    def test_comparing(self):
+        self.assertFalse(self.agent7 > self.agent5)
+        self.assertTrue(self.agent1 > self.agent3)
 
 suite = unittest.TestLoader().loadTestsFromTestCase(TestAtomicAgent)
 unittest.TextTestRunner(verbosity=2).run(suite)
@@ -48,7 +55,7 @@ class TestStructureAgent(unittest.TestCase):
         self.Sagent4 = Structure_Agent('agent', [self.Aagent2], 'c')
         self.Sagent5 = Structure_Agent('agent', [self.Aagent1, self.Aagent4], 'c')
         self.Sagent6 = Structure_Agent('agent', [self.Aagent2, self.Aagent3], 'c')
-        self.Sagent7 = Structure_Agent('TheWorstPossibleAgent', [self.Aagent2, self.Aagent3, self.Aagent1, self.Aagent4], 'cyt')
+        self.Sagent7 = Structure_Agent('theWorstPossibleAgent', [self.Aagent2, self.Aagent3, self.Aagent1, self.Aagent4], 'cyt')
 
     def test_equal(self):
         self.assertTrue(self.Sagent1.__eq__(self.Sagent2))
@@ -60,7 +67,7 @@ class TestStructureAgent(unittest.TestCase):
         self.assertEqual(self.Sagent1.__str__(), self.Sagent2.__str__())
         self.assertEqual(self.Sagent3.__str__(), 'agent::c')
         self.assertEqual(self.Sagent4.__str__(), 'agent(a)::c')
-        self.assertEqual(self.Sagent7.__str__(), 'TheWorstPossibleAgent(a{t} | a | a | a{s})::cyt')
+        self.assertEqual(self.Sagent7.__str__(), 'theWorstPossibleAgent(a | a | a{s} | a{t})::cyt')
 
     def test_hash(self):
         self.assertEqual(hash(self.Sagent1), hash(self.Sagent1))
@@ -81,6 +88,10 @@ class TestStructureAgent(unittest.TestCase):
     def test_setter(self):
         self.Sagent1.setPartialComposition([self.Aagent1, self.Aagent4])
         self.assertTrue(self.Sagent5.__eq__(self.Sagent1))
+
+    def test_comparing(self):
+        self.assertTrue(self.Sagent2 > self.Sagent3)
+        self.assertFalse(self.Sagent7 < self.Sagent1)
 
 suite = unittest.TestLoader().loadTestsFromTestCase(TestStructureAgent)
 unittest.TextTestRunner(verbosity=2).run(suite)

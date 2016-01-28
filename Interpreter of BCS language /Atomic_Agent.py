@@ -6,19 +6,7 @@ class Atomic_Agent:
 
     def __eq__(self, other):
         return self.name == other.name and self.states == other.states and self.compartment == other.compartment
-    '''
-    def __str__(self):
-        if len(self.states) > 1:
-            return self.name + "::" + self.compartment
-        else:
-            return self.name + "{" + list(self.states)[0] + "}::" + self.compartment
 
-    def __repr__(self):
-        if len(self.states) > 1:
-            return self.name
-        else:
-            return self.name + "{" + list(self.states)[0] + "}"
-    '''
     def __str__(self):
         return self.__repr__("::" + self.compartment)
 
@@ -31,6 +19,9 @@ class Atomic_Agent:
     def __hash__(self):
         return hash((self.name, str(self.states), self.compartment))
 
+    def __lt__(self, other):
+        return self.__repr__() < other.__repr__()
+
     def getName(self):
         return self.name
 
@@ -42,6 +33,9 @@ class Atomic_Agent:
 
     def setStates(self, states):
         self.states = set(states)
+
+    def setCompartment(self, compartment):
+        self.compartment = compartment
 
     """
     Checks if the first atomic agent is compatible with the second one

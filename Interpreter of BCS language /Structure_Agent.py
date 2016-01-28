@@ -35,12 +35,15 @@ class Structure_Agent:
 
     def __repr__(self, part = ""):
         if len(self.partial_composition) > 0:
-            return self.name + "(" + " | ".join(map(lambda k: k.__repr__(), list(self.partial_composition.elements()))) + ")" + part
+            return self.name + "(" + " | ".join(map(lambda k: k.__repr__(), sorted(list(self.partial_composition.elements())))) + ")" + part
         else:
             return self.name + part
 
     def __hash__(self):
         return hash((self.name, str(self.partial_composition), self.compartment))
+
+    def __lt__(self, other):
+        return self.__repr__() < other.__repr__()
 
     def getName(self):
         return self.name
@@ -53,6 +56,9 @@ class Structure_Agent:
 
     def setPartialComposition(self, partial_composition):
         self.partial_composition = collections.Counter(partial_composition)
+
+    def setCompartment(self, compartment):
+        self.compartment = compartment
 
     """
     Checks if the first structural agent is compatible with the second one
