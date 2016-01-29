@@ -3,6 +3,16 @@ import copy
 from Atomic_Agent import *
 
 """
+Decreases number of occurrences of element in Counter
+:param composition: Counter
+:param agent: element to be removed
+:return: Counter with decreased element value
+"""
+def extractCounterValue(composition, agent):
+    composition[agent] -= 1
+    return composition
+
+"""
 Checks if for every agent from the first list there exist unique compatible agent from the second list
 Should be usable for both kinds of compositions
 :param composition_s: list of solution composition
@@ -10,14 +20,12 @@ Should be usable for both kinds of compositions
 :return: True if the requirement is satisfied
 """
 def compareCompositions(composition_s, composition_l):
-    if not composition_s:
+    if not list(composition_s.elements()):
         return True
-    for agent_s in composition_s:
-        for agent_l in composition_l:
+    for agent_s in composition_s.elements():
+        for agent_l in composition_l.elements():
             if agent_s.isCompatibleWith(agent_l):
-                composition_s.remove(agent_s)
-                composition_l.remove(agent_l)
-                return compareCompositions(composition_s, composition_l)
+                return compareCompositions(extractCounterValue(composition_s, agent_s), extractCounterValue(composition_l, agent_l))
         return False
 
 class Structure_Agent:
@@ -59,9 +67,9 @@ class Structure_Agent:
     """
     def setPartialComposition(self, partial_composition):
         if isinstance(partial_composition, collections.Counter):
-            self.full_composition = partial_composition
+            self.partial_composition = partial_composition
         else:
-            self.full_composition = collections.Counter(partial_composition)
+            self.partial_composition = collections.Counter(partial_composition)
 
     def setCompartment(self, compartment):
         self.compartment = compartment
@@ -73,4 +81,4 @@ class Structure_Agent:
     """
     def isCompatibleWith(self, other):
         return self.__eq__(other) or ( self.name == other.name and self.compartment == other.compartment
-                and compareCompositions(copy.deepcopy(list(self.partial_composition.elements())), copy.deepcopy(list(other.partial_composition.elements()))) )
+                and compareCompositions(copy.deepcopy(self.partial_composition), copy.deepcopy(other.partial_composition)) )

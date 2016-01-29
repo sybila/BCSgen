@@ -43,4 +43,4 @@ class Complex_Agent:
 
     def isCompatibleWith(self, other):
         return self.__eq__(other) or ( self.compartment == other.compartment
-                and compareCompositions(copy.deepcopy(list(self.full_composition.elements())), copy.deepcopy(list(other.full_composition.elements()))) )
+                and compareCompositions(copy.deepcopy(self.full_composition), copy.deepcopy(other.full_composition)) )
