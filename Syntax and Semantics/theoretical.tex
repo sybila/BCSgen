@@ -5,6 +5,7 @@
 \usepackage{hyperref}
 \usepackage{amsthm}
 \newtheorem{mydef}{Definition}
+\usepackage{mathabx}
 
 \newcommand{\mysection}[1]{{\newpage\centering\Large\textbf{#1}\\}\normalsize\vspace{0.5cm}}
 \newcommand{\mysmallsection}[1]{\vspace{0.5cm}\large\textbf{#1}\normalsize\vspace{0.5cm}}
@@ -14,24 +15,21 @@
 
 \mysection{Extended BCSL syntax}
 
-With this definition, we are allowed to use `::' operator also between two complexes. For this reason, we can extend the syntax of the language as following:
+\mysmallsection{Extended structure agent definition:}
 
-\begin{center}
-{\small
-\hspace*{-1cm}\begin{tabular}{ ll ll }
- rules& $\mathtt{R} ::= \emptyset ~|~ r, \mathtt{R} $\\
- rule equation & $r ::= \Gamma ~\odot~\Gamma$\\
- direction & $\odot ::=~ \Rightarrow~|~\Leftrightarrow $\\
- rule expression & $\Gamma ::= \emptyset~|~\varrho~\epsilon::\mathtt{c}~|~ \varrho~\epsilon::\mathtt{c}~ +~\Gamma$\\
- stoichiometry & $\varrho ::= n \in \mathbb{N}^+$\\
- rule expression item & $\epsilon :: = \epsilon_1~|~\epsilon_1::\xi$\\
- rule agent & $\epsilon_1  ~::=~  \mathtt{a}~|~\mathtt{T}~|~\mathtt{X}~|~\mathtt{a}::\mathtt{T}$\\
- \textbf{nested complex} & $\xi  ~::=~  \mathtt{X}::\xi~|~\mathtt{X}$
-\end{tabular}
-}
-\end{center}
+The key construct of a structure agent is \emph{partial composition} defined as a \textbf{multiset} of atomic agents which are considered to be relevant parts of the structure agent. We allow this multiset to be empty, in that case the meaning is a biological structure for which we do not know its composition. We allow replicated agents, but stoichiometry is not considered at this level.
 
-Extended complex agent definition:
+\begin{mydef}
+Let $\mathtt{T},\mathtt{T}'$ be structure agents. We define the \emph{structural equivalence of structure agents} by claiming $\mathtt{T}\equiv\mathtt{T}'$ iff there exist $\tau,\tau',\gamma_p,\gamma'_p,\mathtt{c}$ such that $\mathtt{T}=\tau(\gamma_p)::\mathtt{c},\mathtt{T}'=\tau'(\gamma'_p)::\mathtt{c}$, $\tau=\tau'$ and $\gamma_p,\gamma'_p$ are equal (multisets).
+\end{mydef}
+
+As a representative of a class of structurally equivalent structure agents we consider the agent $\mathtt{\tau}(\gamma_p)$ where the agents in $\gamma_p$ are lexicographically ordered by names.
+
+\begin{mydef}
+Let $\mathtt{T} = \tau(\gamma_p),\mathtt{T}' = \tau(\gamma'_p)$ be structure agents. We say $\mathtt{T}$ \emph{is compatible with} $\mathtt{T}'$, written $\mathtt{T} \lhd \mathtt{T}'$, iff there exists a relation $\rho \subseteq \gamma_p \bigtimes \gamma'_p $: $\forall \alpha \in \gamma_p: (\alpha, \alpha') \in \rho$ such that $\alpha' \in \gamma'_p$ and $\alpha \lhd \alpha'$. Moreover, $\forall (\alpha, \alpha'), (\beta, \beta')~\in~\rho: \alpha~\neq~\beta~\Leftrightarrow~\alpha'~\neq~\beta' $.
+\end{mydef}
+
+\mysmallsection{Extended complex agent definition:}
 
 \begin{center}
 {\small
@@ -68,8 +66,27 @@ Let $\mathtt{X},\mathtt{X}'$ be complex agents. We define \emph{structural equiv
 \end{mydef}
 
 \begin{mydef}
-Let $\mathtt{X},\mathtt{X}'$ be complex agents. We say $\mathtt{X}$ \emph{is compatible} with $\mathtt{X}'$, written $\mathtt{X} \lhd \mathtt{X}'$, iff $\mathtt{X} \equiv \mathtt{X}'$ or iff for each $\mathtt{T} \in \mathtt{X}$ (resp. $\mathtt{a} \in \mathtt{X}$)  there exist unique $\mathtt{T}' \in \mathtt{X}'$ (resp. $\mathtt{a}' \in \mathtt{X}'$) such that $\mathtt{T} \lhd \mathtt{T}'$ (resp. $\mathtt{a} \lhd \mathtt{a}'$).
+Let $\mathtt{X} = \gamma_f, \mathtt{X}' = \gamma'_f$ be complex agents. We say $\mathtt{X}$ \emph{is compatible with} $\mathtt{X}'$, written $\mathtt{X} \lhd \mathtt{X}'$, iff there exists a relation $\rho \subseteq \gamma_f \bigtimes \gamma'_f $: $\forall \alpha \in \gamma_f: (\alpha, \alpha')~\in~\rho$ such that $\alpha' \in \gamma'_f$ and $\alpha \lhd \alpha'$. Moreover, $\forall (\alpha, \alpha'), (\beta, \beta') \in \rho: \alpha~\neq~\beta~\Leftrightarrow~\alpha'~\neq~\beta' $.
 \end{mydef}
+
+\mysmallsection{Extended grammar:}
+
+With this definition, we are allowed to use `::' operator also between two complexes. For this reason, we can extend the syntax of the language as following:
+
+\begin{center}
+{\small
+\hspace*{-1cm}\begin{tabular}{ ll ll }
+ rules& $\mathtt{R} ::= \emptyset ~|~ r, \mathtt{R} $\\
+ rule equation & $r ::= \Gamma ~\odot~\Gamma$\\
+ direction & $\odot ::=~ \Rightarrow~|~\Leftrightarrow $\\
+ rule expression & $\Gamma ::= \emptyset~|~\varrho~\epsilon::\mathtt{c}~|~ \varrho~\epsilon::\mathtt{c}~ +~\Gamma$\\
+ stoichiometry & $\varrho ::= n \in \mathbb{N}^+$\\
+ rule expression item & $\epsilon :: = \epsilon_1~|~\epsilon_1::\xi$\\
+ rule agent & $\epsilon_1  ~::=~  \mathtt{a}~|~\mathtt{T}~|~\mathtt{X}~|~\mathtt{a}::\mathtt{T}$\\
+ \textbf{nested complex} & $\xi  ~::=~  \mathtt{X}::\xi~|~\mathtt{X}$
+\end{tabular}
+}
+\end{center}
 
 \begin{mydef}
 Let $\epsilon$ be a rule expression item that appears in a rule $r\in\mathtt{R}$. The \emph{rule expression} $\epsilon$ is \emph{well-defined} iff the following constrains are satisfied:
@@ -253,10 +270,13 @@ Then, if a human-readable rule is defined, exact mapping to executable rule(s) m
 
 Let $\alpha$ be an agent and $\Gamma_s,~\Gamma_l,~\Gamma_r$ be given solution, left-hand-side and right-hand-side of a rule, respectively.
 
-\mydefinition{Let $l_1$ and $l_2$ be lists. We define difference between two lists $l~=~l_1~-~l_2$ as $[ x~|~x~\not\in~l_1~\cap~l_2 ]$.}
+\begin{mydef}
+Let $l_1$ and $l_2$ be lists. We define difference between two lists $l~=~l_1~-~l_2$ as $[ x~|~x~\not\in~l_1~\cap~l_2 ]$.
+\end{mydef}
 
-\mydefinition{
-With assumption all rules of form $\Gamma_l\Rightarrow\Gamma_r$ are well-formed, we can define \textbf{Matching} is relation $\models \subseteq \Gamma_s~\times~\Gamma_l $ defined via \textit{compatibility} operator. We denote $\Gamma_s$ \textit{matches} $\Gamma_l$ ($ \Gamma_s~\models~\Gamma_l$) iff $\forall \alpha_l \in \Gamma_l: \exists~\pmb{unique}~\alpha_s~\in~\Gamma_s: \alpha_s \lhd \alpha_l$.}
+\begin{mydef}
+With assumption all rules of form $\Gamma_l\Rightarrow\Gamma_r$ are well-formed, we can define \textbf{Matching} is relation $\models \subseteq \Gamma_s~\times~\Gamma_l $ defined via \textit{compatibility} operator. We denote $\Gamma_s$ \textit{matches} $\Gamma_l$ ($ \Gamma_s~\models~\Gamma_l$) iff $\forall \alpha_l \in \Gamma_l: \exists~\pmb{unique}~\alpha_s~\in~\Gamma_s: \alpha_s \lhd \alpha_l$.
+\end{mydef}
 
 
 \textbf{Replacement} is a function $\Gamma_s~\times~\Gamma_r~\rightarrow~\Gamma_s[\Gamma_r]$. Each of the $\Gamma$ constructs might be one of atomic agent $a$, structure agent $\mathtt{T}$, complex agent $\mathtt{X}$, a list of them or $\emptyset$ (what follows from flattening of the rules). Before replacement can be applied, matching in left column must be satisfied. Then, five match/replacement categories can be distinguished:
