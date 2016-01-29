@@ -143,6 +143,8 @@ class TestComplexAgent(unittest.TestCase):
     def test_setter(self):
         self.Xagent1.setFullComposition([self.Sagent1, self.Aagent2, self.Aagent1])
         self.assertTrue(self.Xagent1.__eq__(self.Xagent3))
+        self.Xagent2.setFullComposition(self.Xagent4.getFullComposition())
+        self.assertTrue(self.Xagent2.__eq__(self.Xagent4))
 
     def test_isCompatibleWith(self):
         self.assertTrue(self.Xagent4.isCompatibleWith(self.Xagent2))

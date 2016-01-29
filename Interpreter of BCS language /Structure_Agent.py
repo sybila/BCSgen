@@ -53,8 +53,15 @@ class Structure_Agent:
     def getCompartment(self):
         return self.compartment
 
+    """
+    Sets new partial composition
+    :param partial_composition: Counter or list
+    """
     def setPartialComposition(self, partial_composition):
-        self.partial_composition = collections.Counter(partial_composition)
+        if isinstance(partial_composition, collections.Counter):
+            self.full_composition = partial_composition
+        else:
+            self.full_composition = collections.Counter(partial_composition)
 
     def setCompartment(self, compartment):
         self.compartment = compartment

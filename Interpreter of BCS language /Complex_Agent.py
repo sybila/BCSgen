@@ -28,8 +28,15 @@ class Complex_Agent:
     def getCompartment(self):
         return self.compartment
 
+    """
+    Sets new full composition
+    :param full_composition: Counter or list
+    """
     def setFullComposition(self, full_composition):
-        self.full_composition = collections.Counter(full_composition)
+        if isinstance(full_composition, collections.Counter):
+            self.full_composition = full_composition
+        else:
+            self.full_composition = collections.Counter(full_composition)
 
     def setCompartment(self, compartment):
         self.compartment = compartment
