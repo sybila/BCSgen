@@ -2,6 +2,7 @@ import unittest
 from Atomic_Agent import *
 from Structure_Agent import *
 from Complex_Agent import *
+from Rule import *
 
 class TestAtomicAgent(unittest.TestCase):
     def setUp(self):
@@ -156,4 +157,50 @@ class TestComplexAgent(unittest.TestCase):
         self.assertFalse(self.Xagent7.isCompatibleWith(self.Xagent8))
 
 suite = unittest.TestLoader().loadTestsFromTestCase(TestComplexAgent)
+unittest.TextTestRunner(verbosity=2).run(suite)
+
+class TestRule(unittest.TestCase):
+    def setUp(self):
+        self.Aagent1 = Atomic_Agent('S', ['p'], 'cyt')
+        self.Aagent12 = Atomic_Agent('S', ['u'], 'cyt')
+        self.Aagent2 = Atomic_Agent('T', ['u'], 'cyt')
+        self.Aagent22 = Atomic_Agent('T', ['p'], 'cyt')
+        self.Aagent3 = Atomic_Agent('S', ['u', 'p'], 'cyt')
+        self.Aagent4 = Atomic_Agent('T', ['u', 'p'], 'cyt')
+        self.Sagent1 = Structure_Agent('KaiC', [self.Aagent1, self.Aagent2], 'cyt')
+        self.Sagent2 = Structure_Agent('KaiC', [self.Aagent2, self.Aagent1], 'cyt')
+        self.Xagent1 = Complex_Agent([self.Aagent1, self.Aagent2, self.Sagent1, self.Sagent2], 'cyt')
+        self.Xagent2 = Complex_Agent([self.Sagent1, self.Aagent2, self.Sagent2], 'cyt')
+        self.Rule1 = Rule([self.Aagent1, self.Aagent2, self.Sagent1, self.Sagent2], [self.Sagent1, self.Aagent2, self.Sagent2, self.Aagent1], True)
+        self.Rule2 = Rule([self.Aagent1, self.Sagent2, self.Aagent2, self.Sagent1], [self.Sagent2, self.Aagent1, self.Sagent1, self.Aagent2], True)
+        self.Rule3 = Rule([self.Aagent1, self.Sagent2, self.Aagent2, self.Sagent1], [self.Sagent2, self.Aagent1, self.Sagent1, self.Aagent2], False)
+        self.Rule5 = Rule([self.Sagent2, self.Aagent1, self.Sagent1, self.Aagent2], [self.Aagent1, self.Sagent2, self.Aagent2, self.Sagent1], False)
+        self.Rule4 = Rule([self.Sagent2, self.Aagent1, self.Sagent1, self.Aagent2], [self.Aagent1, self.Sagent2, self.Aagent2, self.Sagent1], True)
+        self.Rule6 = Rule([self.Aagent1], [self.Aagent12], True)
+        self.Rule7 = Rule([self.Sagent1], [self.Sagent2], True)
+        self.Rule8 = Rule([self.Xagent1], [self.Xagent2], False)
+        self.Rule9 = Rule([self.Xagent2], [self.Xagent1], False)
+
+    def test_equal(self):
+        self.assertTrue(self.Rule1.__eq__(self.Rule1))
+        self.assertTrue(self.Rule1.__eq__(self.Rule2))
+        self.assertTrue(self.Rule1.__eq__(self.Rule4))
+        self.assertFalse(self.Rule1.__eq__(self.Rule3))
+        self.assertFalse(self.Rule1.__eq__(self.Rule3))
+        self.assertFalse(self.Rule3.__eq__(self.Rule5))
+        self.assertFalse(self.Rule6.__eq__(self.Rule7))
+        self.assertFalse(self.Rule8.__eq__(self.Rule9))
+
+    def test_print(self):
+        self.assertEqual(self.Rule1.__str__(), self.Rule1.__str__())
+        self.assertEqual(self.Rule6.__str__(), "S{p}::cyt <=> S{u}::cyt")
+        self.assertEqual(self.Rule1.__str__(), self.Rule2.__str__())
+        self.assertNotEqual(self.Rule8.__str__(), self.Rule9.__str__())
+
+    def test_hash(self):
+        self.assertEqual(hash(self.Rule1), hash(self.Rule2))
+        self.assertNotEqual(hash(self.Rule8), hash(self.Rule9))
+        self.assertNotEqual(hash(self.Rule3), hash(self.Rule2))
+
+suite = unittest.TestLoader().loadTestsFromTestCase(TestRule)
 unittest.TextTestRunner(verbosity=2).run(suite)
