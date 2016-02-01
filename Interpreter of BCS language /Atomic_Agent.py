@@ -13,6 +13,7 @@ class Atomic_Agent:
     def __repr__(self, part = ""):
         if len(self.states) > 1:
             return self.name + part
+            #return "" #different output
         else:
             return self.name + "{" + list(self.states)[0] + "}" + part
 

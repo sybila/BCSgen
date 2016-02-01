@@ -169,6 +169,17 @@ class TestRule(unittest.TestCase):
         self.Aagent4 = Atomic_Agent('T', ['u', 'p'], 'cyt')
         self.Sagent1 = Structure_Agent('KaiC', [self.Aagent1, self.Aagent2], 'cyt')
         self.Sagent2 = Structure_Agent('KaiC', [self.Aagent2, self.Aagent1], 'cyt')
+        self.Sagent4 = Structure_Agent('KaiC', [self.Aagent22, self.Aagent1], 'cyt')
+        self.Sagent3 = Structure_Agent('KaiC', [self.Aagent2, self.Aagent1, self.Aagent3], 'cyt')
+        self.Sagent5 = Structure_Agent('KaiC', [self.Aagent4, self.Aagent1], 'cyt')
+        self.SagentBig1 = Structure_Agent('KaiC', [self.Aagent12, self.Aagent1, self.Aagent2, self.Aagent2, self.Aagent22], 'cyt')
+        self.SagentBig12 = Structure_Agent('KaiC', [self.Aagent12, self.Aagent1, self.Aagent1, self.Aagent1, self.Aagent1], 'cyt')
+        self.SagentBig21 = Structure_Agent('KaiC', [self.Aagent12, self.Aagent4, self.Aagent4, self.Aagent4, self.Aagent3], 'cyt')
+        self.SagentBig22 = Structure_Agent('KaiC', [self.Aagent3, self.Aagent3, self.Aagent1, self.Aagent12, self.Aagent3], 'cyt')
+        self.SagentBig32 = Structure_Agent('KaiC', [self.Aagent3, self.Aagent3, self.Aagent12, self.Aagent12, self.Aagent3], 'cyt')
+        self.XagentBig1 = Complex_Agent([self.SagentBig1, self.SagentBig12], 'cyt')
+        self.XagentBig2 = Complex_Agent([self.SagentBig21, self.SagentBig22], 'cyt')
+        self.XagentBig3 = Complex_Agent([self.SagentBig21, self.SagentBig32], 'cyt')
         self.Xagent1 = Complex_Agent([self.Aagent1, self.Aagent2, self.Sagent1, self.Sagent2], 'cyt')
         self.Xagent2 = Complex_Agent([self.Sagent1, self.Aagent2, self.Sagent2], 'cyt')
         self.Rule1 = Rule([self.Aagent1, self.Aagent2, self.Sagent1, self.Sagent2], [self.Sagent1, self.Aagent2, self.Sagent2, self.Aagent1], True)
@@ -180,6 +191,12 @@ class TestRule(unittest.TestCase):
         self.Rule7 = Rule([self.Sagent1], [self.Sagent2], True)
         self.Rule8 = Rule([self.Xagent1], [self.Xagent2], False)
         self.Rule9 = Rule([self.Xagent2], [self.Xagent1], False)
+        self.Rule10 = Rule([self.Aagent12], [self.Aagent1], False)
+        self.Rule11 = Rule([self.Sagent3], [self.Sagent4], False)
+        self.Rule12 = Rule([self.Sagent4], [self.Sagent3], True)
+        self.Rule13 = Rule([self.Aagent3, self.Aagent2, self.Sagent1, self.Sagent5], [self.Sagent1, self.Aagent2, self.Sagent2, self.Aagent1])
+        self.Rule14 = Rule([self.XagentBig2], [self.XagentBig2])  #NO CHANGE RULE !
+        self.Rule15 = Rule([self.XagentBig3], [self.XagentBig3])  #NO CHANGE RULE !
 
     def test_equal(self):
         self.assertTrue(self.Rule1.__eq__(self.Rule1))
@@ -201,6 +218,20 @@ class TestRule(unittest.TestCase):
         self.assertEqual(hash(self.Rule1), hash(self.Rule2))
         self.assertNotEqual(hash(self.Rule8), hash(self.Rule9))
         self.assertNotEqual(hash(self.Rule3), hash(self.Rule2))
+
+    def test_match(self):
+        solution1 = collections.Counter([self.Aagent1])
+        solution2 = collections.Counter([self.Sagent2])
+        solution3 = collections.Counter([self.Aagent1, self.Aagent2, self.Sagent1, self.Sagent2])
+        solution4 = collections.Counter([self.XagentBig1])
+        self.assertTrue(self.Rule6.match(solution1))
+        self.assertFalse(self.Rule6.match(solution2))
+        self.assertFalse(self.Rule10.match(solution1))
+        self.assertTrue(self.Rule11.match(solution2))
+        self.assertTrue(self.Rule12.match(solution2))
+        self.assertTrue(self.Rule13.match(solution3))
+        self.assertTrue(self.Rule14.match(solution4))
+        self.assertFalse(self.Rule15.match(solution4))
 
 suite = unittest.TestLoader().loadTestsFromTestCase(TestRule)
 unittest.TextTestRunner(verbosity=2).run(suite)

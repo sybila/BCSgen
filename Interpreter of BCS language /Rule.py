@@ -1,19 +1,11 @@
 import collections
 import copy
+from Complex_Agent import *
 
 direction = " => "
 
-def substitute(substitutions, set_of_rules):
-    #tba
-    return
-
-#first choose equal ones, then compatible ones !!!
-def flatten(rule):
-    #tba
-    return
-
 class Rule:
-    def __init__(self, left_hand_side, right_hand_side, reversible):
+    def __init__(self, left_hand_side, right_hand_side, reversible = False):
         self.left_hand_side = collections.Counter(left_hand_side)
         self.right_hand_side = collections.Counter(right_hand_side)
         self.reversible = reversible
@@ -52,4 +44,10 @@ class Rule:
 
     def getReversible(self):
         return  self.reversible
+
+    def match(self, solution):
+        if self.reversible:
+            return compareCounters(copy.deepcopy(solution), self.getLeftHandSide()) or compareCounters(copy.deepcopy(solution), self.getRightHandSide())
+        else:
+            return compareCounters(copy.deepcopy(solution), self.getLeftHandSide())
 

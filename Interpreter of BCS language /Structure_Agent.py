@@ -19,13 +19,13 @@ Should be usable for both kinds of compositions
 :param composition_l: list of left-hand-side composition
 :return: True if the requirement is satisfied
 """
-def compareCompositions(composition_s, composition_l):
+def compareCounters(composition_s, composition_l):
     if not list(composition_s.elements()):
         return True
     for agent_s in composition_s.elements():
         for agent_l in composition_l.elements():
             if agent_s.isCompatibleWith(agent_l):
-                return compareCompositions(extractCounterValue(composition_s, agent_s), extractCounterValue(composition_l, agent_l))
+                return compareCounters(extractCounterValue(composition_s, agent_s), extractCounterValue(composition_l, agent_l))
         return False
 
 class Structure_Agent:
@@ -43,6 +43,7 @@ class Structure_Agent:
     def __repr__(self, part = ""):
         if len(self.partial_composition) > 0:
             return self.name + "(" + "|".join(map(lambda k: k.__repr__(), sorted(list(self.partial_composition.elements())))) + ")" + part
+            #return self.name + "(" + "|".join(filter(None, map(lambda k: k.__repr__(), sorted(list(self.partial_composition.elements()))))) + ")" + part
         else:
             return self.name + part
 
@@ -81,4 +82,4 @@ class Structure_Agent:
     """
     def isCompatibleWith(self, other):
         return self.__eq__(other) or ( self.name == other.name and self.compartment == other.compartment
-                and compareCompositions(copy.deepcopy(self.partial_composition), copy.deepcopy(other.partial_composition)) )
+                and compareCounters(copy.deepcopy(self.partial_composition), copy.deepcopy(other.partial_composition)) )
