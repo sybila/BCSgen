@@ -182,6 +182,15 @@ class TestRule(unittest.TestCase):
         self.Sagent12 = Structure_Agent('KaiC', [self.Aagent1, self.Aagent1, self.Aagent2], 'cyt')
         self.Sagent13 = Structure_Agent('KaiC', [self.Aagent12, self.Aagent12, self.Aagent3, self.Aagent4], 'cyt')
         self.Sagent14 = Structure_Agent('KaiC', [self.Aagent1, self.Aagent1, self.Aagent2, self.Aagent12], 'cyt')
+        self.Sagent15 = Structure_Agent('KaiC', [self.Aagent12], 'cyt')
+        self.Sagent16 = Structure_Agent('KaiC', [self.Aagent22], 'cyt')
+        self.Sagent17 = Structure_Agent('KaiC', [self.Aagent1], 'cyt')
+        self.Sagent18 = Structure_Agent('KaiC', [self.Aagent2], 'cyt')
+        self.Sagent20 = Structure_Agent('KaiC', [self.Aagent12, self.Aagent2], 'cyt')
+        self.Sagent21 = Structure_Agent('KaiC', [self.Aagent12], 'cyt')
+        self.Sagent22 = Structure_Agent('KaiC', [self.Aagent1], 'cyt')
+        self.Sagent23 = Structure_Agent('KaiC', [self.Aagent12, self.Aagent12, self.Aagent12, self.Aagent12], 'cyt')
+        self.Sagent24 = Structure_Agent('KaiC', [self.Aagent1, self.Aagent12, self.Aagent12, self.Aagent12], 'cyt')
         self.SagentBig1 = Structure_Agent('KaiC', [self.Aagent12, self.Aagent1, self.Aagent2, self.Aagent2, self.Aagent22], 'cyt')
         self.SagentBig12 = Structure_Agent('KaiC', [self.Aagent12, self.Aagent1, self.Aagent1, self.Aagent1, self.Aagent1], 'cyt')
         self.SagentBig21 = Structure_Agent('KaiC', [self.Aagent12, self.Aagent4, self.Aagent4, self.Aagent4, self.Aagent3], 'cyt')
@@ -190,11 +199,18 @@ class TestRule(unittest.TestCase):
         self.XagentBig1 = Complex_Agent([self.SagentBig1, self.SagentBig12], 'cyt')
         self.XagentBig2 = Complex_Agent([self.SagentBig21, self.SagentBig22], 'cyt')
         self.XagentBig3 = Complex_Agent([self.SagentBig21, self.SagentBig32], 'cyt')
-        self.Xagent1 = Complex_Agent([self.Aagent1, self.Aagent2, self.Sagent1, self.Sagent2], 'cyt')
+        self.Xagent1 = Complex_Agent([self.Aagent1, self.Aagent2, copy.deepcopy(self.Sagent1), copy.deepcopy(self.Sagent1)], 'cyt')
         self.Xagent2 = Complex_Agent([self.Sagent1, self.Aagent2, self.Sagent2], 'cyt')
         self.Xagent3 = Complex_Agent([self.Aagent3, self.Aagent4], 'cyt')
         self.Xagent4 = Complex_Agent([self.Aagent1, self.Aagent2], 'cyt')
         self.Xagent5 = Complex_Agent([self.Sagent1, self.Aagent2, self.Sagent2, self.Sagent1], 'cyt')
+        self.Xagent6 = Complex_Agent([self.Aagent1, self.Aagent2, self.Sagent17, self.Sagent18], 'cyt')
+        self.Xagent7 = Complex_Agent([self.Aagent1, self.Aagent22, self.Sagent15, self.Sagent16], 'cyt')
+        self.Xagent8 = Complex_Agent([self.Aagent1, self.Aagent22, self.Sagent20, self.Sagent4], 'cyt')
+        self.Xagent9 = Complex_Agent([self.Sagent8, self.Sagent8, self.Sagent8, self.Sagent8, self.Sagent8, self.Sagent8], 'cyt')
+        self.Xagent10 = Complex_Agent([self.Sagent8, self.Sagent6, self.Sagent6, self.Sagent6, self.Sagent6, self.Sagent6], 'cyt')
+        self.Xagent11 = Complex_Agent([self.Sagent4, self.Sagent6, self.Sagent6, self.Sagent6, self.Sagent6, self.Sagent6], 'cyt')
+        self.Xagent12 = Complex_Agent([self.Sagent4, self.Sagent8, self.Sagent8, self.Sagent8, self.Sagent8, self.Sagent8], 'cyt')
         self.Rule1 = Rule([self.Aagent1, self.Aagent2, self.Sagent1, self.Sagent2], [self.Sagent1, self.Aagent2, self.Sagent2, self.Aagent1])
         self.Rule2 = Rule([self.Aagent1, self.Sagent2, self.Aagent2, self.Sagent1], [self.Sagent2, self.Aagent1, self.Sagent1, self.Aagent2])
         self.Rule3 = Rule([self.Aagent1, self.Sagent2, self.Aagent2, self.Sagent1], [self.Sagent2, self.Aagent1, self.Sagent1, self.Aagent2])
@@ -262,12 +278,12 @@ class TestRule(unittest.TestCase):
     def test_translate(self):
         solution_old = collections.Counter([])
         solution_new = collections.Counter([self.Aagent1, self.Aagent2])
-        self.assertEqual(self.Rule19.translate(solution_old), solution_new)
+        self.assertEqual(self.Rule19.translate(), solution_new)
 
     def test_degrade(self):
         solution_old = collections.Counter([])
         solution_new = collections.Counter([self.Aagent1, self.Aagent2])
-        self.assertEqual(self.Rule20.translate(solution_new), solution_old)
+        self.assertEqual(self.Rule20.degrade(solution_new), solution_old)
 
     def test_getPart(self):
         agent = collections.Counter([self.Aagent1, self.Aagent2, self.Aagent22, self.Aagent2])
@@ -276,14 +292,19 @@ class TestRule(unittest.TestCase):
         self.assertEqual(getPart(agent, difference), result)
 
     def test_changeAtomicStates(self):
-        self.assertEqual(changeAtomicStates(self.Aagent1, self.Aagent12), collections.Counter([self.Aagent12]))
-        self.assertEqual(changeAtomicStates(self.Aagent3, self.Aagent1), collections.Counter([self.Aagent1]))
+        self.assertEqual(changeAtomicStates(self.Aagent1, self.Aagent12), collections.Counter([self.Aagent1]))
+        self.assertEqual(changeAtomicStates(self.Aagent3, self.Aagent1), collections.Counter([self.Aagent3]))
+        self.assertFalse(list(changeAtomicStates(self.Aagent3, self.Aagent1).elements())[0] is self.Aagent3)
 
     def test_changeStructureStates(self):
-       # print self.Sagent7, " : " ,Rule([self.Sagent3], [self.Sagent31]), " -> ", self.Sagent8
         self.assertEqual(changeStructureStates(self.Sagent3, self.Sagent31, self.Sagent7), collections.Counter([self.Sagent8]))
         self.assertEqual(changeStructureStates(self.Sagent9, self.Sagent9, self.Sagent10), collections.Counter([self.Sagent10])) #no change
         self.assertEqual(changeStructureStates(self.Sagent11, self.Sagent12, self.Sagent13), collections.Counter([self.Sagent14]))
+        self.assertEqual(changeStructureStates(self.Sagent21, self.Sagent22, self.Sagent23), collections.Counter([self.Sagent24]))
+
+    def test_changeComplexStates(self):
+        self.assertEqual(changeComplexStates(self.Xagent6, self.Xagent7, self.Xagent1), collections.Counter([self.Xagent8]))
+        self.assertEqual(changeComplexStates(self.Xagent10, self.Xagent11, self.Xagent9), collections.Counter([self.Xagent12]))
 
 suite = unittest.TestLoader().loadTestsFromTestCase(TestRule)
 unittest.TextTestRunner(verbosity=2).run(suite)

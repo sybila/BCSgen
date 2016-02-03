@@ -26,7 +26,8 @@ Changes state of an atomic agent according to another one
 :param atomic_agent: Atomic agent from given solution
 :return: Counter of atomic agent from given solution with state(s) of second agent
 """
-def changeAtomicStates(rhs, atomic_agent):
+def changeAtomicStates(rhs, atomic_agent_original):
+    atomic_agent = copy.deepcopy(atomic_agent_original)
     atomic_agent.setStates(rhs.getStates())
     return collections.Counter([atomic_agent])
 
@@ -40,7 +41,8 @@ where each atomic agent has pair in the difference (equal names).
 :param structure_agent: Structure agent from given solution
 :return: Counter of structure agent from given solution with changed atomic agents
 """
-def changeStructureStates(lhs, rhs, structure_agent):
+def changeStructureStates(lhs, rhs, structure_agent_original):
+    structure_agent = copy.deepcopy(structure_agent_original)
     difference = rhs.getPartialComposition() - (rhs.getPartialComposition() & lhs.getPartialComposition())
     structure_agent_part = getPart(copy.deepcopy(structure_agent.getPartialComposition()), copy.deepcopy(difference))
     structure_agent_rest = structure_agent.getPartialComposition() - structure_agent_part
@@ -58,17 +60,18 @@ call structure agent or atomic agent state change.
 :param complex_agent: Complex agent from given solution
 :return: Counter of complex agent from given solution with changed composition agents
 """
-def changeComplexStates(lhs, rhs, complex_agent):
-    difference_r = rhs - (rhs & lhs)
-    difference_l = lhs - (rhs & lhs)
+def changeComplexStates(lhs, rhs, complex_agent_original):
+    complex_agent = copy.deepcopy(complex_agent_original)
+    difference_r = rhs.getFullComposition() - (rhs.getFullComposition() & lhs.getFullComposition())
+    difference_l = lhs.getFullComposition() - (rhs.getFullComposition() & lhs.getFullComposition())
     complex_agent_part = getPart(copy.deepcopy(complex_agent.getFullComposition()), copy.deepcopy(difference_r))
     complex_agent_rest = complex_agent.getFullComposition() - complex_agent_part
-    for a_r, a_l, a_s in zip(sorted(list(difference_r), sorted(list(difference_l)), sorted(list(complex_agent_part)))):
+    for a_r, a_l, a_s in zip(sorted(list(difference_r.elements())), sorted(list(difference_l.elements())), sorted(list(complex_agent_part.elements()))):
         if isinstance(a_r, Atomic_Agent):
             complex_agent_rest += changeAtomicStates(a_r, a_s)
         else:
-            complex_agent_rest += changeStructureStates(a_r, a_l, a_s)
-    complex_agent.setPartialComposition(complex_agent_rest)
+            complex_agent_rest += changeStructureStates(a_l, a_r, a_s)
+    complex_agent.setFullComposition(complex_agent_rest)
     return collections.Counter([complex_agent])
 
 class Rule:
