@@ -171,8 +171,13 @@ class TestRule(unittest.TestCase):
         self.Sagent2 = Structure_Agent('KaiC', [self.Aagent2, self.Aagent1], 'cyt')
         self.Sagent4 = Structure_Agent('KaiC', [self.Aagent22, self.Aagent1], 'cyt')
         self.Sagent3 = Structure_Agent('KaiC', [self.Aagent2, self.Aagent1, self.Aagent3], 'cyt')
+        self.Sagent31 = Structure_Agent('KaiC', [self.Aagent22, self.Aagent12, self.Aagent3], 'cyt')
         self.Sagent5 = Structure_Agent('KaiC', [self.Aagent4, self.Aagent1], 'cyt')
         self.Sagent6 = Structure_Agent('KaiC', [self.Aagent3, self.Aagent4], 'cyt')
+        self.Sagent7 = Structure_Agent('KaiC', [self.Aagent3, self.Aagent2], 'cyt')
+        self.Sagent8 = Structure_Agent('KaiC', [self.Aagent12, self.Aagent22], 'cyt')
+        self.Sagent9 = Structure_Agent('KaiC', [self.Aagent12, self.Aagent1], 'cyt')
+        self.Sagent10 = Structure_Agent('KaiC', [self.Aagent12, self.Aagent1, self.Aagent4, self.Aagent12], 'cyt')
         self.SagentBig1 = Structure_Agent('KaiC', [self.Aagent12, self.Aagent1, self.Aagent2, self.Aagent2, self.Aagent22], 'cyt')
         self.SagentBig12 = Structure_Agent('KaiC', [self.Aagent12, self.Aagent1, self.Aagent1, self.Aagent1, self.Aagent1], 'cyt')
         self.SagentBig21 = Structure_Agent('KaiC', [self.Aagent12, self.Aagent4, self.Aagent4, self.Aagent4, self.Aagent3], 'cyt')
@@ -259,6 +264,21 @@ class TestRule(unittest.TestCase):
         solution_old = collections.Counter([])
         solution_new = collections.Counter([self.Aagent1, self.Aagent2])
         self.assertEqual(self.Rule20.translate(solution_new), solution_old)
+
+    def test_getPart(self):
+        agent = collections.Counter([self.Aagent1, self.Aagent2, self.Aagent22, self.Aagent2])
+        difference = collections.Counter([self.Aagent3, self.Aagent22])
+        result = collections.Counter([self.Aagent1, self.Aagent22])
+        self.assertEqual(getPart(agent, difference), result)
+
+    def test_changeAtomicStates(self):
+        self.assertEqual(changeAtomicStates(self.Aagent1, self.Aagent12), collections.Counter([self.Aagent12]))
+        self.assertEqual(changeAtomicStates(self.Aagent3, self.Aagent1), collections.Counter([self.Aagent1]))
+
+    def test_changeStructureStates(self):
+       # print self.Sagent7, " : " ,Rule([self.Sagent3], [self.Sagent31]), " -> ", self.Sagent8
+        self.assertEqual(changeStructureStates(self.Sagent3, self.Sagent31, self.Sagent7), collections.Counter([self.Sagent8]))
+        self.assertEqual(changeStructureStates(self.Sagent9, self.Sagent9, self.Sagent10), collections.Counter([self.Sagent10])) #no change
 
 suite = unittest.TestLoader().loadTestsFromTestCase(TestRule)
 unittest.TextTestRunner(verbosity=2).run(suite)
