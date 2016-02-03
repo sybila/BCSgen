@@ -8,6 +8,8 @@ direction = " => "
 Finds part of agent's composition
 :param agent: Structure or Complex agent composition (Counter)
 :param difference: lhs and rhs difference (Counter)
+:param part: part of agent's composition where each agent has pair in the difference (equal names)
+:return: part
 """
 def getPart(agent, difference, part = []):
     if not list(difference.elements()):
@@ -29,26 +31,32 @@ def changeAtomicStates(rhs, atomic_agent):
     return collections.Counter([atomic_agent])
 
 """
-Changes state of an structure agent according to another one
+Changes state of a structure agent according to another one
+It has to create "difference" as rhs - (rhs & lhs) (in set meaning)
+and "structure_agent_part" what is part of structure_agent composition
+where each atomic agent has pair in the difference (equal names).
 :param rhs: Structure agent from right-hand-side of a rule
 :param lhs: Structure agent from left-hand-side of a rule
 :param structure_agent: Structure agent from given solution
-:return: Counter of atomic agent from given solution with state(s) of second agent
+:return: Counter of structure agent from given solution with changed atomic agents
 """
 def changeStructureStates(lhs, rhs, structure_agent):
     difference = rhs.getPartialComposition() - (rhs.getPartialComposition() & lhs.getPartialComposition())
     structure_agent_part = getPart(copy.deepcopy(structure_agent.getPartialComposition()), copy.deepcopy(difference))
     structure_agent_rest = structure_agent.getPartialComposition() - structure_agent_part
-    for a_r, a_s in zip(sorted(list(difference)), sorted(list(structure_agent_part))):
+    for a_r, a_s in zip(sorted(list(difference.elements())), sorted(list(structure_agent_part.elements()))):
         structure_agent_rest += changeAtomicStates(a_r, a_s)
     structure_agent.setPartialComposition(structure_agent_rest)
     return collections.Counter([structure_agent])
 
 """
-
-:param rhs:
-:param atomic_agent:
-:return:
+Changes state of a complex agent according to another one
+It takes triples from difference_r, difference_l, complex_agent_part and
+call structure agent or atomic agent state change.
+:param lhs: Complex agent from left-hand-side of the rule
+:param rhs: Complex agent from right-hand-side of the rule
+:param complex_agent: Complex agent from given solution
+:return: Counter of complex agent from given solution with changed composition agents
 """
 def changeComplexStates(lhs, rhs, complex_agent):
     difference_r = rhs - (rhs & lhs)
@@ -118,15 +126,13 @@ class Rule:
                     return self.formComplex(solution)
             else:
                 if left_size == 0:
-                    return self.translate(solution)
+                    return self.translate()
                 else:
                     return self.dissociateComplex(solution)
 
     """
-
-    :param rhs:
-    :param atomic_agent:
-    :return:
+    Changes states according to type of the agent in solution
+    :param solution: given Counter containing one agent
     """
     def changeStates(self, solution):
         lhs = list(self.getLeftHandSide().elements())[0]
@@ -138,29 +144,27 @@ class Rule:
             return changeStructureStates(lhs, rhs, solution)
         else:
             return changeComplexStates(lhs, rhs, solution)
-    """
 
-    :param rhs:
-    :param atomic_agent:
-    :return:
+    """
+    Degrades given solution of agents
+    :param solution: Counter of agents
+    :return: empty Counter
     """
     def degrade(self, solution):
         return collections.Counter([])
 
     """
-
-    :param rhs:
-    :param atomic_agent:
-    :return:
+    Translates new solution according to the right-hand-side ofthe rule
+    :return: new solution
     """
-    def translate(self, solution):
+    def translate(self):
         return self.getRightHandSide()
 
     """
-
-    :param rhs:
-    :param atomic_agent:
-    :return:
+    Creates complex from given solution
+    If there are another complex agents, their composition has to be extracted first
+    :param solution: Counter of agents
+    :return: Counter of new complex agent
     """
     def formComplex(self, solution):
         new_solution = collections.Counter([])
@@ -173,9 +177,8 @@ class Rule:
         return collections.Counter([Complex_Agent(list(new_solution.elements()), compartment)])
 
     """
-
-    :param rhs:
-    :param atomic_agent:
+    Dissociates complex agent to new agents (might be complexes)
+    :param solution:
     :return:
     """
     def dissociateComplex(self, solution):

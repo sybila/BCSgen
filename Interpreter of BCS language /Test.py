@@ -178,6 +178,10 @@ class TestRule(unittest.TestCase):
         self.Sagent8 = Structure_Agent('KaiC', [self.Aagent12, self.Aagent22], 'cyt')
         self.Sagent9 = Structure_Agent('KaiC', [self.Aagent12, self.Aagent1], 'cyt')
         self.Sagent10 = Structure_Agent('KaiC', [self.Aagent12, self.Aagent1, self.Aagent4, self.Aagent12], 'cyt')
+        self.Sagent11 = Structure_Agent('KaiC', [self.Aagent12, self.Aagent12, self.Aagent22], 'cyt')
+        self.Sagent12 = Structure_Agent('KaiC', [self.Aagent1, self.Aagent1, self.Aagent2], 'cyt')
+        self.Sagent13 = Structure_Agent('KaiC', [self.Aagent12, self.Aagent12, self.Aagent3, self.Aagent4], 'cyt')
+        self.Sagent14 = Structure_Agent('KaiC', [self.Aagent1, self.Aagent1, self.Aagent2, self.Aagent12], 'cyt')
         self.SagentBig1 = Structure_Agent('KaiC', [self.Aagent12, self.Aagent1, self.Aagent2, self.Aagent2, self.Aagent22], 'cyt')
         self.SagentBig12 = Structure_Agent('KaiC', [self.Aagent12, self.Aagent1, self.Aagent1, self.Aagent1, self.Aagent1], 'cyt')
         self.SagentBig21 = Structure_Agent('KaiC', [self.Aagent12, self.Aagent4, self.Aagent4, self.Aagent4, self.Aagent3], 'cyt')
@@ -279,6 +283,7 @@ class TestRule(unittest.TestCase):
        # print self.Sagent7, " : " ,Rule([self.Sagent3], [self.Sagent31]), " -> ", self.Sagent8
         self.assertEqual(changeStructureStates(self.Sagent3, self.Sagent31, self.Sagent7), collections.Counter([self.Sagent8]))
         self.assertEqual(changeStructureStates(self.Sagent9, self.Sagent9, self.Sagent10), collections.Counter([self.Sagent10])) #no change
+        self.assertEqual(changeStructureStates(self.Sagent11, self.Sagent12, self.Sagent13), collections.Counter([self.Sagent14]))
 
 suite = unittest.TestLoader().loadTestsFromTestCase(TestRule)
 unittest.TextTestRunner(verbosity=2).run(suite)
