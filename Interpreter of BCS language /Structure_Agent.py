@@ -19,18 +19,13 @@ Should be usable for both kinds of compositions
 :param composition_l: list of left-hand-side composition
 :return: True if the requirement is satisfied
 """
-def compareCounters(composition_s, composition_l):
-    if not list(composition_s.elements()):
+def comparePartialCompositions(composition_s, composition_l):
+    if not list(composition_l.elements()):
         return True
-    print 'new'
-    print list(composition_s.elements())
-    print list(composition_l.elements())
-    print 'start'
-    for agent_s in list(composition_s.elements()):
-        for agent_l in list(composition_l.elements()):
-            print agent_l, '\lhd', agent_s
+    for agent_l in list(composition_l.elements()):
+        for agent_s in list(composition_s.elements()):
             if agent_s.isCompatibleWith(agent_l):
-                return compareCounters(extractCounterValue(composition_s, agent_s), extractCounterValue(composition_l, agent_l))
+                return comparePartialCompositions(extractCounterValue(composition_s, agent_s), extractCounterValue(composition_l, agent_l))
         return False
 
 class Structure_Agent:
@@ -87,4 +82,4 @@ class Structure_Agent:
     """
     def isCompatibleWith(self, other):
         return self.__eq__(other) or ( self.name == other.name and self.compartment == other.compartment
-                and compareCounters(copy.deepcopy(self.partial_composition), copy.deepcopy(other.partial_composition)) )
+                and comparePartialCompositions(copy.deepcopy(self.partial_composition), copy.deepcopy(other.partial_composition)) )

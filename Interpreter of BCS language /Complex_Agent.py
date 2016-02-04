@@ -2,6 +2,16 @@ import collections
 import copy
 from Structure_Agent import *
 
+def compareFullCompositions(composition_s, composition_l):
+    if not list(composition_s.elements()) and not list(composition_l.elements()):
+        return True
+    for agent_s in list(composition_s.elements()):
+        for agent_l in list(composition_l.elements()):
+            if agent_s.isCompatibleWith(agent_l):
+                return compareFullCompositions(extractCounterValue(composition_s, agent_s), extractCounterValue(composition_l, agent_l))
+        return False
+    return False
+
 class Complex_Agent:
     def __init__(self, full_composition, compartment):
         self.full_composition = collections.Counter(full_composition)
@@ -43,4 +53,4 @@ class Complex_Agent:
 
     def isCompatibleWith(self, other):
         return self.__eq__(other) or ( self.compartment == other.compartment
-                and compareCounters(copy.deepcopy(self.full_composition), copy.deepcopy(other.full_composition)) )
+                and compareFullCompositions(copy.deepcopy(self.full_composition), copy.deepcopy(other.full_composition)) )

@@ -82,16 +82,16 @@ class TestStructureAgent(unittest.TestCase):
         self.assertNotEqual(hash(self.Sagent2), hash(self.Sagent3))
 
     def test_isCompatibleWith(self):
-        self.assertTrue(self.Sagent4.isCompatibleWith(self.Sagent2))
+        self.assertTrue(self.Sagent2.isCompatibleWith(self.Sagent4))
         self.assertTrue(self.Sagent5.isCompatibleWith(self.Sagent6))
         self.assertFalse(self.Sagent6.isCompatibleWith(self.Sagent5))
         self.assertTrue(self.Sagent1.isCompatibleWith(self.Sagent6))
         self.assertFalse(self.Sagent6.isCompatibleWith(self.Sagent1))
         self.assertTrue(self.Sagent1.isCompatibleWith(self.Sagent2))
         self.assertTrue(self.Sagent3.isCompatibleWith(self.Sagent3))
-        self.assertTrue(self.Sagent3.isCompatibleWith(self.Sagent5))
-        self.assertFalse(self.Sagent5.isCompatibleWith(self.Sagent3))
-        self.assertTrue(self.Sagent9.isCompatibleWith(self.Sagent8))
+        self.assertFalse(self.Sagent3.isCompatibleWith(self.Sagent5))
+        self.assertTrue(self.Sagent5.isCompatibleWith(self.Sagent3))
+        self.assertTrue(self.Sagent8.isCompatibleWith(self.Sagent9))
 
     def test_setter(self):
         self.Sagent1.setPartialComposition([self.Aagent1, self.Aagent4])
@@ -121,9 +121,9 @@ class TestComplexAgent(unittest.TestCase):
         self.Sagent7 = Structure_Agent('KaiC', [self.Aagent3, self.Aagent2], 'cyt')
         self.Xagent1 = Complex_Agent([self.Aagent1, self.Aagent2, self.Sagent1, self.Sagent2], 'cyt')
         self.Xagent2 = Complex_Agent([self.Sagent1, self.Aagent2, self.Sagent2, self.Aagent1], 'cyt')
-        self.Xagent3 = Complex_Agent([self.Sagent1, self.Aagent2, self.Aagent1], 'cyt')
+        self.Xagent3 = Complex_Agent([self.Sagent1, self.Aagent3], 'cyt')
         self.Xagent4 = Complex_Agent([self.Sagent1, self.Aagent1], 'cyt')
-        self.Xagent5 = Complex_Agent([self.Sagent3, self.Sagent4], 'cyt')
+        self.Xagent5 = Complex_Agent([self.Sagent3, self.Sagent4, self.Sagent6], 'cyt')
         self.Xagent6 = Complex_Agent([self.Sagent4, self.Sagent5, self.Sagent6], 'cyt')
         self.Xagent7 = Complex_Agent([self.Aagent1, self.Aagent4, self.Sagent7], 'cyt')
         self.Xagent8 = Complex_Agent([self.Aagent12, self.Aagent4, self.Sagent4], 'cyt')
@@ -152,20 +152,20 @@ class TestComplexAgent(unittest.TestCase):
         self.assertTrue(self.Xagent4 > self.Xagent1)
 
     def test_setter(self):
-        self.Xagent1.setFullComposition([self.Sagent1, self.Aagent2, self.Aagent1])
+        self.Xagent1.setFullComposition([self.Sagent1, self.Aagent3])
         self.assertTrue(self.Xagent1.__eq__(self.Xagent3))
         self.Xagent2.setFullComposition(self.Xagent4.getFullComposition())
         self.assertTrue(self.Xagent2.__eq__(self.Xagent4))
 
     def test_isCompatibleWith(self):
-        self.assertTrue(self.Xagent4.isCompatibleWith(self.Xagent2))
+        self.assertFalse(self.Xagent4.isCompatibleWith(self.Xagent2))
         self.assertFalse(self.Xagent2.isCompatibleWith(self.Xagent4))
         self.assertTrue(self.Xagent2.isCompatibleWith(self.Xagent1))
         self.assertTrue(self.Xagent4.isCompatibleWith(self.Xagent3))
         self.assertTrue(self.Xagent5.isCompatibleWith(self.Xagent6))
         self.assertFalse(self.Xagent6.isCompatibleWith(self.Xagent5))
         self.assertFalse(self.Xagent7.isCompatibleWith(self.Xagent8))
-        self.assertTrue(self.Xagent10.isCompatibleWith(self.Xagent9))
+        self.assertTrue(self.Xagent9.isCompatibleWith(self.Xagent10))
 
 suite = unittest.TestLoader().loadTestsFromTestCase(TestComplexAgent)
 unittest.TextTestRunner(verbosity=2).run(suite)
@@ -243,7 +243,7 @@ class TestRule(unittest.TestCase):
         self.Rule19 = Rule([], [self.Aagent1, self.Aagent2])
         self.Rule20 = Rule([self.Aagent1, self.Aagent2], [])
         self.Rule21 = Rule([self.Aagent3], [self.Aagent1])
-        self.Rule22 = Rule([self.Sagent3], [self.Sagent31])
+        self.Rule22 = Rule([self.Sagent1], [self.Sagent8])
         self.Rule23 = Rule([self.Xagent6], [self.Xagent7])
 
     def test_equal(self):
@@ -274,17 +274,11 @@ class TestRule(unittest.TestCase):
         self.assertTrue(self.Rule6.match(solution1))
         self.assertFalse(self.Rule6.match(solution2))
         self.assertFalse(self.Rule10.match(solution1))
-        print
-        print self.Rule11
-        print self.Sagent3
         self.assertTrue(self.Rule11.match(solution2))
         self.assertFalse(self.Rule12.match(solution2))
         self.assertTrue(self.Rule13.match(solution3))
         self.assertFalse(self.Rule15.match(solution4))
         self.assertTrue(self.Rule14.match(solution4))
-        print
-        print self.Rule15
-        print collections.Counter([])
         self.assertTrue(self.Rule15.match(collections.Counter([])))
         self.assertTrue(self.Rule16.match(collections.Counter([])))
         self.assertTrue(self.Rule23.match(solution5))
@@ -331,22 +325,22 @@ class TestRule(unittest.TestCase):
     def test_replace(self):
         solution_old = collections.Counter([self.Aagent1, self.Aagent2])
         solution_new = collections.Counter([self.Xagent4])
-        #self.assertEqual(self.Rule17.replace(solution_old), solution_new)
+        self.assertEqual(self.Rule17.replace(solution_old), solution_new)
         solution_old = collections.Counter([])
         solution_new = collections.Counter([self.Aagent1, self.Aagent2])
-        #self.assertEqual(self.Rule20.replace(solution_new), solution_old)
+        self.assertEqual(self.Rule20.replace(solution_new), solution_old)
         solution_old = collections.Counter([])
         solution_new = collections.Counter([self.Aagent1, self.Aagent2])
-        #self.assertEqual(self.Rule19.replace(solution_old), solution_new)
+        self.assertEqual(self.Rule19.replace(solution_old), solution_new)
         solution_old = collections.Counter([self.Aagent12])
         solution_new = collections.Counter([self.Aagent1])
-        #self.assertEqual(self.Rule21.replace(solution_old), solution_new)
-        solution_old = collections.Counter([self.Sagent7])
-        solution_new = collections.Counter([self.Sagent8])
-        #self.assertEqual(self.Rule22.replace(solution_old), solution_new)
+        self.assertEqual(self.Rule21.replace(solution_old), solution_new)
+        solution_old = collections.Counter([self.Sagent3])
+        solution_new = collections.Counter([self.Sagent31])
+        self.assertEqual(self.Rule22.replace(solution_old), solution_new)
         solution_old = collections.Counter([self.Xagent1])
         solution_new = collections.Counter([self.Xagent8])
-        #self.assertEqual(self.Rule23.replace(solution_old), solution_new)
+        self.assertEqual(self.Rule23.replace(solution_old), solution_new)
 
 suite = unittest.TestLoader().loadTestsFromTestCase(TestRule)
 unittest.TextTestRunner(verbosity=2).run(suite)

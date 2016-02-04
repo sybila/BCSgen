@@ -4,6 +4,14 @@ from Complex_Agent import *
 
 direction = " => "
 
+def compareCounters(solution, lhs):
+    if not list(solution.elements()):
+        return True
+    for agent_s in list(solution.elements()):
+        for agent_l in list(lhs.elements()):
+            if agent_s.isCompatibleWith(agent_l):
+                return compareCounters(extractCounterValue(solution, agent_s), extractCounterValue(lhs, agent_l))
+        return False
 """
 Finds part of agent's composition
 :param agent: Structure or Complex agent composition (Counter)
