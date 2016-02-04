@@ -4,13 +4,19 @@ from Complex_Agent import *
 
 direction = " => "
 
-def compareCounters(solution, lhs):
+"""
+Checks if each agent from solution has compatible agent in left-hand-side of the rule
+:param solution: input solution (Counter)
+:param lhs: left-hand-side of the rule (Counter)
+:return: True if the condition is satisfied
+"""
+def compareTwoCounters(solution, lhs):
     if not list(solution.elements()):
         return True
-    for agent_s in list(solution.elements()):
-        for agent_l in list(lhs.elements()):
+    for agent_s in sorted(solution.elements()):
+        for agent_l in sorted(lhs.elements()):
             if agent_s.isCompatibleWith(agent_l):
-                return compareCounters(extractCounterValue(solution, agent_s), extractCounterValue(lhs, agent_l))
+                return compareTwoCounters(extractCounterValue(solution, agent_s), extractCounterValue(lhs, agent_l))
         return False
 """
 Finds part of agent's composition
@@ -51,10 +57,10 @@ where each atomic agent has pair in the difference (equal names).
 """
 def changeStructureStates(lhs, rhs, structure_agent_original):
     structure_agent = copy.deepcopy(structure_agent_original)
-    difference = rhs.getPartialComposition() - lhs.getPartialComposition()  #!!!
+    difference = rhs.getPartialComposition() - lhs.getPartialComposition()
     structure_agent_part = getPart(copy.deepcopy(structure_agent.getPartialComposition()), copy.deepcopy(difference))
     structure_agent_rest = structure_agent.getPartialComposition() - structure_agent_part
-    for a_r, a_s in zip(sorted(list(difference.elements())), sorted(list(structure_agent_part.elements()))):
+    for a_r, a_s in zip(sorted(difference.elements()), sorted(structure_agent_part.elements())):
         structure_agent_rest += changeAtomicStates(a_r, a_s)
     structure_agent.setPartialComposition(structure_agent_rest)
     return collections.Counter([structure_agent])
@@ -70,11 +76,11 @@ call structure agent or atomic agent state change.
 """
 def changeComplexStates(lhs, rhs, complex_agent_original):
     complex_agent = copy.deepcopy(complex_agent_original)
-    difference_r = rhs.getFullComposition() - lhs.getFullComposition() #!!!
-    difference_l = lhs.getFullComposition() - rhs.getFullComposition() #!!!
+    difference_r = rhs.getFullComposition() - lhs.getFullComposition()
+    difference_l = lhs.getFullComposition() - rhs.getFullComposition()
     complex_agent_part = getPart(copy.deepcopy(complex_agent.getFullComposition()), copy.deepcopy(difference_r))
     complex_agent_rest = complex_agent.getFullComposition() - complex_agent_part
-    for a_r, a_l, a_s in zip(sorted(list(difference_r.elements())), sorted(list(difference_l.elements())), sorted(list(complex_agent_part.elements()))):
+    for a_r, a_l, a_s in zip(sorted(difference_r.elements()), sorted(difference_l.elements()), sorted(complex_agent_part.elements())):
         if isinstance(a_r, Atomic_Agent):
             complex_agent_rest += changeAtomicStates(a_r, a_s)
         else:
@@ -94,8 +100,8 @@ class Rule:
         return self.__repr__()
 
     def __repr__(self):
-        return " + ".join(map(lambda k: k.__str__(), sorted(list(self.left_hand_side.elements())))) + direction \
-               +  " + ".join(map(lambda k: k.__str__(), sorted(list(self.right_hand_side.elements()))))
+        return " + ".join(map(lambda k: k.__str__(), sorted(self.left_hand_side.elements()))) + direction \
+               +  " + ".join(map(lambda k: k.__str__(), sorted(self.right_hand_side.elements())))
 
     def __hash__(self):
         return hash((str(self.left_hand_side), str(self.right_hand_side)))
@@ -109,8 +115,13 @@ class Rule:
     def getRightHandSide(self):
         return self.right_hand_side
 
+    """
+    Checks if solution matches left-hand-side of the rule
+    :param solution: input solution (Counter)
+    :return: call compareTwoCounters
+    """
     def match(self, solution):
-        return compareCounters(copy.deepcopy(solution), copy.deepcopy(self.getLeftHandSide()))
+        return compareTwoCounters(copy.deepcopy(solution), copy.deepcopy(self.getLeftHandSide()))
 
     """
     Function replace takes a rule and solution and applies changes according to the rule type:

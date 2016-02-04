@@ -13,17 +13,16 @@ def extractCounterValue(composition, agent):
     return composition
 
 """
-Checks if for every agent from the first list there exist unique compatible agent from the second list
-Should be usable for both kinds of compositions
-:param composition_s: list of solution composition
-:param composition_l: list of left-hand-side composition
-:return: True if the requirement is satisfied
+Checks if for every agent from partial composition_s there exist unique compatible agent from partial composition_l
+:param composition_s: solution's partial composition (Counter)
+:param composition_l: left-hand-side's partial composition (Counter)
+:return: True if the condition is satisfied
 """
 def comparePartialCompositions(composition_s, composition_l):
     if not list(composition_l.elements()):
         return True
-    for agent_l in list(composition_l.elements()):
-        for agent_s in list(composition_s.elements()):
+    for agent_l in sorted(composition_l.elements()):
+        for agent_s in sorted(composition_s.elements()):
             if agent_s.isCompatibleWith(agent_l):
                 return comparePartialCompositions(extractCounterValue(composition_s, agent_s), extractCounterValue(composition_l, agent_l))
         return False
@@ -42,7 +41,7 @@ class Structure_Agent:
 
     def __repr__(self, part = ""):
         if len(self.partial_composition) > 0:
-            return self.name + "(" + "|".join(map(lambda k: k.__repr__(), sorted(list(self.partial_composition.elements())))) + ")" + part
+            return self.name + "(" + "|".join(map(lambda k: k.__repr__(), sorted(self.partial_composition.elements()))) + ")" + part
             #return self.name + "(" + "|".join(filter(None, map(lambda k: k.__repr__(), sorted(list(self.partial_composition.elements()))))) + ")" + part
         else:
             return self.name + part

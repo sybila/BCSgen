@@ -2,11 +2,17 @@ import collections
 import copy
 from Structure_Agent import *
 
+"""
+Checks if for every agent from full composition_s there exist unique compatible agent from full composition_l
+:param composition_s:  solution's full composition (Counter)
+:param composition_l: left-hand-side's full composition (Counter)
+:return: True if the condition is satisfied
+"""
 def compareFullCompositions(composition_s, composition_l):
     if not list(composition_s.elements()) and not list(composition_l.elements()):
         return True
-    for agent_s in list(composition_s.elements()):
-        for agent_l in list(composition_l.elements()):
+    for agent_s in sorted(composition_s.elements()):
+        for agent_l in sorted(composition_l.elements()):
             if agent_s.isCompatibleWith(agent_l):
                 return compareFullCompositions(extractCounterValue(composition_s, agent_s), extractCounterValue(composition_l, agent_l))
         return False
@@ -24,7 +30,7 @@ class Complex_Agent:
         return self.__repr__()
 
     def __repr__(self):
-        return ".".join(map(lambda k: k.__repr__(), sorted(list(self.full_composition.elements())))) + "::" + self.compartment
+        return ".".join(map(lambda k: k.__repr__(), sorted(self.full_composition.elements()))) + "::" + self.compartment
 
     def __hash__(self):
         return hash((str(self.full_composition), self.compartment))
