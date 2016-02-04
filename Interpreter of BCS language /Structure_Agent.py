@@ -22,8 +22,13 @@ Should be usable for both kinds of compositions
 def compareCounters(composition_s, composition_l):
     if not list(composition_s.elements()):
         return True
-    for agent_s in composition_s.elements():
-        for agent_l in composition_l.elements():
+    print 'new'
+    print list(composition_s.elements())
+    print list(composition_l.elements())
+    print 'start'
+    for agent_s in list(composition_s.elements()):
+        for agent_l in list(composition_l.elements()):
+            print agent_l, '\lhd', agent_s
             if agent_s.isCompatibleWith(agent_l):
                 return compareCounters(extractCounterValue(composition_s, agent_s), extractCounterValue(composition_l, agent_l))
         return False

@@ -43,7 +43,7 @@ where each atomic agent has pair in the difference (equal names).
 """
 def changeStructureStates(lhs, rhs, structure_agent_original):
     structure_agent = copy.deepcopy(structure_agent_original)
-    difference = rhs.getPartialComposition() - (rhs.getPartialComposition() & lhs.getPartialComposition())
+    difference = rhs.getPartialComposition() - lhs.getPartialComposition()  #!!!
     structure_agent_part = getPart(copy.deepcopy(structure_agent.getPartialComposition()), copy.deepcopy(difference))
     structure_agent_rest = structure_agent.getPartialComposition() - structure_agent_part
     for a_r, a_s in zip(sorted(list(difference.elements())), sorted(list(structure_agent_part.elements()))):
@@ -62,8 +62,8 @@ call structure agent or atomic agent state change.
 """
 def changeComplexStates(lhs, rhs, complex_agent_original):
     complex_agent = copy.deepcopy(complex_agent_original)
-    difference_r = rhs.getFullComposition() - (rhs.getFullComposition() & lhs.getFullComposition())
-    difference_l = lhs.getFullComposition() - (rhs.getFullComposition() & lhs.getFullComposition())
+    difference_r = rhs.getFullComposition() - lhs.getFullComposition() #!!!
+    difference_l = lhs.getFullComposition() - rhs.getFullComposition() #!!!
     complex_agent_part = getPart(copy.deepcopy(complex_agent.getFullComposition()), copy.deepcopy(difference_r))
     complex_agent_rest = complex_agent.getFullComposition() - complex_agent_part
     for a_r, a_l, a_s in zip(sorted(list(difference_r.elements())), sorted(list(difference_l.elements())), sorted(list(complex_agent_part.elements()))):
@@ -102,7 +102,7 @@ class Rule:
         return self.right_hand_side
 
     def match(self, solution):
-        return compareCounters(copy.deepcopy(solution), self.getLeftHandSide())
+        return compareCounters(copy.deepcopy(solution), copy.deepcopy(self.getLeftHandSide()))
 
     """
     Function replace takes a rule and solution and applies changes according to the rule type:
