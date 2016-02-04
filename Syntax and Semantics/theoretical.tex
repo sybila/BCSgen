@@ -180,7 +180,7 @@ The executable rule can be in one of three reaction types:
 
 \begin{enumerate}
 \item the rule has to be in \textbf{flattened form} - it means each agent involved in the rule is in basic form, i.e. it is atomic, structure or complex agent (the operator `::' can be used only in sense of compartmentalisation)
-\item the number of interacting molecules must be \textbf{fixed} ($\#(LHS)~=~\#(RHS)$). Exceptions:
+\item the number of interacting molecules must be \textbf{fixed} ($\#(LHS)~=~\#(RHS)$). This includes all full and partial composition appearing on a rule side. Exceptions:
 	\begin{enumerate}
 		\item translation/degradation - one of the rule sides must be empty
 		\item (de)complexation - number of new agents is different BUT number of all structure (resp. atomic) agents must be fixed
