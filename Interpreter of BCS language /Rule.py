@@ -18,21 +18,6 @@ def compareTwoCounters(solution, lhs):
             if agent_s.isCompatibleWith(agent_l):
                 return compareTwoCounters(extractCounterValue(solution, agent_s), extractCounterValue(lhs, agent_l))
         return False
-"""
-Finds part of agent's composition
-:param agent: Structure or Complex agent composition (Counter)
-:param difference: lhs and rhs difference (Counter)
-:param part: part of agent's composition where each agent has pair in the difference (equal names)
-:return: part
-"""
-def getPart(agent, difference, part = []):
-    if not list(difference.elements()):
-        return collections.Counter(part)
-    for agent_d in difference.elements():
-        for agent_s in agent.elements():
-            if agent_s.getName() == agent_d.getName():
-                return getPart(extractCounterValue(agent, agent_s), extractCounterValue(difference, agent_d), part + [agent_s])
-        return collections.Counter([])
 
 """
 Changes state of an atomic agent according to another one
@@ -58,11 +43,18 @@ where each atomic agent has pair in the difference (equal names).
 def changeStructureStates(lhs, rhs, structure_agent_original):
     structure_agent = copy.deepcopy(structure_agent_original)
     difference = rhs.getPartialComposition() - lhs.getPartialComposition()
-    structure_agent_part = getPart(copy.deepcopy(structure_agent.getPartialComposition()), copy.deepcopy(difference))
-    structure_agent_rest = structure_agent.getPartialComposition() - structure_agent_part
-    for a_r, a_s in zip(sorted(difference.elements()), sorted(structure_agent_part.elements())):
-        structure_agent_rest += changeAtomicStates(a_r, a_s)
-    structure_agent.setPartialComposition(structure_agent_rest)
+    composition = structure_agent.getPartialComposition()
+    for a_r in difference.elements():
+        no_change_happened = True
+        for a_s in composition.elements():
+            if a_r.differsOnlyInStates(a_s):
+                no_change_happened = False
+                composition[a_s] -= 1
+                composition +=  changeAtomicStates(a_r, a_s)
+                break
+        if no_change_happened:
+            return collections.Counter([structure_agent_original]) #no change is possible
+    structure_agent.setPartialComposition(composition)
     return collections.Counter([structure_agent])
 
 """

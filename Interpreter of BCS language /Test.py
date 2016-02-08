@@ -6,63 +6,65 @@ from Rule import *
 
 class TestAtomicAgent(unittest.TestCase):
     def setUp(self):
-        self.agent1 = Atomic_Agent('a', ['s'], 'c')
-        self.agent2 = Atomic_Agent('a', ['t', 's'], 'c')
-        self.agent3 = Atomic_Agent('a', ['s', 't'], 'c')
-        self.agent4 = Atomic_Agent('a', ['p', 't'], 'c')
-        self.agent5 = Atomic_Agent('a', ['u'], 'c')
-        #self.agent6 = Atomic_Agent('a', [], 'c') CANNOT BE EMPTY !
-        self.agent7 = Atomic_Agent('a', ['u'], 'cell')
+        self.Aagent1 = Atomic_Agent('S', ['p'], 'cyt')
+        self.Aagent12 = Atomic_Agent('S', ['u'], 'cyt')
+        self.Aagent2 = Atomic_Agent('T', ['u'], 'cyt')
+        self.Aagent22 = Atomic_Agent('T', ['p'], 'cyt')
+        self.Aagent3 = Atomic_Agent('S', ['u', 'p'], 'cyt')
+        self.Aagent4 = Atomic_Agent('T', ['u', 'p'], 'cyt')
 
     def test_print(self):
-        self.assertEqual(self.agent1.__str__(), 'a{s}::c')
-        self.assertEqual(self.agent3.__str__(), 'a::c')
+        self.assertEqual(self.Aagent1.__str__(), 'S{p}::cyt')
+        self.assertEqual(self.Aagent3.__str__(), 'S::cyt')
 
     def test_equal(self):
-        self.assertTrue(self.agent1.__eq__(self.agent1))
-        self.assertTrue(self.agent2.__eq__(self.agent3))
-        self.assertFalse(self.agent2.__eq__(self.agent1))
+        self.assertTrue(self.Aagent1.__eq__(self.Aagent1))
+        self.assertTrue(self.Aagent3.__eq__(Atomic_Agent('S', ['p', 'u'], 'cyt')))
+        self.assertFalse(self.Aagent2.__eq__(self.Aagent1))
 
     def test_isCompatibleWith(self):
-        self.assertTrue(self.agent1.isCompatibleWith(self.agent2))
-        self.assertFalse((self.agent1.isCompatibleWith(self.agent4)))
-        self.assertFalse((self.agent2.isCompatibleWith(self.agent1)))
-        self.assertTrue((self.agent1.isCompatibleWith(self.agent3)))
+        self.assertTrue(self.Aagent1.isCompatibleWith(self.Aagent3))
+        self.assertFalse((self.Aagent3.isCompatibleWith(self.Aagent1)))
+        self.assertFalse((self.Aagent3.isCompatibleWith(self.Aagent4)))
+        self.assertTrue((self.Aagent2.isCompatibleWith(self.Aagent2)))
 
     def test_hash(self):
-        self.assertEqual(hash(self.agent1), hash(self.agent1))
-        self.assertNotEqual(hash(self.agent1), hash(self.agent2))
+        self.assertEqual(hash(self.Aagent3), hash(Atomic_Agent('S', ['p', 'u'], 'cyt')))
+        self.assertNotEqual(hash(self.Aagent1), hash(self.Aagent3))
 
     def test_setter(self):
-        self.agent1.setStates(['u'])
-        self.assertTrue(self.agent1.__eq__(self.agent5))
-        self.agent1.setCompartment('cell')
-        self.assertTrue(self.agent1.__eq__(self.agent7))
+        self.Aagent1.setStates(['u'])
+        self.assertTrue(self.Aagent1.__eq__(self.Aagent12))
+        self.Aagent2.setCompartment('cell')
+        self.assertTrue(self.Aagent2.__eq__(Atomic_Agent('T', ['u'], 'cell')))
 
     def test_comparing(self):
-        self.assertFalse(self.agent7 > self.agent5)
-        self.assertTrue(self.agent1 > self.agent3)
+        self.assertFalse(self.Aagent3 > self.Aagent1)
+        self.assertTrue(self.Aagent3 < self.Aagent4)
+
+    def test_differsOnlyInStates(self):
+        self.assertTrue(self.Aagent1.differsOnlyInStates(self.Aagent12))
 
 suite = unittest.TestLoader().loadTestsFromTestCase(TestAtomicAgent)
 unittest.TextTestRunner(verbosity=2).run(suite)
 
 class TestStructureAgent(unittest.TestCase):
     def setUp(self):
-        self.Aagent1 = Atomic_Agent('a', ['s'], 'c')
-        self.Aagent2 = Atomic_Agent('a', ['t', 's'], 'c')
-        self.Aagent3 = Atomic_Agent('a', ['s', 't'], 'c')
-        self.Aagent4 = Atomic_Agent('a', ['t'], 'c')
-        self.Sagent1 = Structure_Agent('agent', [self.Aagent1, self.Aagent2], 'c')
-        self.Sagent2 = Structure_Agent('agent', [self.Aagent2, self.Aagent1], 'c')
-        self.Sagent3 = Structure_Agent('agent', [], 'c')
-        self.Sagent4 = Structure_Agent('agent', [self.Aagent2], 'c')
-        self.Sagent5 = Structure_Agent('agent', [self.Aagent1, self.Aagent4], 'c')
-        self.Sagent6 = Structure_Agent('agent', [self.Aagent2, self.Aagent3], 'c')
-        self.Sagent7 = Structure_Agent('theWorstPossibleAgent', [self.Aagent2, self.Aagent3, self.Aagent1, self.Aagent4], 'cyt')
-        self.AAagent1 = Atomic_Agent('S', ['p'], 'cyt')
-        self.AAagent2 = Atomic_Agent('T', ['u'], 'cyt')
-        self.Sagent8 = Structure_Agent('KaiC', [self.AAagent1, self.AAagent2], 'cyt')
-        self.Sagent9 = Structure_Agent('KaiC', [self.AAagent1], 'cyt')
+        self.Aagent1 = Atomic_Agent('S', ['p'], 'cyt')
+        self.Aagent12 = Atomic_Agent('S', ['u'], 'cyt')
+        self.Aagent2 = Atomic_Agent('T', ['u'], 'cyt')
+        self.Aagent22 = Atomic_Agent('T', ['p'], 'cyt')
+        self.Aagent3 = Atomic_Agent('S', ['u', 'p'], 'cyt')
+        self.Aagent4 = Atomic_Agent('T', ['u', 'p'], 'cyt')
+        self.Sagent1 = Structure_Agent('KaiC', [self.Aagent1, self.Aagent2], 'cyt')
+        self.Sagent2 = Structure_Agent('KaiC', [self.Aagent2, self.Aagent1], 'cyt')
+        self.Sagent3 = Structure_Agent('KaiC', [self.Aagent3, self.Aagent22, self.Aagent12], 'cyt')
+        self.Sagent4 = Structure_Agent('KaiC', [self.Aagent3, self.Aagent4], 'cyt')
+        self.Sagent5 = Structure_Agent('KaiC', [self.Aagent3, self.Aagent4, self.Aagent3], 'cyt')
+        self.Sagent6 = Structure_Agent('KaiC', [self.Aagent1, self.Aagent2, self.Aagent3], 'cyt')
+        self.Sagent7 = Structure_Agent('KaiC', [self.Aagent3, self.Aagent2], 'cyt')
+        self.Sagent8 = Structure_Agent('KaiC', [self.Aagent1], 'cyt')
+        self.Sagent9 = Structure_Agent('KaiC', [self.Aagent2], 'cyt')
 
     def test_equal(self):
         self.assertTrue(self.Sagent1.__eq__(self.Sagent2))
@@ -72,9 +74,8 @@ class TestStructureAgent(unittest.TestCase):
     def test_print(self):
         self.assertEqual(self.Sagent1.__str__(), self.Sagent1.__str__())
         self.assertEqual(self.Sagent1.__str__(), self.Sagent2.__str__())
-        self.assertEqual(self.Sagent3.__str__(), 'agent::c')
-        self.assertEqual(self.Sagent4.__str__(), 'agent(a)::c')
-        self.assertEqual(self.Sagent7.__str__(), 'theWorstPossibleAgent(a|a|a{s}|a{t})::cyt')
+        self.assertEqual(self.Sagent8.__str__(), 'KaiC(S{p})::cyt')
+        self.assertEqual(self.Sagent4.__str__(), 'KaiC(S|T)::cyt')
 
     def test_hash(self):
         self.assertEqual(hash(self.Sagent1), hash(self.Sagent1))
@@ -83,22 +84,22 @@ class TestStructureAgent(unittest.TestCase):
 
     def test_isCompatibleWith(self):
         self.assertTrue(self.Sagent2.isCompatibleWith(self.Sagent4))
-        self.assertTrue(self.Sagent5.isCompatibleWith(self.Sagent6))
-        self.assertFalse(self.Sagent6.isCompatibleWith(self.Sagent5))
-        self.assertTrue(self.Sagent1.isCompatibleWith(self.Sagent6))
-        self.assertFalse(self.Sagent6.isCompatibleWith(self.Sagent1))
+        self.assertFalse(self.Sagent5.isCompatibleWith(self.Sagent6))
+        self.assertTrue(self.Sagent6.isCompatibleWith(self.Sagent5))
+        self.assertFalse(self.Sagent1.isCompatibleWith(self.Sagent6))
+        self.assertTrue(self.Sagent6.isCompatibleWith(self.Sagent1))
         self.assertTrue(self.Sagent1.isCompatibleWith(self.Sagent2))
         self.assertTrue(self.Sagent3.isCompatibleWith(self.Sagent3))
-        self.assertFalse(self.Sagent3.isCompatibleWith(self.Sagent5))
-        self.assertTrue(self.Sagent5.isCompatibleWith(self.Sagent3))
-        self.assertTrue(self.Sagent8.isCompatibleWith(self.Sagent9))
+        self.assertTrue(self.Sagent3.isCompatibleWith(self.Sagent5))
+        self.assertFalse(self.Sagent5.isCompatibleWith(self.Sagent3))
+        self.assertFalse(self.Sagent8.isCompatibleWith(self.Sagent9))
 
     def test_setter(self):
-        self.Sagent1.setPartialComposition([self.Aagent1, self.Aagent4])
-        self.assertTrue(self.Sagent5.__eq__(self.Sagent1))
+        self.Sagent1.setPartialComposition([self.Aagent3, self.Aagent4])
+        self.assertTrue(self.Sagent4.__eq__(self.Sagent1))
 
     def test_comparing(self):
-        self.assertTrue(self.Sagent2 > self.Sagent3)
+        self.assertTrue(self.Sagent2 < self.Sagent3)
         self.assertFalse(self.Sagent7 < self.Sagent1)
 
 suite = unittest.TestLoader().loadTestsFromTestCase(TestStructureAgent)
@@ -202,6 +203,8 @@ class TestRule(unittest.TestCase):
         self.Sagent22 = Structure_Agent('KaiC', [self.Aagent1], 'cyt')
         self.Sagent23 = Structure_Agent('KaiC', [self.Aagent12, self.Aagent12, self.Aagent12, self.Aagent12], 'cyt')
         self.Sagent24 = Structure_Agent('KaiC', [self.Aagent1, self.Aagent12, self.Aagent12, self.Aagent12], 'cyt')
+        self.Sagent25 =  Structure_Agent('KaiC', [self.Aagent1, self.Aagent1], 'cyt')
+        self.Sagent26 = Structure_Agent('KaiC', [self.Aagent22, self.Aagent22], 'cyt')
         self.SagentBig1 = Structure_Agent('KaiC', [self.Aagent12, self.Aagent1, self.Aagent2, self.Aagent2, self.Aagent22], 'cyt')
         self.SagentBig12 = Structure_Agent('KaiC', [self.Aagent12, self.Aagent1, self.Aagent1, self.Aagent1, self.Aagent1], 'cyt')
         self.SagentBig21 = Structure_Agent('KaiC', [self.Aagent12, self.Aagent4, self.Aagent4, self.Aagent4, self.Aagent3], 'cyt')
@@ -301,12 +304,6 @@ class TestRule(unittest.TestCase):
         solution_new = collections.Counter([self.Aagent1, self.Aagent2])
         self.assertEqual(self.Rule20.degrade(solution_new), solution_old)
 
-    def test_getPart(self):
-        agent = collections.Counter([self.Aagent1, self.Aagent2, self.Aagent22, self.Aagent2])
-        difference = collections.Counter([self.Aagent3, self.Aagent22])
-        result = collections.Counter([self.Aagent1, self.Aagent22])
-        self.assertEqual(getPart(agent, difference), result)
-
     def test_changeAtomicStates(self):
         self.assertEqual(changeAtomicStates(self.Aagent1, self.Aagent12), collections.Counter([self.Aagent1]))
         self.assertEqual(changeAtomicStates(self.Aagent3, self.Aagent1), collections.Counter([self.Aagent3]))
@@ -317,7 +314,8 @@ class TestRule(unittest.TestCase):
         self.assertEqual(changeStructureStates(self.Sagent9, self.Sagent9, self.Sagent10), collections.Counter([self.Sagent10])) #no change
         self.assertEqual(changeStructureStates(self.Sagent11, self.Sagent12, self.Sagent13), collections.Counter([self.Sagent14]))
         self.assertEqual(changeStructureStates(self.Sagent21, self.Sagent22, self.Sagent23), collections.Counter([self.Sagent24]))
-
+        self.assertEqual(changeStructureStates(self.Sagent9, self.Sagent25, self.Sagent26), collections.Counter([self.Sagent26])) #no change
+    '''
     def test_changeComplexStates(self):
         self.assertEqual(changeComplexStates(self.Xagent6, self.Xagent7, self.Xagent1), collections.Counter([self.Xagent8]))
         self.assertEqual(changeComplexStates(self.Xagent10, self.Xagent11, self.Xagent9), collections.Counter([self.Xagent12]))
@@ -341,6 +339,7 @@ class TestRule(unittest.TestCase):
         solution_old = collections.Counter([self.Xagent1])
         solution_new = collections.Counter([self.Xagent8])
         self.assertEqual(self.Rule23.replace(solution_old), solution_new)
+    '''
 
 suite = unittest.TestLoader().loadTestsFromTestCase(TestRule)
 unittest.TextTestRunner(verbosity=2).run(suite)

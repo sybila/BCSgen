@@ -38,6 +38,9 @@ class Atomic_Agent:
     def setCompartment(self, compartment):
         self.compartment = compartment
 
+    def differsOnlyInStates(self, other):
+        return self.name == other.name and self.states != other.states and self.compartment == other.compartment
+
     """
     Checks if the first atomic agent is compatible with the second one
     :param other: the second agent
