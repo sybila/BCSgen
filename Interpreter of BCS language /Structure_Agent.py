@@ -21,8 +21,8 @@ Checks if for every agent from partial composition_s there exist unique compatib
 def comparePartialCompositions(composition_s, composition_l):
     if not list(composition_l.elements()):
         return True
-    for agent_l in sorted(composition_l.elements()):
-        for agent_s in sorted(composition_s.elements()):
+    for agent_l in sorted(composition_l.elements()): #this sort is just for higher effectiveness
+        for agent_s in sorted(composition_s.elements()): #this sort is just for higher effectiveness
             if agent_s.isCompatibleWith(agent_l):
                 return comparePartialCompositions(extractCounterValue(composition_s, agent_s), extractCounterValue(composition_l, agent_l))
         return False

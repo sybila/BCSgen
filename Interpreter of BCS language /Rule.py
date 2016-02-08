@@ -31,10 +31,8 @@ def changeAtomicStates(rhs, atomic_agent_original):
     return collections.Counter([atomic_agent])
 
 """
-Changes state of a structure agent according to another one
-It has to create "difference" as rhs - (rhs & lhs) (in set meaning)
-and "structure_agent_part" what is part of structure_agent composition
-where each atomic agent has pair in the difference (equal names).
+Changes state(s) of a structure agent according to another one
+It has to create "difference" as rhs - (rhs & lhs) (in set meaning).
 :param rhs: Structure agent from right-hand-side of a rule
 :param lhs: Structure agent from left-hand-side of a rule
 :param structure_agent: Structure agent from given solution
@@ -78,7 +76,9 @@ def changeComplexStates(lhs, rhs, complex_agent_original):
         else:
             complex_agent_rest += changeStructureStates(a_l, a_r, a_s)
     complex_agent.setFullComposition(complex_agent_rest)
-    return collections.Counter([complex_agent])
+
+
+    return set collections.Counter([complex_agent])
 
 class Rule:
     def __init__(self, left_hand_side, right_hand_side):
@@ -153,9 +153,9 @@ class Rule:
         rhs = list(self.getRightHandSide().elements())[0]
         solution = list(solution.elements())[0]
         if isinstance(solution, Atomic_Agent):
-            return changeAtomicStates(rhs, solution)
+            return set(changeAtomicStates(rhs, solution))
         elif isinstance(solution, Structure_Agent):
-            return changeStructureStates(lhs, rhs, solution)
+            return set(changeStructureStates(lhs, rhs, solution))
         else:
             return changeComplexStates(lhs, rhs, solution)
 
