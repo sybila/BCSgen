@@ -76,9 +76,7 @@ def changeComplexStates(lhs, rhs, complex_agent_original):
         else:
             complex_agent_rest += changeStructureStates(a_l, a_r, a_s)
     complex_agent.setFullComposition(complex_agent_rest)
-
-
-    return set collections.Counter([complex_agent])
+    return set(collections.Counter([complex_agent]))
 
 class Rule:
     def __init__(self, left_hand_side, right_hand_side):

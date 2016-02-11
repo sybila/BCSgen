@@ -1,4 +1,3 @@
-import collections
 import copy
 from Atomic_Agent import *
 
@@ -8,29 +7,29 @@ Decreases number of occurrences of element in Counter
 :param agent: element to be removed
 :return: Counter with decreased element value
 """
-def extractCounterValue(composition, agent):
-    composition[agent] -= 1
+def extractSetValue(composition, agent):
+    composition.remove(agent)
     return composition
 
 """
 Checks if for every agent from partial composition_s there exist unique compatible agent from partial composition_l
-:param composition_s: solution's partial composition (Counter)
-:param composition_l: left-hand-side's partial composition (Counter)
+:param composition_s: solution's partial composition (Set)
+:param composition_l: left-hand-side's partial composition (Set)
 :return: True if the condition is satisfied
 """
 def comparePartialCompositions(composition_s, composition_l):
-    if not list(composition_l.elements()):
+    if not composition_l:
         return True
-    for agent_l in sorted(composition_l.elements()): #this sort is just for higher effectiveness
-        for agent_s in sorted(composition_s.elements()): #this sort is just for higher effectiveness
+    for agent_l in sorted(composition_l): #this sort is just for higher effectiveness
+        for agent_s in sorted(composition_s): #this sort is just for higher effectiveness
             if agent_s.isCompatibleWith(agent_l):
-                return comparePartialCompositions(extractCounterValue(composition_s, agent_s), extractCounterValue(composition_l, agent_l))
+                return comparePartialCompositions(extractSetValue(composition_s, agent_s), extractSetValue(composition_l, agent_l))
         return False
 
 class Structure_Agent:
     def __init__(self, name, partial_composition, compartment):
         self.name = name
-        self.partial_composition = collections.Counter(partial_composition)
+        self.partial_composition = set(partial_composition)
         self.compartment = compartment
 
     def __eq__(self, other):
@@ -41,7 +40,7 @@ class Structure_Agent:
 
     def __repr__(self, part = ""):
         if len(self.partial_composition) > 0:
-            return self.name + "(" + "|".join(map(lambda k: k.__repr__(), sorted(self.partial_composition.elements()))) + ")" + part
+            return self.name + "(" + "|".join(map(lambda k: k.__repr__(), sorted(self.partial_composition))) + ")" + part
             #return self.name + "(" + "|".join(filter(None, map(lambda k: k.__repr__(), sorted(list(self.partial_composition.elements()))))) + ")" + part
         else:
             return self.name + part
@@ -66,10 +65,10 @@ class Structure_Agent:
     :param partial_composition: Counter or list
     """
     def setPartialComposition(self, partial_composition):
-        if isinstance(partial_composition, collections.Counter):
+        if isinstance(partial_composition, set):
             self.partial_composition = partial_composition
         else:
-            self.partial_composition = collections.Counter(partial_composition)
+            self.partial_composition = set(partial_composition)
 
     def setCompartment(self, compartment):
         self.compartment = compartment
