@@ -1,5 +1,6 @@
 import copy
 import numpy as np
+import itertools
 from Structure_Agent import *
 
 """
@@ -22,11 +23,14 @@ class Complex_Agent:
     def __eq__(self, other):
         return np.array_equal(self.full_composition, other.full_composition) and self.compartment == other.compartment
 
+    def __ne__(self, other):
+        return not self.__eq__(other)
+
     def __str__(self):
         return self.__repr__()
 
     def __repr__(self):
-        return ".".join(map(lambda k: k.__repr__(), sorted(self.full_composition))) + "::" + self.compartment
+        return ".".join(map(lambda k: k.__repr__(), self.full_composition)) + "::" + self.compartment
 
     def __hash__(self):
         return hash((str(self.full_composition), self.compartment))
@@ -52,6 +56,9 @@ class Complex_Agent:
 
     def setCompartment(self, compartment):
         self.compartment = compartment
+
+    def getAllCompositions(self):
+        return np.array([Complex_Agent(element, self.compartment) for element in itertools.permutations(self.full_composition, len(self.full_composition))])
 
     def isCompatibleWith(self, other):
         return self.__eq__(other) or ( self.compartment == other.compartment and len(self.full_composition) == len(other.full_composition)

@@ -5,93 +5,75 @@ from Complex_Agent import *
 direction = " => "
 
 """
-Checks if each agent from solution has compatible agent in left-hand-side of the rule
-:param solution: input solution (Counter)
-:param lhs: left-hand-side of the rule (Counter)
-:return: True if the condition is satisfied
-"""
-def compareTwoCounters(solution, lhs):
-    if not list(solution.elements()):
-        return True
-    for agent_s in sorted(solution.elements()):
-        for agent_l in sorted(lhs.elements()):
-            if agent_s.isCompatibleWith(agent_l):
-                return compareTwoCounters(extractCounterValue(solution, agent_s), extractCounterValue(lhs, agent_l))
-        return False
-
-"""
 Changes state of an atomic agent according to another one
 :param rhs: Atomic agent from right-hand-side of a rule
 :param atomic_agent: Atomic agent from given solution
-:return: Counter of atomic agent from given solution with state(s) of second agent
+:return: Counter of atomic agent from given solution with state of second agent
 """
 def changeAtomicStates(rhs, atomic_agent_original):
     atomic_agent = copy.deepcopy(atomic_agent_original)
     atomic_agent.setStates(rhs.getStates())
-    return collections.Counter([atomic_agent])
+    return atomic_agent
 
 """
 Changes state(s) of a structure agent according to another one
-It has to create "difference" as rhs - (rhs & lhs) (in set meaning).
 :param rhs: Structure agent from right-hand-side of a rule
 :param lhs: Structure agent from left-hand-side of a rule
 :param structure_agent: Structure agent from given solution
 :return: Counter of structure agent from given solution with changed atomic agents
 """
-def changeStructureStates(lhs, rhs, structure_agent_original):
+def changeStructureStates(rhs, structure_agent_original):
     structure_agent = copy.deepcopy(structure_agent_original)
-    difference = rhs.getPartialComposition() - lhs.getPartialComposition()
     composition = structure_agent.getPartialComposition()
-    for a_r in difference.elements():
+    for a_r in rhs.getPartialComposition():
         no_change_happened = True
-        for a_s in composition.elements():
-            if a_r.differsOnlyInStates(a_s):
+        for a_s in composition:
+            if a_r.equalNames(a_s):
                 no_change_happened = False
-                composition[a_s] -= 1
-                composition +=  changeAtomicStates(a_r, a_s)
+                if a_r != a_s:
+                    composition |= {changeAtomicStates(a_r, a_s)}
+                    composition.remove(a_s)
                 break
         if no_change_happened:
-            return collections.Counter([structure_agent_original]) #no change is possible
+            return structure_agent_original #no change is possible
     structure_agent.setPartialComposition(composition)
-    return collections.Counter([structure_agent])
+    return structure_agent
 
 """
-Changes state of a complex agent according to another one
-It takes triples from difference_r, difference_l, complex_agent_part and
-call structure agent or atomic agent state change.
+Changes state(s) of a complex agent according to another one
 :param lhs: Complex agent from left-hand-side of the rule
 :param rhs: Complex agent from right-hand-side of the rule
 :param complex_agent: Complex agent from given solution
-:return: Counter of complex agent from given solution with changed composition agents
+:return: Array of complex agent from given solution with changed composition agents
 """
-def changeComplexStates(lhs, rhs, complex_agent_original):
+def changeComplexStates(rhs, complex_agent_original):
     complex_agent = copy.deepcopy(complex_agent_original)
-    difference_r = rhs.getFullComposition() - lhs.getFullComposition()
-    difference_l = lhs.getFullComposition() - rhs.getFullComposition()
-    complex_agent_part = getPart(copy.deepcopy(complex_agent.getFullComposition()), copy.deepcopy(difference_r))
-    complex_agent_rest = complex_agent.getFullComposition() - complex_agent_part
-    for a_r, a_l, a_s in zip(sorted(difference_r.elements()), sorted(difference_l.elements()), sorted(complex_agent_part.elements())):
-        if isinstance(a_r, Atomic_Agent):
-            complex_agent_rest += changeAtomicStates(a_r, a_s)
+    rhs_composition = rhs.getFullComposition()
+    agent_composition = complex_agent.getFullComposition()
+    for i in range(len(rhs_composition)):
+        if isinstance(agent_composition[i], Atomic_Agent):
+            agent_composition = np.insert(agent_composition, i, changeAtomicStates(rhs_composition[i], agent_composition[i]))
+            agent_composition = np.delete(agent_composition, i + 1 )
         else:
-            complex_agent_rest += changeStructureStates(a_l, a_r, a_s)
-    complex_agent.setFullComposition(complex_agent_rest)
-    return set(collections.Counter([complex_agent]))
+            agent_composition = np.insert(agent_composition, i, changeStructureStates(rhs_composition[i], agent_composition[i]))
+            agent_composition = np.delete(agent_composition, i + 1)
+    complex_agent.setFullComposition(agent_composition)
+    return complex_agent
 
 class Rule:
     def __init__(self, left_hand_side, right_hand_side):
-        self.left_hand_side = collections.Counter(left_hand_side)
-        self.right_hand_side = collections.Counter(right_hand_side)
+        self.left_hand_side = np.array(left_hand_side)
+        self.right_hand_side = np.array(right_hand_side)
 
     def __eq__(self, other):
-        return (self.left_hand_side == other.left_hand_side and self.right_hand_side == other.right_hand_side)
+        return np.array_equal(self.left_hand_side, other.left_hand_side) and np.array_equal(self.right_hand_side, other.right_hand_side)
 
     def __str__(self):
         return self.__repr__()
 
     def __repr__(self):
-        return " + ".join(map(lambda k: k.__str__(), sorted(self.left_hand_side.elements()))) + direction \
-               +  " + ".join(map(lambda k: k.__str__(), sorted(self.right_hand_side.elements())))
+        return " + ".join(map(lambda k: k.__str__(), sorted(self.left_hand_side))) + direction \
+               +  " + ".join(map(lambda k: k.__str__(), sorted(self.right_hand_side)))
 
     def __hash__(self):
         return hash((str(self.left_hand_side), str(self.right_hand_side)))
@@ -106,12 +88,41 @@ class Rule:
         return self.right_hand_side
 
     """
-    Checks if solution matches left-hand-side of the rule
-    :param solution: input solution (Counter)
-    :return: call compareTwoCounters
+    Checks if whole given solution is compatible with left-hand-side of the rule
+    :param solution: given solution (array)
+    :return: True if every element has compatible pair (in given order)
+    """
+    def checkSolutionAndLhs(self, solution):
+        return not False in map((lambda a,b: a.isCompatibleWith(b)), zip(solution, self.getLeftHandSide))
+
+    """
+    Filters all possible solutions to those which are compatible with left-hand-side of the rule.
+    At first creates all possible complexes (using permutations) and then creates all possible
+    solutions (using cartesian product).
+    :param solution: input solution (array)
+    :return: filtered solutions
     """
     def match(self, solution):
-        return compareTwoCounters(copy.deepcopy(solution), copy.deepcopy(self.getLeftHandSide()))
+        expanded_solution = np.array([])
+        for agent in solution:
+            if isinstance(agent, Complex_Agent):
+                expanded_solution = np.append(expanded_solution, agent.getAllCompositions())
+            else:
+                expanded_solution = np.append(expanded_solution, np.array([agent]))
+        expanded_solution = [element for element in itertools.product(*expanded_solution)]
+        return np.array(filter(lambda element: self.checkSolutionAndLhs(element), expanded_solution ))
+
+    """
+    Call replace function on all solution generated by matching
+    :param solution_original: given solution
+    :return: transformed solutions
+    """
+    def replacement(self, solution_original):
+        result = np.array([])
+        solutions = self.match(solution_original)
+        for solution in solutions:
+            result = np.append(result, self.replace(solution))
+        return set(result)  #???
 
     """
     Function replace takes a rule and solution and applies changes according to the rule type:
@@ -121,41 +132,38 @@ class Rule:
     agents =>  --> degradation
      => agents --> translation
     :param solution: input solution for a rule
-    :return: changed solution if it matched the rule
+    :return: changed solution
     """
     def replace(self, solution):
-        if not self.match(solution):
-            return solution
-        else:
-            left_size = len(list(self.getLeftHandSide().elements()))
-            right_size = len(list(self.getRightHandSide().elements()))
-            if left_size == right_size:
-                return self.changeStates(solution)
-            elif left_size > right_size:
-                if right_size == 0:
-                    return self.degrade(solution)
-                else:
-                    return self.formComplex(solution)
+        left_size = len(self.getLeftHandSide())
+        right_size = len(self.getRightHandSide())
+        if left_size == right_size:
+            return self.changeStates(solution)
+        elif left_size > right_size:
+            if right_size == 0:
+                return self.degrade(solution)
             else:
-                if left_size == 0:
-                    return self.translate()
-                else:
-                    return self.dissociateComplex(solution)
+                return self.formComplex(solution)
+        else:
+            if left_size == 0:
+                return self.translate()
+            else:
+                return self.dissociateComplex(solution)
 
     """
     Changes states according to type of the agent in solution
-    :param solution: given Counter containing one agent
+    :param solution: given array containing one agent
     """
     def changeStates(self, solution):
-        lhs = list(self.getLeftHandSide().elements())[0]
-        rhs = list(self.getRightHandSide().elements())[0]
-        solution = list(solution.elements())[0]
+        lhs = self.getLeftHandSide()[0]
+        rhs = self.getRightHandSide()[0]
+        solution = solution[0]
         if isinstance(solution, Atomic_Agent):
-            return set(changeAtomicStates(rhs, solution))
+            return np.array([changeAtomicStates(rhs, solution)])
         elif isinstance(solution, Structure_Agent):
-            return set(changeStructureStates(lhs, rhs, solution))
+            return np.array([changeStructureStates(rhs, solution)])
         else:
-            return changeComplexStates(lhs, rhs, solution)
+            return np.array([changeComplexStates(rhs, solution)])
 
     """
     Degrades given solution of agents
@@ -163,7 +171,7 @@ class Rule:
     :return: empty Counter
     """
     def degrade(self, solution):
-        return collections.Counter([])
+        return np.array([])
 
     """
     Translates new solution according to the right-hand-side ofthe rule
@@ -179,14 +187,14 @@ class Rule:
     :return: Counter of new complex agent
     """
     def formComplex(self, solution):
-        new_solution = collections.Counter([])
-        for agent in solution.elements():
+        new_solution = np.array([])
+        for agent in solution:
             compartment = agent.getCompartment()
             if isinstance(agent, Complex_Agent):
-                new_solution += agent.getFullComposition()
+                new_solution = np.append(new_solution, agent.getFullComposition())
             else:
-                new_solution += collections.Counter([agent])
-        return collections.Counter([Complex_Agent(list(new_solution.elements()), compartment)])
+                new_solution = np.append(new_solution, agent)
+        return np.array([Complex_Agent(new_solution, compartment)])
 
     """
     Dissociates complex agent to new agents (might be complexes)

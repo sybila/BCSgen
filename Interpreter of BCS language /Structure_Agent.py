@@ -7,7 +7,7 @@ Decreases number of occurrences of element in Counter
 :param agent: element to be removed
 :return: Counter with decreased element value
 """
-def extractSetValue(composition, agent):
+def extractValue(composition, agent):
     composition.remove(agent)
     return composition
 
@@ -23,7 +23,7 @@ def comparePartialCompositions(composition_s, composition_l):
     for agent_l in sorted(composition_l): #this sort is just for higher effectiveness
         for agent_s in sorted(composition_s): #this sort is just for higher effectiveness
             if agent_s.isCompatibleWith(agent_l):
-                return comparePartialCompositions(extractSetValue(composition_s, agent_s), extractSetValue(composition_l, agent_l))
+                return comparePartialCompositions(extractValue(composition_s, agent_s), extractValue(composition_l, agent_l))
         return False
 
 class Structure_Agent:
@@ -34,6 +34,9 @@ class Structure_Agent:
 
     def __eq__(self, other):
         return self.name == other.name and self.partial_composition == other.partial_composition and self.compartment == other.compartment
+
+    def __ne__(self, other):
+        return not self.__eq__(other)
 
     def __str__(self):
         return self.__repr__("::" + self.compartment)

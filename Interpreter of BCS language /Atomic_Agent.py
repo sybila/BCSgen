@@ -7,6 +7,9 @@ class Atomic_Agent:
     def __eq__(self, other):
         return self.name == other.name and self.states == other.states and self.compartment == other.compartment
 
+    def __ne__(self, other):
+        return not self.__eq__(other)
+
     def __str__(self):
         return self.__repr__("::" + self.compartment)
 
@@ -38,8 +41,8 @@ class Atomic_Agent:
     def setCompartment(self, compartment):
         self.compartment = compartment
 
-    def differsOnlyInStates(self, other):
-        return self.name == other.name and self.states != other.states and self.compartment == other.compartment
+    def equalNames(self, other):
+        return self.name == other.name and self.compartment == other.compartment
 
     """
     Checks if the first atomic agent is compatible with the second one
