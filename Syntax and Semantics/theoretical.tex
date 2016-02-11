@@ -40,6 +40,8 @@ Let $\mathtt{T} = \tau(\gamma_p),\mathtt{T}' = \tau(\gamma'_p)$ be structure age
 }
 \end{center}
 
+Note the full composition if a list where order does not matter (but cannot be multiset for practical purposes).
+
 \begin{mydef}
 Let $\mathtt{X}=\gamma_f::\mathtt{c}$ for some full composition $\gamma_f$. We denote $\mathtt{T}\in \mathtt{X}$ (resp. $\mathtt{a}\in \mathtt{X}$) the fact that~$\mathtt{T}$ (resp. $\mathtt{a}$) is a structure agent (resp. atomic agent) included in~$\gamma_f$ (resp. in~$\gamma_p$). 
 Moreover, we denote $\#\mathtt{T}[\mathtt{X}]$ (resp. $\#\mathtt{a}[\mathtt{X}]$) the number of occurrences of~$\mathtt{T}$ (resp. $\mathtt{a}$) in $\gamma_f$. 
@@ -268,80 +270,72 @@ Then, if a human-readable rule is defined, exact mapping to executable rule(s) m
 
 \mysection{Matching and Replacement}
 
+Partial composition has only partial application, i.e. we apply only one random (?), but meaningful change. On the other hand, full composition has full application, i.e. we apply all possible changes with respect to ordering of the composition. 
+
 Let $\alpha$ be an agent and $\Gamma_s,~\Gamma_l,~\Gamma_r$ be given solution, left-hand-side and right-hand-side of a rule, respectively.
+
+\begin{mydef}
+For a given solution $\Gamma_s$ we consider all possible forms for each occurred complex agent as variations without replacement, i.e. we construct set of solutions $\{\Gamma_s\}$ where order for complex agents does matter. However, we do not change order of agents in the solution.
+\end{mydef}
 
 \begin{mydef}
 Let $l_1$ and $l_2$ be lists. We define difference between two multisets $l~=~l_1~-~l_2$ as $[ x~|~x~\in~l_1~\wedge~x~\not\in~l_2 ]$.
 \end{mydef}
 
 \begin{mydef}
-With assumption all rules of form $\Gamma_l\Rightarrow\Gamma_r$ are well-formed, we define \textbf{Matching} as relation $\models \subseteq \Gamma_s~\bigtimes~\Gamma_l $ via \textit{compatibility} operator:\\ $\forall (\alpha_s,~\alpha_l)~\in~\models~: \alpha_s \in \Gamma_s $ and $ \alpha_l \in \Gamma_l$ and $\alpha_s \lhd \alpha_l$. 
-
-Moreover, $\forall (\alpha, \alpha'), (\beta, \beta') \in \models: \alpha~\neq~\beta~\Leftrightarrow~\alpha'~\neq~\beta' $.
+With assumption all rules of form $\Gamma_l\Rightarrow\Gamma_r$ are well-formed, we define \textbf{Matching} as function $\{\Gamma_s\}~\bigtimes~\Gamma_l~\rightarrow~\{\Gamma_s\}^{\lhd}$ where $\{\Gamma_s\}^{\lhd}~\subseteq~\{\Gamma_s\}$ such that $\forall \Gamma_s \in \{\Gamma_s\}^{\lhd} : \forall \alpha_1, \alpha_2, ..., \alpha_n \in \Gamma_s $ and $\forall \beta_1, \beta_2, ..., \beta_n \in \Gamma_l : \alpha_i \lhd \beta_i$ where $\alpha$, $\beta$ are atomic, structure or complex agents.
 \end{mydef}
 
-
-\textbf{Replacement} is a function $\Gamma_s~\times~\Gamma_r~\rightarrow~\Gamma_s[\Gamma_r]$. Each of the $\Gamma$ constructs might be one of atomic agent $a$, structure agent $\mathtt{T}$, complex agent $\mathtt{X}$, a list of them or $\emptyset$ (what follows from flattening of the rules). Before replacement can be applied, matching in left column must be satisfied. Then, five match/replacement categories can be distinguished:
+\begin{mydef}
+\textbf{Replacement} is a function $\{\Gamma_s\}^{\lhd}~\times~\Gamma_r~\rightarrow~\{\Gamma_s[\Gamma_r]\}$. Five replacement categories can be distinguished:
 
 \begin{enumerate}
 \item \textit{state change}:
 
-Let $\gamma^{r-l}$ is the difference between $\gamma^{l}$ and $\gamma^{r}$ compositions. Then $\gamma^{s^-}$ is part of $\gamma^{s}$ composition such that there exist relation $\rho \subseteq \gamma^{r-l} \bigtimes \gamma^{s^-}:$ $\forall~\alpha_1~\in~\gamma^{s^-}~\exists~\alpha_2~\in~\gamma^{r-l}:~(\alpha_1,~\alpha_2)~\in~\rho~\wedge~\alpha_1~\lhd~\alpha_2$. Moreover, $\forall (\alpha, \alpha'), (\beta, \beta') \in \rho: \alpha~\neq~\beta~\Leftrightarrow~\alpha'~\neq~\beta' $.
+Let $\gamma_p^{r-l}$ is the difference between $\gamma_p^{r}$ and $\gamma_p^{l}$ compositions and $\gamma_p^{l-r}$ is the difference between $\gamma_p^{l}$ and $\gamma_p^{r}$. Then $\gamma_p^{s^-}$ is part of $\gamma_p^{s}$ composition such that there exist relation $\rho \subseteq \gamma_p^{r-l} \bigtimes \gamma_p^{s^-}:$ $\forall~\alpha_1~\in~\gamma_p^{s^-}~\exists~\alpha_2~\in~\gamma_p^{l-r}: (\alpha_1,~\alpha_2)~\in~\rho~\wedge~\alpha_1~\lhd~\alpha_2$. Moreover, $\forall (\alpha, \alpha'), (\beta, \beta') \in \rho: \alpha~\neq~\beta~\Leftrightarrow~\alpha'~\neq~\beta' $.
 
 \begin{itemize}
-\item	\begin{tabular}{ l l }
-				$ \mathtt{a}_s\{p\} \models \mathtt{a}_l $ & \hspace*{0.6 cm} $ \mathtt{a}_s\{p\}[\mathtt{a}_r\{t\}] = \mathtt{a}_s\{t\} $
-		\end{tabular}
-	  
-where $ \mathtt{a}_s = \mathtt{a}_l = \mathtt{a}_r $.
-\item   \begin{tabular}{ l l }
-				$ \mathtt{T}_s \models \mathtt{T}_l $ & \hspace*{1 cm} $ \mathtt{T}_s[\mathtt{T}_r] = \mathtt{T}_s: \forall (\mathtt{a}_r\{t\},~\mathtt{a}_s\{p\}) \in \rho: \mathtt{a}_s\{p\}[\mathtt{a}_r\{t\}] $
-		\end{tabular}
-		
-where $\mathtt{T}_s = \tau_s(\gamma^{s})$, $\mathtt{T}_l = \tau_l(\gamma^{l})$, $\mathtt{T}_r = \tau_r(\gamma^{r})$ and $\tau_s = \tau_l = \tau_r$.
+\item $ \mathtt{a}_s\{p\}[\mathtt{a}_r\{t\}] = \mathtt{a}_s\{t\} $
 
-\item   \begin{tabular}{ l l }
-			$ \mathtt{X}_s \models \mathtt{X}_l $ & \hspace*{1 cm} $ \mathtt{X}_s[\mathtt{X}_r] = \mathtt{X}_s: \forall (\alpha_r,~\alpha_s) \in \rho: \alpha_s[\alpha_r] $
-		\end{tabular}
+where $ \mathtt{a}_s = \mathtt{a}_l = \mathtt{a}_r $.
+
+\item $ \mathtt{T}_s[\mathtt{T}_r] = \mathtt{T}_s: \forall (\mathtt{a}_r\{t\},~\mathtt{a}_s\{p\}) \in \rho: \mathtt{a}_s\{p\}[\mathtt{a}_r\{t\}] $
+
+where $\mathtt{T}_s = \tau_s(\gamma_p^{s})$, $\mathtt{T}_l = \tau_l(\gamma_p^{l})$, $\mathtt{T}_r = \tau_r(\gamma_p^{r})$ and $\tau_s = \tau_l = \tau_r$.
+
+\item $ \mathtt{X}_s[\mathtt{X}_r] = \mathtt{X}_s: \forall \alpha_1, \alpha_2, ..., \alpha_n \in \mathtt{X}_s $ and $\forall \beta_1, \beta_2, ..., \beta_n \in \mathtt{X}_r : \alpha_i[\beta_i]$
 		
-where $\mathtt{X}_s = \gamma^{s}$, $\mathtt{X}_l = \gamma^{l}$ and $\mathtt{X}_r = \gamma^{r}$.
+where $\mathtt{X}_s = \gamma_f^{s}$ and $\mathtt{X}_r = \gamma_f^{r}$.
 
 \end{itemize}
 
 \item \textit{complex formation}:
-\begin{center}
-\begin{tabular}{ l l }
-	$ \Gamma_s \models \Gamma_l $ & \hspace*{1 cm} $\Gamma_s[\Gamma_r] = \gamma_f : \{ x~|~x \in \gamma_f~\forall\mathtt{X} \in \Gamma_s \vee x = \mathtt{T}~\forall\mathtt{T} \in \Gamma_s \vee x = \mathtt{a}~\forall \mathtt{a} \in \Gamma_s \}$
-\end{tabular}
+\begin{center}$\Gamma_s[\Gamma_r] = \gamma_f = ( \mathtt{X}~|~ \forall \mathtt{X} \in \Gamma_s + [ \mathtt{T}~|~\forall\mathtt{T} \in \Gamma_s] + [ \mathtt{a}~|~\forall \mathtt{a} \in \Gamma_s ] )$
 \end{center}
 
 \item \textit{complex dissociation}:
 
-challenging part, have to make sure that right hand side matches new solution
 \begin{center}
-\begin{tabular}{ l l }
-	$  \Gamma_s \models \Gamma_l $ & \hspace*{1 cm} $ \gamma_f(\Gamma_s)[\Gamma_r] = \Gamma_s $
-\end{tabular}
+$ \gamma_f(\Gamma_s)[\Gamma_r] = \Gamma_s = \forall \mathtt{p} \in \Gamma_r :$
+
+ $[ \gamma_f~|~ \forall \alpha_i, ..., \alpha_j \in \mathtt{p} : \gamma_f~=~[\alpha_i, ..., \alpha_j]] $
+ 
+ $+$ 
+ 
+ $[ \alpha~|~\alpha~\in~\mathtt{p} ] $
 \end{center}
 
 \item \textit{degradation}
 \begin{center}
-\begin{tabular}{ l l }
-	$ \Gamma_s \models \Gamma_l $ & \hspace*{1 cm} $ \Gamma_s[\emptyset] = \emptyset $
-\end{tabular}
+$ \Gamma_s[\emptyset] = \emptyset $
 \end{center}
 
 \item \textit{translation}
 \begin{center}
-\begin{tabular}{ l l }
-	$ \Gamma_s \models \Gamma_l ~(\emptyset \lhd \emptyset) $ & \hspace*{1 cm} $ \emptyset[\Gamma_r] = \Gamma_r $
-\end{tabular}
+$ \emptyset[\Gamma_r] = \Gamma_r $
 \end{center}
 
 \end{enumerate}
-
-\textbf{TBA} lexicographically sorted is not working yet
-
-\textbf{TBA} what to choose as $\Gamma_s$ ???
+\end{mydef}
 
 \end{document}
