@@ -230,11 +230,11 @@ class TestRule(unittest.TestCase):
         self.Xagent19 = Complex_Agent([self.Sagent1, self.Sagent6], 'cyt')
         self.Xagent20 = Complex_Agent([self.Sagent4, self.Sagent4], 'cyt')
         self.Xagent21 = Complex_Agent([self.Sagent4, self.Sagent4, self.Sagent4, self.Sagent4], 'cyt')
-
         self.Xagent22 = Complex_Agent([self.Sagent6, self.Sagent1, self.Sagent6, self.Sagent1], 'cyt')
         self.Xagent23 = Complex_Agent([self.Sagent6, self.Sagent1, self.Sagent1, self.Sagent6], 'cyt')
         self.Xagent24 = Complex_Agent([self.Sagent1, self.Sagent6, self.Sagent6, self.Sagent1], 'cyt')
         self.Xagent25 = Complex_Agent([self.Sagent1, self.Sagent6, self.Sagent1, self.Sagent6], 'cyt')
+        self.Xagent26 = Complex_Agent([self.Sagent6, self.Sagent6], 'cyt')
 
 
         self.Rule1 = Rule([self.Aagent1], [self.Aagent12])
@@ -246,9 +246,9 @@ class TestRule(unittest.TestCase):
         self.Rule7 = Rule([self.Xagent15, self.Sagent14], [self.Xagent16])
         self.Rule8 = Rule([self.Sagent10, self.Sagent10], [self.Xagent17])
         self.Rule9 = Rule([self.Xagent20, self.Xagent20], [self.Xagent21])
-        self.Rule10 = Rule([], [])
-        self.Rule11 = Rule([], [])
-        self.Rule12 = Rule([], [])
+        self.Rule10 = Rule([self.Xagent10], [self.Aagent1, self.Aagent1])
+        self.Rule11 = Rule([self.Xagent16], [self.Xagent15, self.Sagent14])
+        self.Rule12 = Rule([self.Xagent21], [self.Xagent20, self.Xagent20])
         self.Rule13 = Rule([], [])
         self.Rule14 = Rule([], [])
         self.Rule15 = Rule([], [])
@@ -284,8 +284,16 @@ class TestRule(unittest.TestCase):
         solution_new = [self.Xagent10]
         self.assertEqual(self.Rule4.formComplex(solution_old), solution_new)
         solution_old = [self.Xagent3, self.Sagent5]
-        solution_new =[self.Xagent14]
+        solution_new = [self.Xagent14]
         self.assertEqual(self.Rule7.formComplex(solution_old), solution_new)
+
+    def test_dissociateComplex(self):
+        solution_old = [self.Xagent10]
+        solution_new = [self.Aagent1, self.Aagent1]
+        self.assertEqual(self.Rule10.dissociateComplex(solution_old), solution_new)
+        solution_old = [self.Xagent14]
+        solution_new = [self.Xagent3, self.Sagent5]
+        self.assertEqual(self.Rule11.dissociateComplex(solution_old), solution_new)
 
     def test_translate(self):
         solution_old = []
@@ -325,6 +333,9 @@ class TestRule(unittest.TestCase):
         solution_old = [self.Xagent12]
         solution_new = [self.Xagent13]
         self.assertEqual(self.Rule6.replace(solution_old), solution_new)
+        solution_old = [self.Xagent10]
+        solution_new = [self.Aagent1, self.Aagent1]
+        self.assertEqual(self.Rule10.replace(solution_old), solution_new)
 
     def test_replacement(self):
         solution_old = [self.Xagent3, self.Sagent5]
@@ -336,6 +347,10 @@ class TestRule(unittest.TestCase):
         solution_old = [self.Xagent18, self.Xagent19]
         solution_new = [[self.Xagent22], [self.Xagent23], [self.Xagent24], [self.Xagent25]]
         self.assertEqual(sorted(self.Rule9.replacement(solution_old)), sorted(solution_new))
+        solution_old = [self.Xagent22]
+        solution_new = [[self.Xagent19, self.Xagent19], [self.Xagent19, self.Xagent18], [self.Xagent18, self.Xagent19],
+                        [self.Xagent18, self.Xagent18], [self.Xagent6, self.Xagent26], [self.Xagent26, self.Xagent6] ]
+        self.assertEqual(sorted(self.Rule12.replacement(solution_old)), sorted(solution_new))
 
 
 suite = unittest.TestLoader().loadTestsFromTestCase(TestRule)
