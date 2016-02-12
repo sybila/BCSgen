@@ -149,6 +149,7 @@ class TestComplexAgent(unittest.TestCase):
         self.assertTrue(self.Xagent1.__eq__(self.Xagent2))
         self.assertFalse(self.Xagent1.__eq__(self.Xagent3))
         self.assertFalse(self.Xagent3.__eq__(self.Xagent4))
+        self.assertTrue(self.Xagent3.__eq__(self.Xagent3))
 
     def test_print(self):
         self.assertEqual(self.Xagent1.__str__(), self.Xagent2.__str__())
@@ -176,7 +177,7 @@ class TestComplexAgent(unittest.TestCase):
         self.assertFalse(self.Xagent9.isCompatibleWith(self.Xagent7))
 
     def test_getAllCompositions(self):
-        self.assertTrue(np.array_equal(self.Xagent3.getAllCompositions(), np.array([self.Xagent3, self.Xagent4])))
+        self.assertEqual(self.Xagent3.getAllCompositions(), [self.Xagent3, self.Xagent4])
 
 suite = unittest.TestLoader().loadTestsFromTestCase(TestComplexAgent)
 unittest.TextTestRunner(verbosity=2).run(suite)
@@ -205,6 +206,8 @@ class TestRule(unittest.TestCase):
         self.Sagent10 = Structure_Agent('KaiC', [], 'cyt')
         self.Sagent11 = Structure_Agent('KaiC', [self.Aagent1], 'cyt')
         self.Sagent12 = Structure_Agent('KaiC', [self.Aagent12], 'cyt')
+        self.Sagent13 = Structure_Agent('KaiC', [self.Aagent23, self.Aagent33], 'cyt')
+        self.Sagent14 = Structure_Agent('KaiC', [self.Aagent12, self.Aagent23, self.Aagent33], 'cyt')
 
         self.Xagent1 = Complex_Agent([self.Sagent1, self.Sagent2], 'cyt')
         self.Xagent2 = Complex_Agent([self.Sagent2, self.Sagent1], 'cyt')
@@ -219,6 +222,20 @@ class TestRule(unittest.TestCase):
         self.Xagent11 = Complex_Agent([self.Sagent12, self.Sagent10, self.Sagent10], 'cyt')
         self.Xagent12 = Complex_Agent([self.Sagent11, self.Sagent4, self.Sagent5], 'cyt')
         self.Xagent13 = Complex_Agent([self.Sagent12, self.Sagent4, self.Sagent5], 'cyt')
+        self.Xagent14 = Complex_Agent([self.Sagent1, self.Sagent3, self.Sagent5], 'cyt')
+        self.Xagent15 = Complex_Agent([self.Sagent4, self.Sagent13], 'cyt')
+        self.Xagent16 = Complex_Agent([self.Sagent4, self.Sagent13, self.Sagent14], 'cyt')
+        self.Xagent17 = Complex_Agent([self.Sagent10, self.Sagent10], 'cyt')
+        self.Xagent18 = Complex_Agent([self.Sagent6, self.Sagent1], 'cyt')
+        self.Xagent19 = Complex_Agent([self.Sagent1, self.Sagent6], 'cyt')
+        self.Xagent20 = Complex_Agent([self.Sagent4, self.Sagent4], 'cyt')
+        self.Xagent21 = Complex_Agent([self.Sagent4, self.Sagent4, self.Sagent4, self.Sagent4], 'cyt')
+
+        self.Xagent22 = Complex_Agent([self.Sagent6, self.Sagent1, self.Sagent6, self.Sagent1], 'cyt')
+        self.Xagent23 = Complex_Agent([self.Sagent6, self.Sagent1, self.Sagent1, self.Sagent6], 'cyt')
+        self.Xagent24 = Complex_Agent([self.Sagent1, self.Sagent6, self.Sagent6, self.Sagent1], 'cyt')
+        self.Xagent25 = Complex_Agent([self.Sagent1, self.Sagent6, self.Sagent1, self.Sagent6], 'cyt')
+
 
         self.Rule1 = Rule([self.Aagent1], [self.Aagent12])
         self.Rule2 = Rule([self.Sagent1], [self.Sagent9])
@@ -226,9 +243,9 @@ class TestRule(unittest.TestCase):
         self.Rule4 = Rule([self.Aagent1, self.Aagent1], [self.Xagent10])
         self.Rule5 = Rule([], [self.Aagent32])
         self.Rule6 = Rule([self.Xagent7], [self.Xagent11])
-        self.Rule7 = Rule([], [])
-        self.Rule8 = Rule([], [])
-        self.Rule9 = Rule([], [])
+        self.Rule7 = Rule([self.Xagent15, self.Sagent14], [self.Xagent16])
+        self.Rule8 = Rule([self.Sagent10, self.Sagent10], [self.Xagent17])
+        self.Rule9 = Rule([self.Xagent20, self.Xagent20], [self.Xagent21])
         self.Rule10 = Rule([], [])
         self.Rule11 = Rule([], [])
         self.Rule12 = Rule([], [])
@@ -254,40 +271,31 @@ class TestRule(unittest.TestCase):
         self.assertNotEqual(hash(self.Rule1), hash(self.Rule2))
         self.assertEqual(hash(self.Rule2), hash(self.Rule2))
 
-    '''
+    def test_checkSolutionAndLhs(self):
+        self.assertTrue(self.Rule7.checkSolutionAndLhs([self.Xagent3, self.Sagent5]))
+        self.assertFalse(self.Rule7.checkSolutionAndLhs([self.Xagent4, self.Sagent5]))
+
     def test_match(self):
-        solution1 = collections.Counter([self.Aagent1])
-        solution2 = collections.Counter([self.Sagent3])
-        solution3 = collections.Counter([self.Aagent1, self.Aagent2, self.Sagent1, self.Sagent2])
-        solution4 = collections.Counter([self.XagentBig1])
-        solution5 = collections.Counter([self.Xagent1])
-        self.assertTrue(self.Rule6.match(solution1))
-        self.assertFalse(self.Rule6.match(solution2))
-        self.assertFalse(self.Rule10.match(solution1))
-        self.assertTrue(self.Rule11.match(solution2))
-        self.assertFalse(self.Rule12.match(solution2))
-        self.assertTrue(self.Rule13.match(solution3))
-        self.assertFalse(self.Rule15.match(solution4))
-        self.assertTrue(self.Rule14.match(solution4))
-        self.assertTrue(self.Rule15.match(collections.Counter([])))
-        self.assertTrue(self.Rule16.match(collections.Counter([])))
-        self.assertTrue(self.Rule23.match(solution5))
-    '''
+        solution1 = [self.Xagent3, self.Sagent5]
+        self.assertEqual(self.Rule7.match(solution1), [tuple(solution1)])
 
     def test_formComplex(self):
-        solution_old = np.array([self.Aagent1, self.Aagent1])
-        solution_new = np.array([self.Xagent10])
-        self.assertTrue(np.array_equal(self.Rule4.formComplex(solution_old), solution_new))
+        solution_old = [self.Aagent1, self.Aagent1]
+        solution_new = [self.Xagent10]
+        self.assertEqual(self.Rule4.formComplex(solution_old), solution_new)
+        solution_old = [self.Xagent3, self.Sagent5]
+        solution_new =[self.Xagent14]
+        self.assertEqual(self.Rule7.formComplex(solution_old), solution_new)
 
     def test_translate(self):
-        solution_old = np.array([])
-        solution_new = np.array([self.Aagent32 ])
-        self.assertTrue(np.array_equal(self.Rule5.translate(), solution_new))
+        solution_old = []
+        solution_new = [self.Aagent32 ]
+        self.assertEqual(self.Rule5.translate(), solution_new)
 
     def test_degrade(self):
-        solution_old = np.array([self.Aagent32])
-        solution_new = np.array([])
-        self.assertTrue(np.array_equal(self.Rule3.degrade(solution_old), solution_new))
+        solution_old = [self.Aagent32]
+        solution_new = []
+        self.assertEqual(self.Rule3.degrade(solution_old), solution_new)
 
     def test_changeAtomicStates(self):
         self.assertEqual(changeAtomicStates(self.Aagent12, self.Aagent1), self.Aagent12)
@@ -297,27 +305,38 @@ class TestRule(unittest.TestCase):
 
     def test_changeComplexStates(self):
         self.assertEqual(changeComplexStates(self.Xagent11, self.Xagent12), self.Xagent13)
-    '''
+
     def test_replace(self):
-        solution_old = collections.Counter([self.Aagent1, self.Aagent2])
-        solution_new = collections.Counter([self.Xagent4])
-        self.assertEqual(self.Rule17.replace(solution_old), solution_new)
-        solution_old = collections.Counter([])
-        solution_new = collections.Counter([self.Aagent1, self.Aagent2])
-        self.assertEqual(self.Rule20.replace(solution_new), solution_old)
-        solution_old = collections.Counter([])
-        solution_new = collections.Counter([self.Aagent1, self.Aagent2])
-        self.assertEqual(self.Rule19.replace(solution_old), solution_new)
-        solution_old = collections.Counter([self.Aagent12])
-        solution_new = collections.Counter([self.Aagent1])
-        self.assertEqual(self.Rule21.replace(solution_old), solution_new)
-        solution_old = collections.Counter([self.Sagent3])
-        solution_new = collections.Counter([self.Sagent31])
-        self.assertEqual(self.Rule22.replace(solution_old), solution_new)
-        solution_old = collections.Counter([self.Xagent1])
-        solution_new = collections.Counter([self.Xagent8])
-        self.assertEqual(self.Rule23.replace(solution_old), solution_new)
-    '''
+        solution_old = [self.Aagent1, self.Aagent1]
+        solution_new =  [self.Xagent10]
+        self.assertEqual(self.Rule4.replace(solution_old), solution_new)
+        solution_old = []
+        solution_new = [self.Aagent32]
+        self.assertEqual(self.Rule5.replace(solution_old), solution_new)
+        solution_old = [self.Aagent32]
+        solution_new = []
+        self.assertEqual(self.Rule3.replace(solution_old), solution_new)
+        solution_old = [self.Aagent1]
+        solution_new = [self.Aagent12]
+        self.assertEqual(self.Rule1.replace(solution_old), solution_new)
+        solution_old = [self.Sagent1]
+        solution_new = [self.Sagent9]
+        self.assertEqual(self.Rule2.replace(solution_old), solution_new)
+        solution_old = [self.Xagent12]
+        solution_new = [self.Xagent13]
+        self.assertEqual(self.Rule6.replace(solution_old), solution_new)
+
+    def test_replacement(self):
+        solution_old = [self.Xagent3, self.Sagent5]
+        solution_new = [[self.Xagent14]]
+        self.assertEqual(sorted(self.Rule7.replacement(solution_old)), sorted(solution_new))
+        solution_old = [self.Sagent1, self.Sagent3]
+        solution_new = [[self.Xagent3]]
+        self.assertEqual(sorted(self.Rule8.replacement(solution_old)), sorted(solution_new))
+        solution_old = [self.Xagent18, self.Xagent19]
+        solution_new = [[self.Xagent22], [self.Xagent23], [self.Xagent24], [self.Xagent25]]
+        self.assertEqual(sorted(self.Rule9.replacement(solution_old)), sorted(solution_new))
+
 
 suite = unittest.TestLoader().loadTestsFromTestCase(TestRule)
 unittest.TextTestRunner(verbosity=2).run(suite)

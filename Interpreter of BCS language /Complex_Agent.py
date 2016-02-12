@@ -17,11 +17,11 @@ def compareFullCompositions(composition_s, composition_l):
 
 class Complex_Agent:
     def __init__(self, full_composition, compartment):
-        self.full_composition = np.array(full_composition)
+        self.full_composition = list(full_composition)
         self.compartment = compartment
 
     def __eq__(self, other):
-        return np.array_equal(self.full_composition, other.full_composition) and self.compartment == other.compartment
+        return self.full_composition == other.full_composition and self.compartment == other.compartment
 
     def __ne__(self, other):
         return not self.__eq__(other)
@@ -49,16 +49,13 @@ class Complex_Agent:
     :param full_composition: Counter or list
     """
     def setFullComposition(self, full_composition):
-        if isinstance(full_composition, (np.ndarray, np.generic)):
             self.full_composition = full_composition
-        else:
-            self.full_composition = np.array(full_composition)
 
     def setCompartment(self, compartment):
         self.compartment = compartment
 
     def getAllCompositions(self):
-        return np.array([Complex_Agent(element, self.compartment) for element in itertools.permutations(self.full_composition, len(self.full_composition))])
+        return [Complex_Agent(element, self.compartment) for element in itertools.permutations(self.full_composition, len(self.full_composition))]
 
     def isCompatibleWith(self, other):
         return self.__eq__(other) or ( self.compartment == other.compartment and len(self.full_composition) == len(other.full_composition)
