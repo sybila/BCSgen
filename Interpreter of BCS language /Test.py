@@ -193,6 +193,7 @@ class TestRule(unittest.TestCase):
         self.Aagent3 = Atomic_Agent('N', ['u'], 'cyt')
         self.Aagent32 = Atomic_Agent('N', ['p'], 'cyt')
         self.Aagent33 = Atomic_Agent('N', ['u', 'p'], 'cyt')
+        self.Aagent4 = Atomic_Agent('N', ['u', 'p'], 'liq')
 
         self.Sagent1 = Structure_Agent('KaiC', [self.Aagent1, self.Aagent2], 'cyt')
         self.Sagent2 = Structure_Agent('KaiC', [self.Aagent2, self.Aagent1], 'cyt')
@@ -249,7 +250,7 @@ class TestRule(unittest.TestCase):
         self.Rule10 = Rule([self.Xagent10], [self.Aagent1, self.Aagent1])
         self.Rule11 = Rule([self.Xagent16], [self.Xagent15, self.Sagent14])
         self.Rule12 = Rule([self.Xagent21], [self.Xagent20, self.Xagent20])
-        self.Rule13 = Rule([], [])
+        self.Rule13 = Rule([self.Aagent33], [self.Aagent4])
         self.Rule14 = Rule([], [])
         self.Rule15 = Rule([], [])
         self.Rule16 = Rule([], [])
@@ -350,6 +351,9 @@ class TestRule(unittest.TestCase):
         solution_old = [self.Xagent22]
         solution_new = [[self.Xagent19, self.Xagent19], [self.Xagent6, self.Xagent26]]
         self.assertEqual(sorted(self.Rule12.replacement(solution_old)), sorted(solution_new))
+        solution_old = [self.Aagent33]
+        solution_new = [[self.Aagent4]]
+        self.assertEqual(sorted(self.Rule13.replacement(solution_old)), sorted(solution_new))
 
 
 suite = unittest.TestLoader().loadTestsFromTestCase(TestRule)

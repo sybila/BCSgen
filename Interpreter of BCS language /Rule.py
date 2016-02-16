@@ -45,6 +45,7 @@ Changes state of an atomic agent according to another one
 def changeAtomicStates(rhs, atomic_agent_original):
     atomic_agent = copy.deepcopy(atomic_agent_original)
     atomic_agent.setStates(rhs.getStates())
+    atomic_agent.setCompartment(rhs.getCompartment())
     return atomic_agent
 
 """
@@ -69,6 +70,7 @@ def changeStructureStates(rhs, structure_agent_original):
         if no_change_happened:
             return structure_agent_original #no change is possible
     structure_agent.setPartialComposition(composition)
+    structure_agent.setCompartment(rhs.getCompartment())
     return structure_agent
 
 """
@@ -90,6 +92,7 @@ def changeComplexStates(rhs, complex_agent_original):
             agent_composition.insert(i, changeStructureStates(rhs_composition[i], agent_composition[i]))
             del agent_composition[i + 1]
     complex_agent.setFullComposition(agent_composition)
+    complex_agent.setCompartment(rhs.getCompartment())
     return complex_agent
 
 class Rule:
