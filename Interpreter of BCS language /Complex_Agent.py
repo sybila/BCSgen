@@ -1,4 +1,5 @@
 import copy
+import collections
 import numpy as np
 import itertools
 from Structure_Agent import *
@@ -21,7 +22,7 @@ class Complex_Agent:
         self.compartment = compartment
 
     def __eq__(self, other):
-        return self.full_composition == other.full_composition and self.compartment == other.compartment
+        return collections.Counter(self.full_composition) == collections.Counter(other.full_composition) and self.compartment == other.compartment
 
     def __ne__(self, other):
         return not self.__eq__(other)

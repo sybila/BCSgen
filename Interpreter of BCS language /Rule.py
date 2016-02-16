@@ -5,6 +5,38 @@ from Complex_Agent import *
 direction = " => "
 
 """
+Removes duplicates from an list of unhashable objects
+:param my_list: list of unhashable objects
+:return: list of unique unhashable objects
+"""
+def unique(my_list):
+    indices = sorted(range(len(my_list)), key=my_list.__getitem__)
+    indices = set(next(it) for k, it in itertools.groupby(indices, key=my_list.__getitem__))
+    return [x for i, x in enumerate(my_list) if i in indices]
+
+"""
+Reduces given list of products from replace function to only the unique ones.
+Assumes the order in a Complex agent's does not matter.
+:param result_original: a list of produces results
+:return: list of produces results without duplicates
+"""
+def reduce(result_original):
+    new_result = []
+    for res in result_original:
+        part = collections.Counter([])
+        for agent in res:
+            part += collections.Counter([agent])
+        new_result.append(part)
+    new_result = unique(new_result)
+    new_reduced_list = []
+    for res in new_result:
+        new_part = []
+        for item in res.elements():
+            new_part.append(item)
+        new_reduced_list.append(new_part)
+    return new_reduced_list
+
+"""
 Changes state of an atomic agent according to another one
 :param rhs: Atomic agent from right-hand-side of a rule
 :param atomic_agent: Atomic agent from given solution
@@ -126,7 +158,7 @@ class Rule:
         solutions = list(set(self.match(solution_original)))
         for solution in solutions:
             result += [ self.replace(solution) ]
-        return result
+        return reduce(result)
 
     """
     Function replace takes a rule and solution and applies changes according to the rule type:
@@ -198,7 +230,7 @@ class Rule:
                 new_solution += agent.getFullComposition()
             else:
                 new_solution.append(agent)
-        return [Complex_Agent(new_solution, compartment)]
+        return [Complex_Agent(sorted(new_solution), compartment)]
 
     """
     Dissociates complex agent to new agents (might be complexes)
@@ -210,7 +242,7 @@ class Rule:
         result = []
         for agent in self.right_hand_side:
             if isinstance(agent, Complex_Agent):
-                result.append(Complex_Agent([solution.pop(0) for i in range(len(agent.getFullComposition()))], agent.getCompartment()))
+                result.append(Complex_Agent(sorted([solution.pop(0) for i in range(len(agent.getFullComposition()))]), agent.getCompartment()))
             else:
                 result.append(solution.pop(0))
         return result

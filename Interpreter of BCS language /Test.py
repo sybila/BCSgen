@@ -148,7 +148,7 @@ class TestComplexAgent(unittest.TestCase):
         self.assertTrue(self.Xagent1.__eq__(self.Xagent1))
         self.assertTrue(self.Xagent1.__eq__(self.Xagent2))
         self.assertFalse(self.Xagent1.__eq__(self.Xagent3))
-        self.assertFalse(self.Xagent3.__eq__(self.Xagent4))
+        self.assertTrue(self.Xagent3.__eq__(self.Xagent4))
         self.assertTrue(self.Xagent3.__eq__(self.Xagent3))
 
     def test_print(self):
@@ -345,11 +345,10 @@ class TestRule(unittest.TestCase):
         solution_new = [[self.Xagent3]]
         self.assertEqual(sorted(self.Rule8.replacement(solution_old)), sorted(solution_new))
         solution_old = [self.Xagent18, self.Xagent19]
-        solution_new = [[self.Xagent22], [self.Xagent23], [self.Xagent24], [self.Xagent25]]
+        solution_new = [[self.Xagent22]]
         self.assertEqual(sorted(self.Rule9.replacement(solution_old)), sorted(solution_new))
         solution_old = [self.Xagent22]
-        solution_new = [[self.Xagent19, self.Xagent19], [self.Xagent19, self.Xagent18], [self.Xagent18, self.Xagent19],
-                        [self.Xagent18, self.Xagent18], [self.Xagent6, self.Xagent26], [self.Xagent26, self.Xagent6] ]
+        solution_new = [[self.Xagent19, self.Xagent19], [self.Xagent6, self.Xagent26]]
         self.assertEqual(sorted(self.Rule12.replacement(solution_old)), sorted(solution_new))
 
 
