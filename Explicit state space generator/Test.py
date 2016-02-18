@@ -75,12 +75,17 @@ class TestState(unittest.TestCase):
         self.assertNotEqual(hash(self.State1), hash(self.State3))
 
     def test_getAllSolutions(self):
-        all_possibilities = [[self.Xagent1], [self.Sagent4], [self.Aagent2]]
+        all_possibilities = [([self.Xagent1], [self.Xagent1, self.Sagent4, self.Aagent2]),
+                             ([self.Sagent4], [self.Xagent1, self.Xagent1, self.Aagent2]),
+                             ([self.Aagent2], [self.Xagent1, self.Xagent1, self.Sagent4])]
         self.assertEqual(toStr(self.State1.getAllSolutions(self.Rule1)), toStr(all_possibilities))
-        all_possibilities = [[self.Xagent1, self.Xagent1], [self.Sagent4, self.Sagent4], [self.Aagent2, self.Aagent2],
-                             [self.Xagent1, self.Sagent4], [self.Sagent4, self.Xagent1],
-                             [self.Xagent1, self.Aagent2], [self.Aagent2, self.Xagent1],
-                             [self.Sagent4, self.Aagent2], [self.Aagent2, self.Sagent4]]
+        all_possibilities = [([self.Xagent1, self.Xagent1], [self.Sagent4, self.Aagent2]),
+                             ([self.Xagent1, self.Sagent4], [self.Xagent1, self.Aagent2]),
+                             ([self.Sagent4, self.Xagent1], [self.Xagent1, self.Aagent2]),
+                             ([self.Xagent1, self.Aagent2], [self.Xagent1, self.Sagent4]),
+                             ([self.Aagent2, self.Xagent1], [self.Xagent1, self.Sagent4]),
+                             ([self.Sagent4, self.Aagent2], [self.Xagent1, self.Xagent1]),
+                             ([self.Aagent2, self.Sagent4], [self.Xagent1, self.Xagent1])]
         self.assertEqual(toStr(self.State1.getAllSolutions(self.Rule2)), toStr(all_possibilities))
 
 suite = unittest.TestLoader().loadTestsFromTestCase(TestState)
@@ -112,3 +117,6 @@ class TestGenerate(unittest.TestCase):
         edges = set([])
         rules = [self.Rule1, self.Rule2, self.Rule3]
         sequential_work(states, state_hashes, rules, edges)
+
+suite = unittest.TestLoader().loadTestsFromTestCase(TestGenerate)
+unittest.TextTestRunner(verbosity=2).run(suite)

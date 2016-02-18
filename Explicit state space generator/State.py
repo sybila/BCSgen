@@ -19,7 +19,7 @@ class State:
         return self.__repr__()
 
     def __repr__(self):
-        return 'State ID: ' + str(self.hash) + '\n' + '\n'.join(map(lambda (a, b): b.__str__() + " " + a.__str__(), self.agents.items())) + '\n'
+        return 'State ID: ' + str(self.hash) + '\n' + '\n'.join(map(lambda (a, b): b.__str__() + " " + a.__str__(), self.agents.items())) + '\n\n'
 
     def getAgents(self):
         return self.agents
@@ -34,4 +34,6 @@ class State:
     """
     def getAllSolutions(self, rule):
         r = len(rule.getLeftHandSide())
-        return map(lambda a: list(a), list(set([element for element in itertools.product(self.agents.elements(), repeat=r)])))
+        product = map(lambda a: list(a), list(set([element for element in itertools.permutations(self.agents.elements(), r)])))
+        the_rest = map(lambda a: list((self.agents - collections.Counter(a)).elements()), product)
+        return zip(product, the_rest)

@@ -14,3 +14,11 @@ class Edge:
 
     def __hash__(self):
         return hash(self.__repr__())
+
+    """
+    Checks if a edge is not self-loop
+    Caused by the fact changeStructureStates sometimes return original agent.. should be checked and fixed
+    :return: False if it is not a self-loop
+    """
+    def isNotSelfLoop(self):
+        return not self.left == self.right

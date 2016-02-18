@@ -59,5 +59,7 @@ class Complex_Agent:
         return [Complex_Agent(element, self.compartment) for element in itertools.permutations(self.full_composition, len(self.full_composition))]
 
     def isCompatibleWith(self, other):
+        if not isinstance(other, Complex_Agent):
+            return False
         return self.__eq__(other) or ( self.compartment == other.compartment and len(self.full_composition) == len(other.full_composition)
                 and compareFullCompositions(copy.deepcopy(self.full_composition), copy.deepcopy(other.full_composition)) )

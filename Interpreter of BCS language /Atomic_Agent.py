@@ -50,4 +50,6 @@ class Atomic_Agent:
     :return: True if it is compatible
     """
     def isCompatibleWith(self, other):
+        if not isinstance(other, Atomic_Agent):
+            return False
         return self.__eq__(other) or ( self.name == other.name and self.compartment == other.compartment and self.states.issubset(other.states) )

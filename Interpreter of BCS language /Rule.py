@@ -67,7 +67,7 @@ def changeStructureStates(rhs, structure_agent_original):
                     composition |= {changeAtomicStates(a_r, a_s)}
                     composition.remove(a_s)
                 break
-        if no_change_happened:
+        if no_change_happened:  # THIS MIGHT CAUSE TROUBLES !!!
             return structure_agent_original #no change is possible
     structure_agent.setPartialComposition(composition)
     structure_agent.setCompartment(rhs.getCompartment())
@@ -91,7 +91,7 @@ def changeComplexStates(rhs, complex_agent_original):
         else:
             agent_composition.insert(i, changeStructureStates(rhs_composition[i], agent_composition[i]))
             del agent_composition[i + 1]
-    complex_agent.setFullComposition(agent_composition)
+    complex_agent.setFullComposition(sorted(agent_composition))
     complex_agent.setCompartment(rhs.getCompartment())
     return complex_agent
 

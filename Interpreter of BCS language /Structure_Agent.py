@@ -82,5 +82,7 @@ class Structure_Agent:
     :return: True if it is compatible
     """
     def isCompatibleWith(self, other):
+        if not isinstance(other, Structure_Agent):
+            return False
         return self.__eq__(other) or ( self.name == other.name and self.compartment == other.compartment
                 and comparePartialCompositions(copy.deepcopy(self.partial_composition), copy.deepcopy(other.partial_composition)) )
