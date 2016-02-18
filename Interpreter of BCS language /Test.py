@@ -317,7 +317,7 @@ class TestRule(unittest.TestCase):
 
     def test_replace(self):
         solution_old = [self.Aagent1, self.Aagent1]
-        solution_new =  [self.Xagent10]
+        solution_new = [self.Xagent10]
         self.assertEqual(self.Rule4.replace(solution_old), solution_new)
         solution_old = []
         solution_new = [self.Aagent32]
