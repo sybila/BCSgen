@@ -22,7 +22,7 @@ def worker(state, state_hashes, rules):
     new_hashes = []
     new_edges = []
 
-    f = open('vertices.txt','a')
+    f = open('results/vertices.txt','a')
     f.write(state.__str__())
     f.close()
 
@@ -49,7 +49,7 @@ def parallel_work():
 :param edges:
 """
 def sequential_work(states, state_hashes, rules, edges):
-    f = open('vertices.txt','w')
+    f = open('results/vertices.txt','w')
     f.close()
 
     while states:
@@ -59,7 +59,7 @@ def sequential_work(states, state_hashes, rules, edges):
         state_hashes |= set(map(lambda x: x.getHash(), states))
         edges |= set(sum(new_edges, []))
 
-    f = open('edges.txt','w')
+    f = open('results/edges.txt','w')
     edges = filter(lambda edge: edge.isNotSelfLoop(), list(edges))
     for edge in edges:
         f.write(edge.__str__())
