@@ -40,7 +40,7 @@ Let $\mathtt{T} = \tau(\gamma_p),\mathtt{T}' = \tau(\gamma'_p)$ be structure age
 }
 \end{center}
 
-Note the full composition if a list where order does not matter (but cannot be multiset for practical purposes).
+Note the full composition is a list where order does not matter (but cannot be multiset for practical purposes of rules where order does matter).
 
 \begin{mydef}
 Let $\mathtt{X}=\gamma_f::\mathtt{c}$ for some full composition $\gamma_f$. We denote $\mathtt{T}\in \mathtt{X}$ (resp. $\mathtt{a}\in \mathtt{X}$) the fact that~$\mathtt{T}$ (resp. $\mathtt{a}$) is a structure agent (resp. atomic agent) included in~$\gamma_f$ (resp. in~$\gamma_p$). 
@@ -270,12 +270,10 @@ Then, if a human-readable rule is defined, exact mapping to executable rule(s) m
 
 \mysection{Matching and Replacement}
 
-Partial composition has only partial application, i.e. we apply only one random (?), but meaningful change. On the other hand, full composition has full application, i.e. we apply all possible changes with respect to ordering of the composition. 
-
 Let $\alpha$ be an agent and $\Gamma_s,~\Gamma_l,~\Gamma_r$ be given solution, left-hand-side and right-hand-side of a rule, respectively.
 
 \begin{mydef}
-For a given solution $\Gamma_s$ we consider all possible forms for each occurred complex agent as variations without replacement of its full composition, i.e. we construct set of solutions $\{\Gamma_s\}$ where order of full composition for complex agent does matter. However, we do not change order of agents in the solution.
+For a given solution $\Gamma_s$ we consider all possible forms for each occurred complex agent as variations without replacement of its full composition, i.e. we construct set of solutions $\{\Gamma_s\}$ where order of full composition for complex agents does matter. However, we do not change order of agents in the solution.
 \end{mydef}
 
 \begin{mydef}
@@ -289,49 +287,55 @@ With assumption all rules of form $\Gamma_l\Rightarrow\Gamma_r$ are well-formed,
 \item \textit{state change}:
 
 \begin{itemize}
-\item $ \mathtt{a}_s\{p\}[\mathtt{a}_r\{t\}] = \mathtt{a}_s\{t\} $
+\item $ \pmb{\mathtt{a}_s\{p\}::c_s[\mathtt{a}_r\{t\}::c_r] = \mathtt{a}_s\{t\}::c_r} $
 
 where $ \mathtt{a}_s = \mathtt{a}_l = \mathtt{a}_r $.
 
-\item $ \mathtt{T}_s[\mathtt{T}_r] = \mathtt{T}_s: \forall \mathtt{a}_r\{t\} \in \gamma_p^{r} : \mathtt{a}_s\{p\} \in \gamma_p^{s} : \mathtt{a}_s\{p\}[\mathtt{a}_r\{t\}] $
+\item $ \pmb{\mathtt{T}_s::c_s[\mathtt{T}_r::c_r] = \mathtt{T}_s::c_r}: \newline \forall \mathtt{a}_r\{t\} \in \gamma_p^{r} : \mathtt{a}_s\{p\} \in \gamma_p^{s} : \mathtt{a}_s\{p\}::c_s[\mathtt{a}_r\{t\}::c_r] $
 
-where $\mathtt{T}_s = \tau_s(\gamma_p^{s})$, $\mathtt{T}_l = \tau_l(\gamma_p^{l})$, $\mathtt{T}_r = \tau_r(\gamma_p^{r})$ and $\tau_s = \tau_l = \tau_r$ and $\mathtt{a}_s = \mathtt{a}_r$
+where $\mathtt{T}_s = \tau_s(\gamma_p^{s})$, $\mathtt{T}_l = \tau_l(\gamma_p^{l})$, $\mathtt{T}_r = \tau_r(\gamma_p^{r})$ $\newline$ and $\tau_s = \tau_l = \tau_r$ and $\mathtt{a}_s = \mathtt{a}_r$.
 
-\item $ \mathtt{X}_s[\mathtt{X}_r] = \mathtt{X}_s: \forall \alpha_1, \alpha_2, ..., \alpha_n \in \mathtt{X}_s $ and $\forall \beta_1, \beta_2, ..., \beta_n \in \mathtt{X}_r : \alpha_i[\beta_i]$
+\item $ \pmb{\mathtt{X}_s::c_s[\mathtt{X}_r::c_r] = \mathtt{X}_s::c_r}: \newline \forall \alpha_1, \alpha_2, ..., \alpha_n \in \mathtt{X}_s $ and $\forall \beta_1, \beta_2, ..., \beta_n \in \mathtt{X}_r : \alpha_i::c_s[\beta_i::c_r]$
 		
 where $\mathtt{X}_s = \gamma_f^{s}$ and $\mathtt{X}_r = \gamma_f^{r}$.
 
 \end{itemize}
 
 \item \textit{complex formation}:
-\begin{center}$\Gamma_s[\Gamma_r] = \gamma_f = ( \mathtt{X}~|~ \forall \mathtt{X} \in \Gamma_s + [ \mathtt{T}~|~\forall\mathtt{T} \in \Gamma_s] + [ \mathtt{a}~|~\forall \mathtt{a} \in \Gamma_s ] )$
-\end{center}
+
+\begin{itemize}
+\item $\pmb{\Gamma_s[\Gamma_r] = \gamma_f} : \newline ([\alpha~|~\forall \alpha \in \mathtt{X}]~|~ \forall \mathtt{X} \in \Gamma_s) + [ \mathtt{T}~|~\forall\mathtt{T} \in \Gamma_s] + [ \mathtt{a}~|~\forall \mathtt{a} \in \Gamma_s ] $
+\end{itemize}
 
 \item \textit{complex dissociation}:
 
-\begin{center}
-$ \gamma_f(\Gamma_s)[\Gamma_r] = \Gamma_s = \forall \mathtt{p} \in \Gamma_r :$
+\begin{itemize}
+\item $ \pmb{\gamma_f(\Gamma_s)[\Gamma_r] = \Gamma_s}:$
 
- $[ \gamma_f~|~ \forall \alpha_i, ..., \alpha_j \in \mathtt{p} : \gamma_f~=~[\alpha_i, ..., \alpha_j]] $
- 
- $+$ 
- 
- $[ \alpha~|~\alpha~\in~\mathtt{p} ] $
-\end{center}
+$result = [~]$
+
+$\forall \alpha::c \in \Gamma_r:$
+
+$if~isinstance(\alpha, \mathtt{X}):$
+
+$\hspace{1cm} result \leftarrow \mathtt{X}([\Gamma_s.pop(0)~for~i~in~range(len(\gamma_f(\alpha))],~c)$
+
+$ else: $
+
+$\hspace{1cm} result \leftarrow \Gamma_s.pop(0)$
+\end{itemize}
 
 \item \textit{degradation}
-\begin{center}
-$ \Gamma_s[\emptyset] = \emptyset $
-\end{center}
+\begin{itemize}
+\item $  \pmb{\Gamma_s[\emptyset] = \emptyset} $
+\end{itemize}
 
 \item \textit{translation}
-\begin{center}
-$ \emptyset[\Gamma_r] = \Gamma_r $
-\end{center}
+\begin{itemize}
+\item $ \pmb{\emptyset[\Gamma_r] = \Gamma_r} $
+\end{itemize}
 
 \end{enumerate}
 \end{mydef}
-
-\textbf{TBA} change of compartment? (transport)
 
 \end{document}
