@@ -19,7 +19,7 @@ class State:
         return self.__repr__()
 
     def __repr__(self):
-        return 'State ID: ' + str(self.hash) + '\n' + '\n'.join(map(lambda (a, b): b.__str__() + " " + a.__str__(), self.agents.items())) + '\n\n'
+        return 'vertex ID: ' + str(self.hash) + '\n' + '\n'.join(map(lambda (a, b): b.__str__() + " " + a.__str__(), self.agents.items())) + '\n\n'
 
     def getAgents(self):
         return self.agents
