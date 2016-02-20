@@ -1,6 +1,5 @@
 import copy
 import collections
-import numpy as np
 import itertools
 from Structure_Agent import *
 

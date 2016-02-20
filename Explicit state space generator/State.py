@@ -37,3 +37,11 @@ class State:
         product = map(lambda a: list(a), list(set([element for element in itertools.permutations(self.agents.elements(), r)])))
         the_rest = map(lambda a: list((self.agents - collections.Counter(a)).elements()), product)
         return zip(product, the_rest)
+
+    """
+    Checks if number of all agents in the state is lower than given bound
+    :param bound: integer number
+    :return: True if condition is satisfied
+    """
+    def isInBound(self, bound):
+        return self.agents.most_common(1)[0][1] <= bound

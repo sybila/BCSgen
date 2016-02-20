@@ -106,6 +106,7 @@ class TestGenerate(unittest.TestCase):
         self.Xagent3 = Complex_Agent([self.Sagent3, self.Sagent4], 'cyt')
 
         self.State1 = State([self.Sagent1, self.Sagent4])
+        self.State2 = State([self.Sagent1, self.Sagent4, self.Sagent1])
 
         self.Rule1 = Rule([self.Sagent3, self.Sagent4], [self.Xagent3])
         self.Rule2 = Rule([self.Xagent3], [self.Sagent3, self.Sagent4])
@@ -113,10 +114,11 @@ class TestGenerate(unittest.TestCase):
 
     def test_sequential_work(self):
         states = set([self.State1])
-        state_hashes = set([self.State1.getHash()])
-        edges = set([])
         rules = [self.Rule1, self.Rule2, self.Rule3]
-        sequential_work(states, state_hashes, rules, edges)
+        sequential_work(states, rules, "vertices1.txt", "edges1.txt", 1)
+        states = set([self.State2])
+        rules = [self.Rule1, self.Rule2, self.Rule3]
+        sequential_work(states, rules, "vertices2.txt", "edges2.txt", 2)
 
 suite = unittest.TestLoader().loadTestsFromTestCase(TestGenerate)
 unittest.TextTestRunner(verbosity=2).run(suite)
