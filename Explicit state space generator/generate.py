@@ -1,3 +1,4 @@
+import pathos.multiprocessing as mp
 from State import *
 
 """
@@ -51,8 +52,38 @@ def worker(state, state_hashes, rules, vertices_name):
 
 :return:
 """
-def parallel_work():
-    return
+def parallel_work(states, rules, vertices_name, edges_name, bound):
+    setGlobalBound(bound)
+    vertices_name = 'results/' + vertices_name
+    edges_name = 'results/' + edges_name
+    f = open(vertices_name,'w')
+    f.close()
+
+    edges = set([])
+    state_hashes = set(map(lambda state: state.getHash(), list(states)))
+
+    pool = mp.ProcessingPool(processes=mp.cpu_count() - 2 )
+
+    while states:
+        '''
+        ***synchronous***
+        new_values = pool.map(lambda state: worker(state, state_hashes, rules, vertices_name), list(states))
+        '''
+
+        '''
+        ***asynchronous***
+        '''
+        new_values = [p.get() for p in [pool.amap(lambda state: worker(state, state_hashes, rules, vertices_name), list(states))]][0]
+        new_states, new_edges = map(list, zip(*new_values))
+        states = filter(lambda x: x.getHash() not in state_hashes,list(set(sum(new_states, []))))
+        state_hashes |= set(map(lambda x: x.getHash(), states))
+        edges |= set(sum(new_edges, []))
+
+    f = open(edges_name,'w')
+    edges = filter(lambda edge: edge.isNotSelfLoop(), list(edges))
+    for edge in edges:
+        f.write(edge.__str__())
+    f.close()
 
 """
 Controls workers and coordinates them.

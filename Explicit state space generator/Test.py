@@ -1,5 +1,6 @@
 import unittest
 from generate import *
+from time import time
 
 def toStr(my_list):
     return sorted(map(lambda a: str(a), my_list))
@@ -104,21 +105,80 @@ class TestGenerate(unittest.TestCase):
         self.Xagent1 = Complex_Agent([self.Sagent1, self.Sagent4], 'cyt')
         self.Xagent2 = Complex_Agent([self.Sagent2, self.Sagent4], 'cyt')
         self.Xagent3 = Complex_Agent([self.Sagent3, self.Sagent4], 'cyt')
+        self.Xagent4 = Complex_Agent([self.Sagent3, self.Sagent3, self.Sagent4], 'cyt')
+        self.Xagent5 = Complex_Agent([self.Sagent3, self.Sagent3, self.Sagent3, self.Sagent4], 'cyt')
+        self.Xagent6 = Complex_Agent([self.Sagent3, self.Sagent3, self.Sagent3, self.Sagent3, self.Sagent4], 'cyt')
 
         self.State1 = State([self.Sagent1, self.Sagent4])
         self.State2 = State([self.Sagent1, self.Sagent4, self.Sagent1])
+        self.State3 = State([self.Sagent1, self.Sagent4, self.Sagent1, self.Sagent1, self.Sagent1])
+        self.State4 = State([self.Sagent1, self.Sagent4, self.Sagent1, self.Sagent1])
 
         self.Rule1 = Rule([self.Sagent3, self.Sagent4], [self.Xagent3])
         self.Rule2 = Rule([self.Xagent3], [self.Sagent3, self.Sagent4])
         self.Rule3 = Rule([self.Xagent1], [self.Xagent2])
+        self.Rule4 = Rule([self.Xagent3, self.Sagent3], [self.Xagent4])
+        self.Rule5 = Rule([self.Xagent4, self.Sagent3], [self.Xagent5])
+        self.Rule6 = Rule([self.Xagent5, self.Sagent3], [self.Xagent6])
 
     def test_sequential_work(self):
+        print
+        print "Processing sequenal..."
+        starttime = time()
+
         states = set([self.State1])
         rules = [self.Rule1, self.Rule2, self.Rule3]
         sequential_work(states, rules, "vertices1.txt", "edges1.txt", 1)
+
         states = set([self.State2])
         rules = [self.Rule1, self.Rule2, self.Rule3]
         sequential_work(states, rules, "vertices2.txt", "edges2.txt", 2)
+
+        states = set([self.State2])
+        rules = [self.Rule1, self.Rule2, self.Rule3, self.Rule4]
+        sequential_work(states, rules, "vertices3.txt", "edges3.txt", 2)
+
+        states = set([self.State3])
+        rules = [self.Rule1, self.Rule2, self.Rule3, self.Rule4, self.Rule5, self.Rule6]
+        sequential_work(states, rules, "vertices4.txt", "edges4.txt", 4)
+
+        states = set([self.State4])
+        rules = [self.Rule1, self.Rule2, self.Rule3, self.Rule4, self.Rule5]
+        sequential_work(states, rules, "vertices5.txt", "edges5.txt", 3)
+
+        endtime = time() - starttime
+        print "Single process: {0:.2f}sec".format(endtime)
+
+
+    def test_parallel_work(self):
+        print
+        print "Processing parallel..."
+        starttime = time()
+
+        states = set([self.State3])
+        rules = [self.Rule1, self.Rule2, self.Rule3, self.Rule4, self.Rule5, self.Rule6]
+        parallel_work(states, rules, "par_vertices4.txt", "par_edges4.txt", 4)
+
+        states = set([self.State1])
+        rules = [self.Rule1, self.Rule2, self.Rule3]
+        parallel_work(states, rules, "par_vertices1.txt", "par_edges1.txt", 1)
+
+        states = set([self.State2])
+        rules = [self.Rule1, self.Rule2, self.Rule3]
+        parallel_work(states, rules, "par_vertices2.txt", "par_edges2.txt", 2)
+
+        states = set([self.State2])
+        rules = [self.Rule1, self.Rule2, self.Rule3, self.Rule4]
+        parallel_work(states, rules, "par_vertices3.txt", "par_edges3.txt", 2)
+
+        states = set([self.State4])
+        rules = [self.Rule1, self.Rule2, self.Rule3, self.Rule4, self.Rule5]
+        parallel_work(states, rules, "par_vertices5.txt", "par_edges5.txt", 3)
+
+        endtime = time() - starttime
+        print "Multiple processes: {0:.2f}sec".format(endtime)
+
+
 
 suite = unittest.TestLoader().loadTestsFromTestCase(TestGenerate)
 unittest.TextTestRunner(verbosity=2).run(suite)
