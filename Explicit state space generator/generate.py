@@ -2,14 +2,6 @@ import pathos.multiprocessing as mp
 from State import *
 
 """
-Sets global bound
-:param bound: given number
-"""
-def setGlobalBound(bound):
-    global global_bound
-    global_bound = bound
-
-"""
 Constructs new states from rest of state and result of replacement applied on a solution
 where solution + rest is original state
 :param solution: a solution chosen from state according to length of LHS of the rule
@@ -31,7 +23,7 @@ Worker's job:
 :vertices_name: name of output file for states
 :return: new created states and edges
 """
-def worker(state, state_hashes, rules, vertices_name):
+def worker(state, state_hashes, rules, vertices_name, bound):
     new_states = []
     new_hashes = []
     new_edges = []
@@ -43,7 +35,7 @@ def worker(state, state_hashes, rules, vertices_name):
     for rule in rules:
         new = filter(None, map(lambda (solution, rest): generate_states(solution, rest, rule), state.getAllSolutions(rule)))
         new_states += list(itertools.chain(*new))
-    new_states = filter(lambda i: i.isInBound(global_bound), new_states)
+    new_states = filter(lambda i: i.isInBound(bound), new_states)
     for s in new_states:
         new_edges.append(Edge(state.getHash(), s.getHash()))
     return new_states, new_edges
@@ -53,7 +45,6 @@ def worker(state, state_hashes, rules, vertices_name):
 :return:
 """
 def parallel_work(states, rules, vertices_name, edges_name, bound):
-    setGlobalBound(bound)
     vertices_name = 'results/' + vertices_name
     edges_name = 'results/' + edges_name
     f = open(vertices_name,'w')
@@ -74,7 +65,7 @@ def parallel_work(states, rules, vertices_name, edges_name, bound):
         ***asynchronous***
         '''
         #new_values = [p.get() for p in [pool.amap(lambda state: worker(state, state_hashes, rules, vertices_name), list(states))]][0]
-        new_values = pool.amap(lambda state: worker(state, state_hashes, rules, vertices_name), list(states)).get()
+        new_values = pool.amap(lambda state: worker(state, state_hashes, rules, vertices_name, bound), list(states)).get()
         new_states, new_edges = map(list, zip(*new_values))
         states = filter(lambda x: x.getHash() not in state_hashes,list(set(sum(new_states, []))))
         state_hashes |= set(map(lambda x: x.getHash(), states))
@@ -101,7 +92,6 @@ Controls workers and coordinates them.
 :bound: global bound
 """
 def sequential_work(states, rules, vertices_name, edges_name, bound):
-    setGlobalBound(bound)
     vertices_name = 'results/' + vertices_name
     edges_name = 'results/' + edges_name
     f = open(vertices_name,'w')
@@ -111,7 +101,7 @@ def sequential_work(states, rules, vertices_name, edges_name, bound):
     state_hashes = set(map(lambda state: state.getHash(), list(states)))
 
     while states:
-        new_values = map(lambda state: worker(state, state_hashes, rules, vertices_name), list(states))
+        new_values = map(lambda state: worker(state, state_hashes, rules, vertices_name, bound), list(states))
         new_states, new_edges = map(list, zip(*new_values))
         states = filter(lambda x: x.getHash() not in state_hashes,list(set(sum(new_states, []))))
         state_hashes |= set(map(lambda x: x.getHash(), states))

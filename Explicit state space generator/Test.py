@@ -63,6 +63,8 @@ class TestState(unittest.TestCase):
         self.Xagent26 = Complex_Agent([self.Sagent6, self.Sagent6], 'cyt')
         self.Xagent27 = Complex_Agent([self.Sagent15, self.Sagent16, self.Sagent16, self.Sagent16], 'cyt')
         self.Xagent28 = Complex_Agent([self.Sagent15, self.Sagent16, self.Sagent16, self.Sagent16, self.Sagent16], 'cyt')
+        #self.Xagent29 = Complex_Agent([self.Sagent15, self.Sagent16, self.Sagent16, self.Sagent16, self.Sagent16], 'cyt')
+        #self.Xagent30 = Complex_Agent([self.Sagent15, self.Sagent16, self.Sagent16, self.Sagent16, self.Sagent16], 'cyt')
 
         self.State1 = State([self.Xagent1, self.Xagent1, self.Sagent4, self.Aagent2])
         self.State2 = State([self.Aagent2, self.Xagent1, self.Sagent4, self.Xagent1])
