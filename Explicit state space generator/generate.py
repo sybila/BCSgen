@@ -73,7 +73,8 @@ def parallel_work(states, rules, vertices_name, edges_name, bound):
         '''
         ***asynchronous***
         '''
-        new_values = [p.get() for p in [pool.amap(lambda state: worker(state, state_hashes, rules, vertices_name), list(states))]][0]
+        #new_values = [p.get() for p in [pool.amap(lambda state: worker(state, state_hashes, rules, vertices_name), list(states))]][0]
+        new_values = pool.amap(lambda state: worker(state, state_hashes, rules, vertices_name), list(states)).get()
         new_states, new_edges = map(list, zip(*new_values))
         states = filter(lambda x: x.getHash() not in state_hashes,list(set(sum(new_states, []))))
         state_hashes |= set(map(lambda x: x.getHash(), states))

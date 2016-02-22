@@ -32,6 +32,8 @@ class TestState(unittest.TestCase):
         self.Sagent12 = Structure_Agent('KaiC', [self.Aagent12], 'cyt')
         self.Sagent13 = Structure_Agent('KaiC', [self.Aagent23, self.Aagent33], 'cyt')
         self.Sagent14 = Structure_Agent('KaiC', [self.Aagent12, self.Aagent23, self.Aagent33], 'cyt')
+        self.Sagent15 = Structure_Agent('KaiB', [], 'cyt')
+        self.Sagent16 = Structure_Agent('KaiC', [self.Aagent12], 'cyt')
 
         self.Xagent1 = Complex_Agent([self.Sagent1, self.Sagent2], 'cyt')
         self.Xagent2 = Complex_Agent([self.Sagent2, self.Sagent1], 'cyt')
@@ -59,10 +61,14 @@ class TestState(unittest.TestCase):
         self.Xagent24 = Complex_Agent([self.Sagent1, self.Sagent6, self.Sagent6, self.Sagent1], 'cyt')
         self.Xagent25 = Complex_Agent([self.Sagent1, self.Sagent6, self.Sagent1, self.Sagent6], 'cyt')
         self.Xagent26 = Complex_Agent([self.Sagent6, self.Sagent6], 'cyt')
+        self.Xagent27 = Complex_Agent([self.Sagent15, self.Sagent16, self.Sagent16, self.Sagent16], 'cyt')
+        self.Xagent28 = Complex_Agent([self.Sagent15, self.Sagent16, self.Sagent16, self.Sagent16, self.Sagent16], 'cyt')
 
         self.State1 = State([self.Xagent1, self.Xagent1, self.Sagent4, self.Aagent2])
         self.State2 = State([self.Aagent2, self.Xagent1, self.Sagent4, self.Xagent1])
         self.State3 = State([self.Aagent2, self.Xagent1, self.Sagent4, self.Xagent1, self.Sagent4])
+        self.State4 = State([self.Xagent27, self.Sagent16])
+        self.State5 = State([self.Xagent28])
 
         self.Rule1 = Rule([self.Aagent1], [self.Aagent12])
         self.Rule2 = Rule([self.Aagent1, self.Aagent1], [self.Aagent12])
@@ -74,6 +80,7 @@ class TestState(unittest.TestCase):
     def test_hash(self):
         self.assertEqual(hash(self.State1), hash(self.State2))
         self.assertNotEqual(hash(self.State1), hash(self.State3))
+        self.assertNotEqual(hash(self.State4), hash(self.State5))
 
     def test_getAllSolutions(self):
         all_possibilities = [([self.Xagent1], [self.Xagent1, self.Sagent4, self.Aagent2]),
@@ -90,95 +97,4 @@ class TestState(unittest.TestCase):
         self.assertEqual(toStr(self.State1.getAllSolutions(self.Rule2)), toStr(all_possibilities))
 
 suite = unittest.TestLoader().loadTestsFromTestCase(TestState)
-unittest.TextTestRunner(verbosity=2).run(suite)
-
-class TestGenerate(unittest.TestCase):
-    def setUp(self):
-        self.Aagent1 = Atomic_Agent('S', ['u'], 'cyt')
-        self.Aagent12 = Atomic_Agent('S', ['p'], 'cyt')
-
-        self.Sagent1 = Structure_Agent('KaiC', [self.Aagent1], 'cyt')
-        self.Sagent2 = Structure_Agent('KaiC', [self.Aagent12], 'cyt')
-        self.Sagent3 = Structure_Agent('KaiC', [], 'cyt')
-        self.Sagent4 = Structure_Agent('KaiB', [], 'cyt')
-
-        self.Xagent1 = Complex_Agent([self.Sagent1, self.Sagent4], 'cyt')
-        self.Xagent2 = Complex_Agent([self.Sagent2, self.Sagent4], 'cyt')
-        self.Xagent3 = Complex_Agent([self.Sagent3, self.Sagent4], 'cyt')
-        self.Xagent4 = Complex_Agent([self.Sagent3, self.Sagent3, self.Sagent4], 'cyt')
-        self.Xagent5 = Complex_Agent([self.Sagent3, self.Sagent3, self.Sagent3, self.Sagent4], 'cyt')
-        self.Xagent6 = Complex_Agent([self.Sagent3, self.Sagent3, self.Sagent3, self.Sagent3, self.Sagent4], 'cyt')
-
-        self.State1 = State([self.Sagent1, self.Sagent4])
-        self.State2 = State([self.Sagent1, self.Sagent4, self.Sagent1])
-        self.State3 = State([self.Sagent1, self.Sagent4, self.Sagent1, self.Sagent1, self.Sagent1])
-        self.State4 = State([self.Sagent1, self.Sagent4, self.Sagent1, self.Sagent1])
-
-        self.Rule1 = Rule([self.Sagent3, self.Sagent4], [self.Xagent3])
-        self.Rule2 = Rule([self.Xagent3], [self.Sagent3, self.Sagent4])
-        self.Rule3 = Rule([self.Xagent1], [self.Xagent2])
-        self.Rule4 = Rule([self.Xagent3, self.Sagent3], [self.Xagent4])
-        self.Rule5 = Rule([self.Xagent4, self.Sagent3], [self.Xagent5])
-        self.Rule6 = Rule([self.Xagent5, self.Sagent3], [self.Xagent6])
-
-    def test_sequential_work(self):
-        print
-        print "Processing sequenal..."
-        starttime = time()
-
-        states = set([self.State1])
-        rules = [self.Rule1, self.Rule2, self.Rule3]
-        sequential_work(states, rules, "vertices1.txt", "edges1.txt", 1)
-
-        states = set([self.State2])
-        rules = [self.Rule1, self.Rule2, self.Rule3]
-        sequential_work(states, rules, "vertices2.txt", "edges2.txt", 2)
-
-        states = set([self.State2])
-        rules = [self.Rule1, self.Rule2, self.Rule3, self.Rule4]
-        sequential_work(states, rules, "vertices3.txt", "edges3.txt", 2)
-
-        states = set([self.State3])
-        rules = [self.Rule1, self.Rule2, self.Rule3, self.Rule4, self.Rule5, self.Rule6]
-        sequential_work(states, rules, "vertices4.txt", "edges4.txt", 4)
-
-        states = set([self.State4])
-        rules = [self.Rule1, self.Rule2, self.Rule3, self.Rule4, self.Rule5]
-        sequential_work(states, rules, "vertices5.txt", "edges5.txt", 3)
-
-        endtime = time() - starttime
-        print "Single process: {0:.2f}sec".format(endtime)
-
-
-    def test_parallel_work(self):
-        print
-        print "Processing parallel..."
-        starttime = time()
-
-        states = set([self.State3])
-        rules = [self.Rule1, self.Rule2, self.Rule3, self.Rule4, self.Rule5, self.Rule6]
-        parallel_work(states, rules, "par_vertices4.txt", "par_edges4.txt", 4)
-
-        states = set([self.State1])
-        rules = [self.Rule1, self.Rule2, self.Rule3]
-        parallel_work(states, rules, "par_vertices1.txt", "par_edges1.txt", 1)
-
-        states = set([self.State2])
-        rules = [self.Rule1, self.Rule2, self.Rule3]
-        parallel_work(states, rules, "par_vertices2.txt", "par_edges2.txt", 2)
-
-        states = set([self.State2])
-        rules = [self.Rule1, self.Rule2, self.Rule3, self.Rule4]
-        parallel_work(states, rules, "par_vertices3.txt", "par_edges3.txt", 2)
-
-        states = set([self.State4])
-        rules = [self.Rule1, self.Rule2, self.Rule3, self.Rule4, self.Rule5]
-        parallel_work(states, rules, "par_vertices5.txt", "par_edges5.txt", 3)
-
-        endtime = time() - starttime
-        print "Multiple processes: {0:.2f}sec".format(endtime)
-
-
-
-suite = unittest.TestLoader().loadTestsFromTestCase(TestGenerate)
 unittest.TextTestRunner(verbosity=2).run(suite)
