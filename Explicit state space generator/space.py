@@ -24,9 +24,11 @@ State4 = State([Sagent1, Sagent4, Sagent1, Sagent1])
 Rule1 = Rule([Sagent3, Sagent4], [Xagent3])
 Rule2 = Rule([Xagent3], [Sagent3, Sagent4])
 Rule3 = Rule([Xagent1], [Xagent2])
-Rule4 = Rule([Xagent3, Sagent3], [Xagent4])
-Rule5 = Rule([Xagent4, Sagent3], [Xagent5])
-Rule6 = Rule([Xagent5, Sagent3], [Xagent6])
+Rule4 = Rule([Sagent3, Xagent3], [Xagent4])
+Rule5 = Rule([Sagent3, Xagent4], [Xagent5])
+Rule6 = Rule([Sagent3, Xagent5], [Xagent6])
+
+
 '''
 *****sequential_work******
 '''
@@ -64,8 +66,6 @@ print
 print "Processing parallel..."
 starttime = time()
 
-#this has to be here !!!
-
 states = set([State1])
 rules = [Rule1, Rule2, Rule3]
 parallel_work(states, rules, "par_vertices1.txt", "par_edges1.txt", 1)
@@ -78,10 +78,9 @@ states = set([State2])
 rules = [Rule1, Rule2, Rule3, Rule4]
 parallel_work(states, rules, "par_vertices3.txt", "par_edges3.txt", 2)
 
-#cannot be here !!!???
-statess = set([State3])
-ruless = [Rule1, Rule2, Rule3, Rule4, Rule5, Rule6]
-parallel_work(statess, ruless, "par_vertices4.txt", "par_edges4.txt", 4)
+states = set([State3])
+rules = [Rule1, Rule2, Rule3, Rule4, Rule5, Rule6]
+parallel_work(states, rules, "par_vertices4.txt", "par_edges4.txt", 4)
 
 states = set([State4])
 rules = [Rule1, Rule2, Rule3, Rule4, Rule5]
