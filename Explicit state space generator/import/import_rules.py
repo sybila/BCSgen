@@ -1,5 +1,6 @@
 import sys
 import copy
+import re
 
 """
 Replaces all occurrences from defined substitutions for an agent
@@ -25,10 +26,7 @@ Splits rule to list of list by :: and . operators
 :return: list of agents
 """
 def split_rule_agent(rule_agent):
-    splitted_agent = []
-    for agent in rule_agent.split("::"):
-        splitted_agent.append(agent.split("."))
-    return splitted_agent
+    return map(lambda agent: agent.split("."), rule_agent.split("::"))
 
 """
 Applies substitutions on each agent in a rule
@@ -43,6 +41,11 @@ def substitute(substitutions, rule_agent):
         new_rule_agent = splitted_rule_agent
         splitted_rule_agent = map(lambda agents: replace_agents(substitutions, agents), splitted_rule_agent)
     return new_rule_agent
+
+def split_rule(rule):
+    agents = rule.replace(":!:", "::").replace(":?:", "::").split("::")
+    semicolons = re.findall(r":.:|::", rule)
+    return (agents, semicolons)
 
 #first choose equal ones, then compatible ones !!!
 def flattenRule(rule):
