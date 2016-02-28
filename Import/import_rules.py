@@ -21,31 +21,29 @@ def replace_agents(substitutions, agents):
     return new_agents
 
 """
-Splits rule to list of list by :: and . operators
-:param rule_agent: given string
-:return: list of agents
-"""
-def split_rule_agent(rule_agent):
-    return map(lambda agent: agent.split("."), rule_agent.split("::"))
-
-"""
 Applies substitutions on each agent in a rule
 :param substitutions: substitution list of pair (from, to)
 :param rule_agent: given string
 :return: list of replaced + not replaced agents
 """
 def substitute(substitutions, rule_agent):
-    splitted_rule_agent = split_rule_agent(rule_agent)
+    splitted_rule_agent, semicolons = split_rule(rule_agent)
     new_rule_agent = []
     while splitted_rule_agent != new_rule_agent:
         new_rule_agent = splitted_rule_agent
         splitted_rule_agent = map(lambda agents: replace_agents(substitutions, agents), splitted_rule_agent)
-    return new_rule_agent
+    return new_rule_agent, semicolons
 
+"""
+Splits rule to list of list by :: operators
+:param rule_agent: given string
+:return: list of agents, list of semicolons
+"""
 def split_rule(rule):
     agents = rule.replace(":!:", "::").replace(":?:", "::").split("::")
+    agents = map(lambda agent: agent.split("."), agents)
     semicolons = re.findall(r":.:|::", rule)
-    return (agents, semicolons)
+    return agents, semicolons
 
 #first choose equal ones, then compatible ones !!!
 def flattenRule(rule):
