@@ -281,48 +281,52 @@ With assumption all rules of form $\Gamma_l\Rightarrow\Gamma_r$ are well-formed,
 \end{mydef}
 
 \begin{mydef}
-\textbf{Replacement} is a function $\{\Gamma_s\}^{\lhd}~\times~\Gamma_r~\rightarrow~\{\Gamma_s[\Gamma_r]\}$. Five replacement categories can be distinguished:
+\textbf{Replacement} is a function $\{\Gamma_s\}^{\lhd}~\times~\Gamma_r~\rightarrow~\{\Gamma_s[\Gamma_r]\}$. According to five replacement categories, $\Gamma_s$ and $\Gamma_r$ is in one of the following forms:
 
 \begin{enumerate}
-\item \textit{state change}:
+\item \textit{state change }:
 
 \begin{itemize}
-\item $ \pmb{\mathtt{a}_s\{p\}::c_s[\mathtt{a}_r\{t\}::c_r] = \mathtt{a}_s\{t\}::c_r} $
+\item $ \pmb{\mathtt{a}_s\{p\}::c_s[\mathtt{a}_r\{t\}::c_r] = \mathtt{a}_s\{t\}::c_s} $
 
-where $ \mathtt{a}_s = \mathtt{a}_l = \mathtt{a}_r $.
+where $ \mathtt{a}_s = \mathtt{a}_r $ and $p \neq t$.
 
-\item $ \pmb{\mathtt{T}_s::c_s[\mathtt{T}_r::c_r] = \mathtt{T}_s::c_r}: \newline \forall \mathtt{a}_r\{t\} \in \gamma_p^{r} : \mathtt{a}_s\{p\} \in \gamma_p^{s} : \mathtt{a}_s\{p\}::c_s[\mathtt{a}_r\{t\}::c_r] $
+\item $ \pmb{\mathtt{T}_s::c_s[\mathtt{T}_r::c_r] = \mathtt{T}_s::c_s} \newline \forall \mathtt{a}_r\{t\} \in \gamma_p(\mathtt{T}_r), \exists \mathtt{a}_s\{p\} \in \gamma_p(\mathtt{T}_s) : \mathtt{a}_s\{p\}::c_s[\mathtt{a}_r\{t\}::c_s] $
 
-where $\mathtt{T}_s = \tau_s(\gamma_p^{s})$, $\mathtt{T}_l = \tau_l(\gamma_p^{l})$, $\mathtt{T}_r = \tau_r(\gamma_p^{r})$ $\newline$ and $\tau_s = \tau_l = \tau_r$ and $\mathtt{a}_s = \mathtt{a}_r$.
+and $\mathtt{T}_s = \tau_s(\gamma_p)$, $\mathtt{T}_r = \tau_r(\gamma_p)$ $\newline$ and $\tau_s = \tau_r$ and $\mathtt{a}_s = \mathtt{a}_r$.
 
-\item $ \pmb{\mathtt{X}_s::c_s[\mathtt{X}_r::c_r] = \mathtt{X}_s::c_r}: \newline \forall \alpha_1, \alpha_2, ..., \alpha_n \in \mathtt{X}_s $ and $\forall \beta_1, \beta_2, ..., \beta_n \in \mathtt{X}_r : \alpha_i::c_s[\beta_i::c_r]$
-		
-where $\mathtt{X}_s = \gamma_f^{s}$ and $\mathtt{X}_r = \gamma_f^{r}$.
+\item $ \pmb{\mathtt{X}_s::c_s[\mathtt{X}_r::c_r] = \mathtt{X}_s::c_s} \newline [~\alpha_i::c_s[\beta_i::c_r]~|~\alpha_i \in \mathtt{X}_s~and~\beta_i \in \mathtt{X}_r~\forall i \in I~] $
+
+where $I$ is set of indices of $\mathtt{X}_s$.
 
 \end{itemize}
 
 \item \textit{complex formation}:
 
 \begin{itemize}
-\item $\pmb{\Gamma_s[\Gamma_r] = \gamma_f} : \newline ([\alpha~|~\forall \alpha \in \mathtt{X}]~|~ \forall \mathtt{X} \in \Gamma_s) + [ \mathtt{T}~|~\forall\mathtt{T} \in \Gamma_s] + [ \mathtt{a}~|~\forall \mathtt{a} \in \Gamma_s ] $
+\item $\pmb{\mathtt{X}_s::c[\mathtt{X}_r::c]} = f(\alpha_1) + f(\alpha_2) + ... + f(\alpha_n)~|~\forall \alpha_i \in \mathtt{X}_s :$
+
+\begin{itemize}
+	\item $ f(\alpha) = \gamma_f(\alpha)$ when $\mathtt{X} \multimap \alpha $
+	\item $ f(\alpha) = [\alpha]$ when $\mathtt{T} \multimap \alpha$
+	\item $ f(\alpha) = [\alpha]$ when $\mathtt{a} \multimap \alpha$
+\end{itemize}
+
 \end{itemize}
 
 \item \textit{complex dissociation}:
 
 \begin{itemize}
-\item $ \pmb{\gamma_f(\Gamma_s)[\Gamma_r] = \Gamma_s}:$
+\item $ \pmb{\mathtt{X}_s[\Gamma_r] = \Gamma_s}:$
 
-$result = [~]$
+$\iota(*list*)$ = [ ($ i, \alpha_i $) $\forall \alpha \in \mathtt{X}_s$ ]
 
-$\forall \alpha::c \in \Gamma_r:$
+$map(\iota(*list*)$, I = \{n, n+1, ..., n+j\}) = [ $\alpha_i~|~\forall i \in I $ ] 
 
-$if~isinstance(\alpha, \mathtt{X}):$
+cut($\mathtt{X}_r$) = [  ]
 
-$\hspace{1cm} result \leftarrow \mathtt{X}([\Gamma_s.pop(0)~for~i~in~range(len(\gamma_f(\alpha))],~c)$
+to solve: we need iota for list and also list of lists !!!
 
-$ else: $
-
-$\hspace{1cm} result \leftarrow \Gamma_s.pop(0)$
 \end{itemize}
 
 \item \textit{degradation}
@@ -334,6 +338,8 @@ $\hspace{1cm} result \leftarrow \Gamma_s.pop(0)$
 \begin{itemize}
 \item $ \pmb{\emptyset[\Gamma_r] = \Gamma_r} $
 \end{itemize}
+
+\item \textit{transport}:
 
 \end{enumerate}
 \end{mydef}
