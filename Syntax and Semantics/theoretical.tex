@@ -6,6 +6,7 @@
 \usepackage{amsthm}
 \newtheorem{mydef}{Definition}
 \usepackage{mathabx}
+\usepackage{leftidx}
 
 \newcommand{\mysection}[1]{{\newpage\centering\Large\textbf{#1}\\}\normalsize\vspace{0.5cm}}
 \newcommand{\mysmallsection}[1]{\vspace{0.5cm}\large\textbf{#1}\normalsize\vspace{0.5cm}}
@@ -297,35 +298,35 @@ and $\mathtt{T}_s = \tau_s(\gamma_p)$, $\mathtt{T}_r = \tau_r(\gamma_p)$ $\newli
 
 \item $ \pmb{\mathtt{X}_s::c_s[\mathtt{X}_r::c_r] = \mathtt{X}_s::c_s} \newline [~\alpha_i::c_s[\beta_i::c_r]~|~\alpha_i \in \mathtt{X}_s~and~\beta_i \in \mathtt{X}_r~\forall i \in I~] $
 
-where $I$ is set of indices of $\mathtt{X}_s$.
+where $I = [ i~|~\forall \alpha_i \in \mathtt{X}_s]$ (list of indices).
+
+(STILL not good enough!!!)
 
 \end{itemize}
 
-\item \textit{complex formation}:
+\item \textit{complex formation}: (STILL not good enough!!!)
 
 \begin{itemize}
 \item $\pmb{\mathtt{X}_s::c[\mathtt{X}_r::c]} = f(\alpha_1) + f(\alpha_2) + ... + f(\alpha_n)~|~\forall \alpha_i \in \mathtt{X}_s :$
 
 \begin{itemize}
-	\item $ f(\alpha) = \gamma_f(\alpha)$ when $\mathtt{X} \multimap \alpha $
-	\item $ f(\alpha) = [\alpha]$ when $\mathtt{T} \multimap \alpha$
-	\item $ f(\alpha) = [\alpha]$ when $\mathtt{a} \multimap \alpha$
+	\item $ f(\alpha) = \gamma_f(\alpha)$ when $\alpha \multimap \mathtt{X} $
+	\item $ f(\alpha) = [\alpha]$ when $\alpha \multimap \mathtt{T}$
+	\item $ f(\alpha) = [\alpha]$ when $\alpha \multimap \mathtt{a}$
 \end{itemize}
 
 \end{itemize}
 
-\item \textit{complex dissociation}:
+\item \textit{complex dissociation}: (STILL not good enough!!!)
 
 \begin{itemize}
-\item $ \pmb{\mathtt{X}_s[\Gamma_r] = \Gamma_s}:$
+\item $ \pmb{\mathtt{X}_s::c[\Gamma_r]} = [~\mathtt{map}(\mathtt{X}_s, x)~|~x \in \mathtt{cut}(\Gamma_r)~]:$
 
-$\iota(*list*)$ = [ ($ i, \alpha_i $) $\forall \alpha \in \mathtt{X}_s$ ]
+where $\iota(\leftidx{^*}{list}{}) = [i~|~\forall \alpha_i \in \leftidx{^*}{list}{}~]$,
 
-$map(\iota(*list*)$, I = \{n, n+1, ..., n+j\}) = [ $\alpha_i~|~\forall i \in I $ ] 
+$\mathtt{cut}(\Gamma_r) = [~\iota(\alpha)~|~\forall \alpha \in \Gamma_r~]$
 
-cut($\mathtt{X}_r$) = [  ]
-
-to solve: we need iota for list and also list of lists !!!
+and $\mathtt{map}(\leftidx{^*}{list}{},~x) = [~\leftidx{^*}{list}{}[i]~|~\forall i \in x~] $.
 
 \end{itemize}
 
@@ -340,6 +341,11 @@ to solve: we need iota for list and also list of lists !!!
 \end{itemize}
 
 \item \textit{transport}:
+\begin{itemize}
+\item $ \pmb{\alpha_s::c_s[\alpha_r::c_r] = \alpha_s::c_r} $
+
+where $\alpha_s = \alpha_r$ and $ c_s \neq c_r $.
+\end{itemize}
 
 \end{enumerate}
 \end{mydef}
