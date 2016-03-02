@@ -43,6 +43,14 @@ def substitute(substitutions, rule_agent):
 
 """
 Splits rule to list of list by :: operators
+ :!: means exists right one (E!)        ( n )
+                                        ( 1 )
+
+ :?: means exists number of them (E)    ( n ) + ( n ) + ... + ( n )
+                                        ( 1 )   ( 2 )         ( n )
+
+ :*: means all of them                    1
+
 :param rule_agent: given string
 :return: list of agents, list of semicolons
 """
@@ -60,11 +68,23 @@ def flattenRule(rule):
 Functions for parsing "atomic" rules (executable)
 '''
 
+"""
+Creates atomic agent from given string
+:param agent: string which represents atomic agent
+:param compartment: given compartment
+:return: new Atomic agent
+"""
 def create_atomic_agent(agent, compartment):
     agent = agent[:-1]
     parts = agent.split("{")
     return Atomic_Agent(parts[0], [parts[1]], compartment)
 
+"""
+Creates structure agent from given string
+:param agent: string which represents structure agent
+:param compartment: given compartment
+:return: new Structure agent
+"""
 def create_structure_agent(agent, compartment):
     if "(" in agent:
         agent = agent[:-1]
@@ -75,6 +95,12 @@ def create_structure_agent(agent, compartment):
         partial_composition = []
     return Structure_Agent(name, partial_composition, compartment)
 
+"""
+Creates complex agent from given list of strings
+:param agents: list of strings
+:param compartment: given compartment
+:return: new Complex agent
+"""
 def create_complex_agent(agents, compartment):
     full_composition = []
     for agent in agents:
@@ -87,6 +113,12 @@ def create_complex_agent(agents, compartment):
                 full_composition.append(create_structure_agent(agent, compartment))
     return Complex_Agent(full_composition, compartment)
 
+"""
+Creates agent from given string of form
+agent::compartment
+:param agent: given string representing an agent
+:return: new agent
+"""
 def create_agent(agent):
     compartment = agent.split("::")[1]
     subagents = agent.split("::")[0].split(".")
@@ -101,6 +133,11 @@ def create_agent(agent):
             else:
                 return create_structure_agent(subagents[0], compartment)
 
+"""
+Creates rule from given string
+:param rule: string representing rule
+:return: new Rule
+"""
 def create_rule(rule):
     sides = rule.split("=>")
     rule_sides = []
@@ -113,8 +150,8 @@ def create_rule(rule):
     return Rule(rule_sides[0], rule_sides[1])
 
 #agents_file = sys.argv[-1]
-
 rules_file = sys.argv[-1]
+
 '''
 substitutions = []
 
@@ -130,7 +167,7 @@ with open(rules_file) as rules:
         # - remove steichiometry
         # - remove spaces
         # - apply substitutions
-        # - flattening
+        # - apply flattening
         created_rules.append(create_rule(rule.rstrip()))
 
 for rule in created_rules:
