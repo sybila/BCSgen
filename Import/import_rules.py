@@ -34,7 +34,7 @@ Applies substitutions on each agent in a rule
 :return: list of replaced + not replaced agents
 """
 def substitute(substitutions, rule_agent):
-    splitted_rule_agent, semicolons = split_rule(rule_agent)
+    splitted_rule_agent, semicolons = split_rule_agent(rule_agent)
     new_rule_agent = []
     while splitted_rule_agent != new_rule_agent:
         new_rule_agent = splitted_rule_agent
@@ -54,11 +54,20 @@ Splits rule to list of list by :: operators
 :param rule_agent: given string
 :return: list of agents, list of semicolons
 """
-def split_rule(rule):
+def split_rule_agent(rule):
     agents = rule.replace(":!:", "::").replace(":?:", "::").split("::")
     agents = map(lambda agent: agent.split("."), agents)
     semicolons = re.findall(r":.:|::", rule)
     return agents, semicolons
+
+def substitute_rule(substitutions, rule):
+    sides = rule.split("=>")
+    rule_sides = []
+    for side in sides:
+        agents = side.split("+")
+        substitued_agents = map(lambda agent: substitute(substitutions, agent), agents)
+        rule_sides.append(" + ".join(substitued_agents))
+    return " => ".join(rule_sides)
 
 #first choose equal ones, then compatible ones !!!
 def flattenRule(rule):
@@ -132,11 +141,40 @@ def create_agent(agent):
                 return create_atomic_agent(subagents[0], compartment)
             else:
                 return create_structure_agent(subagents[0], compartment)
+"""
+Removes duplicated white spaces from a string
+:param rule: given string
+:return: clean string
+"""
+def remove_spaces(rule):
+    splitted_rule = rule.split(" ")
+    splitted_rule = filter(None, splitted_rule)
+    return " ".join(splitted_rule)
 
+"""
+If first given string is a number, return (number - 1) multiplied second string joined by sign "+"
+:param s1: first string
+:param 21: second string
+:return: first string if condition is not satisfied
+"""
+def multiply_string(s1, s2):
+    if s1.isdigit():
+        return " + ".join([s2] * (int(s1) -1) + [""])[:-1]
+    else:
+        return s1
+
+"""
+Cleans rule (string) from steichiometry by multiplying appropriate agent
+:param rule: given rule in string form
+:return: rule without steichiometry
+"""
 def remove_steichiometry(rule):
-
-    return new_rule
-
+    new_rule = []
+    splitted_rule = rule.split(" ")
+    for i in range(len(splitted_rule) - 1):
+        new_rule.append(multiply_string(splitted_rule[i], splitted_rule[i + 1]))
+    new_rule.append(splitted_rule[len(splitted_rule) - 1])
+    return " ".join(new_rule)
 
 """
 Creates rule from given string
@@ -162,27 +200,26 @@ def import_rules(rules_file):
     created_rules = []
     with open(rules_file) as rules:
         for rule in rules:
+            rule = remove_spaces(rule)
+            rule = remove_steichiometry(rule)
             #here apply all syntactic operations on a rule (including correctness detection):
-            # - remove steichiometry
-            # - remove spaces
             # - apply substitutions
             # - apply flattening
 
             #here the rule has to be well-formed
+            rule = rule.replace(" ", "")
             created_rules.append(create_rule(rule.rstrip()))
     for rule in created_rules:
         print rule
 
-
-'''
-agents_file = sys.argv[-1]
-
-substitutions = []
-
-with open(agents_file) as complexes:
-    for line in complexes:
-        substitutions.append(line.split("=="))
-
-rules_file = sys.argv[-1]
-
-'''
+"""
+Imports agent names to be substituted
+:param subs_file: file containing line agent_sub==to_be_subted
+:return: list of pairs
+"""
+def import_substitutions(subs_file):
+    substitutions = []
+    with open(subs_file) as complexes:
+        for line in complexes:
+            substitutions.append(line.split("=="))
+    return substitutions
