@@ -1,6 +1,13 @@
 import sys
 import copy
 import re
+import os
+sys.path.append(os.path.abspath('../Interpreter of BCS language '))
+from Rule import *
+
+'''
+Functions for parsing common rules (human-readable)
+'''
 
 """
 Replaces all occurrences from defined substitutions for an agent
@@ -47,22 +54,85 @@ def split_rule(rule):
 
 #first choose equal ones, then compatible ones !!!
 def flattenRule(rule):
-
     return flattened_rule
 
-def flattenRuleSide(rule_side):
-    return
 '''
-agents_file = sys.argv[-1]
-rules_file = sys.argv[-2]
+Functions for parsing "atomic" rules (executable)
+'''
 
+def create_atomic_agent(agent, compartment):
+    agent = agent[:-1]
+    parts = agent.split("{")
+    return Atomic_Agent(parts[0], [parts[1]], compartment)
+
+def create_structure_agent(agent, compartment):
+    if "(" in agent:
+        agent = agent[:-1]
+        name = agent.split("(")[0]
+        partial_composition = map(lambda a: create_atomic_agent(a, compartment), agent.split("(")[1].split("|"))
+    else:
+        name = agent
+        partial_composition = []
+    return Structure_Agent(name, partial_composition, compartment)
+
+def create_complex_agent(agents, compartment):
+    full_composition = []
+    for agent in agents:
+        if "(" in agent:
+            full_composition.append(create_structure_agent(agent, compartment))
+        else:
+            if "{" in agent:
+                full_composition.append(create_atomic_agent(agent, compartment))
+            else:
+                full_composition.append(create_structure_agent(agent, compartment))
+    return Complex_Agent(full_composition, compartment)
+
+def create_agent(agent):
+    compartment = agent.split("::")[1]
+    subagents = agent.split("::")[0].split(".")
+    if len(subagents) > 1:
+        return create_complex_agent(subagents, compartment)
+    else:
+        if "(" in subagents[0]:
+            return create_structure_agent(subagents[0], compartment)
+        else:
+            if "{" in subagents[0]:
+                return create_atomic_agent(subagents[0], compartment)
+            else:
+                return create_structure_agent(subagents[0], compartment)
+
+def create_rule(rule):
+    sides = rule.split("=>")
+    rule_sides = []
+    for side in sides:
+        created_agents = []
+        agents = side.split("+")
+        for agent in agents:
+            created_agents.append(create_agent(agent))
+        rule_sides.append(created_agents)
+    return Rule(rule_sides[0], rule_sides[1])
+
+#agents_file = sys.argv[-1]
+
+rules_file = sys.argv[-1]
+'''
 substitutions = []
 
 with open(agents_file) as complexes:
     for line in complexes:
         substitutions.append(line.split("=="))
-
-with open(rules_file) as rules:
-    for line in rules:
-        line = line
 '''
+
+created_rules = []
+with open(rules_file) as rules:
+    for rule in rules:
+        #here apply all syntactic operations on a rule:
+        # - remove steichiometry
+        # - remove spaces
+        # - apply substitutions
+        # - flattening
+        created_rules.append(create_rule(rule.rstrip()))
+
+for rule in created_rules:
+    print rule
+
