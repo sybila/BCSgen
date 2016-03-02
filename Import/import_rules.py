@@ -133,6 +133,11 @@ def create_agent(agent):
             else:
                 return create_structure_agent(subagents[0], compartment)
 
+def remove_steichiometry(rule):
+
+    return new_rule
+
+
 """
 Creates rule from given string
 :param rule: string representing rule
@@ -149,27 +154,35 @@ def create_rule(rule):
         rule_sides.append(created_agents)
     return Rule(rule_sides[0], rule_sides[1])
 
-#agents_file = sys.argv[-1]
-rules_file = sys.argv[-1]
+"""
+Imports rules from file
+:param rules_file: name of file with rules
+"""
+def import_rules(rules_file):
+    created_rules = []
+    with open(rules_file) as rules:
+        for rule in rules:
+            #here apply all syntactic operations on a rule (including correctness detection):
+            # - remove steichiometry
+            # - remove spaces
+            # - apply substitutions
+            # - apply flattening
+
+            #here the rule has to be well-formed
+            created_rules.append(create_rule(rule.rstrip()))
+    for rule in created_rules:
+        print rule
+
 
 '''
+agents_file = sys.argv[-1]
+
 substitutions = []
 
 with open(agents_file) as complexes:
     for line in complexes:
         substitutions.append(line.split("=="))
+
+rules_file = sys.argv[-1]
+
 '''
-
-created_rules = []
-with open(rules_file) as rules:
-    for rule in rules:
-        #here apply all syntactic operations on a rule:
-        # - remove steichiometry
-        # - remove spaces
-        # - apply substitutions
-        # - apply flattening
-        created_rules.append(create_rule(rule.rstrip()))
-
-for rule in created_rules:
-    print rule
-
