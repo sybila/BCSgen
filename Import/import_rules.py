@@ -39,7 +39,8 @@ def substitute(substitutions, rule_agent):
     while splitted_rule_agent != new_rule_agent:
         new_rule_agent = splitted_rule_agent
         splitted_rule_agent = map(lambda agents: replace_agents(substitutions, agents), splitted_rule_agent)
-    return new_rule_agent, semicolons
+    new_rule_agent = map(lambda l: ".".join(l), new_rule_agent)
+    return "".join(map(lambda (a, b): "".join([a, b]), zip(new_rule_agent[:-1], semicolons))) + new_rule_agent[-1]
 
 """
 Splits rule to list of list by :: operators
@@ -60,14 +61,20 @@ def split_rule_agent(rule):
     semicolons = re.findall(r":.:|::", rule)
     return agents, semicolons
 
+"""
+Substitutes agents in a rule
+:param substitutions: list of pairs (from_sub, to_sub)
+:param rule: string representing rule
+:return: string rule with substituted agents
+"""
 def substitute_rule(substitutions, rule):
     sides = rule.split("=>")
     rule_sides = []
     for side in sides:
         agents = side.split("+")
         substitued_agents = map(lambda agent: substitute(substitutions, agent), agents)
-        rule_sides.append(" + ".join(substitued_agents))
-    return " => ".join(rule_sides)
+        rule_sides.append("+".join(substitued_agents))
+    return "=>".join(rule_sides)
 
 #first choose equal ones, then compatible ones !!!
 def flattenRule(rule):
@@ -159,7 +166,7 @@ If first given string is a number, return (number - 1) multiplied second string 
 """
 def multiply_string(s1, s2):
     if s1.isdigit():
-        return " + ".join([s2] * (int(s1) -1) + [""])[:-1]
+        return "+".join([s2] * (int(s1) -1) + [""])
     else:
         return s1
 
@@ -174,7 +181,7 @@ def remove_steichiometry(rule):
     for i in range(len(splitted_rule) - 1):
         new_rule.append(multiply_string(splitted_rule[i], splitted_rule[i + 1]))
     new_rule.append(splitted_rule[len(splitted_rule) - 1])
-    return " ".join(new_rule)
+    return "".join(new_rule)
 
 """
 Creates rule from given string
@@ -200,15 +207,17 @@ def import_rules(rules_file):
     created_rules = []
     with open(rules_file) as rules:
         for rule in rules:
+            rule = rule.rstrip()
             rule = remove_spaces(rule)
             rule = remove_steichiometry(rule)
+            rule = substitute_rule(import_substitutions("agents.txt"), rule)
+
             #here apply all syntactic operations on a rule (including correctness detection):
-            # - apply substitutions
             # - apply flattening
 
             #here the rule has to be well-formed
-            rule = rule.replace(" ", "")
-            created_rules.append(create_rule(rule.rstrip()))
+
+            created_rules.append(create_rule(rule))
     for rule in created_rules:
         print rule
 
@@ -221,5 +230,6 @@ def import_substitutions(subs_file):
     substitutions = []
     with open(subs_file) as complexes:
         for line in complexes:
+            line = line.rstrip()
             substitutions.append(line.split("=="))
     return substitutions

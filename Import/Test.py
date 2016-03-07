@@ -10,6 +10,8 @@ class TestImport(unittest.TestCase):
         self.substate2 = ("KaiA2", "KaiA.KaiA")
         self.substate3 = ("KaiC3A2", "KaiC3.KaiA2")
         self.substitutions = [self.substate1, self.substate2, self.substate3]
+        self.rule_full = "KaiC3A2+KaiC(S{p})::KaiC3.KaiC::KaiC3A2.KaiC::cyt=>KaiC(S{p})::KaiC3.KaiC::KaiC3A2.KaiC::cyt"
+        self.rule_subs = "KaiC.KaiC.KaiC.KaiA.KaiA+KaiC(S{p})::KaiC.KaiC.KaiC.KaiC::KaiC.KaiC.KaiC.KaiA.KaiA.KaiC::cyt=>KaiC(S{p})::KaiC.KaiC.KaiC.KaiC::KaiC.KaiC.KaiC.KaiA.KaiA.KaiC::cyt"
 
         self.Aagent1 = Atomic_Agent('S', ['u'], 'cyt')
         self.Aagent11 = Atomic_Agent('S', ['p'], 'cyt')
@@ -24,10 +26,14 @@ class TestImport(unittest.TestCase):
         self.assertEqual(replace_agents(self.substitutions, self.agent1.split(".")), ["KaiC", "KaiC", "KaiC", "KaiB"])
 
     def test_substitute(self):
-        self.assertEqual(substitute(self.substitutions, self.agents[0]), split_rule_agent("KaiC.KaiC.KaiC.KaiA.KaiA::cyt"))
-        self.assertEqual(substitute(self.substitutions, self.agents[1]), split_rule_agent('KaiC.KaiC.KaiC.KaiB::cyt'))
-        self.assertEqual(substitute(self.substitutions, self.agents[2]), split_rule_agent('KaiC.KaiC.KaiC.KaiC.KaiB::cyt'))
-        self.assertEqual(substitute(self.substitutions, self.agents[3]), split_rule_agent('KaiC(S{p})::KaiC.KaiC.KaiC.KaiC::KaiC.KaiC.KaiC.KaiA.KaiA.KaiC::cyt'))
+        self.assertEqual(substitute(self.substitutions, self.agents[0]), "KaiC.KaiC.KaiC.KaiA.KaiA::cyt")
+        self.assertEqual(substitute(self.substitutions, self.agents[1]), 'KaiC.KaiC.KaiC.KaiB::cyt')
+        self.assertEqual(substitute(self.substitutions, self.agents[2]), 'KaiC.KaiC.KaiC.KaiC.KaiB::cyt')
+        self.assertEqual(substitute(self.substitutions, self.agents[3]), 'KaiC(S{p})::KaiC.KaiC.KaiC.KaiC::KaiC.KaiC.KaiC.KaiA.KaiA.KaiC::cyt')
+
+    def test_substitute_rule(self):
+        self.assertEqual(substitute_rule(self.substitutions, self.rule_full), self.rule_subs)
+        self.assertEqual(substitute_rule([], self.rule_full), self.rule_full)
 
     def split_rule_agent(self):
         self.assertEqual(split_rule_agent(self.agent2), ([["KaiC(S{p})"], ["KaiC3", "KaiC"], ["KaiC3A2", "KaiC"], ["cyt"]], [":?:", "::", ":!:"]))
@@ -52,12 +58,12 @@ class TestImport(unittest.TestCase):
         self.assertEqual(create_rule("S{u}::cyt=>S{p}::cyt"), self.Rule1)
 
     def test_multiply_string(self):
-        self.assertEqual(multiply_string("3", "test"), "test + test +")
+        self.assertEqual(multiply_string("3", "test"), "test+test+")
         self.assertEqual(multiply_string("no", "test"), "no")
 
     def test_remove_steichiometry(self):
-        self.assertEqual(remove_steichiometry("2 S{u}::cyt => S{p}::cyt"), "S{u}::cyt + S{u}::cyt => S{p}::cyt")
-        self.assertEqual(remove_steichiometry(remove_spaces("2  S{u}::cyt =>   3 S{p}::cyt")), "S{u}::cyt + S{u}::cyt => S{p}::cyt + S{p}::cyt + S{p}::cyt")
+        self.assertEqual(remove_steichiometry("2 S{u}::cyt => S{p}::cyt"), "S{u}::cyt + S{u}::cyt => S{p}::cyt".replace(" ", ""))
+        self.assertEqual(remove_steichiometry(remove_spaces("2  S{u}::cyt =>   3 S{p}::cyt")), "S{u}::cyt + S{u}::cyt => S{p}::cyt + S{p}::cyt + S{p}::cyt".replace(" ", ""))
 
     def test_remove_spaces(self):
         self.assertEqual(remove_spaces("  2 S{u}::cyt  =>  3  S{p}::cyt  "), "2 S{u}::cyt => 3 S{p}::cyt")
@@ -65,9 +71,12 @@ class TestImport(unittest.TestCase):
     '''
     def test_import_rules(self):
         print
+
         print "***************Rules****************"
         import_rules("rules.txt")
+        #import_rules("test_rule.txt")
         print "************************************"
+
     '''
 
 suite = unittest.TestLoader().loadTestsFromTestCase(TestImport)
