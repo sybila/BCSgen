@@ -42,14 +42,13 @@ Rule9 = Rule([Xagent9], [Xagent10, Xagent11])
 Rule10 = Rule([Xagent10], [Sagent3, Sagent3, Sagent3])
 Rule11 = Rule([Xagent11], [Sagent3, Sagent4, Sagent7])
 
-
+'''
 print Rule1
 print Rule2
 print Rule3
 print Rule4
 print Rule5
 print Rule6
-'''
 print Rule7
 print Rule8
 print Rule9

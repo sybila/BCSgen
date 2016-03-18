@@ -1,5 +1,6 @@
 import pathos.multiprocessing as mp
 from State import *
+from Memo import *
 
 """
 Constructs new states from rest of state and result of replacement applied on a solution
