@@ -45,7 +45,7 @@ def substitute(substitutions, rule_agent):
 """
 Splits rule to list of list by :: operators
  :!: means exists right one (E!)        ( n )
-                                        ( 1 )
+    same as ::                          ( 1 )
 
  :?: means exists number of them (E)    ( n ) + ( n ) + ... + ( n )
                                         ( 1 )   ( 2 )         ( n )
@@ -76,9 +76,48 @@ def substitute_rule(substitutions, rule):
         rule_sides.append("+".join(substitued_agents))
     return "=>".join(rule_sides)
 
-#first choose equal ones, then compatible ones !!!
+"""
+Flattens two agents according to given semicolon
+:param first_agent: first agent
+:param semicolon: given semicolon (::, :!:, :?: or :*:)
+:param rest: second agent
+:return: flattened agent
+"""
+
+def flattenPair(first_agent, semicolon, rest):
+   return
+
+"""
+Flattens agent recursively
+:param first_part: string agent
+:param semicolons: associated semicolons
+:param rest: rest of agents
+:return: flattened agent
+"""
+def flattenAgent(first_part, semicolons, rest):
+    if not rest:
+        return first_part
+    else:
+        first_part = flattenPair(first_part, semicolons[0], rest[0])
+        return flattenAgent(first_part, semicolons[1:], rest[1:])
+
+"""
+Transforms expanded string rule to flattened string rule.
+:param rule: rule in extended form (with ::)
+:return: rule in flattened form (without ::)
+"""
 def flattenRule(rule):
-    return flattened_rule
+    sides = rule.split("=>")
+    rule_sides = []
+    for side in sides:
+        agents = []
+        agents = side.split("+")
+        for agent in agents:
+            semicolons = re.findall(r":.:|::", agent)
+            agent = agent.replace(":!:", "::").replace(":?:", "::").split("::")
+            agents.append(flattenAgent(agent[0], semicolons, agent[1:]))
+        rule_sides.append(" + ".join(agents))
+    return " => ".join(rule_sides)
 
 '''
 Functions for parsing "atomic" rules (executable)
@@ -203,14 +242,15 @@ def create_rule(rule):
 Imports rules from file
 :param rules_file: name of file with rules
 """
-def import_rules(rules_file):
+def import_rules(rules_file, sub_file):
     created_rules = []
     with open(rules_file) as rules:
         for rule in rules:
             rule = rule.rstrip()
             rule = remove_spaces(rule)
             rule = remove_steichiometry(rule)
-            rule = substitute_rule(import_substitutions("agents.txt"), rule)
+            rule = substitute_rule(import_substitutions(sub_file), rule)
+            rule = flattenRule(rule)
 
             #here apply all syntactic operations on a rule (including correctness detection):
             # - apply flattening

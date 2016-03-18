@@ -68,16 +68,14 @@ class TestImport(unittest.TestCase):
     def test_remove_spaces(self):
         self.assertEqual(remove_spaces("  2 S{u}::cyt  =>  3  S{p}::cyt  "), "2 S{u}::cyt => 3 S{p}::cyt")
 
-    '''
     def test_import_rules(self):
         print
 
         print "***************Rules****************"
-        import_rules("rules.txt")
-        #import_rules("test_rule.txt")
+        import_rules("rules.txt", "agents.txt")
+        #import_rules("test_rule.txt", "agents.txt")
         print "************************************"
 
-    '''
 
 suite = unittest.TestLoader().loadTestsFromTestCase(TestImport)
 unittest.TextTestRunner(verbosity=2).run(suite)
