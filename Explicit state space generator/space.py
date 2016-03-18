@@ -68,6 +68,7 @@ states = set([State1])
 rules = [Rule1, Rule2, Rule3]
 sequential_work(states, rules, "vertices1.txt", "edges1.txt", 1)
 
+
 states = set([State2])
 rules = [Rule1, Rule2, Rule3]
 sequential_work(states, rules, "vertices2.txt", "edges2.txt", 2)
@@ -94,6 +95,7 @@ print "Single process: {0:.2f}sec".format(endtime)
 '''
 *****parallel_work*****
 '''
+
 print
 print "Processing parallel..."
 starttime = time()
