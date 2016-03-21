@@ -84,8 +84,12 @@ Flattens two agents according to given semicolon
 :return: flattened agent
 """
 
-def flattenPair(first_agent, semicolon, rest):
-   return
+def flattenPair(first_agent, second_agent, compartment, semicolon):
+    first_agent = create_agent(first_agent + "::" + compartment)
+    second_agent = create_agent(second_agent + "::" + compartment)
+
+    #now test all cases
+    return
 
 """
 Flattens agent recursively
@@ -94,11 +98,11 @@ Flattens agent recursively
 :param rest: rest of agents
 :return: flattened agent
 """
-def flattenAgent(first_part, semicolons, rest):
+def flattenAgent(first_part, compartment, semicolons, rest):
     if not rest:
         return first_part
     else:
-        first_part = flattenPair(first_part, semicolons[0], rest[0])
+        first_part = flattenPair(first_part, rest[0], compartment, semicolons[0])
         return flattenAgent(first_part, semicolons[1:], rest[1:])
 
 """
@@ -113,9 +117,11 @@ def flattenRule(rule):
         agents = []
         agents = side.split("+")
         for agent in agents:
-            semicolons = re.findall(r":.:|::", agent)
+            semicolons = re.findall(r":.:|::", agent)[:-1]
             agent = agent.replace(":!:", "::").replace(":?:", "::").split("::")
-            agents.append(flattenAgent(agent[0], semicolons, agent[1:]))
+            compartment = agents[-1]
+            agents = agents[:-1]
+            agents.append(flattenAgent(agent[0], compartment, semicolons, agent[1:]))
         rule_sides.append(" + ".join(agents))
     return " => ".join(rule_sides)
 
