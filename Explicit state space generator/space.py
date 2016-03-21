@@ -64,30 +64,32 @@ print
 print "Processing sequenal..."
 starttime = time()
 
-states = set([State1])
+parallel = False
+memoization = True
+
+states = {State1}
 rules = [Rule1, Rule2, Rule3]
-sequential_work(states, rules, "vertices1.txt", "edges1.txt", 1)
+work_manager(states, rules, "vertices1.txt", "edges1.txt", 1, parallel, memoization)
 
-
-states = set([State2])
+states = {State2}
 rules = [Rule1, Rule2, Rule3]
-sequential_work(states, rules, "vertices2.txt", "edges2.txt", 2)
+work_manager(states, rules, "vertices2.txt", "edges2.txt", 2, parallel, memoization)
 
-states = set([State2])
+states = {State2}
 rules = [Rule1, Rule2, Rule3, Rule4]
-sequential_work(states, rules, "vertices3.txt", "edges3.txt", 2)
+work_manager(states, rules, "vertices3.txt", "edges3.txt", 2, parallel, memoization)
 
-states = set([State3])
+states = {State3}
 rules = [Rule1, Rule2, Rule3, Rule4, Rule5, Rule6]
-sequential_work(states, rules, "vertices4.txt", "edges4.txt", 4)
+work_manager(states, rules, "vertices4.txt", "edges4.txt", 4, parallel, memoization)
 
-states = set([State4])
+states ={State4}
 rules = [Rule1, Rule2, Rule3, Rule4, Rule5]
-sequential_work(states, rules, "vertices5.txt", "edges5.txt", 3)
+work_manager(states, rules, "vertices5.txt", "edges5.txt", 3, parallel, memoization)
 
-states = set([State5])
+states = {State5}
 rules = [Rule1, Rule2, Rule3, Rule4, Rule5, Rule6, Rule7, Rule8, Rule9, Rule10, Rule11]
-sequential_work(states, rules, "vertices6.txt", "edges6.txt", 4)
+work_manager(states, rules, "vertices6.txt", "edges6.txt", 4, parallel, memoization)
 
 endtime = time() - starttime
 print "Single process: {0:.2f}sec".format(endtime)
@@ -100,29 +102,32 @@ print
 print "Processing parallel..."
 starttime = time()
 
-states = set([State1])
-rules = [Rule1, Rule2, Rule3]
-parallel_work(states, rules, "par_vertices1.txt", "par_edges1.txt", 1)
+parallel = True
+memoization = False
 
-states = set([State2])
+states = {State1}
 rules = [Rule1, Rule2, Rule3]
-parallel_work(states, rules, "par_vertices2.txt", "par_edges2.txt", 2)
+work_manager(states, rules, "par_vertices1.txt", "par_edges1.txt", 1, parallel, memoization)
 
-states = set([State2])
+states = {State2}
+rules = [Rule1, Rule2, Rule3]
+work_manager(states, rules, "par_vertices2.txt", "par_edges2.txt", 2, parallel, memoization)
+
+states = {State2}
 rules = [Rule1, Rule2, Rule3, Rule4]
-parallel_work(states, rules, "par_vertices3.txt", "par_edges3.txt", 2)
+work_manager(states, rules, "par_vertices3.txt", "par_edges3.txt", 2, parallel, memoization)
 
-states = set([State3])
+states = {State3}
 rules = [Rule1, Rule2, Rule3, Rule4, Rule5, Rule6]
-parallel_work(states, rules, "par_vertices4.txt", "par_edges4.txt", 4)
+work_manager(states, rules, "par_vertices4.txt", "par_edges4.txt", 4, parallel, memoization)
 
-states = set([State4])
+states = {State4}
 rules = [Rule1, Rule2, Rule3, Rule4, Rule5]
-parallel_work(states, rules, "par_vertices5.txt", "par_edges5.txt", 3)
+work_manager(states, rules, "par_vertices5.txt", "par_edges5.txt", 3, parallel, memoization)
 
-states = set([State5])
+states = {State5}
 rules = [Rule1, Rule2, Rule3, Rule4, Rule5, Rule6, Rule7, Rule8, Rule9, Rule10, Rule11]
-parallel_work(states, rules, "par_vertices6.txt", "par_edges6.txt", 4)
+work_manager(states, rules, "par_vertices6.txt", "par_edges6.txt", 4, parallel, memoization)
 
 endtime = time() - starttime
 print "Multiple processes: {0:.2f}sec".format(endtime)
