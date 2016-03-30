@@ -44,10 +44,6 @@ class Complex_Agent:
     def getCompartment(self):
         return self.compartment
 
-    """
-    Sets new full composition
-    :param full_composition: Counter or list
-    """
     def setFullComposition(self, full_composition):
             self.full_composition = full_composition
 
@@ -62,3 +58,22 @@ class Complex_Agent:
             return False
         return self.__eq__(other) or ( self.compartment == other.compartment and len(self.full_composition) == len(other.full_composition)
                 and compareFullCompositions(copy.deepcopy(self.full_composition), copy.deepcopy(other.full_composition)) )
+
+    """
+    Returns compatible agent (first found) from full composition with given agent
+    :param agent: given atomic or structure agent
+    :return: compatible agent
+    """
+    def getCompatibleAgent(self, agent):
+        for full_agent in self.full_composition:
+            if agent.isCompatibleWith(full_agent):
+                return full_agent
+        return None
+
+    """
+    Returns all indices of the compatible agents from full composition with given agent
+    :param agent: given atomic or structure agent
+    :return: list indices of compatible agents
+    """
+    def getAllCompatibleAgents(self, agent):
+        return [i for i, full_agent in enumerate(self.full_composition) if agent.isCompatibleWith(full_agent)]

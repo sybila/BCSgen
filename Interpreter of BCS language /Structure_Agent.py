@@ -65,7 +65,7 @@ class Structure_Agent:
 
     """
     Sets new partial composition
-    :param partial_composition: Counter or list
+    :param partial_composition: Set or list
     """
     def setPartialComposition(self, partial_composition):
         if isinstance(partial_composition, set):
@@ -86,3 +86,14 @@ class Structure_Agent:
             return False
         return self.__eq__(other) or ( self.name == other.name and self.compartment == other.compartment
                 and comparePartialCompositions(copy.deepcopy(self.partial_composition), copy.deepcopy(other.partial_composition)) )
+
+    """
+    Returns compatible agent from partial composition with given agent
+    :param agent: given atomic agent
+    :return: compatible agent
+    """
+    def getCompatibleAtomicAgent(self, agent):
+        for partial_agent in self.partial_composition:
+            if agent.isCompatibleWith(partial_agent):
+                return partial_agent
+        return None

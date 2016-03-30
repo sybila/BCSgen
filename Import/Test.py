@@ -21,6 +21,15 @@ class TestImport(unittest.TestCase):
         self.Sagent3 = Structure_Agent('KaiC', [], 'cyt')
         self.Xagent1 = Complex_Agent([self.Sagent1, self.Sagent2], 'cyt')
         self.Rule1 = Rule([self.Aagent1], [self.Aagent11])
+        self.Aagent3 = Atomic_Agent('A', ['i'], 'cyt')
+        self.Aagent4 = Atomic_Agent('A', ['i', 'a'], 'cyt')
+        self.Aagent5 = Atomic_Agent('A', ['a'], 'cyt')
+        self.Sagent4 = Structure_Agent('T', [self.Aagent1, self.Aagent4], 'cyt')
+        self.Sagent5 = Structure_Agent('T', [self.Aagent1, self.Aagent3], 'cyt')
+        self.Sagent6 = Structure_Agent('T', [self.Aagent1], 'cyt')
+        self.Xagent2 = Complex_Agent([self.Sagent1, self.Aagent4, self.Aagent4], 'cyt')
+        self.Xagent3 = Complex_Agent([self.Sagent1, self.Aagent3, self.Aagent4], 'cyt')
+        self.Xagent4 = Complex_Agent([self.Sagent1, self.Aagent3, self.Aagent3], 'cyt')
 
     def test_replace_agents(self):
         self.assertEqual(replace_agents(self.substitutions, self.agent1.split(".")), ["KaiC", "KaiC", "KaiC", "KaiB"])
@@ -68,6 +77,18 @@ class TestImport(unittest.TestCase):
     def test_remove_spaces(self):
         self.assertEqual(remove_spaces("  2 S{u}::cyt  =>  3  S{p}::cyt  "), "2 S{u}::cyt => 3 S{p}::cyt")
 
+    def test_flatten_aT(self):
+        self.assertEqual(flatten_aT(self.Aagent3, self.Sagent4), self.Sagent5)
+        self.assertEqual(flatten_aT(self.Aagent3, self.Sagent6), self.Sagent5)
+
+    def test_flatten_aX(self):
+        self.assertEqual(flatten_aX(self.Aagent3, self.Xagent2, "::"), [self.Xagent3])
+        self.assertEqual(flatten_aX(self.Aagent3, self.Xagent2, ":?:"), [self.Xagent3])
+
+        self.assertEqual(flatten_aX(self.Aagent3, self.Xagent2, ":!:"), [self.Xagent3, self.Xagent4])
+        self.assertEqual(flatten_aX(self.Aagent3, self.Xagent2, ":*:"), [self.Xagent4])
+
+    '''
     def test_import_rules(self):
         print
 
@@ -75,7 +96,7 @@ class TestImport(unittest.TestCase):
         import_rules("rules.txt", "agents.txt")
         #import_rules("test_rule.txt", "agents.txt")
         print "************************************"
-
+    '''
 
 suite = unittest.TestLoader().loadTestsFromTestCase(TestImport)
 unittest.TextTestRunner(verbosity=2).run(suite)

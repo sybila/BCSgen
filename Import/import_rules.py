@@ -76,15 +76,51 @@ def substitute_rule(substitutions, rule):
         rule_sides.append("+".join(substitued_agents))
     return "=>".join(rule_sides)
 
-'''
-a::T
-then semicolon does not matter
-'''
+"""
+This is flattening of agents of form a::T
+then semicolon does not matter.
+:param first_agent: an atomic agent
+:param second_agent: a structure agent
+:return: structure agent
+"""
 def flatten_aT(first_agent, second_agent):
-    return
+    if first_agent in second_agent.getPartialComposition():
+        return second_agent
+    else:
+        agent = second_agent.getCompatibleAtomicAgent(first_agent)
+        second_agent.setPartialComposition(second_agent.getPartialComposition() - {agent} | {first_agent})
+        return second_agent
 
+"""
+This is flattening of agents of form a::X
+:param first_agent: an atomic agent
+:param second_agent: a complex agent
+:param semicolon: given semicolon type
+:return: list of agent(s)
+"""
 def flatten_aX(first_agent, second_agent, semicolon):
-    return
+    if semicolon == ":?:" or semicolon == "::":
+        agent = second_agent.getCompatibleAgent(first_agent)
+        new_composition = second_agent.getFullComposition()
+        new_composition[new_composition.index(agent)] = first_agent
+        second_agent.setFullComposition(new_composition)
+        return [second_agent]
+    elif semicolon == ":!:":
+        new_agents = []
+        indices = second_agent.getAllCompatibleAgents(first_agent)
+        for index in indices:
+            new_composition = copy.deepcopy(second_agent.getFullComposition())
+            new_composition[index] = first_agent
+            new_agents.append(Complex_Agent(new_composition, second_agent.getCompartment()))
+        return new_agents
+    else:
+        indices = second_agent.getAllCompatibleAgents(first_agent)
+        new_composition = second_agent.getFullComposition()
+        for index in indices:
+            new_composition[index] = first_agent
+        second_agent.setFullComposition(new_composition)
+        return [second_agent]
+
 
 def flatten_TX(first_agent, second_agent, semicolon):
     return
