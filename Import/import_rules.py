@@ -76,6 +76,22 @@ def substitute_rule(substitutions, rule):
         rule_sides.append("+".join(substitued_agents))
     return "=>".join(rule_sides)
 
+'''
+a::T
+then semicolon does not matter
+'''
+def flatten_aT(first_agent, second_agent):
+    return
+
+def flatten_aX(first_agent, second_agent, semicolon):
+    return
+
+def flatten_TX(first_agent, second_agent, semicolon):
+    return
+
+def flatten_XX(first_agent, second_agent, semicolon):
+    return
+
 """
 Flattens two agents according to given semicolon
 :param first_agent: first agent
@@ -83,13 +99,21 @@ Flattens two agents according to given semicolon
 :param rest: second agent
 :return: flattened agent
 """
-
 def flattenPair(first_agent, second_agent, compartment, semicolon):
     first_agent = create_agent(first_agent + "::" + compartment)
     second_agent = create_agent(second_agent + "::" + compartment)
 
-    #now test all cases
-    return
+    if isinstance(first_agent, Atomic_Agent) and isinstance(second_agent, Structure_Agent):
+        return flatten_aT(first_agent, second_agent)
+
+    if isinstance(first_agent, Atomic_Agent) and isinstance(second_agent, Complex_Agent):
+        return flatten_aX(first_agent, second_agent, semicolon)
+
+    if isinstance(first_agent, Structure_Agent) and isinstance(second_agent, Complex_Agent):
+        return flatten_TX(first_agent, second_agent, semicolon)
+
+    if isinstance(first_agent, Complex_Agent) and isinstance(second_agent, Complex_Agent):
+        return flatten_XX(first_agent, second_agent, semicolon)
 
 """
 Flattens agent recursively
@@ -103,7 +127,7 @@ def flattenAgent(first_part, compartment, semicolons, rest):
         return first_part
     else:
         first_part = flattenPair(first_part, rest[0], compartment, semicolons[0])
-        return flattenAgent(first_part, semicolons[1:], rest[1:])
+        return flattenAgent(first_part, compartment, semicolons[1:], rest[1:])
 
 """
 Transforms expanded string rule to flattened string rule.
