@@ -297,19 +297,18 @@ With assumption all rules of form $\Gamma_l\Rightarrow\Gamma_r$ are well-formed,
 
 where $ \mathtt{a}_s = \mathtt{a}_r $ and $p \neq t$.
 
-\item $ \pmb{\mathtt{T}_s::c_s[\mathtt{T}_r::c_r] = \mathtt{T}_s::c_s} \newline \forall \mathtt{a}_r\{t\} \in \gamma_p(\mathtt{T}_r), \exists \mathtt{a}_s\{p\} \in \gamma_p(\mathtt{T}_s) : \mathtt{a}_s\{p\}::c_s[\mathtt{a}_r\{t\}::c_s] $
+\item $ \pmb{\mathtt{T}_s::c_s[\mathtt{T}_r::c_r] = \mathtt{T}^r_s::c_s} \newline \forall \mathtt{a}_r\{t\} \in \gamma_p(\mathtt{T}_r), \exists \mathtt{a}_s\{p\} \in \gamma_p(\mathtt{T}_s) : \mathtt{a}_s\{p\}::c_s[\mathtt{a}_r\{t\}::c_s] $
 
 and $\mathtt{T}_s = \tau_s(\gamma_p)$, $\mathtt{T}_r = \tau_r(\gamma_p)$ $\newline$ and $\tau_s = \tau_r$ and $\mathtt{a}_s = \mathtt{a}_r$.
 
-\item $ \pmb{\mathtt{X}_s::c_s[\mathtt{X}_r::c_r] = \mathtt{X}_s::c_s} \newline [~\alpha_i::c_s[\beta_i::c_r]~|~\forall \alpha_1, \alpha_2, ..., \alpha_n \in \mathtt{X}_s~and~\beta_1, \beta_2, ..., \beta_n \in \mathtt{X}_r~]$
+\item $ \pmb{\mathtt{X}_s::c_s[\mathtt{X}_r::c_r] = \mathtt{X}^r_s::c_s} \newline  \mathtt{X}^r_s = [~\alpha_i::c_s[\beta_i::c_r]~|~\forall \alpha_1, \alpha_2, ..., \alpha_n \in \mathtt{X}_s~and~\beta_1, \beta_2, ..., \beta_n \in \mathtt{X}_r~]$
 
 \end{itemize}
 
-\item \textit{complex formation}: (STILL not good enough!!!)
+\item \textit{complex formation}: (not good!!!)
 
 \begin{itemize}
-\item $\pmb{\mathtt{X}_s::c[\mathtt{X}_r::c]} = f(\alpha_1) + f(\alpha_2) + ... + f(\alpha_n)~|~\forall \alpha_i \in \mathtt{X}_s :$
-
+\item $\pmb{\mathtt{X}_s::c[\mathtt{X}_r::c] = \mathtt{X}^r_s::c} \newline \mathtt{X}^r_s : f(\alpha_1) + f(\alpha_2) + ... + f(\alpha_n)~|~\forall \alpha_1, \alpha_2, ..., \alpha_n \in \mathtt{X}_s :$
 \begin{itemize}
 	\item $ f(\alpha) = \gamma_f(\alpha)$ when $\alpha \multimap \mathtt{X} $
 	\item $ f(\alpha) = [\alpha]$ when $\alpha \multimap \mathtt{T}$
@@ -318,10 +317,10 @@ and $\mathtt{T}_s = \tau_s(\gamma_p)$, $\mathtt{T}_r = \tau_r(\gamma_p)$ $\newli
 
 \end{itemize}
 
-\item \textit{complex dissociation}: (STILL not good enough!!!)
+\item \textit{complex dissociation}: (not good!!!)
 
 \begin{itemize}
-\item $ \pmb{\mathtt{X}_s::c[\Gamma_r]} = [~\mathtt{map}(\mathtt{X}_s, x)~|~x \in \mathtt{cut}(\Gamma_r)~]:$
+\item $ \pmb{\mathtt{X}_s::c[\Gamma_r] = \mathtt{X}^r_s::c} \newline \mathtt{X}^r_s = [~\mathtt{map}(\mathtt{X}_s, x)~|~\forall x \in \mathtt{cut}(\Gamma_r)~]:$
 
 where $\iota(\leftidx{^*}{list}{}) = [i~|~\forall \alpha_i \in \leftidx{^*}{list}{}~]$,
 
