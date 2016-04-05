@@ -45,3 +45,30 @@ class State:
     """
     def isInBound(self, bound):
         return self.agents.most_common(1)[0][1] <= bound
+
+    """
+    Normalizes state such that number of all agents is equal or lower to given bound
+    :param bound: given bound
+    :return: new State
+    """
+    def normalize(self, bound):
+        new_counter = collections.Counter([])
+        for group in self.agents:
+            if self.agents[group] > bound:
+                new_counter[group] = bound
+            else:
+                new_counter[group] = self.agents[group]
+        return State(new_counter)
+
+    """
+    Creates one state from given state and reactions
+    :param reactions: set of reactions
+    :param bound: given bound
+    :return: new State (normalized)
+    """
+    def connectStates(self, reactions, bound):
+        state = self.agents
+        for reaction in reactions:
+            state = state + reaction.getRightHandSide().getAgents()
+        return State(state).normalize(bound)
+
