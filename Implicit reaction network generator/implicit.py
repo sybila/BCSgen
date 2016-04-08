@@ -8,11 +8,10 @@ from Reaction import *
 
 def generate_reaction(solution, rule):
     new_solutions = rule.replacement(solution)
-    print 'new'
-    print new_solutions
+    new_solutions = filter(lambda new_solution: new_solution != solution, new_solutions) #caused by uncertainty in state change
     pre_reactions = zip([solution] * len(new_solutions), new_solutions)
-    print pre_reactions
-    return set(map(lambda (From, To): Reaction(State(From), State(To)), pre_reactions))
+    result = set(map(lambda (From, To): Reaction(State(From), State(To)), pre_reactions))
+    return result
 
 def generate_reaction_network(state, rules, bound, output_file):
     old_reactions_size = -1
@@ -20,8 +19,11 @@ def generate_reaction_network(state, rules, bound, output_file):
     while len(reactions) > old_reactions_size:
         old_reactions_size = len(reactions)
         new_reactions = map(lambda rule: map(lambda (solution, rest): generate_reaction(solution, rule), state.getAllSolutions(rule)), rules)
-        #should create set from list of lists of sets
+
+        #print
         new_reactions = set.union(*sum(new_reactions, []))
+        #print new_reactions
+
         state = state.connectStates(new_reactions, bound)
         reactions |= new_reactions
 

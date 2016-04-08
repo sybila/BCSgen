@@ -22,7 +22,7 @@ class Reaction:
         return self.__repr__()
 
     def __repr__(self):
-        return create_string_chain(self.left_hand_side) + " -> " + create_string_chain(self.left_hand_side)
+        return create_string_chain(self.left_hand_side) + " -> " + create_string_chain(self.right_hand_side)
 
     def __hash__(self):
         return hash((str(self.left_hand_side), str(self.right_hand_side)))
