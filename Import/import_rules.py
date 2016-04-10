@@ -71,9 +71,12 @@ def substitute_rule(substitutions, rule):
     sides = rule.split("=>")
     rule_sides = []
     for side in sides:
-        agents = side.split("+")
-        substitued_agents = map(lambda agent: substitute(substitutions, agent), agents)
-        rule_sides.append("+".join(substitued_agents))
+        if side:
+            agents = side.split("+")
+            substitued_agents = map(lambda agent: substitute(substitutions, agent), agents)
+            rule_sides.append("+".join(substitued_agents))
+        else:
+            rule_sides.append("")
     return "=>".join(rule_sides)
 
 """
@@ -297,10 +300,13 @@ def create_rule(rule):
     sides = rule.split("=>")
     rule_sides = []
     for side in sides:
-        created_agents = []
-        agents = side.split("+")
-        for agent in agents:
-            created_agents.append(create_agent(agent))
+        if side:
+            created_agents = []
+            agents = side.split("+")
+            for agent in agents:
+                created_agents.append(create_agent(agent))
+        else:
+            created_agents = []
         rule_sides.append(created_agents)
     return BCSL.Rule(rule_sides[0], rule_sides[1])
 
@@ -316,13 +322,14 @@ def import_rules(rules_file, sub_file):
             rule = remove_spaces(rule)
             rule = remove_steichiometry(rule)
             rule = substitute_rule(import_substitutions(sub_file), rule)
-            rule = flattenRule(rule)
+            #rule = flattenRule(rule)
 
             #here the rule has to be well-formed
 
             created_rules.append(create_rule(rule))
-    for rule in created_rules:
-        print rule
+    #for rule in created_rules:
+    #    print rule
+    return created_rules
 
 """
 Imports agent names to be substituted

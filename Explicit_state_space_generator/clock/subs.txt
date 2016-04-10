@@ -1,0 +1,14 @@
+KaiC6==KaiC.KaiC.KaiC.KaiC.KaiC.KaiC
+KaiB6==KaiB.KaiB.KaiB.KaiB.KaiB.KaiB
+KaiA2==KaiA.KaiA
+KaiA2C6==KaiA2.KaiC6
+KaiA4C6==KaiA2.KaiA2.KaiC6
+KaiB6C6==KaiB6.KaiC6
+KaiA4B6C6==KaiA2.KaiA2.KaiB6.KaiC6
+KaiA6B6C6==KaiA2.KaiA2.KaiA2.KaiB6.KaiC6
+KaiC5==KaiC.KaiC.KaiC.KaiC.KaiC
+KaiA2C5==KaiA2.KaiC5
+KaiA4C5==KaiA2.KaiA2.KaiC5
+KaiB6C5==KaiB6.KaiC5
+KaiA4B6C5==KaiA2.KaiA2.KaiB6.KaiC5
+KaiA6B6C5==KaiA2.KaiA2.KaiA2.KaiB6.KaiC5
