@@ -1,8 +1,11 @@
 import sys
 import os
-sys.path.append(os.path.abspath('../Interpreter of BCS language '))
-from Rule import *
+import collections
+import copy
+import itertools
 from Edge import *
+sys.path.append(os.path.abspath('../'))
+import Interpreter_of_BCSL as BCSL
 
 class State:
     def __init__(self, agents):

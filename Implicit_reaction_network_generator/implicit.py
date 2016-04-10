@@ -1,16 +1,11 @@
 import pathos.multiprocessing as mp
-import os
-import sys
-sys.path.append(os.path.abspath('../Explicit state space generator'))
-from State import *
-from Memo import *
 from Reaction import *
 
 def generate_reaction(solution, rule):
     new_solutions = rule.replacement(solution)
     new_solutions = filter(lambda new_solution: new_solution != solution, new_solutions) #caused by uncertainty in state change
     pre_reactions = zip([solution] * len(new_solutions), new_solutions)
-    result = set(map(lambda (From, To): Reaction(State(From), State(To)), pre_reactions))
+    result = set(map(lambda (From, To): Reaction(S_gen.State(From), S_gen.State(To)), pre_reactions))
     return result
 
 def generate_reaction_network(state, rules, bound, output_file):

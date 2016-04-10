@@ -1,8 +1,4 @@
-import sys
-import os
-sys.path.append(os.path.abspath('../Interpreter of BCS language '))
-from Rule import *
-from Edge import *
+from State import *
 
 """
 Connects two memos to one memo

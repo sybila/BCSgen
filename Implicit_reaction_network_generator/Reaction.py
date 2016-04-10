@@ -1,7 +1,7 @@
-import sys
 import os
-sys.path.append(os.path.abspath('../Explicit state space generator'))
-from State import *
+import sys
+sys.path.append(os.path.abspath('../'))
+import Explicit_state_space_generator as S_gen
 
 def create_string_chain(side):
     new_side = map(lambda (a, n): n.__str__() + " " + a.__str__(), side.getAgents().items())

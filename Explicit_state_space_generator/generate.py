@@ -1,5 +1,4 @@
 import pathos.multiprocessing as mp
-from State import *
 from Memo import *
 
 """

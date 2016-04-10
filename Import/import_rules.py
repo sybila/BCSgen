@@ -2,8 +2,8 @@ import sys
 import copy
 import re
 import os
-sys.path.append(os.path.abspath('../Interpreter of BCS language '))
-from Rule import *
+sys.path.append(os.path.abspath('../'))
+import Interpreter_of_BCSL as BCSL
 
 '''
 Functions for parsing common rules (human-readable)
@@ -111,7 +111,7 @@ def flatten_aX(first_agent, second_agent, semicolon):
         for index in indices:
             new_composition = copy.deepcopy(second_agent.getFullComposition())
             new_composition[index] = first_agent
-            new_agents.append(Complex_Agent(new_composition, second_agent.getCompartment()))
+            new_agents.append(BCSL.Complex_Agent(new_composition, second_agent.getCompartment()))
         return new_agents
     else:
         indices = second_agent.getAllCompatibleAgents(first_agent)
@@ -139,16 +139,16 @@ def flattenPair(first_agent, second_agent, compartment, semicolon):
     first_agent = create_agent(first_agent + "::" + compartment)
     second_agent = create_agent(second_agent + "::" + compartment)
 
-    if isinstance(first_agent, Atomic_Agent) and isinstance(second_agent, Structure_Agent):
+    if isinstance(first_agent, BCSL.Atomic_Agent) and isinstance(second_agent, BCSL.Structure_Agent):
         return flatten_aT(first_agent, second_agent)
 
-    if isinstance(first_agent, Atomic_Agent) and isinstance(second_agent, Complex_Agent):
+    if isinstance(first_agent, BCSL.Atomic_Agent) and isinstance(second_agent, BCSL.Complex_Agent):
         return flatten_aX(first_agent, second_agent, semicolon)
 
-    if isinstance(first_agent, Structure_Agent) and isinstance(second_agent, Complex_Agent):
+    if isinstance(first_agent, BCSL.Structure_Agent) and isinstance(second_agent, BCSL.Complex_Agent):
         return flatten_TX(first_agent, second_agent, semicolon)
 
-    if isinstance(first_agent, Complex_Agent) and isinstance(second_agent, Complex_Agent):
+    if isinstance(first_agent, BCSL.Complex_Agent) and isinstance(second_agent, BCSL.Complex_Agent):
         return flatten_XX(first_agent, second_agent, semicolon)
 
 """
@@ -198,7 +198,7 @@ Creates atomic agent from given string
 def create_atomic_agent(agent, compartment):
     agent = agent[:-1]
     parts = agent.split("{")
-    return Atomic_Agent(parts[0], [parts[1]], compartment)
+    return BCSL.Atomic_Agent(parts[0], [parts[1]], compartment)
 
 """
 Creates structure agent from given string
@@ -214,7 +214,7 @@ def create_structure_agent(agent, compartment):
     else:
         name = agent
         partial_composition = []
-    return Structure_Agent(name, partial_composition, compartment)
+    return BCSL.Structure_Agent(name, partial_composition, compartment)
 
 """
 Creates complex agent from given list of strings
@@ -232,7 +232,7 @@ def create_complex_agent(agents, compartment):
                 full_composition.append(create_atomic_agent(agent, compartment))
             else:
                 full_composition.append(create_structure_agent(agent, compartment))
-    return Complex_Agent(full_composition, compartment)
+    return BCSL.Complex_Agent(full_composition, compartment)
 
 """
 Creates agent from given string of form
@@ -302,7 +302,7 @@ def create_rule(rule):
         for agent in agents:
             created_agents.append(create_agent(agent))
         rule_sides.append(created_agents)
-    return Rule(rule_sides[0], rule_sides[1])
+    return BCSL.Rule(rule_sides[0], rule_sides[1])
 
 """
 Imports rules from file

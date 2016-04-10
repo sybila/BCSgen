@@ -1,8 +1,8 @@
 import sys
 import copy
 import os
-sys.path.append(os.path.abspath('../Explicit state space generator'))
-from State import *
+sys.path.append(os.path.abspath('../'))
+import Explicit_state_space_generator as S_gen
 import collections
 
 """
@@ -48,7 +48,7 @@ def import_edges(input_edges, vertices):
             right = vertices_in_dict[int(sides[1])]
             new_left = left - right
             new_right = right - left
-            reactions.append((State(new_left), State(new_right)))
+            reactions.append((S_gen.State(new_left), S_gen.State(new_right)))
     return reactions
 
 """
