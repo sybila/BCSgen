@@ -34,4 +34,7 @@ input_reactions = sys.argv[-2]
 input_vertices = sys.argv[-1]
 
 vertices = import_states(input_vertices)
-edges = 
+edges =
+
+#import edges and vertices
+#create Reactions and print them to output file

@@ -312,14 +312,11 @@ def import_rules(rules_file, sub_file):
     created_rules = []
     with open(rules_file) as rules:
         for rule in rules:
-            rule = rule.rstrip()
+            rule = rule.rstrip().replace("\"", "")
             rule = remove_spaces(rule)
             rule = remove_steichiometry(rule)
             rule = substitute_rule(import_substitutions(sub_file), rule)
             rule = flattenRule(rule)
-
-            #here apply all syntactic operations on a rule (including correctness detection):
-            # - apply flattening
 
             #here the rule has to be well-formed
 
