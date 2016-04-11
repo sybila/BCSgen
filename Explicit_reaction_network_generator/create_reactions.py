@@ -1,40 +1,59 @@
-from explicit import *
+import sys
 
 """
-***POSSIBLE EXTENSION***
+Imports vertices from given file
+:param input_vertices: given file containing vertices
+:return: list of pairs (ID, body)
+"""
+def import_states(input_vertices):
+    vertices = []
+    id = 0
+    body = []
+    with open(input_vertices) as ver:
+        for line in ver:
+            line = line.replace("\n", "")
+            if "vertex ID:" in line:
+                id = int(line.replace("vertex ID: ", ""))
+            elif line == "":
+                vertices.append((id, body))
+                body = []
+            else:
+                body.append(line)
+    return vertices
+
+"""
 Creates string chain from given state
 :param side: given state
 :return: state represented as string chain
 """
 def create_string_chain(side):
-    new_side = map(lambda (a, n): n.__str__() + " " + a.__str__(), side.getAgents().items())
-    return " + ".join(new_side)
+    return " + ".join(side)
 
 """
-***POSSIBLE EXTENSION***
 Prints reactions to given output file
 :param reactions: given list of pairs (State, State)
 :param output_file: given output file
 """
-def print_reactions(reactions, output_file):
+def print_reactions(reactions, vertices, output_reactions):
+    vertices = dict(vertices)
     f = open(output_reactions,'w')
     for left, right in reactions:
-        f.write(create_string_chain(left) + " -> " + create_string_chain(right) + '\n')
+        f.write(create_string_chain(vertices[left]) + " -> " + create_string_chain(vertices[right]) + '\n')
     f.close()
 
-def import_edges(input_edges):
+def import_rxns(input_edges):
     edges = []
     with open(input_edges) as in_edges:
         for line in in_edges:
+            sides = line.replace("\n", "").split(" -> ")
             edges.append((int(sides[0]), int(sides[1])))
     return edges
 
-
+input_vertices = sys.argv[-3]
 input_reactions = sys.argv[-2]
-input_vertices = sys.argv[-1]
+output_reactions = sys.argv[-1]
 
 vertices = import_states(input_vertices)
-edges =
+reactions = import_rxns(input_reactions)
 
-#import edges and vertices
-#create Reactions and print them to output file
+print_reactions(reactions, vertices, output_reactions)
