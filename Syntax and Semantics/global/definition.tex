@@ -37,6 +37,8 @@ Brno, Czech Republic
 
 \section{Biochemical Space Agents}
 
+note - maybe all compartment could be removed from syntax of agents and added on level of rules
+
 Let $\mathcal{N}_{a},~\mathcal{N}_{T},~\mathcal{N}_{x},~\mathcal{N}_{c},~\mathcal{N}_{s}$ be mutually exclusive finite sets of atomic, structure, complex, compartment, and state names, respectively. 
 
 \subsection{Atomic agents}
@@ -131,7 +133,7 @@ Since structure agents are constructed from finite sets $\mathcal{N}_{T},~\mathc
 In the following we define the last step in the hierarchy of agents. In particular, we define \textit{complex agents}. A complex agent represents a non-trivial composite biochemical object that is (inductively) constructed from already known biological objects. In common rule-based languages this is typically defined by introducing some kind of bonds between individual biochemical objects. In BCS we abstract from detailed specification of bonds and we rather assume a complex as a coexistence of certain objects in a particular group. Such a group can be optionally referred to by a unique name. A complex agent is constructed from atomic and structure agents.
 
 \begin{definition}
-Complex agent $\mathtt{X}$ is defined as triple ($\chi, \gamma_f, \mathtt{c}$) where $\chi \in \mathcal{N}_{x} \cup \{\varepsilon\}$ is name, $\gamma_f \subseteq \mathcal{A} \cup \mathcal{T}$ is finite multiset of atomic and structure agents called \emph{full composition}, and $\mathtt{c} \in \mathcal{N}_{c}$ is physical compartment within which it is considered.
+Complex agent $\mathtt{X}$ is defined as triple ($\chi, \gamma_f, \mathtt{c}$) where $\chi \in \mathcal{N}_{x} \cup \{\varepsilon\}$ is name, $\gamma_f \subseteq \mathcal{A} \cup \mathcal{T}$ is finite ordered multiset of atomic and structure agents called \emph{full composition} ordered by complex agent expression, and $\mathtt{c} \in \mathcal{N}_{c}$ is physical compartment within which it is considered.
 \end{definition}
 
 Complex agent expressions have the following syntax:
@@ -159,7 +161,11 @@ Moreover, we denote $\#\mathtt{T}[\mathtt{X}]$ (resp. $\#\mathtt{a}[\mathtt{X}]$
 \end{notation}
 
 \begin{defn}
-Let $\mathtt{X},\mathtt{X}'$ be structure agents. We define the \emph{structural equivalence of structure agents} by claiming $\mathtt{X} \equiv \mathtt{X}'$ iff there exist $\chi,\chi',\gamma_f,\gamma'_f, \mathtt{c},\mathtt{c}'$ such that $\mathtt{X}=(\chi, \gamma_f, \mathtt{c}),\mathtt{T}'=(\chi', \gamma_f', \mathtt{c}')$, $\chi=\chi'$, $\mathtt{c} = \mathtt{c}'$, and $\gamma_f=\gamma'_f$.
+Let $\mathtt{X},\mathtt{X}'$ be structure agents. We define the \emph{structural equivalence of structure agents} by claiming $\mathtt{X} \equiv \mathtt{X}'$ iff there exist $\chi,\chi',\gamma_f,\gamma'_f, \mathtt{c},\mathtt{c}'$ such that $\mathtt{X}=(\chi, \gamma_f, \mathtt{c}),\mathtt{T}'=(\chi', \gamma_f', \mathtt{c}')$, $\chi=\chi'$, $\mathtt{c} = \mathtt{c}'$, and $\gamma_f=\gamma'_f$ (considered as unordered multisets).
+\end{defn}
+
+\begin{defn}
+Let $\mathtt{X} = (\chi, \gamma_f, \mathtt{c}), \mathtt{X}' = (\chi', \gamma_f', \mathtt{c}')$ be complex agents. We say $\mathtt{X}$ \emph{is compatible with} $\mathtt{X}'$, written $\mathtt{X} \lhd \mathtt{X}'$, iff $\chi=\chi'$, $\mathtt{c} = \mathtt{c}'$, and $\forall \beta_1, \beta_2, ..., \beta_n \in \gamma_f $ and $\forall \beta_1', \beta_2', ..., \beta_n' \in \gamma'_f$ : $\beta_i \lhd \beta_i'$. 
 \end{defn}
 
 \begin{theorem}
@@ -168,87 +174,63 @@ Since complex agents are constructed from finite sets $\mathcal{N}_{x},~\mathcal
 
 \section{Biochemical Space Rules}
 
-At this point, we proceed to define the set of BCS rules. In contrast to $kappa_s$, a BCS rule has more complicated structure. This is due to the fact that BCS goes closer to traditional formalism of chemical reactions, in particular, BCS rules consider stoichiometry and compartmentalisation of reacting species. Moreover, to a certain extent we introduce variables in rule expressions allowing us to compact specification of repeating objects.  
+\begin{definition}
+Rule $\mathtt{R}$ is defined as triple ($\lambda, \rho, \nu$) where $\lambda, \rho, \nu \subseteq \mathcal{X} \cup \mathcal{T} \cup \mathcal{A} \cup \{\varepsilon\}$ and $\lambda$ is \emph{left-hand-side} of the rule, $\rho$ is \emph{right-hand-side} of the rule, and $\nu$ is \emph{variable}. Both $\lambda$ and $\rho$ are ordered sets where order is given by rule expression and at most one of them might be $\varepsilon$.
+\end{definition}
 
-The list of rules $\mathtt{R}$ is defined by the following syntax:
+Rule expressions have the following syntax:
 
 \begin{center}
 {\small
-\hspace*{-1cm}\begin{tabular}{ ll ll }
- rules& $\mathtt{R} ::= \emptyset ~|~ r, \mathtt{R} $\\
- rule equation & $r ::= \Gamma ~\odot~\Gamma$\\
- direction & $\odot ::=~ \Rightarrow~\choice~\Leftrightarrow $\\
- rule expression & \multicolumn{3}{l}{$\Gamma ::= \emptyset~\choice~\varrho~\epsilon::\mathtt{c}~\choice~ \varrho~\epsilon::\mathtt{c}~ +~\Gamma$}\\
- stoichiometry & \multicolumn{3}{l}{$\varrho ::= n \in \mathbb{N}^+$}\\
- rule expression item & \multicolumn{3}{l}{$\epsilon :: = \epsilon_1~\choice~\epsilon_2~\choice~\epsilon_3$}\\
- basic rule agent & \multicolumn{3}{l}{$\epsilon_1  ~::=~  \mathtt{a}~\choice~\mathtt{T}~\choice~\mathtt{X}$}\\
- shallow rule agent & \multicolumn{3}{l}{$\epsilon_2  ~::=~  \mathtt{a}::\mathtt{T}~\choice~\mathtt{T}::\mathtt{X}$}\\
- deep rule agent & \multicolumn{3}{l}{$\epsilon_3  ~::=~  \mathtt{a}::\mathtt{T}::\mathtt{X}$}
+\hspace*{-1cm}\begin{tabular}{ l l }
+ rule expression & $r ::= \lambda ~\odot~ \rho~;~\nu ~|~ \lambda ~\odot~ ;~\nu ~|~ \odot~ \rho~;~\nu $\\
+  & $\lambda ::= \Gamma$\\
+  & $\rho ::= \Gamma$\\
+  & $\nu ::= \upsilon ~|~ \varepsilon$\\
+ direction & $\odot ::=~ \Rightarrow~|~\Leftrightarrow $\\
+  & $\Gamma ::= \zeta~\varphi~ +~\Gamma ~|~ \zeta~\varphi$\\
+ stoichiometry & $\zeta ::= n \in \mathbb{N}^+$\\
+ rule agent & $\varphi :: = \varphi_1~|~\varphi_2~|~\varphi_1::\xi~|~\varphi_2::\xi'~|~\xi'$\\
+  & $\varphi_1  ~::=~  ?\nu_1~|~?\nu_2~|~?\nu_3~|~\mathtt{a}::~?\nu_2~|~?\nu_1::\mathtt{T}$\\
+  & $\xi' ~::=~ \mathtt{X}::\xi'~|~?\nu_3::\xi~|~?\nu_3~|~\xi$\\
+  & $\varphi_2  ~::=~  \mathtt{a}~|~\mathtt{T}~|~\mathtt{X}~|~\mathtt{a}::\mathtt{T}$\\
+  & $\xi  ~::=~  \mathtt{X}::\xi~|~\mathtt{X}$\\
+ variable & $\upsilon ::=~?\nu_1=\{\phi_1\}~|~?\nu_2=\{\phi_2\}~|~?\nu_3=\{\phi_3\}$\\
+  & $\phi_1 ::= \mathtt{a},~\phi_1~|~\mathtt{a}$\\
+  & $\phi_2 ::= \mathtt{T},~\phi_2~|~\mathtt{T}$\\
+  & $\phi_3 ::= \mathtt{X},~\phi_3~|~\mathtt{X}$\\
 \end{tabular}
 }
 \end{center}
 
-We assume that a single rule cannot appear more than once in the list~$\mathtt{R}$ (every rule must be unique). In relation to that, we can use the notation $r\in\mathtt{R}$ to refer to rules in $\mathtt{R}$. See Section~\ref{casestudy} for examples of several rules.
+*** ALL LOWER IS NOT DONE YET  ***
 
-Rule expressions allow more extensive syntax in terms of the \textit{localisation} operator `$::$'. The localisation operator is intended for allowing an alternative way of expressing the hierarchically constructed agents. The main idea is to allow zooming into individual parts of a complex or a structure agent. E.g., for a structure agent {\small $\tau(\alpha_1\{s\}\pipe\alpha_2^{\{s,t\}})::\mathtt{c}$} residing in compartment $\mathtt{c}$ we can use the notation {\small $\alpha_2\{t\}::\tau(\alpha_1\{s\}\pipe\alpha_2^{\{s,t\}})::\mathtt{c}$} to refer explicitly to a concretisation of its subagent $\alpha_2$. This notation is fully equivalent with the original form {\small $\tau(\alpha_1\{s\}\pipe\alpha_2{\{t\}})$} and can be therefore considered as an alternative way to concretise a structure agent. 
-
-Similarly, the concept of localisation is applied also to complex agents. E.g., for a complex agent {\small $A(\alpha_1\{s\}).B(\alpha_2^{\{s,t\}})::\mathtt{c}$} we can zoom to some of its components and express its concretisation such as {\small $B(\alpha_2\{t\})::A(\alpha_1\{s\}).B($ $\alpha_2^{\{s,t\}})::\mathtt{c}$}. In this case, the notation {\small $B(\alpha_2\{t\})::A(\alpha_1\{s\}).B(\alpha_2^{\{s,t\}})$} is equivalent to the complex agent {\small $A(\alpha_1\{s\}).B(\alpha_2\{t\})$}.
-
-In every rule subexpression $\varrho~\epsilon::\mathtt{c}$ the compartment $\mathtt{c}$ makes the scope for every agent appearing in $\epsilon$. In particular, every agent inside $\epsilon$ is assumed to be assigned the compartment $\mathtt{c}$.
-
-To simplify the resulting language to construct reasonable expressions only, we restrict ourselves to rules where the operator `$::$' respects constraints given in Definition~\ref{def:consts}.
 
 \begin{definition}
-\label{def:consts}
-Let $\epsilon$ be a rule expression item that appears in a rule $r\in\mathtt{R}$. The \emph{rule expression} $\epsilon$ is \emph{well-defined} iff the following constrains are satisfied:
+Let $\varphi$ be a rule expression item that appears in a rule $r\in\mathtt{R}$. The \emph{rule expression} $\varphi$ is \emph{well-defined} iff the following constrains are satisfied:
 
 \begin{enumerate}
- \item If $\mathtt{a}::\tau(\gamma_p)$ is a subexpression of $\epsilon$ for some $\mathtt{a},\tau,\gamma_p$ then there must exist $\mathtt{a}' \in \gamma_p$ such that $\mathtt{a} \lhd \mathtt{a}'$.
+ \item If $\mathtt{a}::\tau(\gamma_p)$ is a subexpression of $\varphi$ for some $\mathtt{a},\tau,\gamma_p$ then there must exist $\mathtt{a}' \in \gamma_p$ such that $\mathtt{a} \lhd \mathtt{a}'$.
 
-\item If $\mathtt{T}::\mathtt{X}$ is a subexpression of $\epsilon$ for some $\mathtt{T},\mathtt{X}$ then there must exist $\mathtt{T}' \in \mathtt{X}$ such that $\mathtt{T} \lhd \mathtt{T}'$.
+\item If $\mathtt{T}::\mathtt{X}$ is a subexpression of $\varphi$ for some $\mathtt{T},\mathtt{X}$ then there must exist $\mathtt{T}' \in \mathtt{X}$ such that $\mathtt{T} \lhd \mathtt{T}'$.
+
+\item If $\mathtt{a}::\mathtt{X}$ is a subexpression of $\varphi$ for some $\mathtt{a},\mathtt{X}$ then there must exist $\mathtt{a}' \in \mathtt{X}$ such that $\mathtt{a} \lhd \mathtt{a}'$.
+
+\item If $\mathtt{X}'::\mathtt{X}$ is a subexpression of $\varphi$ for some $\mathtt{X}',\mathtt{X}$ then there must exist $\mathtt{X}'' \in \mathtt{X}$ such that $\mathtt{X}' \lhd \mathtt{X}''$.
 
 \end{enumerate}
+ 
+If one of above subexpressions is inside a rule expression then it is called \emph{nested} rule agent else it is a \emph{basic} rule agent.
 \end{definition}
 
-Every rule agent in a shallow or deep form can be translated to an equivalent basic form. Formally, this is given in Lemma~\ref{def:flattening}.
-
-\begin{lemma}[Rule Flattening]
-\label{def:flattening}
-Let $(\Sigma_\tau,\Sigma_x)$ be a signature and $\mathtt{R}$ a set of rules. Every rule $r\in\mathtt{R}$ that includes some rule agents in shallow or deep form can be reduced to a rule $r'\in\mathtt{R}$ where every rule agent is in basic form. For every rule agent $\epsilon$ in $r$, the reduction is done by replacing $\epsilon$ with $\epsilon'$ in the following way:
+\begin{definition}[Rule Flattening]
+Let $(\Sigma_\tau,\Sigma_x)$ be a signature and $\mathtt{R}$ a set of rules. Every rule $r\in\mathtt{R}$ that includes some \emph{nested} rule agents $\varphi$ can be reduced to a rule $r'\in\mathtt{R}$ where every rule agent $\varphi$ is in \emph{basic} form. For every subexpression $\beta$ in every rule agent $\varphi$ in $r$, the reduction is done recursively by replacing $\beta$ with $\beta'$ in the following way:
 \begin{enumerate}
-\item If $\epsilon=\mathtt{a}::\mathtt{T}$ where $\mathtt{T}=\tau(\gamma_p)$ for some $\tau,\gamma_p$ then there must exist $\mathtt{a}'\in\gamma_p$ such that $\mathtt{a}\lhd\mathtt{a}'$. Then we set $\epsilon'={\tau}(\gamma'_p)$ where $\gamma'_p$ is constructed from $\gamma_p$ by replacing $\mathtt{a}'\in\gamma_p$ with $\mathtt{a}$.
-\item If $\epsilon=\mathtt{T}::\mathtt{X}$ where $\mathtt{X}=\gamma_f$ then there must exist $\mathtt{T}'\in\gamma_f$ such that $\mathtt{T}\lhd\mathtt{T}'$. Then we set $\epsilon'=\gamma'_f$ where $\gamma'_f$ is constructed from $\gamma_f$ by replacing $\mathtt{T}'\in\gamma_f$ with $\mathtt{T}$. 
-\item If $\epsilon=\mathtt{a}::\mathtt{T}::\mathtt{X}$ then the steps (i,ii) above are applied successively.
+\item If $\beta=\mathtt{a}::\mathtt{T}$ where $\mathtt{T}=\tau(\gamma_p)$ for some $\tau,\gamma_p$ then there must exist $\mathtt{a}'\in\gamma_p$ such that $\mathtt{a}\lhd\mathtt{a}'$. Then we set $\beta'={\tau}(\gamma'_p)$ where $\gamma'_p$ is constructed from $\gamma_p$ by replacing $\mathtt{a}'\in\gamma_p$ with $\mathtt{a}$.
+\item If $\beta=\mathtt{T}::\mathtt{X}$ where $\mathtt{X}=\gamma_f$ then there must exist $\mathtt{T}'\in\gamma_f$ such that $\mathtt{T}\lhd\mathtt{T}'$. Then we set $\beta'=\gamma'_f$ where $\gamma'_f$ is constructed from $\gamma_f$ by replacing $\mathtt{T}'\in\gamma_f$ with $\mathtt{T}$. 
+\item If $\beta=\mathtt{a}::\mathtt{X}$ where $\mathtt{X}=\gamma_f$ then there must exist $\mathtt{a}'\in\gamma_f$ such that $\mathtt{a}\lhd\mathtt{a}'$. Then we set $\beta'=\gamma'_f$ where $\gamma'_f$ is constructed from $\gamma_f$ by replacing $\mathtt{a}'\in\gamma_f$ with $\mathtt{a}$. 
+\item If $\beta=\mathtt{X}'::\mathtt{X}$ where $\mathtt{X}=\gamma_f$ and $\mathtt{X}'= \gamma'_f$ then for every $\mathtt{T} \in \gamma_f$ (resp. $\mathtt{a} \in \gamma_f$) there must exist $\mathtt{T}' \in \gamma'_f$ (resp. $\mathtt{a}' \in \gamma'_f$) such that $\mathtt{T} \lhd \mathtt{T}'$ (resp. $\mathtt{a} \lhd \mathtt{a}'$). Then we set $\beta'=\gamma_{f'}$ where $\gamma_{f'}$ is constructed from $\gamma_f$ by replacing all $\mathtt{T} \in \gamma_f$ (resp. $\mathtt{a} \in \gamma_f$) with appropriate $\mathtt{T}' \in \gamma'_f$  (resp. $\mathtt{a}' \in \gamma'_f$).
 \end{enumerate} 
-\end{lemma}
-
-\begin{definition}
-We say that a rule $r\in\mathtt{R}$ \emph{satisfies agent signature} $(\Sigma_\tau,~\Sigma_x)$, written $r\models (\Sigma_\tau,~\Sigma_x)$, iff every structure or complex agent that appears as a rule agent in $r$ satisfies agent signature $(\Sigma_\tau,~\Sigma_x)$.
 \end{definition}
-
-To increase succinctness, we extend the language with a variable $?\nu$. A variable can be assigned to any rule in place of an agent. Evaluation of a variable within a rule is realised for every occurrence of $?\nu$. For a given signature $(\Sigma_\tau,\Sigma_x)$ we assume that after evaluating the variable, every rule agent must satisfy the signature and is well-defined. Moreover, the scope of the compartment is always uniquely given in the rule expression. The domain of a variable is assumed to be considered as a set (values are not repeated). An example is given in Example~\ref{clockrule1}. The extended syntax is the following:
-
-\begin{center}
-{\small
-\hspace*{-1cm}\begin{tabular}{ ll ll }
- extended rule equation & $r' ::= r~|~ \Gamma ~\odot~\Gamma~;~var$\\
- variable & $var ::= \emptyset~|~?\nu=\{\phi\}~|~?\nu_1=\{\phi_1\}~|~?\nu_2=\{\phi_2\}~|~?\nu_3=\{\phi_3\}$\\
- variable value & $\phi ::=~\phi_1~|~\phi_2~|~\phi_3$\\
- atomic variable value & $\phi_1 ::= \mathtt{a},~\phi_1~\choice~\mathtt{a}$\\
- structure variable value & $\phi_2 ::= \mathtt{T},~\phi_2~\choice~\mathtt{T}$\\
- complex variable value & $\phi_3 ::= \mathtt{X},~\phi_3~\choice~\mathtt{X}$\\
- extended basic rule agent & $\epsilon'_1 ::= \epsilon_1~\choice~?\nu$\\
- extended shallow rule agent & $\epsilon'_2 ::= \epsilon_2~\choice~?\nu_1::\mathtt{T}~\choice~\mathtt{a}::?\nu_2~\choice~?\nu_2::\mathtt{X}~\choice~\mathtt{T}::?\nu_3$\\
- extended deep rule agent & $\epsilon'_3 ::= \epsilon_3~\choice~?\nu_1::\mathtt{T}::\mathtt{X}~\choice~\mathtt{a}::?\nu_2::\mathtt{X}~\choice~\mathtt{a}::\mathtt{T}::?\nu_3$\\
-\end{tabular}
-}
-\end{center}
-
-Finally, we define the notion of a BCS model that is given by a signature and a set of rules. 
-
-\begin{definition}
-A \emph{BCS model} $\mathtt{M}$ is a tuple $((\Sigma_\tau,\Sigma_x), \mathtt{R})$ such that every $r \in \mathtt{R}$ it holds that $r\models(\Sigma_\tau,~\Sigma_x)$.
-\end{definition}
-
 
 \end{document}
