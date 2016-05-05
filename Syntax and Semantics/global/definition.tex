@@ -1,0 +1,168 @@
+\documentclass{entcs}
+\usepackage{prentcsmacro}
+\usepackage{kpfonts}
+\usepackage{hyperref}
+\usepackage{algorithmicx}
+\usepackage{graphicx}
+\usepackage[noend]{algpseudocode}
+
+\hyphenation{me-ta-bo-lism}
+
+% global macro definitions
+\newcommand{\TBD}{\textbf{TBD}~}
+\newcommand{\spec}[1]{\texttt{#1}}
+\renewcommand{\~}[0]{\texttildelow}
+\renewcommand{\algorithmiccomment}[1]{\hfill\textit{\# #1}}
+\newcommand*\arc{{\fontfamily{pbk}\fontseries{db}\selectfont+}}
+\newcommand{\pipe}{{}{\scalebox{.6}{$|$}}{}}
+\newcommand{\choice}{|}
+
+\newtheorem{notation}[thm]{Notation}
+
+\def\lastname{Troj\'{a}k et al.}
+
+\begin{document}
+
+% title page
+\begin{frontmatter}
+\title{Formal Biochemical Space Language}
+
+\author{\normalsize
+T. D\v{e}d, D. \v{S}afr\'anek, M. Troj\'ak, M. Klement, J. \v{S}alagovi\v{c}, L. Brim}
+\address{Faculty of Informatics, Masaryk University\\
+Brno, Czech Republic
+}
+
+\end{frontmatter}
+
+\section{BCSL syntax}
+
+\subsection{BCS Agents}
+
+Let $\mathcal{N}_{a},~\mathcal{N}_{T},~\mathcal{N}_{x},~\mathcal{N}_{c},~\mathcal{N}_{s}$ be mutually exclusive finite sets of atomic, structure, complex, compartment, and state names, respectively. 
+
+Agents are defined hierarchically starting from \emph{atomic agents} that are of two kinds: \emph{class atoms} representing (abstract) class agents and \emph{object atoms} representing (concrete) object agents. Class atomic agents allow us to represent compactly objects that can reside in several selected (or even all possible) states whereas object atomic agents represent concrete objects specified with the particular state. Every atomic agent must be accompanied with a physical compartment within which it is considered.
+
+Atomic agent expressions have the following syntax:
+
+\begin{center}
+{\small
+\hspace*{-1cm}\begin{tabular}{ ll ll ll ll }
+ atomic agent & $\mathtt{a} ::= \alpha\{\delta\}::\mathtt{c}~\choice~\alpha::\mathtt{c}$  & \\
+ state signature & $\delta ::= \delta,~\mathtt{s}~\choice~\mathtt{s}$ & state & $\mathtt{s} ::= n \in \mathcal{N}_{s}$\\
+ atom name & $\alpha ::= n \in \mathcal{N}_{a}$ & compartment & $\mathtt{c} ::= n \in \mathcal{N}_{c}$\\
+\end{tabular}
+}
+\end{center}
+
+From now on, we restrict ourselves to atomic agents where the state signature can be treated as a set (a state cannot occur more than once in a state signature). This restriction is motivated by the aim to keep the language as simple as possible. Treating the state signatures as multisets would lead to confusions and is actually not needed to clearly represent biological objects.
+
+\begin{definition}
+Let $\mathtt{a},~\mathtt{a}'$ be atomic agents. We define the \emph{structural equivalence of atomic agents} by claiming $\mathtt{a}\equiv\mathtt{a}'$ whenever $\mathtt{\alpha} = \mathtt{\alpha}'$, $\mathtt{c} = \mathtt{c}'$ and $\delta = \delta'$ (if they are defined).
+\end{definition}
+
+\begin{notation}
+{~}
+\begin{itemize}
+\item We denote $\mathtt{s}\in\delta$ the fact that $\mathtt{s}$ is included in the state signature~$\delta$.
+\item Syntax $\alpha::\mathtt{c}$ is used for better readability of atomic agents. If $\delta$ contains all defined states for the agent, it can be skipped.
+\end{itemize}
+\end{notation}
+
+\begin{defn}
+Let $\mathtt{a},\mathtt{a}'$ be atomic agents. We say agent $\mathtt{a}$ is \emph{compatible with} agent $\mathtt{a}'$, written $\mathtt{a} \lhd \mathtt{a}'$, iff $\mathtt{a} \equiv \mathtt{a}'$ or iff there exist $\alpha, \delta, \delta', \mathtt{c}$ such that $\mathtt{a}=\alpha\{\delta\}::\mathtt{c}$, $\mathtt{a}'=\alpha\{\delta'\}::\mathtt{c}$ and $\delta \subset \delta'$. 
+\end{defn}
+
+An example of a class and object atomic agents is given in Table~\ref{table:caseExmp}. In particular, the class atom $S^{\{u,p\}}$ represents a serine amino acid that can be considered in two different states. An object atom $S\{u\}$ represents the unphosphorylated form of serine.
+
+Next we proceed with defining \emph{structure agents}. A structure agent represents a biochemical object that is composed from several known atomic agents provided that we know that such a composition is abstract and not necessarily complete. To incorporate such an abstraction of biological structures into our language, a structure agent is defined to be labelled with a unique name and it is constructed only from atomic agents considered in the same physical compartment. 
+
+The key construct of a structure agent is \emph{partial composition} defined as a list of atomic agents which are considered to be relevant parts of the structure agent. We allow this list to be empty, in that case the meaning is a biological structure for which we do not know its composition.
+
+A typical example of a structure agent is a protein where the atomic agents are individual amino acids that are of interest in the particular setting. In Table~\ref{table:caseExmp} there is an example of a cyanobacteria clock protein $KaiC$ specified with an interest put to the serine amino acid (here denoted by the class atomic agent $S$).    
+
+\begin{center}
+{\small
+\hspace*{-1cm}\begin{tabular}{ ll ll }
+ structure agent & $\mathtt{T} ::= \tau(\gamma_p)::\mathtt{c}$\\
+ structure name & $\tau ::= n \in \mathcal{N}_{T}$\\
+ partial composition & $\gamma_p ::= \emptyset~\choice~\mathtt{a}~\pipe~\gamma_p$\\
+\end{tabular}
+}
+\end{center}
+
+We restrict the language to structure agents where the partial composition does not contain replicated agents (stoichiometry is not considered at this level). More precisely, in every partial composition there is always at most one occurrence of an atomic agent with a name $n\in\mathcal{N}_a$.
+ The main motivation for such a simplification is again the practical purpose of our language. The concept of partial composition is primarily considered as a rigorous identification of relevant parts of the non-trivial biochemical entity (most typically a protein). These parts are possibly subject to state changes. 
+
+Note that a compartment of a structure agent is uniquely given by the compartment specified in its parts. We restrict ourselves to structure agents where all atomic agents in the partial composition have the same compartment. Assuming this restriction, we can shorten the notation by omitting compartments in the atomic agents of a partial composition.    
+
+\begin{notation}
+~
+\begin{itemize}
+\item We denote $\tau(...\pipe\mathtt{a}\pipe...)::\mathtt{c}$ a structure agent of the name $\tau$ such that an atomic agent $\mathtt{a}$ makes its part.
+\item We denote $\mathtt{a}\in\gamma_p$ the fact that $\gamma_p$ includes the atomic agent $\mathtt{a}$.
+\item The agent of the form $\tau(\emptyset)::\mathtt{c}$ is usually written as $\tau::\mathtt{c}$.
+\item A structure agent $\tau(\gamma_p)::\mathtt{c}$ is usually written $\tau(\alpha_1\pipe\alpha_2\pipe...\pipe\alpha_n)::\mathtt{c}$ where $\alpha_1,...,\alpha_n$ are names of all agents in $\gamma_p$ such that $\gamma_p=\mathtt{a}_1\pipe...\pipe\mathtt{a}_n$ where each agent $\mathtt{a}_i$ is either of the form $\mathtt{a}_i=\alpha_i^{\delta_i}::\mathtt{c}$ or $\mathtt{a}_i=\alpha_i\{s_i\}::\mathtt{c}$ for some $\delta_i$ a state signature, $s_i$ a state, and $\mathtt{c}$ a compartment shared among all agents in~$\gamma_p$.     
+\end{itemize}
+\end{notation}
+
+\begin{defn}
+Let $\mathtt{T},\mathtt{T}'$ be structure agents. We define the \emph{structural equivalence of structure agents} by claiming $\mathtt{T}\equiv\mathtt{T}'$ iff there exist $\tau,\tau',\gamma_p,\gamma'_p,\mathtt{c}$ such that $\mathtt{T}=\tau(\gamma_p)::\mathtt{c},\mathtt{T}'=\tau'(\gamma'_p)::\mathtt{c}$, $\tau=\tau'$ and $\gamma_p,\gamma'_p$ are equal or differ only in the order of its components (the operator `$\pipe$' is considered associative and commutative).
+\end{defn}
+
+As a representative of a class of structurally equivalent structure agents we consider the agent $\mathtt{\tau}(\gamma_p)$ where the agents in $\gamma_p$ are lexicographically ordered by names. Since atomic agents cannot be repeated in a structure agent, such an order is total.
+
+\begin{defn}
+Let $\mathtt{T},\mathtt{T}'$ be structure agents. We say $\mathtt{T}$ \emph{is compatible with} $\mathtt{T}'$, written $\mathtt{T} \lhd \mathtt{T}'$, iff either $\mathtt{T}\equiv\mathtt{T}'$ or for each atomic agent $\mathtt{a}$ such that $\mathtt{T}=\tau(...\pipe\mathtt{a}\pipe...)::\mathtt{c}$ there exists an atomic agent $\mathtt{a}'$ such that $\mathtt{T}'=\tau'(...\pipe\mathtt{a}'\pipe...)::\mathtt{c}$, $\tau = \tau'$ and $\mathtt{a} \lhd \mathtt{a}'$. 
+\end{defn}
+
+In the following we define the last step in the hierarchy of agents. In particular, we define \textit{complex agents}. A complex agent represents a non-trivial composite biochemical object that is (inductively) constructed from already known biological objects. In common rule-based languages this is typically defined by introducing some kind of bonds between individual biochemical objects. In BCS we abstract from detailed specification of bonds and we rather assume a complex as a coexistence of certain objects in a particular group. Such a group can be optionally referred to by a unique name. A complex agent is constructed from structure agents where all are required to reside in the same compartment~$\mathtt{c}$. 
+
+A complex agent is given either directly as an expression inductively built by applying coexistence operator `$.$' to structure agents or indirectly as a name referring to a separate set of definitions of complex agents (incorporated in the notion of agent signature). We use that approach because we do not want to overcomplicate complex agent expressions. 
+
+The key element of a complex agent is \emph{full composition} describing inductively constructed coexistence expressions from existing agents. We restrict ourselves to full compositions where all agents reside in the same compartment.
+
+\begin{center}
+{\small
+\hspace*{-1cm}\begin{tabular}{ ll ll }
+ complex agent & $\mathtt{X}::=\gamma_f::\mathtt{c}~\choice~n\in{N}_{x}::\mathtt{c}$\\
+ full composition & $\gamma_f ::= \mathtt{T}.\mathtt{T}~\choice~\mathtt{T}.\gamma_f$\\
+\end{tabular}
+}
+\end{center}
+
+In contrast to partial compositions, we allow replication at the level of full compositions (an agent of a certain name can appear more than once in a full composition). Moreover, names of complex agents are not associated with particular full compositions at the level of agent expressions. This is done at the level of agent signatures (see Section~\ref{sec:sigs}).
+
+Note that in similar way as in the case of structure agents, we restrict the formalism to complex agents where the compartment is the same for all agents inside the respective full composition.
+
+\begin{notation}
+~
+\begin{itemize}
+\item Let $\mathtt{X}=\gamma_f::\mathtt{c}$ for some full composition $\gamma_f$. We denote $\mathtt{T}\in \mathtt{X}$ the fact that~$\mathtt{T}$ is a structure agent included in~$\gamma_f$. 
+Moreover, we denote $\#\mathtt{T}[\mathtt{X}]$ the number of occurrences of~$\mathtt{T}$ in $\gamma_f$. 
+\item For a complex agent $\mathtt{X}=\gamma_f::\mathtt{c}$ where each item $x\in\mathtt{X}$ is an agent assigned to a compartment $\mathtt{c}$, we can use simplified notation that omits the compartment suffix `$::\mathtt{c}$' in individual agents of $\gamma_f$.
+\end{itemize}
+\end{notation}
+
+Next we define structural equivalence of complex agents. We employ set-based approach to aggregate complex agents into equivalence classes. In particular, at that level we achieve commutativity and associativity of the operator `$.$'.  
+
+\begin{defn}
+Let $\mathtt{X},\mathtt{X}'$ be complex agents. We define \emph{structural equivalence} of \emph{complex agents} by claiming $\mathtt{X}\equiv\mathtt{X}'$ iff either of the following conditions holds:
+\begin{enumerate}
+\item There exist a compartment $\mathtt{c}$ and $n,n'\in\mathcal{N}_x$ such that $\mathtt{X}=n::\mathtt{c},\mathtt{X}'=n'::\mathtt{c}$ and $n=n'$.
+\item If both $\mathtt{X},\mathtt{X}'$ are specified as full compositions then the following two conditions must be satisfied:
+
+\begin{itemize}
+\item for each $\mathtt{T}\in\mathtt{X}$ there exists $\mathtt{T}'\in\mathtt{X}'$ such that  $\mathtt{T}\equiv\mathtt{T}'$ and $\#\mathtt{T}[\mathtt{X}]=\#\mathtt{T}'[\mathtt{X}']$,
+\item for each $\mathtt{T}'\in\mathtt{X}'$ there exists $\mathtt{T}\in\mathtt{X}$ such that  $\mathtt{T}'\equiv\mathtt{T}$ and $\#\mathtt{T}'[\mathtt{X}']=\#\mathtt{T}[\mathtt{X}]$.
+\end{itemize}
+\end{enumerate}
+\end{defn}
+
+An example of a complex agent is given in Table~\ref{table:caseExmp} where the given complex agent expression represents a large set of hexamers composed from $KaiC$ molecules each considered in arbitrary state.  
+
+\begin{remark}
+From now on, we always consider a \emph{lexicographically ordered agent} as a \emph{representative of a class of structurally equivalent agents}. Since agents are defined hierarchically, lexicographical order is applied recursively to all nested agents. This allows us to always have a clearly defined unique representative.
+\end{remark}
+
+\end{document}
