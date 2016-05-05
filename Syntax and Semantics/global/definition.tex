@@ -66,7 +66,7 @@ Let $\mathtt{a},~\mathtt{a}'$ be atomic agents. We define the \emph{structural e
 {~}
 \begin{itemize}
 \item We denote $\mathtt{s}\in\delta$ the fact that $\mathtt{s}$ is included in the state signature~$\delta$.
-\item Syntax $\alpha::\mathtt{c}$ is used for expressing atomic agent when state is unknown, i.e. all states $\mathtt{s} \in \delta$ are considered.
+\item Syntax $\alpha::\mathtt{c}$ is used for expressing atomic agent when state is not specified, i.e. all states $\mathtt{s} \in \delta$ are considered.
 \end{itemize}
 \end{notation}
 
@@ -75,7 +75,7 @@ Let $\mathtt{a},\mathtt{a}'$ be atomic agents. We say agent $\mathtt{a}=(\alpha,
 \end{defn}
 
 \begin{theorem}
-Since atomic agents are constructed from finite sets $\mathcal{N}_{a},~\mathcal{N}_{c}$ and $\mathcal{N}_{s}$, we can define universe of atomic agents $\mathcal{A} = \{ \mathtt{a}~|~\mathtt{a} = (\alpha, \delta, \mathtt{c}) \}$.
+Since atomic agents are constructed from finite sets $\mathcal{N}_{a},~\mathcal{N}_{c}$, and $\mathcal{N}_{s}$, we can define universe of atomic agents $\mathcal{A} = \{ \mathtt{a}~|~\mathtt{a} = (\alpha, \delta, \mathtt{c}), \alpha~\in~\mathcal{N}_{a}, \delta~\subseteq~\mathcal{N}_{s},  \mathtt{c}~\in~\mathcal{N}_{c} \}$.
 \end{theorem}
 
 \subsection{Structure agents}
@@ -98,79 +98,157 @@ Structure agent expressions have the following syntax:
  partial composition & $\gamma_p ::= \mathtt{a},~\gamma_p~\choice~\mathtt{a}$\\
 \end{tabular}
 }
-\end{center}
-
-Note that a compartment of a structure agent is uniquely given by the compartment specified in its parts. We restrict ourselves to structure agents where all atomic agents in the partial composition have the same compartment. Assuming this restriction, we can shorten the notation by omitting compartments in the atomic agents of a partial composition.    
+\end{center}   
 
 \begin{notation}
 ~
 \begin{itemize}
 \item We denote $\mathtt{a}\in\gamma_p$ the fact that $\gamma_p$ includes the atomic agent $\mathtt{a}$.
-\item Syntax $\tau::\mathtt{c}$ is used for better readability of structure agents when $\gamma_p$ contains all defined states for the agent.
+\item Structure agent $\mathtt{T} = (\tau, \gamma_p, \mathtt{c})$ might be written as $\tau::\mathtt{c}$ in two special cases:
+	\begin{enumerate}
+		\item $\gamma_p = \emptyset$,
+		\item for each $\mathtt{a} \in \gamma_p$ the state is not specified, i.e. it has form of $\alpha::\mathtt{c}$.
+	\end{enumerate}
 \end{itemize}
 \end{notation}
 
-\begin{defn}
-Let $\mathtt{T},\mathtt{T}'$ be structure agents. We define the \emph{structural equivalence of structure agents} by claiming $\mathtt{T}\equiv\mathtt{T}'$ iff there exist $\tau,\tau',\gamma_p,\gamma'_p,\mathtt{c}$ such that $\mathtt{T}=\tau(\gamma_p)::\mathtt{c},\mathtt{T}'=\tau'(\gamma'_p)::\mathtt{c}$, $\tau=\tau'$ and $\gamma_p=\gamma'_p$.
-\end{defn}
-
-%As a representative of a class of structurally equivalent structure agents we consider the agent $\mathtt{\tau}(\gamma_p)$ where the agents in $\gamma_p$ are lexicographically ordered by names. Since atomic agents cannot be repeated in a structure agent, such an order is total.
+Note that a compartment of a structure agent is uniquely given by the compartment specified in its parts. We restrict ourselves to structure agents where all atomic agents in the partial composition have the same compartment. Assuming this restriction, we can shorten the notation by omitting compartments in the atomic agents of a partial composition. 
 
 \begin{defn}
-Let $\mathtt{T},\mathtt{T}'$ be structure agents. We say $\mathtt{T}$ \emph{is compatible with} $\mathtt{T}'$, written $\mathtt{T} \lhd \mathtt{T}'$, iff there exist $\tau,\tau',\gamma_p,\gamma'_p,\mathtt{c}$ such that $\mathtt{T}=\tau(\gamma_p)::\mathtt{c},\mathtt{T}'=\tau'(\gamma'_p)::\mathtt{c}$, $\tau = \tau'$ and for each atomic agent $\mathtt{a} \in \gamma_p$ there exists an atomic agent $\mathtt{a}' \in \gamma'_p:$ $\mathtt{a}~\lhd~\mathtt{a}'$. 
+Let $\mathtt{T},\mathtt{T}'$ be structure agents. We define the \emph{structural equivalence of structure agents} by claiming $\mathtt{T}\equiv\mathtt{T}'$ iff there exist $\tau,\tau',\gamma_p,\gamma'_p,\mathtt{c},\mathtt{c}'$ such that $\mathtt{T}=(\tau, \gamma_p, \mathtt{c}),\mathtt{T}'=(\tau', \gamma_p', \mathtt{c}')$, $\tau=\tau'$, $\mathtt{c} = \mathtt{c}'$, and $\gamma_p=\gamma'_p$.
 \end{defn}
 
-In the following we define the last step in the hierarchy of agents. In particular, we define \textit{complex agents}. A complex agent represents a non-trivial composite biochemical object that is (inductively) constructed from already known biological objects. In common rule-based languages this is typically defined by introducing some kind of bonds between individual biochemical objects. In BCS we abstract from detailed specification of bonds and we rather assume a complex as a coexistence of certain objects in a particular group. Such a group can be optionally referred to by a unique name. A complex agent is constructed from structure agents where all are required to reside in the same compartment~$\mathtt{c}$. 
+\begin{defn}
+Let $\mathtt{T},\mathtt{T}'$ be structure agents. We say $\mathtt{T}$ \emph{is compatible with} $\mathtt{T}'$, written $\mathtt{T} \lhd \mathtt{T}'$, iff there exist $\tau,\tau',\gamma_p,\gamma'_p,\mathtt{c},\mathtt{c}'$ such that $\mathtt{T}=(\tau, \gamma_p, \mathtt{c}),\mathtt{T}'=(\tau', \gamma_p', \mathtt{c}')$, $\tau = \tau'$, $\mathtt{c} = \mathtt{c}'$, and for each atomic agent $\mathtt{a} \in \gamma_p$ there exists an atomic agent $\mathtt{a}' \in \gamma'_p$ such that $\mathtt{a}~\lhd~\mathtt{a}'$. 
+\end{defn}
 
+\begin{theorem}
+Since structure agents are constructed from finite sets $\mathcal{N}_{T},~\mathcal{N}_{c}$, and $\mathcal{A}$, we can define universe of structure agents $\mathcal{T} = \{ \mathtt{T}~|~\mathtt{T} = (\tau, \gamma_p, \mathtt{c}), \tau~\in~\mathcal{N}_{T}, \gamma_p~\subseteq~\mathcal{A},  \mathtt{c}~\in~\mathcal{N}_{c} \}$.
+\end{theorem}
 
+\subsection{Complex agents}
 
-The key element of a complex agent is \emph{full composition} describing inductively constructed coexistence expressions from existing agents. We restrict ourselves to full compositions where all agents reside in the same compartment.
+In the following we define the last step in the hierarchy of agents. In particular, we define \textit{complex agents}. A complex agent represents a non-trivial composite biochemical object that is (inductively) constructed from already known biological objects. In common rule-based languages this is typically defined by introducing some kind of bonds between individual biochemical objects. In BCS we abstract from detailed specification of bonds and we rather assume a complex as a coexistence of certain objects in a particular group. Such a group can be optionally referred to by a unique name. A complex agent is constructed from atomic and structure agents.
+
+\begin{definition}
+Complex agent $\mathtt{X}$ is defined as triple ($\chi, \gamma_f, \mathtt{c}$) where $\chi \in \mathcal{N}_{x} \cup \{\varepsilon\}$ is name, $\gamma_f \subseteq \mathcal{A} \cup \mathcal{T}$ is finite multiset of atomic and structure agents called \emph{full composition}, and $\mathtt{c} \in \mathcal{N}_{c}$ is physical compartment within which it is considered.
+\end{definition}
+
+Complex agent expressions have the following syntax:
 
 \begin{center}
 {\small
-\hspace*{-1cm}\begin{tabular}{ ll ll }
- complex agent & $\mathtt{X}::=\gamma_f::\mathtt{c}~\choice~n\in{N}_{x}::\mathtt{c}$\\
- full composition & $\gamma_f ::= \mathtt{T}.\mathtt{T}~\choice~\mathtt{T}.\gamma_f$\\
+\hspace*{-1 cm}\begin{tabular}{ ll ll }
+ complex agent & $\mathtt{X}::=\gamma_f::\mathtt{c}~|~\chi::\mathtt{c}$\\
+ full composition & $\gamma_f ::= \mathtt{T}.\mathtt{T}~|~\mathtt{a}.\mathtt{a}~|~\mathtt{T}.\gamma_{f}~|~\mathtt{a}.\gamma_{f}$
 \end{tabular}
 }
 \end{center}
 
-In contrast to partial compositions, we allow replication at the level of full compositions (an agent of a certain name can appear more than once in a full composition). Moreover, names of complex agents are not associated with particular full compositions at the level of agent expressions. This is done at the level of agent signatures (see Section~\ref{sec:sigs}).
+In contrast to partial compositions, we allow replication at the level of full compositions (an agent of a certain name can appear more than once in a full composition). Moreover, names of complex agents are not associated with particular full compositions at the level of agent expressions.
 
-Note that in similar way as in the case of structure agents, we restrict the formalism to complex agents where the compartment is the same for all agents inside the respective full composition.
+Note that a compartment of a complex agent is uniquely given by the compartment specified in its parts. We restrict ourselves to complex agents where all atomic and structure agents in the full composition have the same compartment. Assuming this restriction, we can shorten the notation by omitting compartments in the atomic and structure agents of a full composition. 
 
 \begin{notation}
 ~
 \begin{itemize}
-\item Let $\mathtt{X}=\gamma_f::\mathtt{c}$ for some full composition $\gamma_f$. We denote $\mathtt{T}\in \mathtt{X}$ the fact that~$\mathtt{T}$ is a structure agent included in~$\gamma_f$. 
-Moreover, we denote $\#\mathtt{T}[\mathtt{X}]$ the number of occurrences of~$\mathtt{T}$ in $\gamma_f$. 
-\item For a complex agent $\mathtt{X}=\gamma_f::\mathtt{c}$ where each item $x\in\mathtt{X}$ is an agent assigned to a compartment $\mathtt{c}$, we can use simplified notation that omits the compartment suffix `$::\mathtt{c}$' in individual agents of $\gamma_f$.
+\item  We denote $\mathtt{T}\in \mathtt{X}$ (resp. $\mathtt{a}\in \mathtt{X}$) the fact that~$\mathtt{T}$ (resp. $\mathtt{a}$) is a structure agent (resp. atomic agent) included in~$\gamma_f$ (resp. in~$\gamma_p$). 
+Moreover, we denote $\#\mathtt{T}[\mathtt{X}]$ (resp. $\#\mathtt{a}[\mathtt{X}]$) the number of occurrences of~$\mathtt{T}$ (resp. $\mathtt{a}$) in $\gamma_f$. 
+\item An complex agent might be referenced both via its name $\chi$ (if $\chi \neq \varepsilon$) and $\gamma_f$.
 \end{itemize}
 \end{notation}
 
-Next we define structural equivalence of complex agents. We employ set-based approach to aggregate complex agents into equivalence classes. In particular, at that level we achieve commutativity and associativity of the operator `$.$'.  
-
 \begin{defn}
-Let $\mathtt{X},\mathtt{X}'$ be complex agents. We define \emph{structural equivalence} of \emph{complex agents} by claiming $\mathtt{X}\equiv\mathtt{X}'$ iff either of the following conditions holds:
-\begin{enumerate}
-\item There exist a compartment $\mathtt{c}$ and $n,n'\in\mathcal{N}_x$ such that $\mathtt{X}=n::\mathtt{c},\mathtt{X}'=n'::\mathtt{c}$ and $n=n'$.
-\item If both $\mathtt{X},\mathtt{X}'$ are specified as full compositions then the following two conditions must be satisfied:
-
-\begin{itemize}
-\item for each $\mathtt{T}\in\mathtt{X}$ there exists $\mathtt{T}'\in\mathtt{X}'$ such that  $\mathtt{T}\equiv\mathtt{T}'$ and $\#\mathtt{T}[\mathtt{X}]=\#\mathtt{T}'[\mathtt{X}']$,
-\item for each $\mathtt{T}'\in\mathtt{X}'$ there exists $\mathtt{T}\in\mathtt{X}$ such that  $\mathtt{T}'\equiv\mathtt{T}$ and $\#\mathtt{T}'[\mathtt{X}']=\#\mathtt{T}[\mathtt{X}]$.
-\end{itemize}
-\end{enumerate}
+Let $\mathtt{X},\mathtt{X}'$ be structure agents. We define the \emph{structural equivalence of structure agents} by claiming $\mathtt{X} \equiv \mathtt{X}'$ iff there exist $\chi,\chi',\gamma_f,\gamma'_f, \mathtt{c},\mathtt{c}'$ such that $\mathtt{X}=(\chi, \gamma_f, \mathtt{c}),\mathtt{T}'=(\chi', \gamma_f', \mathtt{c}')$, $\chi=\chi'$, $\mathtt{c} = \mathtt{c}'$, and $\gamma_f=\gamma'_f$.
 \end{defn}
 
-An example of a complex agent is given in Table~\ref{table:caseExmp} where the given complex agent expression represents a large set of hexamers composed from $KaiC$ molecules each considered in arbitrary state.  
+\begin{theorem}
+Since complex agents are constructed from finite sets $\mathcal{N}_{x},~\mathcal{N}_{c}$, $\mathcal{A}$, and $\mathcal{T}$, we can define universe of complex agents $\mathcal{X} = \{ \mathtt{X}~|~\mathtt{X} = (\chi, \gamma_f, \mathtt{c}), \chi~\in~\mathcal{N}_{x} \cup \{\varepsilon\}, \gamma_f \subseteq \mathcal{A} \cup \mathcal{T},  \mathtt{c}~\in~\mathcal{N}_{c} \}$.
+\end{theorem}
 
-\begin{remark}
-From now on, we always consider a \emph{lexicographically ordered agent} as a \emph{representative of a class of structurally equivalent agents}. Since agents are defined hierarchically, lexicographical order is applied recursively to all nested agents. This allows us to always have a clearly defined unique representative.
-\end{remark}
+\section{Biochemical Space Rules}
+
+At this point, we proceed to define the set of BCS rules. In contrast to $kappa_s$, a BCS rule has more complicated structure. This is due to the fact that BCS goes closer to traditional formalism of chemical reactions, in particular, BCS rules consider stoichiometry and compartmentalisation of reacting species. Moreover, to a certain extent we introduce variables in rule expressions allowing us to compact specification of repeating objects.  
+
+The list of rules $\mathtt{R}$ is defined by the following syntax:
+
+\begin{center}
+{\small
+\hspace*{-1cm}\begin{tabular}{ ll ll }
+ rules& $\mathtt{R} ::= \emptyset ~|~ r, \mathtt{R} $\\
+ rule equation & $r ::= \Gamma ~\odot~\Gamma$\\
+ direction & $\odot ::=~ \Rightarrow~\choice~\Leftrightarrow $\\
+ rule expression & \multicolumn{3}{l}{$\Gamma ::= \emptyset~\choice~\varrho~\epsilon::\mathtt{c}~\choice~ \varrho~\epsilon::\mathtt{c}~ +~\Gamma$}\\
+ stoichiometry & \multicolumn{3}{l}{$\varrho ::= n \in \mathbb{N}^+$}\\
+ rule expression item & \multicolumn{3}{l}{$\epsilon :: = \epsilon_1~\choice~\epsilon_2~\choice~\epsilon_3$}\\
+ basic rule agent & \multicolumn{3}{l}{$\epsilon_1  ~::=~  \mathtt{a}~\choice~\mathtt{T}~\choice~\mathtt{X}$}\\
+ shallow rule agent & \multicolumn{3}{l}{$\epsilon_2  ~::=~  \mathtt{a}::\mathtt{T}~\choice~\mathtt{T}::\mathtt{X}$}\\
+ deep rule agent & \multicolumn{3}{l}{$\epsilon_3  ~::=~  \mathtt{a}::\mathtt{T}::\mathtt{X}$}
+\end{tabular}
+}
+\end{center}
+
+We assume that a single rule cannot appear more than once in the list~$\mathtt{R}$ (every rule must be unique). In relation to that, we can use the notation $r\in\mathtt{R}$ to refer to rules in $\mathtt{R}$. See Section~\ref{casestudy} for examples of several rules.
+
+Rule expressions allow more extensive syntax in terms of the \textit{localisation} operator `$::$'. The localisation operator is intended for allowing an alternative way of expressing the hierarchically constructed agents. The main idea is to allow zooming into individual parts of a complex or a structure agent. E.g., for a structure agent {\small $\tau(\alpha_1\{s\}\pipe\alpha_2^{\{s,t\}})::\mathtt{c}$} residing in compartment $\mathtt{c}$ we can use the notation {\small $\alpha_2\{t\}::\tau(\alpha_1\{s\}\pipe\alpha_2^{\{s,t\}})::\mathtt{c}$} to refer explicitly to a concretisation of its subagent $\alpha_2$. This notation is fully equivalent with the original form {\small $\tau(\alpha_1\{s\}\pipe\alpha_2{\{t\}})$} and can be therefore considered as an alternative way to concretise a structure agent. 
+
+Similarly, the concept of localisation is applied also to complex agents. E.g., for a complex agent {\small $A(\alpha_1\{s\}).B(\alpha_2^{\{s,t\}})::\mathtt{c}$} we can zoom to some of its components and express its concretisation such as {\small $B(\alpha_2\{t\})::A(\alpha_1\{s\}).B($ $\alpha_2^{\{s,t\}})::\mathtt{c}$}. In this case, the notation {\small $B(\alpha_2\{t\})::A(\alpha_1\{s\}).B(\alpha_2^{\{s,t\}})$} is equivalent to the complex agent {\small $A(\alpha_1\{s\}).B(\alpha_2\{t\})$}.
+
+In every rule subexpression $\varrho~\epsilon::\mathtt{c}$ the compartment $\mathtt{c}$ makes the scope for every agent appearing in $\epsilon$. In particular, every agent inside $\epsilon$ is assumed to be assigned the compartment $\mathtt{c}$.
+
+To simplify the resulting language to construct reasonable expressions only, we restrict ourselves to rules where the operator `$::$' respects constraints given in Definition~\ref{def:consts}.
+
+\begin{definition}
+\label{def:consts}
+Let $\epsilon$ be a rule expression item that appears in a rule $r\in\mathtt{R}$. The \emph{rule expression} $\epsilon$ is \emph{well-defined} iff the following constrains are satisfied:
+
+\begin{enumerate}
+ \item If $\mathtt{a}::\tau(\gamma_p)$ is a subexpression of $\epsilon$ for some $\mathtt{a},\tau,\gamma_p$ then there must exist $\mathtt{a}' \in \gamma_p$ such that $\mathtt{a} \lhd \mathtt{a}'$.
+
+\item If $\mathtt{T}::\mathtt{X}$ is a subexpression of $\epsilon$ for some $\mathtt{T},\mathtt{X}$ then there must exist $\mathtt{T}' \in \mathtt{X}$ such that $\mathtt{T} \lhd \mathtt{T}'$.
+
+\end{enumerate}
+\end{definition}
+
+Every rule agent in a shallow or deep form can be translated to an equivalent basic form. Formally, this is given in Lemma~\ref{def:flattening}.
+
+\begin{lemma}[Rule Flattening]
+\label{def:flattening}
+Let $(\Sigma_\tau,\Sigma_x)$ be a signature and $\mathtt{R}$ a set of rules. Every rule $r\in\mathtt{R}$ that includes some rule agents in shallow or deep form can be reduced to a rule $r'\in\mathtt{R}$ where every rule agent is in basic form. For every rule agent $\epsilon$ in $r$, the reduction is done by replacing $\epsilon$ with $\epsilon'$ in the following way:
+\begin{enumerate}
+\item If $\epsilon=\mathtt{a}::\mathtt{T}$ where $\mathtt{T}=\tau(\gamma_p)$ for some $\tau,\gamma_p$ then there must exist $\mathtt{a}'\in\gamma_p$ such that $\mathtt{a}\lhd\mathtt{a}'$. Then we set $\epsilon'={\tau}(\gamma'_p)$ where $\gamma'_p$ is constructed from $\gamma_p$ by replacing $\mathtt{a}'\in\gamma_p$ with $\mathtt{a}$.
+\item If $\epsilon=\mathtt{T}::\mathtt{X}$ where $\mathtt{X}=\gamma_f$ then there must exist $\mathtt{T}'\in\gamma_f$ such that $\mathtt{T}\lhd\mathtt{T}'$. Then we set $\epsilon'=\gamma'_f$ where $\gamma'_f$ is constructed from $\gamma_f$ by replacing $\mathtt{T}'\in\gamma_f$ with $\mathtt{T}$. 
+\item If $\epsilon=\mathtt{a}::\mathtt{T}::\mathtt{X}$ then the steps (i,ii) above are applied successively.
+\end{enumerate} 
+\end{lemma}
+
+\begin{definition}
+We say that a rule $r\in\mathtt{R}$ \emph{satisfies agent signature} $(\Sigma_\tau,~\Sigma_x)$, written $r\models (\Sigma_\tau,~\Sigma_x)$, iff every structure or complex agent that appears as a rule agent in $r$ satisfies agent signature $(\Sigma_\tau,~\Sigma_x)$.
+\end{definition}
+
+To increase succinctness, we extend the language with a variable $?\nu$. A variable can be assigned to any rule in place of an agent. Evaluation of a variable within a rule is realised for every occurrence of $?\nu$. For a given signature $(\Sigma_\tau,\Sigma_x)$ we assume that after evaluating the variable, every rule agent must satisfy the signature and is well-defined. Moreover, the scope of the compartment is always uniquely given in the rule expression. The domain of a variable is assumed to be considered as a set (values are not repeated). An example is given in Example~\ref{clockrule1}. The extended syntax is the following:
+
+\begin{center}
+{\small
+\hspace*{-1cm}\begin{tabular}{ ll ll }
+ extended rule equation & $r' ::= r~|~ \Gamma ~\odot~\Gamma~;~var$\\
+ variable & $var ::= \emptyset~|~?\nu=\{\phi\}~|~?\nu_1=\{\phi_1\}~|~?\nu_2=\{\phi_2\}~|~?\nu_3=\{\phi_3\}$\\
+ variable value & $\phi ::=~\phi_1~|~\phi_2~|~\phi_3$\\
+ atomic variable value & $\phi_1 ::= \mathtt{a},~\phi_1~\choice~\mathtt{a}$\\
+ structure variable value & $\phi_2 ::= \mathtt{T},~\phi_2~\choice~\mathtt{T}$\\
+ complex variable value & $\phi_3 ::= \mathtt{X},~\phi_3~\choice~\mathtt{X}$\\
+ extended basic rule agent & $\epsilon'_1 ::= \epsilon_1~\choice~?\nu$\\
+ extended shallow rule agent & $\epsilon'_2 ::= \epsilon_2~\choice~?\nu_1::\mathtt{T}~\choice~\mathtt{a}::?\nu_2~\choice~?\nu_2::\mathtt{X}~\choice~\mathtt{T}::?\nu_3$\\
+ extended deep rule agent & $\epsilon'_3 ::= \epsilon_3~\choice~?\nu_1::\mathtt{T}::\mathtt{X}~\choice~\mathtt{a}::?\nu_2::\mathtt{X}~\choice~\mathtt{a}::\mathtt{T}::?\nu_3$\\
+\end{tabular}
+}
+\end{center}
+
+Finally, we define the notion of a BCS model that is given by a signature and a set of rules. 
+
+\begin{definition}
+A \emph{BCS model} $\mathtt{M}$ is a tuple $((\Sigma_\tau,\Sigma_x), \mathtt{R})$ such that every $r \in \mathtt{R}$ it holds that $r\models(\Sigma_\tau,~\Sigma_x)$.
+\end{definition}
+
 
 \end{document}
-
-\subsection{Signatures}
-
-A complex agent is given either directly as an expression inductively built by applying coexistence operator `$.$' to atomic and structure agents or indirectly as a name referring to a separate set of definitions of complex agents (incorporated in the notion of agent signature). We use that approach because we do not want to overcomplicate complex agent expressions. 
