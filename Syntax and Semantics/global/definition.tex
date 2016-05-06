@@ -46,7 +46,7 @@ Let $\mathcal{N}_{a},~\mathcal{N}_{T},~\mathcal{N}_{x},~\mathcal{N}_{c},~\mathca
 Agents are defined hierarchically starting from \emph{atomic agents}. These agents are the smallest units in our hierarchy a represent ...
 
 \begin{definition}
-Atomic agent $\mathtt{a}$ is defined as triple ($\alpha, \delta, \mathtt{c}$) where $\alpha \in \mathcal{N}_{a}$ is name, $\delta \subseteq \mathcal{N}_{s}$ is finite non-empty set of states $\mathtt{s} \in \mathcal{N}_{s}$ in which the agent can occur, and $\mathtt{c} \in \mathcal{N}_{c}$ is physical compartment within which it is considered.
+Atomic agent $\mathtt{A}$ is defined as triple ($\alpha, \delta, \mathtt{c}$) where $\alpha \in \mathcal{N}_{A}$ is name, $\delta \subseteq \mathcal{N}_{s}$ is finite non-empty set of states $\mathtt{s} \in \mathcal{N}_{s}$ in which the agent can occur, and $\mathtt{c} \in \mathcal{N}_{c}$ is physical compartment within which it is considered.
 \end{definition}
 
 Atomic agent expressions have the following syntax:
@@ -54,14 +54,14 @@ Atomic agent expressions have the following syntax:
 \begin{center}
 {\small
 \hspace*{-1cm}\begin{tabular}{ ll ll ll ll }
- atomic agent & $\mathtt{a} ::= \alpha\{\mathtt{s}\}::\mathtt{c}~\choice~\alpha::\mathtt{c}$ & state & $\mathtt{s} ::= n \in \delta$\\
- name & $\alpha ::= n \in \mathcal{N}_{a}$ & compartment & $\mathtt{c} ::= n \in \mathcal{N}_{c}$\\
+ atomic agent & $\mathtt{A} ::= \alpha\{\mathtt{s}\}::\mathtt{c}~\choice~\alpha::\mathtt{c}$ & state & $\mathtt{s} ::= n \in \delta$\\
+ name & $\alpha ::= n \in \mathcal{N}_{A}$ & compartment & $\mathtt{c} ::= n \in \mathcal{N}_{c}$\\
 \end{tabular}
 }
 \end{center}
 
 \begin{definition}
-Let $\mathtt{a},~\mathtt{a}'$ be atomic agents. We define the \emph{structural equivalence of atomic agents} by claiming $\mathtt{a}\equiv\mathtt{a}'$ whenever $\mathtt{\alpha} = \mathtt{\alpha}'$, $\mathtt{c} = \mathtt{c}'$ and $\delta = \delta'$.
+Let $\mathtt{A},~\mathtt{A}'$ be atomic agents. We define the \emph{structural equivalence of atomic agents} by claiming $\mathtt{A}\equiv\mathtt{A}'$ whenever $\mathtt{\alpha} = \mathtt{\alpha}'$, $\mathtt{c} = \mathtt{c}'$ and $\delta = \delta'$.
 \end{definition}
 
 \begin{notation}
@@ -73,11 +73,11 @@ Let $\mathtt{a},~\mathtt{a}'$ be atomic agents. We define the \emph{structural e
 \end{notation}
 
 \begin{defn}
-Let $\mathtt{a},\mathtt{a}'$ be atomic agents. We say agent $\mathtt{a}=(\alpha, \delta, \mathtt{c})$ is \emph{compatible with} agent $\mathtt{a}'=(\alpha', \delta', \mathtt{c}')$, written $\mathtt{a} \lhd \mathtt{a}'$, iff $\alpha = \alpha'$, $\mathtt{c} = \mathtt{c}'$, and $\delta \subseteq \delta'$. 
+Let $\mathtt{A},\mathtt{A}'$ be atomic agents. We say agent $\mathtt{A}=(\alpha, \delta, \mathtt{c})$ is \emph{compatible with} agent $\mathtt{A}'=(\alpha', \delta', \mathtt{c}')$, written $\mathtt{A} \lhd \mathtt{A}'$, iff $\alpha = \alpha'$, $\mathtt{c} = \mathtt{c}'$, and $\delta \subseteq \delta'$. 
 \end{defn}
 
 \begin{theorem}
-Since atomic agents are constructed from finite sets $\mathcal{N}_{a},~\mathcal{N}_{c}$, and $\mathcal{N}_{s}$, we can define universe of atomic agents $\mathcal{A} = \{ \mathtt{a}~|~\mathtt{a} = (\alpha, \delta, \mathtt{c}), \alpha~\in~\mathcal{N}_{a}, \delta~\subseteq~\mathcal{N}_{s},  \mathtt{c}~\in~\mathcal{N}_{c} \}$.
+Since atomic agents are constructed from finite sets $\mathcal{N}_{A},~\mathcal{N}_{c}$, and $\mathcal{N}_{s}$, we can define universe of atomic agents $\mathcal{A} = \{ \mathtt{A}~|~\mathtt{A} = (\alpha, \delta, \mathtt{c}), \alpha~\in~\mathcal{N}_{A}, \delta~\subseteq~\mathcal{N}_{s},  \mathtt{c}~\in~\mathcal{N}_{c} \}$.
 \end{theorem}
 
 \subsection{Structure agents}
@@ -87,7 +87,7 @@ Next we proceed with defining \emph{structure agents}. A structure agent represe
 A typical example of a structure agent is a protein where the atomic agents are individual amino acids that are of interest in the particular setting.
 
 \begin{definition}
-Structure agent $\mathtt{T}$ is defined as triple ($\tau, \gamma_p, \mathtt{c}$) where $\tau \in \mathcal{N}_{T}$ is name, $\gamma_p \subseteq \mathcal{A}$ is finite set of atomic agents $\mathtt{a} \in \mathcal{A}$ called \emph{partial composition}, and $\mathtt{c} \in \mathcal{N}_{c}$ is physical compartment within which it is considered.
+Structure agent $\mathtt{T}$ is defined as triple ($\tau, \gamma_p, \mathtt{c}$) where $\tau \in \mathcal{N}_{T}$ is name, $\gamma_p \subseteq \mathcal{A}$ is finite set of atomic agents $\mathtt{A} \in \mathcal{A}$ called \emph{partial composition}, and $\mathtt{c} \in \mathcal{N}_{c}$ is physical compartment within which it is considered.
 \end{definition}
 
 Structure agent expressions have the following syntax:
@@ -97,7 +97,7 @@ Structure agent expressions have the following syntax:
 \hspace*{-1cm}\begin{tabular}{ ll ll }
  structure agent & $\mathtt{T} ::= \tau(\gamma_p)::\mathtt{c}~\choice~\tau::\mathtt{c}$\\
  structure name & $\tau ::= n \in \mathcal{N}_{T}$\\
- partial composition & $\gamma_p ::= \mathtt{a},~\gamma_p~\choice~\mathtt{a}$\\
+ partial composition & $\gamma_p ::= \mathtt{A},~\gamma_p~\choice~\mathtt{A}$\\
 \end{tabular}
 }
 \end{center}   
@@ -105,11 +105,11 @@ Structure agent expressions have the following syntax:
 \begin{notation}
 ~
 \begin{itemize}
-\item We denote $\mathtt{a}\in\gamma_p$ the fact that $\gamma_p$ includes the atomic agent $\mathtt{a}$.
+\item We denote $\mathtt{A}\in\gamma_p$ the fact that $\gamma_p$ includes the atomic agent $\mathtt{A}$.
 \item Structure agent $\mathtt{T} = (\tau, \gamma_p, \mathtt{c})$ might be written as $\tau::\mathtt{c}$ in two special cases:
 	\begin{enumerate}
 		\item $\gamma_p = \emptyset$,
-		\item for each $\mathtt{a} \in \gamma_p$ the state is not specified, i.e. it has form of $\alpha::\mathtt{c}$.
+		\item for each $\mathtt{A} \in \gamma_p$ the state is not specified, i.e. it has form of $\alpha::\mathtt{c}$.
 	\end{enumerate}
 \end{itemize}
 \end{notation}
@@ -121,7 +121,7 @@ Let $\mathtt{T},\mathtt{T}'$ be structure agents. We define the \emph{structural
 \end{defn}
 
 \begin{defn}
-Let $\mathtt{T},\mathtt{T}'$ be structure agents. We say $\mathtt{T}$ \emph{is compatible with} $\mathtt{T}'$, written $\mathtt{T} \lhd \mathtt{T}'$, iff there exist $\tau,\tau',\gamma_p,\gamma'_p,\mathtt{c},\mathtt{c}'$ such that $\mathtt{T}=(\tau, \gamma_p, \mathtt{c}),\mathtt{T}'=(\tau', \gamma_p', \mathtt{c}')$, $\tau = \tau'$, $\mathtt{c} = \mathtt{c}'$, and for each atomic agent $\mathtt{a} \in \gamma_p$ there exists an atomic agent $\mathtt{a}' \in \gamma'_p$ such that $\mathtt{a}~\lhd~\mathtt{a}'$. 
+Let $\mathtt{T},\mathtt{T}'$ be structure agents. We say $\mathtt{T}$ \emph{is compatible with} $\mathtt{T}'$, written $\mathtt{T} \lhd \mathtt{T}'$, iff there exist $\tau,\tau',\gamma_p,\gamma'_p,\mathtt{c},\mathtt{c}'$ such that $\mathtt{T}=(\tau, \gamma_p, \mathtt{c}),\mathtt{T}'=(\tau', \gamma_p', \mathtt{c}')$, $\tau = \tau'$, $\mathtt{c} = \mathtt{c}'$, and for each atomic agent $\mathtt{A} \in \gamma_p$ there exists an atomic agent $\mathtt{A}' \in \gamma'_p$ such that $\mathtt{A}~\lhd~\mathtt{A}'$. 
 \end{defn}
 
 \begin{theorem}
@@ -142,7 +142,7 @@ Complex agent expressions have the following syntax:
 {\small
 \hspace*{-1 cm}\begin{tabular}{ ll ll }
  complex agent & $\mathtt{X}::=\gamma_f::\mathtt{c}~|~\chi::\mathtt{c}$\\
- full composition & $\gamma_f ::= \mathtt{T}.\mathtt{T}~|~\mathtt{a}.\mathtt{a}~|~\mathtt{T}.\gamma_{f}~|~\mathtt{a}.\gamma_{f}$
+ full composition & $\gamma_f ::= \mathtt{T}.\mathtt{T}~|~\mathtt{A}.\mathtt{A}~|~\mathtt{T}.\gamma_{f}~|~\mathtt{A}.\gamma_{f}$
 \end{tabular}
 }
 \end{center}
@@ -154,14 +154,15 @@ Note that a compartment of a complex agent is uniquely given by the compartment 
 \begin{notation}
 ~
 \begin{itemize}
-\item  We denote $\mathtt{T}\in \mathtt{X}$ (resp. $\mathtt{a}\in \mathtt{X}$) the fact that~$\mathtt{T}$ (resp. $\mathtt{a}$) is a structure agent (resp. atomic agent) included in~$\gamma_f$ (resp. in~$\gamma_p$). 
-Moreover, we denote $\#\mathtt{T}[\mathtt{X}]$ (resp. $\#\mathtt{a}[\mathtt{X}]$) the number of occurrences of~$\mathtt{T}$ (resp. $\mathtt{a}$) in $\gamma_f$. 
+\item  We denote $\mathtt{T}\in \mathtt{X}$ (resp. $\mathtt{A}\in \mathtt{X}$) the fact that~$\mathtt{T}$ (resp. $\mathtt{A}$) is a structure agent (resp. atomic agent) included in~$\gamma_f$ (resp. in~$\gamma_p$). 
+Moreover, we denote $\#\mathtt{T}[\mathtt{X}]$ (resp. $\#\mathtt{A}[\mathtt{X}]$) the number of occurrences of~$\mathtt{T}$ (resp. $\mathtt{A}$) in $\gamma_f$. 
+\item We denote $\mathtt{X}' \in \mathtt{X}$ the fact that full composition of $\mathtt{X}'$ is subexpression in full composition of $\mathtt{X}$.
 \item An complex agent might be referenced both via its name $\chi$ (if $\chi \neq \varepsilon$) and $\gamma_f$.
 \end{itemize}
 \end{notation}
 
 \begin{defn}
-Let $\mathtt{X},\mathtt{X}'$ be structure agents. We define the \emph{structural equivalence of structure agents} by claiming $\mathtt{X} \equiv \mathtt{X}'$ iff there exist $\chi,\chi',\gamma_f,\gamma'_f, \mathtt{c},\mathtt{c}'$ such that $\mathtt{X}=(\chi, \gamma_f, \mathtt{c}),\mathtt{T}'=(\chi', \gamma_f', \mathtt{c}')$, $\chi=\chi'$, $\mathtt{c} = \mathtt{c}'$, and $\gamma_f=\gamma'_f$ (considered as unordered multisets).
+Let $\mathtt{X},\mathtt{X}'$ be structure agents. We define the \emph{structural equivalence of structure agents} by claiming $\mathtt{X} \equiv \mathtt{X}'$ iff there exist $\chi,\chi',\gamma_f,\gamma'_f, \mathtt{c},\mathtt{c}'$ such that $\mathtt{X}=(\chi, \gamma_f, \mathtt{c}),\mathtt{T}'=(\chi', \gamma_f', \mathtt{c}')$, $\chi=\chi'$, $\mathtt{c} = \mathtt{c}'$, and $\gamma_f=\gamma'_f$ (regardless the order).
 \end{defn}
 
 \begin{defn}
@@ -183,53 +184,53 @@ Rule expressions have the following syntax:
 \begin{center}
 {\small
 \hspace*{-1cm}\begin{tabular}{ l l }
- rule expression & $r ::= \lambda ~\odot~ \rho~;~\nu ~|~ \lambda ~\odot~ ;~\nu ~|~ \odot~ \rho~;~\nu $\\
+ rule expression & $\mathtt{R} ::= \lambda ~\odot~ \rho~\nu ~|~ \lambda ~\odot~\nu ~|~ \odot~ \rho~\nu $\\
   & $\lambda ::= \Gamma$\\
   & $\rho ::= \Gamma$\\
-  & $\nu ::= \upsilon ~|~ \varepsilon$\\
+  & $\nu ::=~ ;~\upsilon ~|~ \varepsilon$\\
  direction & $\odot ::=~ \Rightarrow~|~\Leftrightarrow $\\
   & $\Gamma ::= \zeta~\varphi~ +~\Gamma ~|~ \zeta~\varphi$\\
  stoichiometry & $\zeta ::= n \in \mathbb{N}^+$\\
  rule agent & $\varphi :: = \varphi_1~|~\varphi_2~|~\varphi_1::\xi~|~\varphi_2::\xi'~|~\xi'$\\
-  & $\varphi_1  ~::=~  ?\nu_1~|~?\nu_2~|~?\nu_3~|~\mathtt{a}::~?\nu_2~|~?\nu_1::\mathtt{T}$\\
+  & $\varphi_1  ~::=~  ?\nu_1~|~?\nu_2~|~?\nu_3~|~\mathtt{A}::~?\nu_2~|~?\nu_1::\mathtt{T}$\\
   & $\xi' ~::=~ \mathtt{X}::\xi'~|~?\nu_3::\xi~|~?\nu_3~|~\xi$\\
-  & $\varphi_2  ~::=~  \mathtt{a}~|~\mathtt{T}~|~\mathtt{X}~|~\mathtt{a}::\mathtt{T}$\\
+  & $\varphi_2  ~::=~  \mathtt{A}~|~\mathtt{T}~|~\mathtt{X}~|~\mathtt{A}::\mathtt{T}$\\
   & $\xi  ~::=~  \mathtt{X}::\xi~|~\mathtt{X}$\\
  variable & $\upsilon ::=~?\nu_1=\{\phi_1\}~|~?\nu_2=\{\phi_2\}~|~?\nu_3=\{\phi_3\}$\\
-  & $\phi_1 ::= \mathtt{a},~\phi_1~|~\mathtt{a}$\\
+  & $\phi_1 ::= \mathtt{A},~\phi_1~|~\mathtt{A}$\\
   & $\phi_2 ::= \mathtt{T},~\phi_2~|~\mathtt{T}$\\
   & $\phi_3 ::= \mathtt{X},~\phi_3~|~\mathtt{X}$\\
 \end{tabular}
 }
 \end{center}
 
-*** ALL LOWER IS NOT DONE YET  ***
-
+\begin{defn}
+Let $\mathtt{R},\mathtt{R}'$ be rules. We define the \emph{structural equivalence of rules} by claiming $\mathtt{R} \equiv \mathtt{R}'$ iff there exist $\lambda, \lambda', \rho, \rho', \nu, \nu'$ such that $\mathtt{R}=(\lambda, \rho, \nu),\mathtt{R}'=(\lambda', \rho', \nu')$, $\chi=\chi'$, $\nu = \nu'$, $\lambda=\lambda'$ (regardless the order) and $\rho=\rho'$ (regardless the order).
+\end{defn}
 
 \begin{definition}
-Let $\varphi$ be a rule expression item that appears in a rule $r\in\mathtt{R}$. The \emph{rule expression} $\varphi$ is \emph{well-defined} iff the following constrains are satisfied:
+Let $\varphi$ be a rule agent that appears in a rule $\mathtt{R}$. The \emph{rule agent} $\varphi$ is \emph{well-formed} iff the following constrains are satisfied:
 
 \begin{enumerate}
- \item If $\mathtt{a}::\tau(\gamma_p)$ is a subexpression of $\varphi$ for some $\mathtt{a},\tau,\gamma_p$ then there must exist $\mathtt{a}' \in \gamma_p$ such that $\mathtt{a} \lhd \mathtt{a}'$.
+ \item If $\mathtt{A}::\mathtt{T}$ is a subexpression of $\varphi$ and $\mathtt{T} = \tau(\gamma_p)::\mathtt{c}$ then exists $\mathtt{A}' \in \gamma_p$ such that $\mathtt{A} \lhd \mathtt{A}'$.
 
-\item If $\mathtt{T}::\mathtt{X}$ is a subexpression of $\varphi$ for some $\mathtt{T},\mathtt{X}$ then there must exist $\mathtt{T}' \in \mathtt{X}$ such that $\mathtt{T} \lhd \mathtt{T}'$.
+\item If $\mathtt{T}::\mathtt{X}$ is a subexpression of $\varphi$ then exists $\mathtt{T}' \in \mathtt{X}$ such that $\mathtt{T} \lhd \mathtt{T}'$.
 
-\item If $\mathtt{a}::\mathtt{X}$ is a subexpression of $\varphi$ for some $\mathtt{a},\mathtt{X}$ then there must exist $\mathtt{a}' \in \mathtt{X}$ such that $\mathtt{a} \lhd \mathtt{a}'$.
+\item If $\mathtt{A}::\mathtt{X}$ is a subexpression of $\varphi$ then exists $\mathtt{A}' \in \mathtt{X}$ such that $\mathtt{A} \lhd \mathtt{A}'$.
 
-\item If $\mathtt{X}'::\mathtt{X}$ is a subexpression of $\varphi$ for some $\mathtt{X}',\mathtt{X}$ then there must exist $\mathtt{X}'' \in \mathtt{X}$ such that $\mathtt{X}' \lhd \mathtt{X}''$.
+\item If $\mathtt{X}'::\mathtt{X}$ is a subexpression of $\varphi$ then exists $\mathtt{X}'' \in \mathtt{X}$ such that $\mathtt{X}' \lhd \mathtt{X}''$.
 
 \end{enumerate}
- 
-If one of above subexpressions is inside a rule expression then it is called \emph{nested} rule agent else it is a \emph{basic} rule agent.
+
 \end{definition}
 
 \begin{definition}[Rule Flattening]
 Let $(\Sigma_\tau,\Sigma_x)$ be a signature and $\mathtt{R}$ a set of rules. Every rule $r\in\mathtt{R}$ that includes some \emph{nested} rule agents $\varphi$ can be reduced to a rule $r'\in\mathtt{R}$ where every rule agent $\varphi$ is in \emph{basic} form. For every subexpression $\beta$ in every rule agent $\varphi$ in $r$, the reduction is done recursively by replacing $\beta$ with $\beta'$ in the following way:
 \begin{enumerate}
-\item If $\beta=\mathtt{a}::\mathtt{T}$ where $\mathtt{T}=\tau(\gamma_p)$ for some $\tau,\gamma_p$ then there must exist $\mathtt{a}'\in\gamma_p$ such that $\mathtt{a}\lhd\mathtt{a}'$. Then we set $\beta'={\tau}(\gamma'_p)$ where $\gamma'_p$ is constructed from $\gamma_p$ by replacing $\mathtt{a}'\in\gamma_p$ with $\mathtt{a}$.
+\item If $\beta=\mathtt{A}::\mathtt{T}$ where $\mathtt{T}=\tau(\gamma_p)$ for some $\tau,\gamma_p$ then there must exist $\mathtt{A}'\in\gamma_p$ such that $\mathtt{A}\lhd\mathtt{A}'$. Then we set $\beta'={\tau}(\gamma'_p)$ where $\gamma'_p$ is constructed from $\gamma_p$ by replacing $\mathtt{A}'\in\gamma_p$ with $\mathtt{A}$.
 \item If $\beta=\mathtt{T}::\mathtt{X}$ where $\mathtt{X}=\gamma_f$ then there must exist $\mathtt{T}'\in\gamma_f$ such that $\mathtt{T}\lhd\mathtt{T}'$. Then we set $\beta'=\gamma'_f$ where $\gamma'_f$ is constructed from $\gamma_f$ by replacing $\mathtt{T}'\in\gamma_f$ with $\mathtt{T}$. 
-\item If $\beta=\mathtt{a}::\mathtt{X}$ where $\mathtt{X}=\gamma_f$ then there must exist $\mathtt{a}'\in\gamma_f$ such that $\mathtt{a}\lhd\mathtt{a}'$. Then we set $\beta'=\gamma'_f$ where $\gamma'_f$ is constructed from $\gamma_f$ by replacing $\mathtt{a}'\in\gamma_f$ with $\mathtt{a}$. 
-\item If $\beta=\mathtt{X}'::\mathtt{X}$ where $\mathtt{X}=\gamma_f$ and $\mathtt{X}'= \gamma'_f$ then for every $\mathtt{T} \in \gamma_f$ (resp. $\mathtt{a} \in \gamma_f$) there must exist $\mathtt{T}' \in \gamma'_f$ (resp. $\mathtt{a}' \in \gamma'_f$) such that $\mathtt{T} \lhd \mathtt{T}'$ (resp. $\mathtt{a} \lhd \mathtt{a}'$). Then we set $\beta'=\gamma_{f'}$ where $\gamma_{f'}$ is constructed from $\gamma_f$ by replacing all $\mathtt{T} \in \gamma_f$ (resp. $\mathtt{a} \in \gamma_f$) with appropriate $\mathtt{T}' \in \gamma'_f$  (resp. $\mathtt{a}' \in \gamma'_f$).
+\item If $\beta=\mathtt{A}::\mathtt{X}$ where $\mathtt{X}=\gamma_f$ then there must exist $\mathtt{A}'\in\gamma_f$ such that $\mathtt{A}\lhd\mathtt{A}'$. Then we set $\beta'=\gamma'_f$ where $\gamma'_f$ is constructed from $\gamma_f$ by replacing $\mathtt{A}'\in\gamma_f$ with $\mathtt{A}$. 
+\item If $\beta=\mathtt{X}'::\mathtt{X}$ where $\mathtt{X}=\gamma_f$ and $\mathtt{X}'= \gamma'_f$ then for every $\mathtt{T} \in \gamma_f$ (resp. $\mathtt{A} \in \gamma_f$) there must exist $\mathtt{T}' \in \gamma'_f$ (resp. $\mathtt{A}' \in \gamma'_f$) such that $\mathtt{T} \lhd \mathtt{T}'$ (resp. $\mathtt{A} \lhd \mathtt{A}'$). Then we set $\beta'=\gamma_{f'}$ where $\gamma_{f'}$ is constructed from $\gamma_f$ by replacing all $\mathtt{T} \in \gamma_f$ (resp. $\mathtt{A} \in \gamma_f$) with appropriate $\mathtt{T}' \in \gamma'_f$  (resp. $\mathtt{A}' \in \gamma'_f$).
 \end{enumerate} 
 \end{definition}
 
