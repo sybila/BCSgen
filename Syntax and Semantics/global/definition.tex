@@ -198,11 +198,11 @@ At this point it is good to notice the fact that each agent expression $\mathtt{
 
 \section{Biochemical Space Rules}
 
-\begin{definition}
-Rule $\mathtt{R}$ is defined as pair ($\lambda, \rho$) where $\lambda, \rho \subseteq \mathcal{X} \cup \mathcal{T} \cup \mathcal{A} \cup \{\varepsilon\}$ and $\lambda$ is \emph{left-hand-side} of the rule and $\rho$ is \emph{right-hand-side} of the rule. Both $\lambda$ and $\rho$ are ordered sets where order is given by rule expression and at most one of them might be $\varepsilon$.
-\end{definition}
+%\begin{definition}
+%Rule $\mathtt{R}$ is defined as pair ($\lambda, \rho$) where $\lambda, \rho \subseteq \mathcal{E}$ and $\lambda$ is \emph{left-hand-side} of the rule and $\rho$ is \emph{right-hand-side} of the rule. Both $\lambda$ and $\rho$ are ordered sets where order is given by rule expression and at most one of them might be $\varepsilon$.
+%\end{definition}
 
-Rule expressions have the following syntax:
+Rule is an expression defined from agent expressions $\mathcal{E}$ by the following grammar:
 
 \begin{center}
 {\small
@@ -217,12 +217,11 @@ Rule expressions have the following syntax:
 \end{center}
 
 \begin{defn}
-Let $\mathtt{R},\mathtt{R}'$ be rules. We define the \emph{structural equivalence of rules} by claiming $\mathtt{R} \equiv \mathtt{R}'$ iff there exist $\lambda, \lambda', \rho, \rho', \nu, \nu'$ such that $\mathtt{R}=(\lambda, \rho, \nu),\mathtt{R}'=(\lambda', \rho', \nu')$, $\chi=\chi'$, $\nu = \nu'$, $\lambda=\lambda'$ (regardless the order) and $\rho=\rho'$ (regardless the order).
+Let $\mathtt{R},\mathtt{R}'$ be rules. We define the \emph{structural equivalence of rules} by claiming $\mathtt{R} \equiv \mathtt{R}'$ iff there exist $\lambda, \lambda', \rho, \rho', \nu, \nu'$ such that $\mathtt{R}=\lambda ~\Rightarrow~ \rho$, $\mathtt{R}'=\lambda' ~\Rightarrow~ \rho'$, $\lambda=\lambda'$, and $\rho=\rho'$.
 \end{defn}
 
 \begin{theorem}
-We define universe of rules $\mathcal{R} = \{ \mathtt{r}~|~\mathtt{r} = (\lambda, \rho), \lambda, \rho \subseteq \mathcal{X} \cup \mathcal{T} \cup \mathcal{A} \cup \{\varepsilon\} \}$.
-Similarly, we can define universe of rule expressions\\ $\mathcal{E}_\mathcal{R} = \{ \lambda ~\Rightarrow~ \rho ~|~ (\lambda, \rho) \in \mathcal{R} \} \cup \{ \lambda ~\Rightarrow ~|~ (\lambda, \varepsilon) \in \mathcal{R} \} \cup \{ \Rightarrow~ \rho ~|~ (\varepsilon, \rho) \in \mathcal{R} \}$.
+We define universe of rule expressions\\ $\mathcal{E}_\mathcal{R} = \{ \lambda ~\Rightarrow~ \rho ~|~ (\lambda, \rho) \in \mathcal{R} \} \cup \{ \lambda ~\Rightarrow ~|~ (\lambda, \varepsilon) \in \mathcal{R} \} \cup \{ \Rightarrow~ \rho ~|~ (\varepsilon, \rho) \in \mathcal{R} \}$.
 \end{theorem}
 
 \section{Semantics}
