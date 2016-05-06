@@ -70,7 +70,7 @@ Let $\mathtt{A},~\mathtt{A}'$ be atomic agents. We define the \emph{structural e
 {~}
 \begin{itemize}
 \item We denote $\mathtt{s}\in\delta$ the fact that $\mathtt{s}$ is included in the state signature~$\delta$.
-\item Syntax $\alpha::\mathtt{c}$ is used for expressing atomic agent when state is not specified, i.e. all states $\mathtt{s} \in \delta$ are considered.
+\item Syntax $\alpha::\mathtt{c}$ is used for expressing atomic agent when state is not specified, i.e. $|\delta| > 1$.
 \end{itemize}
 \end{notation}
 
@@ -79,7 +79,9 @@ Let $\mathtt{A},\mathtt{A}'$ be atomic agents. We say agent $\mathtt{A}=(\alpha,
 \end{defn}
 
 \begin{theorem}
-Since atomic agents are constructed from finite sets $\mathcal{N}_{A},~\mathcal{N}_{c}$, and $\mathcal{N}_{s}$, we can define universe of atomic agents $\mathcal{A} = \{ \mathtt{A}~|~\mathtt{A} = (\alpha, \delta, \mathtt{c}), \alpha~\in~\mathcal{N}_{A}, \delta~\subseteq~\mathcal{N}_{s},  \mathtt{c}~\in~\mathcal{N}_{c} \}$.
+Since atomic agents are constructed from finite sets $\mathcal{N}_{A},~\mathcal{N}_{c}$, and $\mathcal{N}_{s}$, we can define universe of atomic agents $\mathcal{A} = \{ \mathtt{A}~|~\mathtt{A} = (\alpha, \delta, \mathtt{c}), \alpha~\in~\mathcal{N}_{A}, \delta~\subseteq~\mathcal{N}_{s},  \mathtt{c}~\in~\mathcal{N}_{c} \}$. 
+
+\noindent Similarly, we can define universe of atomic agent expressions\\ $\mathcal{E}_\mathcal{A} = \{ \alpha\{\mathtt{s}\}::\mathtt{c} ~|~ (\alpha, \delta, \mathtt{c}) \in \mathcal{A}~\emph{and}~ \mathtt{s} \in \delta \} \cup \{ \alpha::\mathtt{c} ~|~ (\alpha, \delta, \mathtt{c}) \in \mathcal{A}\}$.
 \end{theorem}
 
 \subsection{Structure agents}
@@ -108,6 +110,7 @@ Structure agent expressions have the following syntax:
 ~
 \begin{itemize}
 \item We denote $\mathtt{A}\in\gamma_p$ the fact that $\gamma_p$ includes the atomic agent $\mathtt{A}$.
+\item If an atomic agent $\mathtt{A} \in \gamma_p$ does not have specified state, i.e. it has form of $\alpha::\mathtt{c}$, it might be skipped from the partial composition since it can be found in agent's definition.
 \item Structure agent $\mathtt{T} = (\tau, \gamma_p, \mathtt{c})$ might be written as $\tau::\mathtt{c}$ in two special cases:
 	\begin{enumerate}
 		\item $\gamma_p = \emptyset$,
@@ -128,6 +131,8 @@ Let $\mathtt{T},\mathtt{T}'$ be structure agents. We say $\mathtt{T}$ \emph{is c
 
 \begin{theorem}
 Since structure agents are constructed from finite sets $\mathcal{N}_{T},~\mathcal{N}_{c}$, and $\mathcal{A}$, we can define universe of structure agents $\mathcal{T} = \{ \mathtt{T}~|~\mathtt{T} = (\tau, \gamma_p, \mathtt{c}), \tau~\in~\mathcal{N}_{T}, \gamma_p~\subseteq~\mathcal{A},  \mathtt{c}~\in~\mathcal{N}_{c} \}$.
+
+\noindent Similarly, we can define universe of structure agent expressions\\ $\mathcal{E}_\mathcal{T} = \{ \tau(\gamma_p)::\mathtt{c} ~|~ (\tau, \gamma_p, \mathtt{c}) \in \mathcal{T} \} \cup \{ \tau::\mathtt{c} ~|~ (\tau, \gamma_p, \mathtt{c}) \in \mathcal{T} \}$.
 \end{theorem}
 
 \subsection{Complex agents}
@@ -135,7 +140,7 @@ Since structure agents are constructed from finite sets $\mathcal{N}_{T},~\mathc
 In the following we define the last step in the hierarchy of agents. In particular, we define \textit{complex agents}. A complex agent represents a non-trivial composite biochemical object that is (inductively) constructed from already known biological objects. In common rule-based languages this is typically defined by introducing some kind of bonds between individual biochemical objects. In BCS we abstract from detailed specification of bonds and we rather assume a complex as a coexistence of certain objects in a particular group. Such a group can be optionally referred to by a unique name. A complex agent is constructed from atomic and structure agents.
 
 \begin{definition}
-Complex agent $\mathtt{X}$ is defined as triple ($\chi, \gamma_f, \mathtt{c}$) where $\chi \in \mathcal{N}_{x} \cup \{\varepsilon\}$ is name, $\gamma_f \subseteq \mathcal{A} \cup \mathcal{T}$ is finite ordered multiset of atomic and structure agents called \emph{full composition} ordered by complex agent expression, and $\mathtt{c} \in \mathcal{N}_{c}$ is physical compartment within which it is considered.
+Complex agent $\mathtt{X}$ is defined as triple ($\chi, \gamma_f, \mathtt{c}$) where $\chi \in \mathcal{N}_{x} \cup \{\varepsilon\}$ is name, $\gamma_f \subseteq \mathcal{A} \cup \mathcal{T}$ is finite multiset of atomic and structure agents called \emph{full composition}, and $\mathtt{c} \in \mathcal{N}_{c}$ is physical compartment within which it is considered.
 \end{definition}
 
 Complex agent expressions have the following syntax:
@@ -158,7 +163,7 @@ Note that a compartment of a complex agent is uniquely given by the compartment 
 \begin{itemize}
 \item  We denote $\mathtt{T}\in \mathtt{X}$ (resp. $\mathtt{A}\in \mathtt{X}$) the fact that~$\mathtt{T}$ (resp. $\mathtt{A}$) is a structure agent (resp. atomic agent) included in~$\gamma_f$ (resp. in~$\gamma_p$). 
 Moreover, we denote $\#\mathtt{T}[\mathtt{X}]$ (resp. $\#\mathtt{A}[\mathtt{X}]$) the number of occurrences of~$\mathtt{T}$ (resp. $\mathtt{A}$) in $\gamma_f$. 
-\item We denote $\mathtt{X}' \in \mathtt{X}$ the fact that full composition of $\mathtt{X}'$ is subexpression in full composition of $\mathtt{X}$.
+%\item We denote $\mathtt{X}' \in \mathtt{X}$ the fact that full composition of $\mathtt{X}'$ is subexpression in full composition of $\mathtt{X}$.
 \item An complex agent might be referenced both via its name $\chi$ (if $\chi \neq \varepsilon$) and $\gamma_f$.
 \end{itemize}
 \end{notation}
@@ -173,7 +178,23 @@ Let $\mathtt{X} = (\chi, \gamma_f, \mathtt{c}), \mathtt{X}' = (\chi', \gamma_f',
 
 \begin{theorem}
 Since complex agents are constructed from finite sets $\mathcal{N}_{x},~\mathcal{N}_{c}$, $\mathcal{A}$, and $\mathcal{T}$, we can define universe of complex agents $\mathcal{X} = \{ \mathtt{X}~|~\mathtt{X} = (\chi, \gamma_f, \mathtt{c}), \chi~\in~\mathcal{N}_{x} \cup \{\varepsilon\}, \gamma_f \subseteq \mathcal{A} \cup \mathcal{T},  \mathtt{c}~\in~\mathcal{N}_{c} \}$.
+
+\noindent Similarly, we can define universe of complex agent expressions\\ $\mathcal{E}_\mathcal{X} = \{ \gamma_f::\mathtt{c} ~|~ (\chi, \gamma_f, \mathtt{c}) \in \mathcal{X} \} \cup \{ \chi::\mathtt{c} ~|~ (\chi, \gamma_f, \mathtt{c}) \in \mathcal{X} \}$.
 \end{theorem}
+
+\subsection{Summary}
+
+\begin{theorem}
+We define universe of all agent expressions $\mathcal{E} = \mathcal{E}_\mathcal{A} \cup \mathcal{E}_\mathcal{T} \cup \mathcal{E}_\mathcal{X} \cup \{\varepsilon\}$.
+\end{theorem}
+
+At this point it is good to notice the fact that each agent expression $\mathtt{E} \in \mathcal{E}$ clearly defines an agent but an agent might be written by more expressions. It is due to order in partial and full compositions given by expression.
+
+- complex agent by nemal mat order, aby som mu mohol definovat permutacie DONE
+
+- pravidlo by mohlo byt vytvorene iba z expressions a v nich uz poradie existuje... vlastne je to funckia z expression do expression aplikovana na solution, lenze solution je z fragmentu agentov, ktory sa daju vzdy jednoznacne prepisat na expression
+
+- solution vsak nebude expression, ale klasicky mnozinovo... alebo dvojica (mnozina agentov, expression) ?
 
 \section{Biochemical Space Rules}
 
@@ -186,10 +207,9 @@ Rule expressions have the following syntax:
 \begin{center}
 {\small
 \hspace*{-1cm}\begin{tabular}{ l l }
- rule expression & $\mathtt{R} ::= \lambda ~\odot~ \rho ~|~ \lambda ~\odot ~|~ \odot~ \rho $\\
+ rule expression & $\mathtt{R} ::= \lambda ~\Rightarrow~ \rho ~|~ \lambda ~\Rightarrow ~|~ \Rightarrow~ \rho $\\
   & $\lambda ::= \Gamma$\\
   & $\rho ::= \Gamma$\\
- direction & $\odot ::=~ \Rightarrow~|~\Leftrightarrow $\\
   & $\Gamma ::= \varphi~ +~\Gamma ~|~ \varphi$\\
  rule agent & $\varphi :: = \mathtt{A}~|~\mathtt{T}~|~\mathtt{X}$\\
 \end{tabular}
@@ -200,72 +220,21 @@ Rule expressions have the following syntax:
 Let $\mathtt{R},\mathtt{R}'$ be rules. We define the \emph{structural equivalence of rules} by claiming $\mathtt{R} \equiv \mathtt{R}'$ iff there exist $\lambda, \lambda', \rho, \rho', \nu, \nu'$ such that $\mathtt{R}=(\lambda, \rho, \nu),\mathtt{R}'=(\lambda', \rho', \nu')$, $\chi=\chi'$, $\nu = \nu'$, $\lambda=\lambda'$ (regardless the order) and $\rho=\rho'$ (regardless the order).
 \end{defn}
 
+\begin{theorem}
+We define universe of rules $\mathcal{R} = \{ \mathtt{r}~|~\mathtt{r} = (\lambda, \rho), \lambda, \rho \subseteq \mathcal{X} \cup \mathcal{T} \cup \mathcal{A} \cup \{\varepsilon\} \}$.
+Similarly, we can define universe of rule expressions\\ $\mathcal{E}_\mathcal{R} = \{ \lambda ~\Rightarrow~ \rho ~|~ (\lambda, \rho) \in \mathcal{R} \} \cup \{ \lambda ~\Rightarrow ~|~ (\lambda, \varepsilon) \in \mathcal{R} \} \cup \{ \Rightarrow~ \rho ~|~ (\varepsilon, \rho) \in \mathcal{R} \}$.
+\end{theorem}
 
-\subsection{Syntactic extensions}
+\section{Semantics}
 
-We define several syntactic extensions for better readability of the rules. Note that each rule in a extended form can be always translated to basic form defined above.
+How is semantics being applied on a model does not matter now. Briefly, using an algorithm, we choose a solution from given state and apply a rule on this solution. This step is quite forward and does not need any deeper investigation. What has to be defined is application of the rule on the solution.
 
-\textbf{Stoichiometry}
+Let $\mathtt{R}$ be a rule and $\mathtt{S}$ be a solution, where $\mathtt{R} \in \mathcal{R}$ and $\mathtt{S} \subseteq \mathcal{E}_{\square}$. $\mathcal{E}_{\square} \subset \mathcal{E}$ is a fragment of $\mathcal{E}$ constructed from $\mathcal{A}_{\square} = \{ \mathtt{A}~|~\mathtt{A} = (\alpha, \delta, \mathtt{c}) ~\emph{and}~ |\delta| = 1 \} $. In other words, each atomic agent involved in solution is required to have specified state.
 
-\textbf{Variables}
-
-\textbf{Locations}
-
-\begin{center}
-{\small
-\hspace*{-1cm}\begin{tabular}{ l l }
- rule expression & $\mathtt{R} ::= \lambda ~\odot~ \rho~\nu ~|~ \lambda ~\odot~\nu ~|~ \odot~ \rho~\nu $\\
-  & $\lambda ::= \Gamma$\\
-  & $\rho ::= \Gamma$\\
-  & $\nu ::=~ ;~\upsilon ~|~ \varepsilon$\\
- direction & $\odot ::=~ \Rightarrow~|~\Leftrightarrow $\\
-  & $\Gamma ::= \zeta~\varphi~ +~\Gamma ~|~ \zeta~\varphi$\\
- stoichiometry & $\zeta ::= n \in \mathbb{N}^+$\\
- rule agent & $\varphi :: = \varphi_1~|~\varphi_2~|~\varphi_1::\xi~|~\varphi_2::\xi'~|~\xi'$\\
-  & $\varphi_1  ~::=~  ?\nu_1~|~?\nu_2~|~?\nu_3~|~\mathtt{A}::~?\nu_2~|~?\nu_1::\mathtt{T}$\\
-  & $\xi' ~::=~ \mathtt{X}::\xi'~|~?\nu_3::\xi~|~?\nu_3~|~\xi$\\
-  & $\varphi_2  ~::=~  \mathtt{A}~|~\mathtt{T}~|~\mathtt{X}~|~\mathtt{A}::\mathtt{T}$\\
-  & $\xi  ~::=~  \mathtt{X}::\xi~|~\mathtt{X}$\\
- variable & $\upsilon ::=~?\nu_1=\{\phi_1\}~|~?\nu_2=\{\phi_2\}~|~?\nu_3=\{\phi_3\}$\\
-  & $\phi_1 ::= \mathtt{A},~\phi_1~|~\mathtt{A}$\\
-  & $\phi_2 ::= \mathtt{T},~\phi_2~|~\mathtt{T}$\\
-  & $\phi_3 ::= \mathtt{X},~\phi_3~|~\mathtt{X}$\\
-\end{tabular}
-}
-\end{center}
+Let $\beta$ be an agent, $\lambda, \rho, \mathtt{S} \subseteq \mathcal{X} \cup \mathcal{T} \cup \mathcal{A} \cup \{\varepsilon\}$ be given left-hand-side of a rule, right-hand-side of a rule, and given solution.
 
 \begin{definition}
-Let $\varphi$ be a rule agent that appears in a rule $\mathtt{R}$. The \emph{rule agent} $\varphi$ is \emph{well-formed} iff the following constrains are satisfied:
-
-\begin{enumerate}
- \item If $\mathtt{A}::\mathtt{T}$ is a subexpression of $\varphi$ and $\mathtt{T} = \tau(\gamma_p)::\mathtt{c}$ then exists $\mathtt{A}' \in \gamma_p$ such that $\mathtt{A} \lhd \mathtt{A}'$.
-
-\item If $\mathtt{T}::\mathtt{X}$ is a subexpression of $\varphi$ then exists $\mathtt{T}' \in \mathtt{X}$ such that $\mathtt{T} \lhd \mathtt{T}'$.
-
-\item If $\mathtt{A}::\mathtt{X}$ is a subexpression of $\varphi$ then exists $\mathtt{A}' \in \mathtt{X}$ such that $\mathtt{A} \lhd \mathtt{A}'$.
-
-\item If $\mathtt{X}'::\mathtt{X}$ is a subexpression of $\varphi$ then exists $\mathtt{X}'' \in \mathtt{X}$ such that $\mathtt{X}' \lhd \mathtt{X}''$.
-
-\end{enumerate}
-
-\end{definition}
-
-\begin{definition}[Rule Flattening]
-Let $(\Sigma_\tau,\Sigma_x)$ be a signature and $\mathtt{R}$ a set of rules. Every rule $r\in\mathtt{R}$ that includes some \emph{nested} rule agents $\varphi$ can be reduced to a rule $r'\in\mathtt{R}$ where every rule agent $\varphi$ is in \emph{basic} form. For every subexpression $\beta$ in every rule agent $\varphi$ in $r$, the reduction is done recursively by replacing $\beta$ with $\beta'$ in the following way:
-\begin{enumerate}
-\item If $\beta=\mathtt{A}::\mathtt{T}$ where $\mathtt{T}=\tau(\gamma_p)$ for some $\tau,\gamma_p$ then there must exist $\mathtt{A}'\in\gamma_p$ such that $\mathtt{A}\lhd\mathtt{A}'$. Then we set $\beta'={\tau}(\gamma'_p)$ where $\gamma'_p$ is constructed from $\gamma_p$ by replacing $\mathtt{A}'\in\gamma_p$ with $\mathtt{A}$.
-\item If $\beta=\mathtt{T}::\mathtt{X}$ where $\mathtt{X}=\gamma_f$ then there must exist $\mathtt{T}'\in\gamma_f$ such that $\mathtt{T}\lhd\mathtt{T}'$. Then we set $\beta'=\gamma'_f$ where $\gamma'_f$ is constructed from $\gamma_f$ by replacing $\mathtt{T}'\in\gamma_f$ with $\mathtt{T}$. 
-\item If $\beta=\mathtt{A}::\mathtt{X}$ where $\mathtt{X}=\gamma_f$ then there must exist $\mathtt{A}'\in\gamma_f$ such that $\mathtt{A}\lhd\mathtt{A}'$. Then we set $\beta'=\gamma'_f$ where $\gamma'_f$ is constructed from $\gamma_f$ by replacing $\mathtt{A}'\in\gamma_f$ with $\mathtt{A}$. 
-\item If $\beta=\mathtt{X}'::\mathtt{X}$ where $\mathtt{X}=\gamma_f$ and $\mathtt{X}'= \gamma'_f$ then for every $\mathtt{T} \in \gamma_f$ (resp. $\mathtt{A} \in \gamma_f$) there must exist $\mathtt{T}' \in \gamma'_f$ (resp. $\mathtt{A}' \in \gamma'_f$) such that $\mathtt{T} \lhd \mathtt{T}'$ (resp. $\mathtt{A} \lhd \mathtt{A}'$). Then we set $\beta'=\gamma_{f'}$ where $\gamma_{f'}$ is constructed from $\gamma_f$ by replacing all $\mathtt{T} \in \gamma_f$ (resp. $\mathtt{A} \in \gamma_f$) with appropriate $\mathtt{T}' \in \gamma'_f$  (resp. $\mathtt{A}' \in \gamma'_f$).
-\end{enumerate} 
-\end{definition}
-
-\subsection{Semantics}
-
-Let $\alpha$ be an agent and $\Gamma_s,~\Gamma_l,~\Gamma_r$ be given solution, left-hand-side and right-hand-side of a rule, respectively.
-
-\begin{definition}
-For a given solution $\Gamma_s$ we consider all possible forms for each occurred complex agent as variations without replacement of its full composition, i.e. we construct set of solutions $\{\Gamma_s\}$ where order of full composition for complex agents does matter. However, we do not change order of agents in the solution.
+For a given solution $\mathtt{S}$ we consider all possible forms for each occurred complex agent as permutations without replacement of its full composition, i.e. we construct set of solutions $\mathcal{S}$ where order of full composition for complex agents does matter. However, we do not change order of agents in the solution. This approach is chosen because we consider complex agents as unordered.
 \end{definition}
 
 \begin{definition}
@@ -335,5 +304,68 @@ where $\alpha_s = \alpha_r$ and $ c_s \neq c_r $.
 
 \end{enumerate}
 \end{definition}
+
+\subsection{Syntactic extensions}
+
+We define several syntactic extensions for better readability of the rules. Note that each rule in a extended form can be always translated to basic form defined above.
+
+\textbf{direction}
+
+\textbf{Stoichiometry}
+
+\textbf{Variables}
+
+\textbf{Locations}
+
+\begin{center}
+{\small
+\hspace*{-1cm}\begin{tabular}{ l l }
+ rule expression & $\mathtt{R} ::= \lambda ~\odot~ \rho~\nu ~|~ \lambda ~\odot~\nu ~|~ \odot~ \rho~\nu $\\
+  & $\lambda ::= \Gamma$\\
+  & $\rho ::= \Gamma$\\
+  & $\nu ::=~ ;~\upsilon ~|~ \varepsilon$\\
+ direction & $\odot ::=~ \Rightarrow~|~\Leftrightarrow $\\
+  & $\Gamma ::= \zeta~\varphi~ +~\Gamma ~|~ \zeta~\varphi$\\
+ stoichiometry & $\zeta ::= n \in \mathbb{N}^+$\\
+ rule agent & $\varphi :: = \varphi_1~|~\varphi_2~|~\varphi_1::\xi~|~\varphi_2::\xi'~|~\xi'$\\
+  & $\varphi_1  ~::=~  ?\nu_1~|~?\nu_2~|~?\nu_3~|~\mathtt{A}::~?\nu_2~|~?\nu_1::\mathtt{T}$\\
+  & $\xi' ~::=~ \mathtt{X}::\xi'~|~?\nu_3::\xi~|~?\nu_3~|~\xi$\\
+  & $\varphi_2  ~::=~  \mathtt{A}~|~\mathtt{T}~|~\mathtt{X}~|~\mathtt{A}::\mathtt{T}$\\
+  & $\xi  ~::=~  \mathtt{X}::\xi~|~\mathtt{X}$\\
+ variable & $\upsilon ::=~?\nu_1=\{\phi_1\}~|~?\nu_2=\{\phi_2\}~|~?\nu_3=\{\phi_3\}$\\
+  & $\phi_1 ::= \mathtt{A},~\phi_1~|~\mathtt{A}$\\
+  & $\phi_2 ::= \mathtt{T},~\phi_2~|~\mathtt{T}$\\
+  & $\phi_3 ::= \mathtt{X},~\phi_3~|~\mathtt{X}$\\
+\end{tabular}
+}
+\end{center}
+
+\begin{definition}
+Let $\varphi$ be a rule agent that appears in a rule $\mathtt{R}$. The \emph{rule agent} $\varphi$ is \emph{well-formed} iff the following constrains are satisfied:
+
+\begin{enumerate}
+ \item If $\mathtt{A}::\mathtt{T}$ is a subexpression of $\varphi$ and $\mathtt{T} = \tau(\gamma_p)::\mathtt{c}$ then exists $\mathtt{A}' \in \gamma_p$ such that $\mathtt{A} \lhd \mathtt{A}'$.
+
+\item If $\mathtt{T}::\mathtt{X}$ is a subexpression of $\varphi$ then exists $\mathtt{T}' \in \mathtt{X}$ such that $\mathtt{T} \lhd \mathtt{T}'$.
+
+\item If $\mathtt{A}::\mathtt{X}$ is a subexpression of $\varphi$ then exists $\mathtt{A}' \in \mathtt{X}$ such that $\mathtt{A} \lhd \mathtt{A}'$.
+
+\item If $\mathtt{X}'::\mathtt{X}$ is a subexpression of $\varphi$ then exists $\mathtt{X}'' \in \mathtt{X}$ such that $\mathtt{X}' \lhd \mathtt{X}''$.
+
+\end{enumerate}
+
+\end{definition}
+
+\begin{definition}[Rule Flattening]
+Let $(\Sigma_\tau,\Sigma_x)$ be a signature and $\mathtt{R}$ a set of rules. Every rule $r\in\mathtt{R}$ that includes some \emph{nested} rule agents $\varphi$ can be reduced to a rule $r'\in\mathtt{R}$ where every rule agent $\varphi$ is in \emph{basic} form. For every subexpression $\beta$ in every rule agent $\varphi$ in $r$, the reduction is done recursively by replacing $\beta$ with $\beta'$ in the following way:
+\begin{enumerate}
+\item If $\beta=\mathtt{A}::\mathtt{T}$ where $\mathtt{T}=\tau(\gamma_p)$ for some $\tau,\gamma_p$ then there must exist $\mathtt{A}'\in\gamma_p$ such that $\mathtt{A}\lhd\mathtt{A}'$. Then we set $\beta'={\tau}(\gamma'_p)$ where $\gamma'_p$ is constructed from $\gamma_p$ by replacing $\mathtt{A}'\in\gamma_p$ with $\mathtt{A}$.
+\item If $\beta=\mathtt{T}::\mathtt{X}$ where $\mathtt{X}=\gamma_f$ then there must exist $\mathtt{T}'\in\gamma_f$ such that $\mathtt{T}\lhd\mathtt{T}'$. Then we set $\beta'=\gamma'_f$ where $\gamma'_f$ is constructed from $\gamma_f$ by replacing $\mathtt{T}'\in\gamma_f$ with $\mathtt{T}$. 
+\item If $\beta=\mathtt{A}::\mathtt{X}$ where $\mathtt{X}=\gamma_f$ then there must exist $\mathtt{A}'\in\gamma_f$ such that $\mathtt{A}\lhd\mathtt{A}'$. Then we set $\beta'=\gamma'_f$ where $\gamma'_f$ is constructed from $\gamma_f$ by replacing $\mathtt{A}'\in\gamma_f$ with $\mathtt{A}$. 
+\item If $\beta=\mathtt{X}'::\mathtt{X}$ where $\mathtt{X}=\gamma_f$ and $\mathtt{X}'= \gamma'_f$ then for every $\mathtt{T} \in \gamma_f$ (resp. $\mathtt{A} \in \gamma_f$) there must exist $\mathtt{T}' \in \gamma'_f$ (resp. $\mathtt{A}' \in \gamma'_f$) such that $\mathtt{T} \lhd \mathtt{T}'$ (resp. $\mathtt{A} \lhd \mathtt{A}'$). Then we set $\beta'=\gamma_{f'}$ where $\gamma_{f'}$ is constructed from $\gamma_f$ by replacing all $\mathtt{T} \in \gamma_f$ (resp. $\mathtt{A} \in \gamma_f$) with appropriate $\mathtt{T}' \in \gamma'_f$  (resp. $\mathtt{A}' \in \gamma'_f$).
+\end{enumerate} 
+\end{definition}
+
+
 
 \end{document}
