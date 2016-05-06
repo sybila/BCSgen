@@ -5,6 +5,8 @@
 \usepackage{algorithmicx}
 \usepackage{graphicx}
 \usepackage[noend]{algpseudocode}
+\usepackage{mathabx}
+\usepackage{leftidx}
 
 \hyphenation{me-ta-bo-lism}
 
@@ -176,10 +178,38 @@ Since complex agents are constructed from finite sets $\mathcal{N}_{x},~\mathcal
 \section{Biochemical Space Rules}
 
 \begin{definition}
-Rule $\mathtt{R}$ is defined as triple ($\lambda, \rho, \nu$) where $\lambda, \rho, \nu \subseteq \mathcal{X} \cup \mathcal{T} \cup \mathcal{A} \cup \{\varepsilon\}$ and $\lambda$ is \emph{left-hand-side} of the rule, $\rho$ is \emph{right-hand-side} of the rule, and $\nu$ is \emph{variable}. Both $\lambda$ and $\rho$ are ordered sets where order is given by rule expression and at most one of them might be $\varepsilon$.
+Rule $\mathtt{R}$ is defined as pair ($\lambda, \rho$) where $\lambda, \rho \subseteq \mathcal{X} \cup \mathcal{T} \cup \mathcal{A} \cup \{\varepsilon\}$ and $\lambda$ is \emph{left-hand-side} of the rule and $\rho$ is \emph{right-hand-side} of the rule. Both $\lambda$ and $\rho$ are ordered sets where order is given by rule expression and at most one of them might be $\varepsilon$.
 \end{definition}
 
 Rule expressions have the following syntax:
+
+\begin{center}
+{\small
+\hspace*{-1cm}\begin{tabular}{ l l }
+ rule expression & $\mathtt{R} ::= \lambda ~\odot~ \rho ~|~ \lambda ~\odot ~|~ \odot~ \rho $\\
+  & $\lambda ::= \Gamma$\\
+  & $\rho ::= \Gamma$\\
+ direction & $\odot ::=~ \Rightarrow~|~\Leftrightarrow $\\
+  & $\Gamma ::= \varphi~ +~\Gamma ~|~ \varphi$\\
+ rule agent & $\varphi :: = \mathtt{A}~|~\mathtt{T}~|~\mathtt{X}$\\
+\end{tabular}
+}
+\end{center}
+
+\begin{defn}
+Let $\mathtt{R},\mathtt{R}'$ be rules. We define the \emph{structural equivalence of rules} by claiming $\mathtt{R} \equiv \mathtt{R}'$ iff there exist $\lambda, \lambda', \rho, \rho', \nu, \nu'$ such that $\mathtt{R}=(\lambda, \rho, \nu),\mathtt{R}'=(\lambda', \rho', \nu')$, $\chi=\chi'$, $\nu = \nu'$, $\lambda=\lambda'$ (regardless the order) and $\rho=\rho'$ (regardless the order).
+\end{defn}
+
+
+\subsection{Syntactic extensions}
+
+We define several syntactic extensions for better readability of the rules. Note that each rule in a extended form can be always translated to basic form defined above.
+
+\textbf{Stoichiometry}
+
+\textbf{Variables}
+
+\textbf{Locations}
 
 \begin{center}
 {\small
@@ -203,10 +233,6 @@ Rule expressions have the following syntax:
 \end{tabular}
 }
 \end{center}
-
-\begin{defn}
-Let $\mathtt{R},\mathtt{R}'$ be rules. We define the \emph{structural equivalence of rules} by claiming $\mathtt{R} \equiv \mathtt{R}'$ iff there exist $\lambda, \lambda', \rho, \rho', \nu, \nu'$ such that $\mathtt{R}=(\lambda, \rho, \nu),\mathtt{R}'=(\lambda', \rho', \nu')$, $\chi=\chi'$, $\nu = \nu'$, $\lambda=\lambda'$ (regardless the order) and $\rho=\rho'$ (regardless the order).
-\end{defn}
 
 \begin{definition}
 Let $\varphi$ be a rule agent that appears in a rule $\mathtt{R}$. The \emph{rule agent} $\varphi$ is \emph{well-formed} iff the following constrains are satisfied:
@@ -232,6 +258,82 @@ Let $(\Sigma_\tau,\Sigma_x)$ be a signature and $\mathtt{R}$ a set of rules. Eve
 \item If $\beta=\mathtt{A}::\mathtt{X}$ where $\mathtt{X}=\gamma_f$ then there must exist $\mathtt{A}'\in\gamma_f$ such that $\mathtt{A}\lhd\mathtt{A}'$. Then we set $\beta'=\gamma'_f$ where $\gamma'_f$ is constructed from $\gamma_f$ by replacing $\mathtt{A}'\in\gamma_f$ with $\mathtt{A}$. 
 \item If $\beta=\mathtt{X}'::\mathtt{X}$ where $\mathtt{X}=\gamma_f$ and $\mathtt{X}'= \gamma'_f$ then for every $\mathtt{T} \in \gamma_f$ (resp. $\mathtt{A} \in \gamma_f$) there must exist $\mathtt{T}' \in \gamma'_f$ (resp. $\mathtt{A}' \in \gamma'_f$) such that $\mathtt{T} \lhd \mathtt{T}'$ (resp. $\mathtt{A} \lhd \mathtt{A}'$). Then we set $\beta'=\gamma_{f'}$ where $\gamma_{f'}$ is constructed from $\gamma_f$ by replacing all $\mathtt{T} \in \gamma_f$ (resp. $\mathtt{A} \in \gamma_f$) with appropriate $\mathtt{T}' \in \gamma'_f$  (resp. $\mathtt{A}' \in \gamma'_f$).
 \end{enumerate} 
+\end{definition}
+
+\subsection{Semantics}
+
+Let $\alpha$ be an agent and $\Gamma_s,~\Gamma_l,~\Gamma_r$ be given solution, left-hand-side and right-hand-side of a rule, respectively.
+
+\begin{definition}
+For a given solution $\Gamma_s$ we consider all possible forms for each occurred complex agent as variations without replacement of its full composition, i.e. we construct set of solutions $\{\Gamma_s\}$ where order of full composition for complex agents does matter. However, we do not change order of agents in the solution.
+\end{definition}
+
+\begin{definition}
+With assumption all rules of form $\Gamma_l\Rightarrow\Gamma_r$ are well-formed, we define \textbf{Matching} as function $\{\Gamma_s\}~\bigtimes~\Gamma_l~\rightarrow~\{\Gamma_s\}^{\lhd}$ where $\{\Gamma_s\}^{\lhd}~\subseteq~\{\Gamma_s\}$ such that $\forall \Gamma_s \in \{\Gamma_s\}^{\lhd} : \forall \alpha_1, \alpha_2, ..., \alpha_n \in \Gamma_s $ and $\forall \beta_1, \beta_2, ..., \beta_n \in \Gamma_l : \alpha_i \lhd \beta_i$ where $\alpha$, $\beta$ are atomic, structure or complex agents.
+\end{definition}
+
+\begin{definition}
+\textbf{Replacement} is a function $\{\Gamma_s\}^{\lhd}~\times~\Gamma_r~\rightarrow~\{\Gamma_s[\Gamma_r]\}$. According to five replacement categories, $\Gamma_s$ and $\Gamma_r$ is in one of the following forms:
+
+\begin{enumerate}
+\item \textit{state change }:
+
+\begin{itemize}
+\item $ \pmb{\mathtt{a}_s\{p\}::c_s[\mathtt{a}_r\{t\}::c_r] = \mathtt{a}_s\{t\}::c_s} $
+
+where $ \mathtt{a}_s = \mathtt{a}_r $ and $p \neq t$.
+
+\item $ \pmb{\mathtt{T}_s::c_s[\mathtt{T}_r::c_r] = \mathtt{T}^r_s::c_s} \newline \forall \mathtt{a}_r\{t\} \in \gamma_p(\mathtt{T}_r), \exists \mathtt{a}_s\{p\} \in \gamma_p(\mathtt{T}_s) : \mathtt{a}_s\{p\}::c_s[\mathtt{a}_r\{t\}::c_s] $
+
+and $\mathtt{T}_s = \tau_s(\gamma_p)$, $\mathtt{T}_r = \tau_r(\gamma_p)$ $\newline$ and $\tau_s = \tau_r$ and $\mathtt{a}_s = \mathtt{a}_r$.
+
+\item $ \pmb{\mathtt{X}_s::c_s[\mathtt{X}_r::c_r] = \mathtt{X}^r_s::c_s} \newline  \mathtt{X}^r_s = [~\alpha_i::c_s[\beta_i::c_r]~|~\forall \alpha_1, \alpha_2, ..., \alpha_n \in \mathtt{X}_s~and~\beta_1, \beta_2, ..., \beta_n \in \mathtt{X}_r~]$
+
+\end{itemize}
+
+\item \textit{complex formation}: (not good!!!)
+
+\begin{itemize}
+\item $\pmb{\mathtt{X}_s::c[\mathtt{X}_r::c] = \mathtt{X}^r_s::c} \newline \mathtt{X}^r_s : f(\alpha_1) + f(\alpha_2) + ... + f(\alpha_n)~|~\forall \alpha_1, \alpha_2, ..., \alpha_n \in \mathtt{X}_s :$
+\begin{itemize}
+	\item $ f(\alpha) = \gamma_f(\alpha)$ when $\alpha \multimap \mathtt{X} $
+	\item $ f(\alpha) = [\alpha]$ when $\alpha \multimap \mathtt{T}$
+	\item $ f(\alpha) = [\alpha]$ when $\alpha \multimap \mathtt{a}$
+\end{itemize}
+
+\end{itemize}
+
+\item \textit{complex dissociation}: (not good!!!)
+
+\begin{itemize}
+\item $ \pmb{\mathtt{X}_s::c[\Gamma_r] = \mathtt{X}^r_s::c} \newline \mathtt{X}^r_s = [~\mathtt{map}(\mathtt{X}_s, x)~|~\forall x \in \mathtt{cut}(\Gamma_r)~]:$
+
+where $\iota(\leftidx{^*}{list}{}) = [i~|~\forall \alpha_i \in \leftidx{^*}{list}{}~]$,
+
+$\mathtt{cut}(\Gamma_r) = [~\iota(\alpha)~|~\forall \alpha \in \Gamma_r~]$
+
+and $\mathtt{map}(\leftidx{^*}{list}{},~x) = [~\leftidx{^*}{list}{}[i]~|~\forall i \in x~] $.
+
+\end{itemize}
+
+\item \textit{degradation}
+\begin{itemize}
+\item $  \pmb{\Gamma_s[\emptyset] = \emptyset} $
+\end{itemize}
+
+\item \textit{translation}
+\begin{itemize}
+\item $ \pmb{\emptyset[\Gamma_r] = \Gamma_r} $
+\end{itemize}
+
+\item \textit{transport}:
+\begin{itemize}
+\item $ \pmb{\alpha_s::c_s[\alpha_r::c_r] = \alpha_s::c_r} $
+
+where $\alpha_s = \alpha_r$ and $ c_s \neq c_r $.
+\end{itemize}
+
+\end{enumerate}
 \end{definition}
 
 \end{document}
