@@ -52,7 +52,7 @@ Atomic agent $\mathtt{A}$ is defined as triple ($\alpha, \delta, \mathtt{c}$) wh
 \end{definition}
 
 \begin{definition}
-Let $\mathtt{A},~\mathtt{A}'$ be atomic agents. We define the \emph{structural equivalence of atomic agents} by claiming $\mathtt{A}\equiv\mathtt{A}'$ whenever $\mathtt{\alpha} = \mathtt{\alpha}'$, $\mathtt{c} = \mathtt{c}'$ and $\delta = \delta'$.
+Let $\mathtt{A},~\mathtt{A}'$ be atomic agents. We define the \emph{equivalence of atomic agents} by claiming $\mathtt{A}\equiv\mathtt{A}'$ whenever $\mathtt{\alpha} = \mathtt{\alpha}'$, $\mathtt{c} = \mathtt{c}'$ and $\delta = \delta'$.
 \end{definition}
 
 \begin{defn}
@@ -110,7 +110,7 @@ Structure agent $\mathtt{T}$ is defined as triple ($\tau, \gamma_p, \mathtt{c}$)
 \end{notation}
 
 \begin{defn}
-Let $\mathtt{T},\mathtt{T}'$ be structure agents. We define the \emph{structural equivalence of structure agents} by claiming $\mathtt{T}\equiv\mathtt{T}'$ iff there exist $\tau,\tau',\gamma_p,\gamma'_p,\mathtt{c},\mathtt{c}'$ such that $\mathtt{T}=(\tau, \gamma_p, \mathtt{c}),\mathtt{T}'=(\tau', \gamma_p', \mathtt{c}')$, $\tau=\tau'$, $\mathtt{c} = \mathtt{c}'$, and $\gamma_p=\gamma'_p$.
+Let $\mathtt{T},\mathtt{T}'$ be structure agents. We define the \emph{equivalence of structure agents} by claiming $\mathtt{T}\equiv\mathtt{T}'$ iff there exist $\tau,\tau',\gamma_p,\gamma'_p,\mathtt{c},\mathtt{c}'$ such that $\mathtt{T}=(\tau, \gamma_p, \mathtt{c}),\mathtt{T}'=(\tau', \gamma_p', \mathtt{c}')$, $\tau=\tau'$, $\mathtt{c} = \mathtt{c}'$, and $\gamma_p=\gamma'_p$.
 \end{defn}
 
 \begin{defn}
@@ -153,13 +153,14 @@ Complex agent $\mathtt{X}$ is defined as pair ($\gamma_f, \mathtt{c}$) where $\g
 \begin{notation}
 ~
 \begin{itemize}
-\item  We denote $\mathtt{T}\in \mathtt{X}$ (resp. $\mathtt{A}\in \mathtt{X}$) the fact that~$\mathtt{T}$ (resp. $\mathtt{A}$) is a structure agent (resp. atomic agent) included in~$\gamma_f$ (resp. in~$\gamma_p$). 
+\item  We denote $\mathtt{T} \in \mathtt{X}$ (resp. $\mathtt{A}\in \mathtt{X}$) the fact that~$\mathtt{T}$ (resp. $\mathtt{A}$) is a structure agent (resp. atomic agent) included in~$\gamma_f$. 
+\item We denote $\mathtt{c}(\mathtt{X})$ the fact that $\mathtt{X}$ is in compartment $\mathtt{c}$.
 \item Note that a compartment of a complex agent is uniquely given by the compartment specified in its parts. We restrict ourselves to complex agents where all atomic and structure agents in the full composition have the same compartment. Assuming this restriction, we can shorten the notation by omitting compartments in the atomic and structure agents of a full composition. 
 \end{itemize}
 \end{notation}
 
 \begin{defn}
-Let $\mathtt{X},\mathtt{X}'$ be structure agents. We define the \emph{structural equivalence of structure agents} by claiming $\mathtt{X} \equiv \mathtt{X}'$ iff there exist $\gamma_f,\gamma'_f, \mathtt{c},\mathtt{c}'$ such that $\mathtt{X}=(\gamma_f, \mathtt{c}),\mathtt{T}'=(\gamma_f', \mathtt{c}')$, $\mathtt{c} = \mathtt{c}'$, and $\gamma_f=\gamma'_f$.
+Let $\mathtt{X},\mathtt{X}'$ be structure agents. We define the \emph{equivalence of structure agents} by claiming $\mathtt{X} \equiv \mathtt{X}'$ iff there exist $\gamma_f,\gamma'_f, \mathtt{c},\mathtt{c}'$ such that $\mathtt{X}=(\gamma_f, \mathtt{c}),\mathtt{T}'=(\gamma_f', \mathtt{c}')$, $\mathtt{c} = \mathtt{c}'$, and $\gamma_f=\gamma'_f$.
 \end{defn}
 
 Complex agent expressions have the following syntax:
@@ -189,7 +190,9 @@ Since complex agents are constructed from sets $\mathcal{N}_{x},~\mathcal{N}_{c}
 \subsection{Summary}
 
 \begin{definition}
-We define universe of all agent expressions $\mathcal{E} = \mathcal{E}_\mathcal{A} \cup \mathcal{E}_\mathcal{T} \cup \mathcal{E}_\mathcal{X} \cup \{\varepsilon\}$.
+We define universe of all agents $\mathcal{U} = \mathcal{A} \cup \mathcal{T} \cup \mathcal{X}.$
+
+Finally, we define universe of all agent expressions $\mathcal{E} = \mathcal{E}_\mathcal{A} \cup \mathcal{E}_\mathcal{T} \cup \mathcal{E}_\mathcal{X} \cup \{\varepsilon\}$.
 \end{definition}
 
 \begin{notation}
@@ -213,7 +216,7 @@ Rule is an expression defined from agent expressions $\mathcal{E}$ by the follow
  rule expression & $\mathtt{R} ::= \lambda ~\Rightarrow~ \rho ~|~ \lambda ~\Rightarrow ~|~ \Rightarrow~ \rho $\\
   & $\lambda ::= \Gamma$\\
   & $\rho ::= \Gamma$\\
-  & $\Gamma ::= \varphi~ +~\Gamma ~|~ \varphi$\\
+ agent enumeration & $\Gamma ::= \varphi~ +~\Gamma ~|~ \varphi$\\
  rule agent & $\varphi :: = \mathtt{A}~|~\mathtt{T}~|~\mathtt{X}$\\
 \end{tabular}
 }
@@ -223,8 +226,15 @@ Rule is an expression defined from agent expressions $\mathcal{E}$ by the follow
 Let $\mathtt{R},\mathtt{R}'$ be rules. We define the \emph{structural equivalence of rules} by claiming $\mathtt{R} \equiv \mathtt{R}'$ iff there exist $\lambda, \lambda', \rho, \rho', \nu, \nu'$ such that $\mathtt{R}=\lambda ~\Rightarrow~ \rho$, $\mathtt{R}'=\lambda' ~\Rightarrow~ \rho'$, $\lambda=\lambda'$, and $\rho=\rho'$.
 \end{defn}
 
+\begin{notation}
+~
+\begin{itemize}
+\item Agent enumeration $\Gamma$ is an expression of form $\varphi_1 + \varphi_2 + ... \varphi_n$. From now, when referencing it, it will be treated as tuple $(\varphi_1, \varphi_2, ..., \varphi_n)$.
+\end{itemize}
+\end{notation}
+
 \begin{theorem}
-We define universe of rule expressions\\ $\mathcal{E}_\mathcal{R} = \{ \lambda ~\Rightarrow~ \rho ~|~ (\lambda, \rho) \in \mathcal{R} \} \cup \{ \lambda ~\Rightarrow ~|~ (\lambda, \varepsilon) \in \mathcal{R} \} \cup \{ \Rightarrow~ \rho ~|~ (\varepsilon, \rho) \in \mathcal{R} \}$.
+We define universe of rule expressions\\ $\mathcal{E}_\mathcal{R} = \{ \lambda ~\Rightarrow~ \rho \} \cup \{ \lambda ~\Rightarrow  \} \cup \{ \Rightarrow~ \rho \}$.
 \end{theorem}
 
 \section{Semantics}
@@ -237,20 +247,29 @@ Let $\mathtt{X} = (\chi, \gamma_f, \mathtt{c}), \mathtt{X}' = (\chi', \gamma_f',
 
 How is semantics being applied on a model does not matter now. Briefly, using an algorithm, we choose a solution from given state and apply a rule on this solution. This step is quite forward and does not need any deeper investigation. What has to be defined is application of the rule on the solution.
 
-Let $\mathtt{R}$ be a rule and $\mathtt{S}$ be a solution, where $\mathtt{R} \in \mathcal{R}$ and $\mathtt{S} \subseteq \mathcal{E}_{\square}$. $\mathcal{E}_{\square} \subset \mathcal{E}$ is a fragment of $\mathcal{E}$ constructed from $\mathcal{A}_{\square} = \{ \mathtt{A}~|~\mathtt{A} = (\alpha, \delta, \mathtt{c}) ~\emph{and}~ |\delta| = 1 \} $. In other words, each atomic agent involved in solution is required to have specified state.
-
-Let $\beta$ be an agent, $\lambda, \rho, \mathtt{S} \subseteq \mathcal{X} \cup \mathcal{T} \cup \mathcal{A} \cup \{\varepsilon\}$ be given left-hand-side of a rule, right-hand-side of a rule, and given solution.
+Let $\beta$ be an agent, $\mathtt{R} \in \mathcal{R}$ be a rule of form $\lambda \Rightarrow \rho$ where $\lambda$ and $\rho$ are agent enumerations, and $\mathtt{S} \subseteq \mathcal{U}$ be a solution. 
 
 \begin{definition}
-For a given solution $\mathtt{S}$ we consider all possible forms for each occurred complex agent as permutations without replacement of its full composition, i.e. we construct set of solutions $\mathcal{S}$ where order of full composition for complex agents does matter. However, we do not change order of agents in the solution. This approach is chosen because we consider complex agents as unordered.
+For a given solution $\mathtt{S}$, we denote $\Upsilon_\mathtt{S}$ as set of all possible agent enumerations constructed from $\Upsilon_\mathtt{A}$, $\Upsilon_\mathtt{T}$, and $\Upsilon_\mathtt{X}$ for particular agents in $\mathtt{S}$.
 \end{definition}
 
 \begin{definition}
-With assumption all rules of form $\Gamma_l\Rightarrow\Gamma_r$ are well-formed, we define \textbf{Matching} as function $\{\Gamma_s\}~\bigtimes~\Gamma_l~\rightarrow~\{\Gamma_s\}^{\lhd}$ where $\{\Gamma_s\}^{\lhd}~\subseteq~\{\Gamma_s\}$ such that $\forall \Gamma_s \in \{\Gamma_s\}^{\lhd} : \forall \alpha_1, \alpha_2, ..., \alpha_n \in \Gamma_s $ and $\forall \beta_1, \beta_2, ..., \beta_n \in \Gamma_l : \alpha_i \lhd \beta_i$ where $\alpha$, $\beta$ are atomic, structure or complex agents.
+$ $ \\
+\textbf{Matching} is a function $\models ~: \Upsilon_\mathtt{S}~\bigtimes~\lambda~\rightarrow~\Upsilon_\mathtt{S}^{\lhd}$ defined structurally:
+
+\begin{itemize}
+	\item $\mathtt{A}_\mathtt{S} \models \mathtt{A}_{\lambda} \Leftrightarrow \mathtt{A}_\mathtt{S} \lhd \mathtt{A}_{\lambda}$,
+	\item $\mathtt{T}_\mathtt{S} \models \mathtt{T}_{\lambda} \Leftrightarrow \mathtt{T}_\mathtt{S} \lhd \mathtt{T}_{\lambda}$,
+	\item $\mathtt{X}_\mathtt{S} \models \mathtt{X}_{\lambda} \Leftrightarrow \mathtt{c}(\mathtt{X}_\mathtt{S}) = \mathtt{c}(\mathtt{X}_{\lambda})$ and $\forall \beta_1, \beta_2, ..., \beta_n \in \mathtt{X}_\mathtt{S} $ \& $\forall \beta_1', \beta_2', ..., \beta_n' \in \mathtt{X}_{\lambda}$ : $\beta_i \lhd \beta_i'$.
+	
+\end{itemize}
+\noindent The resulting set $\Upsilon_\mathtt{S}^{\lhd}$ contains all those expressions from $\Upsilon_\mathtt{S}$ which match \emph{left-hand-side} $\lambda$ of the rule $\mathtt{R}$.
+
 \end{definition}
 
 \begin{definition}
-\textbf{Replacement} is a function $\{\Gamma_s\}^{\lhd}~\times~\Gamma_r~\rightarrow~\{\Gamma_s[\Gamma_r]\}$. According to five replacement categories, $\Gamma_s$ and $\Gamma_r$ is in one of the following forms:
+$ $ \\
+\textbf{Replacement} is a function $\Upsilon_\mathtt{S}^{\lhd}~\times~\rho~\rightarrow~\Upsilon_\mathtt{R}$. It is defined according to six replacement categories:
 
 \begin{enumerate}
 \item \textit{state change }:
