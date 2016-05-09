@@ -51,37 +51,44 @@ Agents are defined hierarchically starting from \emph{atomic agents}. These agen
 Atomic agent $\mathtt{A}$ is defined as triple ($\alpha, \delta, \mathtt{c}$) where $\alpha \in \mathcal{N}_{A}$ is name, $\delta \subseteq \mathcal{N}_{s}$ is finite non-empty set of states $\mathtt{s} \in \mathcal{N}_{s}$ in which the agent can occur, and $\mathtt{c} \in \mathcal{N}_{c}$ is physical compartment within which it is considered.
 \end{definition}
 
-Atomic agent expressions have the following syntax:
-
-\begin{center}
-{\small
-\hspace*{-1cm}\begin{tabular}{ ll ll ll ll }
- atomic agent & $\mathtt{A} ::= \alpha\{\mathtt{s}\}::\mathtt{c}~\choice~\alpha::\mathtt{c}$ & state & $\mathtt{s} ::= n \in \delta$\\
- name & $\alpha ::= n \in \mathcal{N}_{A}$ & compartment & $\mathtt{c} ::= n \in \mathcal{N}_{c}$\\
-\end{tabular}
-}
-\end{center}
-
 \begin{definition}
 Let $\mathtt{A},~\mathtt{A}'$ be atomic agents. We define the \emph{structural equivalence of atomic agents} by claiming $\mathtt{A}\equiv\mathtt{A}'$ whenever $\mathtt{\alpha} = \mathtt{\alpha}'$, $\mathtt{c} = \mathtt{c}'$ and $\delta = \delta'$.
 \end{definition}
-
-\begin{notation}
-{~}
-\begin{itemize}
-\item We denote $\mathtt{s}\in\delta$ the fact that $\mathtt{s}$ is included in the state signature~$\delta$.
-\item Syntax $\alpha::\mathtt{c}$ is used for expressing atomic agent when state is not specified, i.e. $|\delta| > 1$.
-\end{itemize}
-\end{notation}
 
 \begin{defn}
 Let $\mathtt{A},\mathtt{A}'$ be atomic agents. We say agent $\mathtt{A}=(\alpha, \delta, \mathtt{c})$ is \emph{compatible with} agent $\mathtt{A}'=(\alpha', \delta', \mathtt{c}')$, written $\mathtt{A} \lhd \mathtt{A}'$, iff $\alpha = \alpha'$, $\mathtt{c} = \mathtt{c}'$, and $\delta \subseteq \delta'$. 
 \end{defn}
 
-\begin{theorem}
-Since atomic agents are constructed from finite sets $\mathcal{N}_{A},~\mathcal{N}_{c}$, and $\mathcal{N}_{s}$, we can define universe of atomic agents $\mathcal{A} = \{ \mathtt{A}~|~\mathtt{A} = (\alpha, \delta, \mathtt{c}), \alpha~\in~\mathcal{N}_{A}, \delta~\subseteq~\mathcal{N}_{s},  \mathtt{c}~\in~\mathcal{N}_{c} \}$. 
+\begin{notation}
+{~}
+\begin{itemize}
+\item We denote $\mathtt{s}\in\delta$ the fact that $\mathtt{s}$ is included in the state signature~$\delta$.
+\end{itemize}
+\end{notation}
 
-\noindent Similarly, we can define universe of atomic agent expressions\\ $\mathcal{E}_\mathcal{A} = \{ \alpha\{\mathtt{s}\}::\mathtt{c} ~|~ (\alpha, \delta, \mathtt{c}) \in \mathcal{A}~\emph{and}~ \mathtt{s} \in \delta \} \cup \{ \alpha::\mathtt{c} ~|~ (\alpha, \delta, \mathtt{c}) \in \mathcal{A}\}$.
+Atomic agent expressions have the following syntax:
+
+\begin{center}
+{\small
+\hspace*{-1cm}\begin{tabular}{ ll ll ll ll }
+ atomic agent expression & $\mathtt{A} ::= \alpha\{\delta\}::\mathtt{c}$ & states & $ \delta ::= s_1, s_2, ..., s_m$ \\
+ name & $\alpha ::= n \in \mathcal{N}_{A}$  & state & $\mathtt{s}_i ::= n \in \mathcal{N}_{s}$\\
+ compartment & $\mathtt{c} ::= n \in \mathcal{N}_{c}$\\
+\end{tabular}
+}
+\end{center}
+
+\begin{notation}
+{~}
+\begin{itemize}
+\item Note that an atomic agent expression fully defines an atomic agent. However, an atomic agent might be written by more expressions due to order in enumerated states. We write $\Upsilon_\mathtt{A}$ as set of all possible atomic agent expressions created from atomic agent $\mathtt{A}$.
+\end{itemize}
+\end{notation}
+
+\begin{theorem}
+Since atomic agents are constructed from sets $\mathcal{N}_{A},~\mathcal{N}_{c}$, and $\mathcal{N}_{s}$, we can define universe of atomic agents $\mathcal{A} = \{ \mathtt{A}~|~\mathtt{A} = (\alpha, \delta, \mathtt{c}), \alpha~\in~\mathcal{N}_{A}, \delta~\subseteq~\mathcal{N}_{s},  \mathtt{c}~\in~\mathcal{N}_{c} \}$. 
+
+\noindent Similarly, we can define universe of atomic agent expressions\\ $\mathcal{E}_\mathcal{A} = \{ \alpha\{\delta\}::\mathtt{c} ~|~ (\alpha, \delta, \mathtt{c}) \in \mathcal{A} \} $.
 \end{theorem}
 
 \subsection{Structure agents}
@@ -91,35 +98,16 @@ Next we proceed with defining \emph{structure agents}. A structure agent represe
 A typical example of a structure agent is a protein where the atomic agents are individual amino acids that are of interest in the particular setting.
 
 \begin{definition}
-Structure agent $\mathtt{T}$ is defined as triple ($\tau, \gamma_p, \mathtt{c}$) where $\tau \in \mathcal{N}_{T}$ is name, $\gamma_p \subseteq \mathcal{A}$ is finite set of atomic agents $\mathtt{A} \in \mathcal{A}$ called \emph{partial composition}, and $\mathtt{c} \in \mathcal{N}_{c}$ is physical compartment within which it is considered.
+Structure agent $\mathtt{T}$ is defined as triple ($\tau, \gamma_p, \mathtt{c}$) where $\tau \in \mathcal{N}_{T}$ is name, $\gamma_p \subseteq \mathcal{A}$ is finite set of atomic agents $\mathtt{A} \in \mathcal{A}$ called \emph{partial composition}, and $\mathtt{c} \in \mathcal{N}_{c}$ is physical compartment within which it is considered. \textbf{Note that in partial composition cannot appear two atomic agents with same name.}
 \end{definition}
 
-Structure agent expressions have the following syntax:
-
-\begin{center}
-{\small
-\hspace*{-1cm}\begin{tabular}{ ll ll }
- structure agent & $\mathtt{T} ::= \tau(\gamma_p)::\mathtt{c}~\choice~\tau::\mathtt{c}$\\
- structure name & $\tau ::= n \in \mathcal{N}_{T}$\\
- partial composition & $\gamma_p ::= \mathtt{A},~\gamma_p~\choice~\mathtt{A}$\\
-\end{tabular}
-}
-\end{center}   
-
 \begin{notation}
-~
+{~}
 \begin{itemize}
-\item We denote $\mathtt{A}\in\gamma_p$ the fact that $\gamma_p$ includes the atomic agent $\mathtt{A}$.
-\item If an atomic agent $\mathtt{A} \in \gamma_p$ does not have specified state, i.e. it has form of $\alpha::\mathtt{c}$, it might be skipped from the partial composition since it can be found in agent's definition.
-\item Structure agent $\mathtt{T} = (\tau, \gamma_p, \mathtt{c})$ might be written as $\tau::\mathtt{c}$ in two special cases:
-	\begin{enumerate}
-		\item $\gamma_p = \emptyset$,
-		\item for each $\mathtt{A} \in \gamma_p$ the state is not specified, i.e. it has form of $\alpha::\mathtt{c}$.
-	\end{enumerate}
+\item We denote $\mathtt{A} \in \mathtt{T}$ the fact that $\mathtt{A}$ is included in partial composition $\gamma_p$ of structure agent $\mathtt{T}$.
+\item Note that a compartment of a structure agent is uniquely given by the compartment specified in its parts. We restrict ourselves to structure agents where all atomic agents in the partial composition have the same compartment. Assuming this restriction, we can shorten the notation by omitting compartments in the atomic agents of a partial composition. 
 \end{itemize}
 \end{notation}
-
-Note that a compartment of a structure agent is uniquely given by the compartment specified in its parts. We restrict ourselves to structure agents where all atomic agents in the partial composition have the same compartment. Assuming this restriction, we can shorten the notation by omitting compartments in the atomic agents of a partial composition. 
 
 \begin{defn}
 Let $\mathtt{T},\mathtt{T}'$ be structure agents. We define the \emph{structural equivalence of structure agents} by claiming $\mathtt{T}\equiv\mathtt{T}'$ iff there exist $\tau,\tau',\gamma_p,\gamma'_p,\mathtt{c},\mathtt{c}'$ such that $\mathtt{T}=(\tau, \gamma_p, \mathtt{c}),\mathtt{T}'=(\tau', \gamma_p', \mathtt{c}')$, $\tau=\tau'$, $\mathtt{c} = \mathtt{c}'$, and $\gamma_p=\gamma'_p$.
@@ -129,10 +117,29 @@ Let $\mathtt{T},\mathtt{T}'$ be structure agents. We define the \emph{structural
 Let $\mathtt{T},\mathtt{T}'$ be structure agents. We say $\mathtt{T}$ \emph{is compatible with} $\mathtt{T}'$, written $\mathtt{T} \lhd \mathtt{T}'$, iff there exist $\tau,\tau',\gamma_p,\gamma'_p,\mathtt{c},\mathtt{c}'$ such that $\mathtt{T}=(\tau, \gamma_p, \mathtt{c}),\mathtt{T}'=(\tau', \gamma_p', \mathtt{c}')$, $\tau = \tau'$, $\mathtt{c} = \mathtt{c}'$, and for each atomic agent $\mathtt{A} \in \gamma_p$ there exists an atomic agent $\mathtt{A}' \in \gamma'_p$ such that $\mathtt{A}~\lhd~\mathtt{A}'$. 
 \end{defn}
 
-\begin{theorem}
-Since structure agents are constructed from finite sets $\mathcal{N}_{T},~\mathcal{N}_{c}$, and $\mathcal{A}$, we can define universe of structure agents $\mathcal{T} = \{ \mathtt{T}~|~\mathtt{T} = (\tau, \gamma_p, \mathtt{c}), \tau~\in~\mathcal{N}_{T}, \gamma_p~\subseteq~\mathcal{A},  \mathtt{c}~\in~\mathcal{N}_{c} \}$.
+Structure agent expressions have the following syntax:
 
-\noindent Similarly, we can define universe of structure agent expressions\\ $\mathcal{E}_\mathcal{T} = \{ \tau(\gamma_p)::\mathtt{c} ~|~ (\tau, \gamma_p, \mathtt{c}) \in \mathcal{T} \} \cup \{ \tau::\mathtt{c} ~|~ (\tau, \gamma_p, \mathtt{c}) \in \mathcal{T} \}$.
+\begin{center}
+{\small
+\hspace*{-1cm}\begin{tabular}{ ll ll }
+ structure agent expression & $\mathtt{T} ::= \tau(\gamma_p)::\mathtt{c}$\\
+ structure name & $\tau ::= n \in \mathcal{N}_{T}$\\
+ partial composition & $\gamma_p ::= \mathtt{A},~\gamma_p~\choice~\mathtt{A}$\\
+\end{tabular}
+}
+\end{center}   
+
+\begin{notation}
+~
+\begin{itemize}
+\item Note that an structure agent expression fully defines a structure agent. However, a structure agent might be written by more expressions due to order in partial composition. We write $\Upsilon_\mathtt{T}$ as set of all possible structure agent expressions created from structure agent $\mathtt{T}$.
+\end{itemize}
+\end{notation}
+
+\begin{theorem}
+Since structure agents are constructed from sets $\mathcal{N}_{T},~\mathcal{N}_{c}$, and $\mathcal{A}$, we can define universe of structure agents $\mathcal{T} = \{ \mathtt{T}~|~\mathtt{T} = (\tau, \gamma_p, \mathtt{c}), \tau~\in~\mathcal{N}_{T}, \gamma_p~\subseteq~\mathcal{A},  \mathtt{c}~\in~\mathcal{N}_{c} \}$.
+
+\noindent Similarly, we can define universe of structure agent expressions\\ $\mathcal{E}_\mathcal{T} = \{ \tau(\gamma_p)::\mathtt{c} ~|~ (\tau, \gamma_p, \mathtt{c}) \in \mathcal{T} \}$.
 \end{theorem}
 
 \subsection{Complex agents}
@@ -140,61 +147,57 @@ Since structure agents are constructed from finite sets $\mathcal{N}_{T},~\mathc
 In the following we define the last step in the hierarchy of agents. In particular, we define \textit{complex agents}. A complex agent represents a non-trivial composite biochemical object that is (inductively) constructed from already known biological objects. In common rule-based languages this is typically defined by introducing some kind of bonds between individual biochemical objects. In BCS we abstract from detailed specification of bonds and we rather assume a complex as a coexistence of certain objects in a particular group. Such a group can be optionally referred to by a unique name. A complex agent is constructed from atomic and structure agents.
 
 \begin{definition}
-Complex agent $\mathtt{X}$ is defined as triple ($\chi, \gamma_f, \mathtt{c}$) where $\chi \in \mathcal{N}_{x} \cup \{\varepsilon\}$ is name, $\gamma_f \subseteq \mathcal{A} \cup \mathcal{T}$ is finite multiset of atomic and structure agents called \emph{full composition}, and $\mathtt{c} \in \mathcal{N}_{c}$ is physical compartment within which it is considered.
+Complex agent $\mathtt{X}$ is defined as pair ($\gamma_f, \mathtt{c}$) where $\gamma_f \subseteq \mathcal{A} \cup \mathcal{T}$ is finite multiset of atomic and structure agents called \emph{full composition} and $\mathtt{c} \in \mathcal{N}_{c}$ is physical compartment within which it is considered.
 \end{definition}
+
+\begin{notation}
+~
+\begin{itemize}
+\item  We denote $\mathtt{T}\in \mathtt{X}$ (resp. $\mathtt{A}\in \mathtt{X}$) the fact that~$\mathtt{T}$ (resp. $\mathtt{A}$) is a structure agent (resp. atomic agent) included in~$\gamma_f$ (resp. in~$\gamma_p$). 
+\item Note that a compartment of a complex agent is uniquely given by the compartment specified in its parts. We restrict ourselves to complex agents where all atomic and structure agents in the full composition have the same compartment. Assuming this restriction, we can shorten the notation by omitting compartments in the atomic and structure agents of a full composition. 
+\end{itemize}
+\end{notation}
+
+\begin{defn}
+Let $\mathtt{X},\mathtt{X}'$ be structure agents. We define the \emph{structural equivalence of structure agents} by claiming $\mathtt{X} \equiv \mathtt{X}'$ iff there exist $\gamma_f,\gamma'_f, \mathtt{c},\mathtt{c}'$ such that $\mathtt{X}=(\gamma_f, \mathtt{c}),\mathtt{T}'=(\gamma_f', \mathtt{c}')$, $\mathtt{c} = \mathtt{c}'$, and $\gamma_f=\gamma'_f$.
+\end{defn}
 
 Complex agent expressions have the following syntax:
 
 \begin{center}
 {\small
 \hspace*{-1 cm}\begin{tabular}{ ll ll }
- complex agent & $\mathtt{X}::=\gamma_f::\mathtt{c}~|~\chi::\mathtt{c}$\\
+ complex agent expression & $\mathtt{X}::=\gamma_f::\mathtt{c}$\\
  full composition & $\gamma_f ::= \mathtt{T}.\mathtt{T}~|~\mathtt{A}.\mathtt{A}~|~\mathtt{T}.\gamma_{f}~|~\mathtt{A}.\gamma_{f}$
 \end{tabular}
 }
 \end{center}
 
-In contrast to partial compositions, we allow replication at the level of full compositions (an agent of a certain name can appear more than once in a full composition). Moreover, names of complex agents are not associated with particular full compositions at the level of agent expressions.
-
-Note that a compartment of a complex agent is uniquely given by the compartment specified in its parts. We restrict ourselves to complex agents where all atomic and structure agents in the full composition have the same compartment. Assuming this restriction, we can shorten the notation by omitting compartments in the atomic and structure agents of a full composition. 
-
 \begin{notation}
 ~
 \begin{itemize}
-\item  We denote $\mathtt{T}\in \mathtt{X}$ (resp. $\mathtt{A}\in \mathtt{X}$) the fact that~$\mathtt{T}$ (resp. $\mathtt{A}$) is a structure agent (resp. atomic agent) included in~$\gamma_f$ (resp. in~$\gamma_p$). 
-Moreover, we denote $\#\mathtt{T}[\mathtt{X}]$ (resp. $\#\mathtt{A}[\mathtt{X}]$) the number of occurrences of~$\mathtt{T}$ (resp. $\mathtt{A}$) in $\gamma_f$. 
-%\item We denote $\mathtt{X}' \in \mathtt{X}$ the fact that full composition of $\mathtt{X}'$ is subexpression in full composition of $\mathtt{X}$.
-\item An complex agent might be referenced both via its name $\chi$ (if $\chi \neq \varepsilon$) and $\gamma_f$.
+\item Note that an complex agent expression fully defines a complex agent. However, a complex agent might be written by more expressions due to order in full composition. We write $\Upsilon_\mathtt{X}$ as set of all possible complex agent expressions created from complex agent $\mathtt{X}$.
 \end{itemize}
 \end{notation}
 
-\begin{defn}
-Let $\mathtt{X},\mathtt{X}'$ be structure agents. We define the \emph{structural equivalence of structure agents} by claiming $\mathtt{X} \equiv \mathtt{X}'$ iff there exist $\chi,\chi',\gamma_f,\gamma'_f, \mathtt{c},\mathtt{c}'$ such that $\mathtt{X}=(\chi, \gamma_f, \mathtt{c}),\mathtt{T}'=(\chi', \gamma_f', \mathtt{c}')$, $\chi=\chi'$, $\mathtt{c} = \mathtt{c}'$, and $\gamma_f=\gamma'_f$ (regardless the order).
-\end{defn}
-
-\begin{defn}
-Let $\mathtt{X} = (\chi, \gamma_f, \mathtt{c}), \mathtt{X}' = (\chi', \gamma_f', \mathtt{c}')$ be complex agents. We say $\mathtt{X}$ \emph{is compatible with} $\mathtt{X}'$, written $\mathtt{X} \lhd \mathtt{X}'$, iff $\chi=\chi'$, $\mathtt{c} = \mathtt{c}'$, and $\forall \beta_1, \beta_2, ..., \beta_n \in \gamma_f $ and $\forall \beta_1', \beta_2', ..., \beta_n' \in \gamma'_f$ : $\beta_i \lhd \beta_i'$. 
-\end{defn}
-
 \begin{theorem}
-Since complex agents are constructed from finite sets $\mathcal{N}_{x},~\mathcal{N}_{c}$, $\mathcal{A}$, and $\mathcal{T}$, we can define universe of complex agents $\mathcal{X} = \{ \mathtt{X}~|~\mathtt{X} = (\chi, \gamma_f, \mathtt{c}), \chi~\in~\mathcal{N}_{x} \cup \{\varepsilon\}, \gamma_f \subseteq \mathcal{A} \cup \mathcal{T},  \mathtt{c}~\in~\mathcal{N}_{c} \}$.
+Since complex agents are constructed from sets $\mathcal{N}_{x},~\mathcal{N}_{c}$, $\mathcal{A}$, and $\mathcal{T}$, we can define universe of complex agents $\mathcal{X} = \{ \mathtt{X}~|~\mathtt{X} = (\gamma_f, \mathtt{c}), \gamma_f \subseteq \mathcal{A} \cup \mathcal{T},  \mathtt{c}~\in~\mathcal{N}_{c} \}$.
 
-\noindent Similarly, we can define universe of complex agent expressions\\ $\mathcal{E}_\mathcal{X} = \{ \gamma_f::\mathtt{c} ~|~ (\chi, \gamma_f, \mathtt{c}) \in \mathcal{X} \} \cup \{ \chi::\mathtt{c} ~|~ (\chi, \gamma_f, \mathtt{c}) \in \mathcal{X} \}$.
+\noindent Similarly, we can define universe of complex agent expressions\\ $\mathcal{E}_\mathcal{X} = \{ \gamma_f::\mathtt{c} ~|~ (\gamma_f, \mathtt{c}) \in \mathcal{X} \}$.
 \end{theorem}
 
 \subsection{Summary}
 
-\begin{theorem}
+\begin{definition}
 We define universe of all agent expressions $\mathcal{E} = \mathcal{E}_\mathcal{A} \cup \mathcal{E}_\mathcal{T} \cup \mathcal{E}_\mathcal{X} \cup \{\varepsilon\}$.
-\end{theorem}
+\end{definition}
 
-At this point it is good to notice the fact that each agent expression $\mathtt{E} \in \mathcal{E}$ clearly defines an agent but an agent might be written by more expressions. It is due to order in partial and full compositions given by expression.
-
-- complex agent by nemal mat order, aby som mu mohol definovat permutacie DONE
-
-- pravidlo by mohlo byt vytvorene iba z expressions a v nich uz poradie existuje... vlastne je to funckia z expression do expression aplikovana na solution, lenze solution je z fragmentu agentov, ktory sa daju vzdy jednoznacne prepisat na expression
-
-- solution vsak nebude expression, ale klasicky mnozinovo... alebo dvojica (mnozina agentov, expression) ?
+\begin{notation}
+~
+\begin{itemize}
+\item Since an expression uniquely defines an agent, we can use compatibility between agent expressions.
+\end{itemize}
+\end{notation}
 
 \section{Biochemical Space Rules}
 
@@ -225,6 +228,12 @@ We define universe of rule expressions\\ $\mathcal{E}_\mathcal{R} = \{ \lambda ~
 \end{theorem}
 
 \section{Semantics}
+
+\textbf{USE THIS:}
+
+\begin{defn}
+Let $\mathtt{X} = (\chi, \gamma_f, \mathtt{c}), \mathtt{X}' = (\chi', \gamma_f', \mathtt{c}')$ be complex agents. We say $\mathtt{X}$ \emph{is compatible with} $\mathtt{X}'$, written $\mathtt{X} \lhd \mathtt{X}'$, iff $\chi=\chi'$, $\mathtt{c} = \mathtt{c}'$, and $\forall \beta_1, \beta_2, ..., \beta_n \in \gamma_f $ and $\forall \beta_1', \beta_2', ..., \beta_n' \in \gamma'_f$ : $\beta_i \lhd \beta_i'$. 
+\end{defn}
 
 How is semantics being applied on a model does not matter now. Briefly, using an algorithm, we choose a solution from given state and apply a rule on this solution. This step is quite forward and does not need any deeper investigation. What has to be defined is application of the rule on the solution.
 
@@ -307,6 +316,8 @@ where $\alpha_s = \alpha_r$ and $ c_s \neq c_r $.
 \subsection{Syntactic extensions}
 
 We define several syntactic extensions for better readability of the rules. Note that each rule in a extended form can be always translated to basic form defined above.
+
+\textbf{signatures}
 
 \textbf{direction}
 
