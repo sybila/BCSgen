@@ -239,12 +239,6 @@ We define universe of rule expressions\\ $\mathcal{E}_\mathcal{R} = \{ \lambda ~
 
 \section{Semantics}
 
-\textbf{USE THIS:}
-
-\begin{defn}
-Let $\mathtt{X} = (\chi, \gamma_f, \mathtt{c}), \mathtt{X}' = (\chi', \gamma_f', \mathtt{c}')$ be complex agents. We say $\mathtt{X}$ \emph{is compatible with} $\mathtt{X}'$, written $\mathtt{X} \lhd \mathtt{X}'$, iff $\chi=\chi'$, $\mathtt{c} = \mathtt{c}'$, and $\forall \beta_1, \beta_2, ..., \beta_n \in \gamma_f $ and $\forall \beta_1', \beta_2', ..., \beta_n' \in \gamma'_f$ : $\beta_i \lhd \beta_i'$. 
-\end{defn}
-
 How is semantics being applied on a model does not matter now. Briefly, using an algorithm, we choose a solution from given state and apply a rule on this solution. This step is quite forward and does not need any deeper investigation. What has to be defined is application of the rule on the solution.
 
 Let $\beta$ be an agent, $\mathtt{R} \in \mathcal{R}$ be a rule of form $\lambda \Rightarrow \rho$ where $\lambda$ and $\rho$ are agent enumerations, and $\mathtt{S} \subseteq \mathcal{U}$ be a solution. 
@@ -269,7 +263,7 @@ $ $ \\
 
 \begin{definition}
 $ $ \\
-\textbf{Replacement} is a function $\Upsilon_\mathtt{S}^{\lhd}~\times~\rho~\rightarrow~\Upsilon_\mathtt{R}$. It is defined according to six replacement categories:
+\textbf{Replacement} is a function $\Upsilon_\mathtt{S}^{\lhd}~\times~\rho~\rightarrow~\Upsilon_\mathtt{R}$, where $\Upsilon_\mathtt{R}$ is set of agent enumerations created according to six replacement categories:
 
 \begin{enumerate}
 \item \textit{state change }:
