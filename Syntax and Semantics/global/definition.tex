@@ -229,7 +229,7 @@ Let $\mathtt{R},\mathtt{R}'$ be rules. We define the \emph{structural equivalenc
 \begin{notation}
 ~
 \begin{itemize}
-\item Agent enumeration $\Gamma$ is an expression of form $\varphi_1 + \varphi_2 + ... \varphi_n$. From now, when referencing it, it will be treated as tuple $(\varphi_1, \varphi_2, ..., \varphi_n)$.
+\item Agent enumeration $\Gamma$ is an expression of form $\varphi_1 + \varphi_2 + ... \varphi_n$. From now, when referencing it, it might be treated as tuple $(\varphi_1, \varphi_2, ..., \varphi_n)$.
 \end{itemize}
 \end{notation}
 
@@ -244,7 +244,7 @@ How is semantics being applied on a model does not matter now. Briefly, using an
 Let $\beta$ be an agent, $\mathtt{R} \in \mathcal{R}$ be a rule of form $\lambda \Rightarrow \rho$ where $\lambda$ and $\rho$ are agent enumerations, and $\mathtt{S} \subseteq \mathcal{U}$ be a solution. 
 
 \begin{definition}
-For a given solution $\mathtt{S}$, we denote $\Upsilon_\mathtt{S}$ as set of all possible agent enumerations constructed from $\Upsilon_\mathtt{A}$, $\Upsilon_\mathtt{T}$, and $\Upsilon_\mathtt{X}$ for particular agents in $\mathtt{S}$.
+For a given solution $\mathtt{S}$, we denote $\Upsilon_\mathtt{S}$ as set of all possible agent enumerations constructed from $\Upsilon_\mathtt{A}$, $\Upsilon_\mathtt{T}$, and $\Upsilon_\mathtt{X}$ for particular agents in $\mathtt{S}$. We denote $\mathtt{S}_\Upsilon$ an element in $\Upsilon_\mathtt{S}$.
 \end{definition}
 
 \begin{definition}
@@ -269,58 +269,59 @@ $ $ \\
 \item \textit{state change }:
 
 \begin{itemize}
-\item $ \pmb{\mathtt{a}_s\{p\}::c_s[\mathtt{a}_r\{t\}::c_r] = \mathtt{a}_s\{t\}::c_s} $
+\item $ \pmb{\alpha_\mathtt{S}\{p\}::c[\alpha_\rho\{t\}::c] = \alpha_\mathtt{\mathtt{S}}\{t\}::c} $
 
-where $ \mathtt{a}_s = \mathtt{a}_r $ and $p \neq t$.
+where $ \alpha_\mathtt{S} = \alpha_\rho $ and $p \neq t$.
 
-\item $ \pmb{\mathtt{T}_s::c_s[\mathtt{T}_r::c_r] = \mathtt{T}^r_s::c_s} \newline \forall \mathtt{a}_r\{t\} \in \gamma_p(\mathtt{T}_r), \exists \mathtt{a}_s\{p\} \in \gamma_p(\mathtt{T}_s) : \mathtt{a}_s\{p\}::c_s[\mathtt{a}_r\{t\}::c_s] $
+\item $ \pmb{\mathtt{T}_\mathtt{S}::c[\mathtt{T}_\rho::c] = \mathtt{T}_\mathtt{R}::c}$ 
 
-and $\mathtt{T}_s = \tau_s(\gamma_p)$, $\mathtt{T}_r = \tau_r(\gamma_p)$ $\newline$ and $\tau_s = \tau_r$ and $\mathtt{a}_s = \mathtt{a}_r$.
+$\mathtt{T}_\mathtt{R} = \mathtt{A}_{\mathtt{R}_1}, \mathtt{A}_{\mathtt{R}_2}, ..., \mathtt{A}_{\mathtt{R}_n} : \mathtt{A}_{\mathtt{R}_1} = \alpha_\mathtt{S}\{p\}::c[\alpha_\rho\{t\}::c]$
 
-\item $ \pmb{\mathtt{X}_s::c_s[\mathtt{X}_r::c_r] = \mathtt{X}^r_s::c_s} \newline  \mathtt{X}^r_s = [~\alpha_i::c_s[\beta_i::c_r]~|~\forall \alpha_1, \alpha_2, ..., \alpha_n \in \mathtt{X}_s~and~\beta_1, \beta_2, ..., \beta_n \in \mathtt{X}_r~]$
+and $\alpha_\rho\{t\} \in \mathtt{T}_\rho, ~\alpha_\mathtt{S}\{p\} \in \mathtt{T}_\mathtt{S} $ and $\alpha_\mathtt{S} = \alpha_\rho$.
 
-\end{itemize}
+\item $ \pmb{\mathtt{X}_\mathtt{S}::c[\mathtt{X}_\rho::c] = \mathtt{X}_\mathtt{R}::c}$
 
-\item \textit{complex formation}: (not good!!!)
+$ \mathtt{X}_\mathtt{R} = \beta_1.\beta_2. ~...~ .\beta_n \pmb{:} \forall y_1, y_2, ..., y_n \in \mathtt{X}_\mathtt{S}~and~z_1, z_2, ..., z_n \in \mathtt{X}_\rho \pmb{:}$
 
-\begin{itemize}
-\item $\pmb{\mathtt{X}_s::c[\mathtt{X}_r::c] = \mathtt{X}^r_s::c} \newline \mathtt{X}^r_s : f(\alpha_1) + f(\alpha_2) + ... + f(\alpha_n)~|~\forall \alpha_1, \alpha_2, ..., \alpha_n \in \mathtt{X}_s :$
-\begin{itemize}
-	\item $ f(\alpha) = \gamma_f(\alpha)$ when $\alpha \multimap \mathtt{X} $
-	\item $ f(\alpha) = [\alpha]$ when $\alpha \multimap \mathtt{T}$
-	\item $ f(\alpha) = [\alpha]$ when $\alpha \multimap \mathtt{a}$
-\end{itemize}
+$\beta_i = y_i::c~[z_i::c].$
 
 \end{itemize}
 
-\item \textit{complex dissociation}: (not good!!!)
+\item \textit{complex formation}:
 
 \begin{itemize}
-\item $ \pmb{\mathtt{X}_s::c[\Gamma_r] = \mathtt{X}^r_s::c} \newline \mathtt{X}^r_s = [~\mathtt{map}(\mathtt{X}_s, x)~|~\forall x \in \mathtt{cut}(\Gamma_r)~]:$
+\item $\pmb{\mathtt{S}_\Upsilon[\mathtt{X}_\rho::c] = \mathtt{X}_\mathtt{R}::c}$
 
-where $\iota(\leftidx{^*}{list}{}) = [i~|~\forall \alpha_i \in \leftidx{^*}{list}{}~]$,
+$\mathtt{X}_\mathtt{R} = \beta_1.\beta_2. ~...~ .\beta_n \pmb{:} \forall \beta_i::c \in \mathtt{S}_\Upsilon.$
 
-$\mathtt{cut}(\Gamma_r) = [~\iota(\alpha)~|~\forall \alpha \in \Gamma_r~]$
+\end{itemize}
 
-and $\mathtt{map}(\leftidx{^*}{list}{},~x) = [~\leftidx{^*}{list}{}[i]~|~\forall i \in x~] $.
+\item \textit{complex dissociation}:
+
+\begin{itemize}
+\item $ \pmb{\mathtt{X}_\mathtt{S}::c[\rho] = \mathtt{R}_\Upsilon}$ 
+
+$\rho = \beta_{\rho_1}::c + \beta_{\rho_2}::c + ~...~ + {\rho_n}::c$ and $\mathtt{X}_\mathtt{S} = \beta_{\mathtt{S}_1}.\beta_{\mathtt{S}_2}. ~...~ .{\mathtt{S}_n}::c$.
+
+$\mathtt{R}_\Upsilon = \beta_{\mathtt{R}_1}::c + \beta_{\mathtt{R}o_2}::c + ~...~ + {\mathtt{R}_n}::c \pmb{:}$ $ \beta_{\mathtt{R}_i} = \beta_{\mathtt{S}_i} \Leftrightarrow \beta_{\mathtt{S}_i} \models \beta_{\rho_i}.$
 
 \end{itemize}
 
 \item \textit{degradation}
 \begin{itemize}
-\item $  \pmb{\Gamma_s[\emptyset] = \emptyset} $
+\item $  \pmb{\mathtt{S}_\Upsilon[\emptyset] = \emptyset} $
 \end{itemize}
 
 \item \textit{translation}
 \begin{itemize}
-\item $ \pmb{\emptyset[\Gamma_r] = \Gamma_r} $
+\item $ \pmb{\emptyset[\rho] = \rho} $
 \end{itemize}
 
 \item \textit{transport}:
 \begin{itemize}
-\item $ \pmb{\alpha_s::c_s[\alpha_r::c_r] = \alpha_s::c_r} $
+\item $ \pmb{\beta_\mathtt{S}::c_\mathtt{S}[\beta_\rho::c_\rho] = \beta_\mathtt{S}::c_\rho} $
 
-where $\alpha_s = \alpha_r$ and $ c_s \neq c_r $.
+where $\beta_\mathtt{S} = \beta_\rho$ and $ c_\mathtt{S} \neq c_\rho $.
 \end{itemize}
 
 \end{enumerate}
@@ -331,6 +332,12 @@ where $\alpha_s = \alpha_r$ and $ c_s \neq c_r $.
 We define several syntactic extensions for better readability of the rules. Note that each rule in a extended form can be always translated to basic form defined above.
 
 \textbf{signatures}
+
+for atomic its maximal state set
+
+for structure its neccessary composition
+
+for complex its substitution
 
 \textbf{direction}
 
