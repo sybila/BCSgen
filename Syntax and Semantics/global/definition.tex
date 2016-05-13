@@ -7,6 +7,7 @@
 \usepackage[noend]{algpseudocode}
 \usepackage{mathabx}
 \usepackage{leftidx}
+\usepackage{pifont}
 
 \hyphenation{me-ta-bo-lism}
 
@@ -63,6 +64,7 @@ Let $\mathtt{A},\mathtt{A}'$ be atomic agents. We say agent $\mathtt{A}=(\alpha,
 {~}
 \begin{itemize}
 \item We denote $\mathtt{s}\in\delta$ the fact that $\mathtt{s}$ is included in the state signature~$\delta$.
+\item We denote $\mathtt{c}(\mathtt{A})$ the fact that $\mathtt{A}$ is in compartment $\mathtt{c}$.
 \end{itemize}
 \end{notation}
 
@@ -105,6 +107,7 @@ Structure agent $\mathtt{T}$ is defined as triple ($\tau, \gamma_p, \mathtt{c}$)
 {~}
 \begin{itemize}
 \item We denote $\mathtt{A} \in \mathtt{T}$ the fact that $\mathtt{A}$ is included in partial composition $\gamma_p$ of structure agent $\mathtt{T}$.
+\item We denote $\mathtt{c}(\mathtt{T})$ the fact that $\mathtt{T}$ is in compartment $\mathtt{c}$.
 \item Note that a compartment of a structure agent is uniquely given by the compartment specified in its parts. We restrict ourselves to structure agents where all atomic agents in the partial composition have the same compartment. Assuming this restriction, we can shorten the notation by omitting compartments in the atomic agents of a partial composition. 
 \end{itemize}
 \end{notation}
@@ -361,11 +364,67 @@ If a complex agent $\mathtt{X} = (\gamma_f, \mathtt{c})$ has defined its agent s
 
 \subsection{Direction}
 
+We allow rules to be bi-directional -- it is just a shortcut for two rules and it can be converted to basic rule form. A rule $\mathtt{R} = \lambda ~\Leftrightarrow~ \rho~\nu$ might be written as two rules $\mathtt{R}_1 = \lambda ~\Rightarrow~ \rho~\nu$ and $\mathtt{R}_2 = \rho ~\Rightarrow~ \lambda~\nu$. Similarly for all rule forms.
+
 \subsection{Stoichiometry}
+
+In agent enumeration $\Gamma = (\varphi_1, \varphi_2, ..., \varphi_n)$, we enrich $\varphi_i$ context to pair $(\zeta, \varphi_i)$ where $\zeta = 1$. However, some rule agents in $\Gamma$ might be equivalent. For this reason, there are equivalence groups $\mathcal{G}_\equiv$ of \textit{k} rule agents $\varphi_i, ..., \varphi_j$. Each of there groups $\mathcal{G}_\equiv$ might be written as one pair $(\zeta, \varphi_i)$ where $\zeta = k$ for some $\varphi_m \in \mathcal{G}_\equiv$.
+
+Note that this process is fully reversible, so agent enumeration in basic form can be easily reconstructed.
+
+\subsection{Locations}
+
+\begin{definition}
+We define operator `::' between two rule agents:
+
+\begin{enumerate}
+ \item $\mathtt{A}::\mathtt{T}$ $\Leftrightarrow$ there exists $\mathtt{A}' \in \mathtt{T}$ such that $\mathtt{A} \lhd \mathtt{A}'$ and $\mathtt{c}(\mathtt{A}) = \mathtt{c}(\mathtt{T})$,
+
+\item $\mathtt{A}::\mathtt{X}$ $\Leftrightarrow$ there exists $\mathtt{A}' \in \mathtt{X}$ such that $\mathtt{A} \lhd \mathtt{A}'$ and $\mathtt{c}(\mathtt{A}) = \mathtt{c}(\mathtt{X})$,
+
+\item $\mathtt{T}::\mathtt{X}$ $\Leftrightarrow$ there exists $\mathtt{T}' \in \mathtt{X}$ such that $\mathtt{T} \lhd \mathtt{T}'$ and $\mathtt{c}(\mathtt{T}) = \mathtt{c}(\mathtt{X})$,
+
+\item $\mathtt{X}'::\mathtt{X}$ $\Leftrightarrow$ there exists subexpression $\mathtt{X}'' \in \mathtt{X}$ such that $\forall \beta_1', \beta_2', ..., \beta_n' \in \mathtt{X}' $ \& $\forall \beta_1'', \beta_2'', ..., \beta_n'' \in \mathtt{X}''$ : $\beta_i' \lhd \beta_i''$.
+
+\end{enumerate}
+\end{definition}
+
+Then, each rule agent $\varphi$ can be written by the following grammar with respect to operator `::'  definition:
+
+\begin{center}
+{\small
+\hspace*{-1cm}\begin{tabular}{ l }
+$\varphi :: = \varphi :: \varphi~|~\widehat{\varphi}$\\
+$\widehat{\varphi} ::= \mathtt{A}~|~\mathtt{T}~|~\mathtt{X}$\\
+\end{tabular}
+}
+\end{center}
+
+\begin{notation}
+Note that a compartment of all agents is restricted to be the same. Assuming this restriction, we can shorten the notation by omitting compartments in all agents except the most right one.
+\end{notation}
 
 \subsection{Variables}
 
-\subsection{Locations}
+In a rule, one rule agent might be referenced using variable $\upsilon$ as a set of agents it can be replaced with. Such rule agent is referenced as $?X$. The appropriate set of agents is referenced via following grammar: 
+
+\begin{center}
+{\small
+\hspace*{-1cm}\begin{tabular}{ l }
+$\mathtt{R} ::= \lambda ~\Rightarrow~ \rho~\nu ~|~ \Rightarrow ~\odot~\nu ~|~ \Rightarrow~ \rho~\nu $\\
+$\nu ::=~ ;~\upsilon$\\
+$\upsilon ::=~?X = \{\phi\}$\\
+$\phi ::=~\phi_1~|~\phi_2~|~\phi_3$\\
+$\phi_1 ::= \mathtt{A},~\phi_1~|~\mathtt{A}$\\
+$\phi_2 ::= \mathtt{T},~\phi_2~|~\mathtt{T}$\\
+$\phi_3 ::= \mathtt{X},~\phi_3~|~\mathtt{X}$\\
+\end{tabular}
+}
+\end{center}
+
+Once again, each rule associated with variable can be easily rewritten as several rules where variable is replaced with agent from set of agents attached to the variable.
+
+\subsection{Summary}
 
 \begin{center}
 {\small
@@ -389,33 +448,6 @@ If a complex agent $\mathtt{X} = (\gamma_f, \mathtt{c})$ has defined its agent s
 \end{tabular}
 }
 \end{center}
-
-\begin{definition}
-Let $\varphi$ be a rule agent that appears in a rule $\mathtt{R}$. The \emph{rule agent} $\varphi$ is \emph{well-formed} iff the following constrains are satisfied:
-
-\begin{enumerate}
- \item If $\mathtt{A}::\mathtt{T}$ is a subexpression of $\varphi$ and $\mathtt{T} = \tau(\gamma_p)::\mathtt{c}$ then exists $\mathtt{A}' \in \gamma_p$ such that $\mathtt{A} \lhd \mathtt{A}'$.
-
-\item If $\mathtt{T}::\mathtt{X}$ is a subexpression of $\varphi$ then exists $\mathtt{T}' \in \mathtt{X}$ such that $\mathtt{T} \lhd \mathtt{T}'$.
-
-\item If $\mathtt{A}::\mathtt{X}$ is a subexpression of $\varphi$ then exists $\mathtt{A}' \in \mathtt{X}$ such that $\mathtt{A} \lhd \mathtt{A}'$.
-
-\item If $\mathtt{X}'::\mathtt{X}$ is a subexpression of $\varphi$ then exists $\mathtt{X}'' \in \mathtt{X}$ such that $\mathtt{X}' \lhd \mathtt{X}''$.
-
-\end{enumerate}
-
-\end{definition}
-
-\begin{definition}[Rule Flattening]
-Let $(\Sigma_\tau,\Sigma_x)$ be a signature and $\mathtt{R}$ a set of rules. Every rule $r\in\mathtt{R}$ that includes some \emph{nested} rule agents $\varphi$ can be reduced to a rule $r'\in\mathtt{R}$ where every rule agent $\varphi$ is in \emph{basic} form. For every subexpression $\beta$ in every rule agent $\varphi$ in $r$, the reduction is done recursively by replacing $\beta$ with $\beta'$ in the following way:
-\begin{enumerate}
-\item If $\beta=\mathtt{A}::\mathtt{T}$ where $\mathtt{T}=\tau(\gamma_p)$ for some $\tau,\gamma_p$ then there must exist $\mathtt{A}'\in\gamma_p$ such that $\mathtt{A}\lhd\mathtt{A}'$. Then we set $\beta'={\tau}(\gamma'_p)$ where $\gamma'_p$ is constructed from $\gamma_p$ by replacing $\mathtt{A}'\in\gamma_p$ with $\mathtt{A}$.
-\item If $\beta=\mathtt{T}::\mathtt{X}$ where $\mathtt{X}=\gamma_f$ then there must exist $\mathtt{T}'\in\gamma_f$ such that $\mathtt{T}\lhd\mathtt{T}'$. Then we set $\beta'=\gamma'_f$ where $\gamma'_f$ is constructed from $\gamma_f$ by replacing $\mathtt{T}'\in\gamma_f$ with $\mathtt{T}$. 
-\item If $\beta=\mathtt{A}::\mathtt{X}$ where $\mathtt{X}=\gamma_f$ then there must exist $\mathtt{A}'\in\gamma_f$ such that $\mathtt{A}\lhd\mathtt{A}'$. Then we set $\beta'=\gamma'_f$ where $\gamma'_f$ is constructed from $\gamma_f$ by replacing $\mathtt{A}'\in\gamma_f$ with $\mathtt{A}$. 
-\item If $\beta=\mathtt{X}'::\mathtt{X}$ where $\mathtt{X}=\gamma_f$ and $\mathtt{X}'= \gamma'_f$ then for every $\mathtt{T} \in \gamma_f$ (resp. $\mathtt{A} \in \gamma_f$) there must exist $\mathtt{T}' \in \gamma'_f$ (resp. $\mathtt{A}' \in \gamma'_f$) such that $\mathtt{T} \lhd \mathtt{T}'$ (resp. $\mathtt{A} \lhd \mathtt{A}'$). Then we set $\beta'=\gamma_{f'}$ where $\gamma_{f'}$ is constructed from $\gamma_f$ by replacing all $\mathtt{T} \in \gamma_f$ (resp. $\mathtt{A} \in \gamma_f$) with appropriate $\mathtt{T}' \in \gamma'_f$  (resp. $\mathtt{A}' \in \gamma'_f$).
-\end{enumerate} 
-\end{definition}
-
 
 
 \end{document}
