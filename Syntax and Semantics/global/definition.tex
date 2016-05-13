@@ -182,7 +182,7 @@ Complex agent expressions have the following syntax:
 \end{notation}
 
 \begin{theorem}
-Since complex agents are constructed from sets $\mathcal{N}_{x},~\mathcal{N}_{c}$, $\mathcal{A}$, and $\mathcal{T}$, we can define universe of complex agents $\mathcal{X} = \{ \mathtt{X}~|~\mathtt{X} = (\gamma_f, \mathtt{c}), \gamma_f \subseteq \mathcal{A} \cup \mathcal{T},  \mathtt{c}~\in~\mathcal{N}_{c} \}$.
+Since complex agents are constructed from sets $\mathcal{N}_{c}$, $\mathcal{A}$, and $\mathcal{T}$, we can define universe of complex agents $\mathcal{X} = \{ \mathtt{X}~|~\mathtt{X} = (\gamma_f, \mathtt{c}), \gamma_f \subseteq \mathcal{A} \cup \mathcal{T},  \mathtt{c}~\in~\mathcal{N}_{c} \}$.
 
 \noindent Similarly, we can define universe of complex agent expressions\\ $\mathcal{E}_\mathcal{X} = \{ \gamma_f::\mathtt{c} ~|~ (\gamma_f, \mathtt{c}) \in \mathcal{X} \}$.
 \end{theorem}
@@ -249,7 +249,7 @@ For a given solution $\mathtt{S}$, we denote $\Upsilon_\mathtt{S}$ as set of all
 
 \begin{definition}
 $ $ \\
-\textbf{Matching} is a function $\models ~: \Upsilon_\mathtt{S}~\bigtimes~\lambda~\rightarrow~\Upsilon_\mathtt{S}^{\lhd}$ defined structurally:
+\textbf{Matching} is a function $\models ~: \Upsilon_\mathtt{S}~\bigtimes~\lambda~\rightarrow~\Upsilon_\mathtt{S}^{\lhd}$ defined pair-wise:
 
 \begin{itemize}
 	\item $\mathtt{A}_\mathtt{S} \models \mathtt{A}_{\lambda} \Leftrightarrow \mathtt{A}_\mathtt{S} \lhd \mathtt{A}_{\lambda}$,
@@ -327,25 +327,45 @@ where $\beta_\mathtt{S} = \beta_\rho$ and $ c_\mathtt{S} \neq c_\rho $.
 \end{enumerate}
 \end{definition}
 
-\subsection{Syntactic extensions}
+\section{Syntactic extensions}
 
-We define several syntactic extensions for better readability of the rules. Note that each rule in a extended form can be always translated to basic form defined above.
+We define several syntactic extensions for better readability of the rules. Note that each rule in a extended form can be always translated to basic form defined above. All rules containing the following extensions but be converted to basic form before semantics can be applied.
 
-\textbf{signatures}
+\subsection{Signatures}
 
-for atomic its maximal state set
+Signatures are used for associating properties to agent names.
 
-for structure its neccessary composition
+\begin{definition}
+Atomic agent signature $\Sigma_\mathtt{A}$ is pair ($\alpha, \mathcal{M}_\delta$) where $\alpha \in \mathcal{N}_{A}$ is name, $\delta \subseteq \mathcal{N}_{s}$ is finite non-empty set of states $\mathtt{s} \in \mathcal{N}_{s}$. It restricts each atomic agent $\mathtt{A}$ with name $\alpha$ to have its $\delta \subseteq \mathcal{M}_\delta$. 
+\end{definition}
 
-for complex its substitution
+\begin{notation}
+If an atomic agent $\mathtt{A} = (\alpha, \delta, \mathtt{c})$ has defined its agent signature $\Sigma_\mathtt{A}$ = ($\alpha, \mathcal{M}_\delta$), then maximal set $\mathcal{M}_\delta$ of states is defined. For this reason, we can reference agent $\mathtt{A}$ with $\delta = \mathcal{M}_\delta$ as $\alpha::\mathtt{c}$ since $\delta$ can be reconstructed from $\Sigma_\mathtt{A}$.
+\end{notation}
 
-\textbf{direction}
+\begin{definition}
+Structure agent signature $\Sigma_\mathtt{T}$ is pair ($\tau, \mathcal{M}_{\gamma_p}$) where $\tau \in \mathcal{N}_{T}$ is name, $\mathcal{M}_{\gamma_p} \subseteq \mathcal{T}$ is finite set of atomic agents $\mathtt{A} \in \mathcal{A}$. It restricts each structure agent $\mathtt{T}$ with name $\tau$ to have $\gamma_p$ such that for each atomic agent $\mathtt{A} \in \gamma_p$ there exists an atomic agent $\mathtt{A}' \in \mathcal{M}_{\gamma_p}$ such that $\mathtt{A}~\lhd~\mathtt{A}'$. We denote this fact as $\gamma_p \lhd \mathcal{M}_{\gamma_p}$.
+\end{definition}
 
-\textbf{Stoichiometry}
+\begin{notation}
+If a structure agent $\mathtt{T} = (\tau, \gamma_p, \mathtt{c})$ has defined its agent signature $\Sigma_\mathtt{T}$ = ($\tau, \mathcal{M}_{\gamma_p}$), then required composition $\mathcal{M}_{\gamma_p}$ is defined. For this reason, when referencing agent $\mathtt{T}$ with $\gamma_p \lhd \mathcal{M}_{\gamma_p}$, we can skip all those atomic agents $\mathtt{A} = (\alpha, \delta, \mathtt{c})$, which have defined its agent signature $\Sigma_\mathtt{A} = (\alpha, \mathcal{M}_\delta)$ and $\delta = \mathcal{M}_\delta$. They can be reconstructed from $\Sigma_\mathtt{T}$.
+\end{notation}
 
-\textbf{Variables}
+\begin{definition}
+Complex agent signature $\Sigma_\mathtt{X}$ is pair ($\chi, \mathcal{M}_{\gamma_f}$) where $\chi \in \mathcal{N}_{x}$ is name, $\mathcal{M}_{\gamma_f} \subseteq \mathcal{A} \cup \mathcal{T}$ is finite multiset of atomic and structure agents. It associates a name to complex agent $\mathtt{X} = (\gamma_f, \mathtt{c})$ with $\gamma_f = \mathcal{M}_{\gamma_f}$.
+\end{definition}
 
-\textbf{Locations}
+\begin{notation}
+If a complex agent $\mathtt{X} = (\gamma_f, \mathtt{c})$ has defined its agent signature $\Sigma_\mathtt{X}$ = ($\chi, \mathcal{M}_{\gamma_f}$). Then, the agent can be referenced using $\chi$ and agent can be reconstructed from $\Sigma_\mathtt{X}$.
+\end{notation}
+
+\subsection{Direction}
+
+\subsection{Stoichiometry}
+
+\subsection{Variables}
+
+\subsection{Locations}
 
 \begin{center}
 {\small
