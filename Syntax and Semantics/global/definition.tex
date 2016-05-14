@@ -42,7 +42,7 @@ Brno, Czech Republic
 
 note - maybe all compartment could be removed from syntax of agents and added on level of rules
 
-Let $\mathcal{N}_{a},~\mathcal{N}_{T},~\mathcal{N}_{x},~\mathcal{N}_{c},~\mathcal{N}_{s}$ be mutually exclusive finite sets of atomic, structure, complex, compartment, and state names, respectively. 
+Let $\mathcal{N}_{A},~\mathcal{N}_{T},~\mathcal{N}_{X},~\mathcal{N}_{c},~\mathcal{N}_{s}$ be mutually exclusive finite sets of atomic, structure, complex, compartment, and state names, respectively. 
 
 \subsection{Atomic agents}
 
@@ -355,7 +355,7 @@ If a structure agent $\mathtt{T} = (\tau, \gamma_p, \mathtt{c})$ has defined its
 \end{notation}
 
 \begin{definition}
-Complex agent signature $\Sigma_\mathtt{X}$ is pair ($\chi, \mathcal{M}_{\gamma_f}$) where $\chi \in \mathcal{N}_{x}$ is name, $\mathcal{M}_{\gamma_f} \subseteq \mathcal{A} \cup \mathcal{T}$ is finite multiset of atomic and structure agents. It associates a name to complex agent $\mathtt{X} = (\gamma_f, \mathtt{c})$ with $\gamma_f = \mathcal{M}_{\gamma_f}$.
+Complex agent signature $\Sigma_\mathtt{X}$ is pair ($\chi, \mathcal{M}_{\gamma_f}$) where $\chi \in \mathcal{N}_{X}$ is name, $\mathcal{M}_{\gamma_f} \subseteq \mathcal{A} \cup \mathcal{T}$ is finite multiset of atomic and structure agents. It associates a name to complex agent $\mathtt{X} = (\gamma_f, \mathtt{c})$ with $\gamma_f = \mathcal{M}_{\gamma_f}$.
 \end{definition}
 
 \begin{notation}
@@ -406,7 +406,7 @@ Note that a compartment of all agents is restricted to be the same. Assuming thi
 
 \subsection{Variables}
 
-In a rule, one rule agent might be referenced using variable $\upsilon$ as a set of agents it can be replaced with. Such rule agent is referenced as $?X$. The appropriate set of agents is referenced via following grammar: 
+In a rule, one rule agent might be referenced using variable $\upsilon$ as a set of agents it can be replaced with. Such a rule agent is referenced as $?X$. The appropriate set of agents is referenced via following grammar: 
 
 \begin{center}
 {\small
@@ -423,31 +423,5 @@ $\phi_3 ::= \mathtt{X},~\phi_3~|~\mathtt{X}$\\
 \end{center}
 
 Once again, each rule associated with variable can be easily rewritten as several rules where variable is replaced with agent from set of agents attached to the variable.
-
-\subsection{Summary}
-
-\begin{center}
-{\small
-\hspace*{-1cm}\begin{tabular}{ l l }
- rule expression & $\mathtt{R} ::= \lambda ~\odot~ \rho~\nu ~|~ \lambda ~\odot~\nu ~|~ \odot~ \rho~\nu $\\
-  & $\lambda ::= \Gamma$\\
-  & $\rho ::= \Gamma$\\
-  & $\nu ::=~ ;~\upsilon ~|~ \varepsilon$\\
- direction & $\odot ::=~ \Rightarrow~|~\Leftrightarrow $\\
-  & $\Gamma ::= \zeta~\varphi~ +~\Gamma ~|~ \zeta~\varphi$\\
- stoichiometry & $\zeta ::= n \in \mathbb{N}^+$\\
- rule agent & $\varphi :: = \varphi_1~|~\varphi_2~|~\varphi_1::\xi~|~\varphi_2::\xi'~|~\xi'$\\
-  & $\varphi_1  ~::=~  ?\nu_1~|~?\nu_2~|~?\nu_3~|~\mathtt{A}::~?\nu_2~|~?\nu_1::\mathtt{T}$\\
-  & $\xi' ~::=~ \mathtt{X}::\xi'~|~?\nu_3::\xi~|~?\nu_3~|~\xi$\\
-  & $\varphi_2  ~::=~  \mathtt{A}~|~\mathtt{T}~|~\mathtt{X}~|~\mathtt{A}::\mathtt{T}$\\
-  & $\xi  ~::=~  \mathtt{X}::\xi~|~\mathtt{X}$\\
- variable & $\upsilon ::=~?\nu_1=\{\phi_1\}~|~?\nu_2=\{\phi_2\}~|~?\nu_3=\{\phi_3\}$\\
-  & $\phi_1 ::= \mathtt{A},~\phi_1~|~\mathtt{A}$\\
-  & $\phi_2 ::= \mathtt{T},~\phi_2~|~\mathtt{T}$\\
-  & $\phi_3 ::= \mathtt{X},~\phi_3~|~\mathtt{X}$\\
-\end{tabular}
-}
-\end{center}
-
 
 \end{document}
