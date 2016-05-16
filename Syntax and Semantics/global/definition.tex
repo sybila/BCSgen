@@ -40,21 +40,19 @@ Brno, Czech Republic
 
 \section{Biochemical Space Agents}
 
-note - maybe all compartment could be removed from syntax of agents and added on level of rules
-
 Let $\mathcal{N}_{A},~\mathcal{N}_{T},~\mathcal{N}_{X},~\mathcal{N}_{c},~\mathcal{N}_{s}$ be mutually exclusive finite sets of atomic, structure, complex, compartment, and state names, respectively. 
 
 \subsection{Atomic agents}
 
-Agents are defined hierarchically starting from \emph{atomic agents}. These agents are the smallest units in our hierarchy a represent ...
+Agents are defined hierarchically starting from \emph{atomic agents}. These agents are the smallest units in our hierarchy and represent ...
 
-\begin{definition}
-Atomic agent $\mathtt{A}$ is defined as triple ($\alpha, \delta, \mathtt{c}$) where $\alpha \in \mathcal{N}_{A}$ is name, $\delta \subseteq \mathcal{N}_{s}$ is finite non-empty set of states $\mathtt{s} \in \mathcal{N}_{s}$ in which the agent can occur, and $\mathtt{c} \in \mathcal{N}_{c}$ is physical compartment within which it is considered.
-\end{definition}
+\begin{defn}
+Atomic agent $\mathtt{A}$ is defined as triple ($\alpha, \delta, \mathtt{c}$) where $\alpha \in \mathcal{N}_{A}$ is name, $\delta \subseteq \mathcal{N}_{s}$ is finite non-empty set of states $\mathtt{s} \in \mathcal{N}_{s}$, and $\mathtt{c} \in \mathcal{N}_{c}$ is physical compartment within which it is considered.
+\end{defn}
 
-\begin{definition}
+\begin{defn}
 Let $\mathtt{A},~\mathtt{A}'$ be atomic agents. We define the \emph{equivalence of atomic agents} by claiming $\mathtt{A}\equiv\mathtt{A}'$ whenever $\mathtt{\alpha} = \mathtt{\alpha}'$, $\mathtt{c} = \mathtt{c}'$ and $\delta = \delta'$.
-\end{definition}
+\end{defn}
 
 \begin{defn}
 Let $\mathtt{A},\mathtt{A}'$ be atomic agents. We say agent $\mathtt{A}=(\alpha, \delta, \mathtt{c})$ is \emph{compatible with} agent $\mathtt{A}'=(\alpha', \delta', \mathtt{c}')$, written $\mathtt{A} \lhd \mathtt{A}'$, iff $\alpha = \alpha'$, $\mathtt{c} = \mathtt{c}'$, and $\delta \subseteq \delta'$. 
@@ -83,12 +81,12 @@ Atomic agent expressions have the following syntax:
 \begin{notation}
 {~}
 \begin{itemize}
-\item Note that an atomic agent expression fully defines an atomic agent. However, an atomic agent might be written by more expressions due to order in enumerated states. We write $\Upsilon_\mathtt{A}$ as set of all possible atomic agent expressions created from atomic agent $\mathtt{A}$.
+\item Note that an atomic agent expression fully defines an atomic agent. However, an atomic agent might be written by more expressions due to order in enumerated states. We denote $\Upsilon_\mathtt{A}$ as set of all possible atomic agent expressions created from atomic agent $\mathtt{A}$ (all possible orders in states).
 \end{itemize}
 \end{notation}
 
 \begin{theorem}
-Since atomic agents are constructed from sets $\mathcal{N}_{A},~\mathcal{N}_{c}$, and $\mathcal{N}_{s}$, we can define universe of atomic agents $\mathcal{A} = \{ \mathtt{A}~|~\mathtt{A} = (\alpha, \delta, \mathtt{c}), \alpha~\in~\mathcal{N}_{A}, \delta~\subseteq~\mathcal{N}_{s},  \mathtt{c}~\in~\mathcal{N}_{c} \}$. 
+Since atomic agents are constructed from finite sets $\mathcal{N}_{A},~\mathcal{N}_{c}$, and $\mathcal{N}_{s}$, we can define universe of atomic agents $\mathcal{A} = \{ \mathtt{A}~|~\mathtt{A} = (\alpha, \delta, \mathtt{c}), \alpha~\in~\mathcal{N}_{A}, \delta~\subseteq~\mathcal{N}_{s},  \mathtt{c}~\in~\mathcal{N}_{c} \}$. 
 
 \noindent Similarly, we can define universe of atomic agent expressions\\ $\mathcal{E}_\mathcal{A} = \{ \alpha\{\delta\}::\mathtt{c} ~|~ (\alpha, \delta, \mathtt{c}) \in \mathcal{A} \} $.
 \end{theorem}
@@ -99,16 +97,15 @@ Next we proceed with defining \emph{structure agents}. A structure agent represe
 
 A typical example of a structure agent is a protein where the atomic agents are individual amino acids that are of interest in the particular setting.
 
-\begin{definition}
-Structure agent $\mathtt{T}$ is defined as triple ($\tau, \gamma_p, \mathtt{c}$) where $\tau \in \mathcal{N}_{T}$ is name, $\gamma_p \subseteq \mathcal{A}$ is finite set of atomic agents $\mathtt{A} \in \mathcal{A}$ called \emph{partial composition}, and $\mathtt{c} \in \mathcal{N}_{c}$ is physical compartment within which it is considered. \textbf{Note that in partial composition cannot appear two atomic agents with same name.}
-\end{definition}
+\begin{defn}
+Structure agent $\mathtt{T}$ is defined as triple ($\tau, \gamma_p, \mathtt{c}$) where $\tau \in \mathcal{N}_{T}$ is name, $\gamma_p \subseteq \mathcal{A}$ is finite set of atomic agents $\mathtt{A} \in \mathcal{A}$ called \emph{partial composition}, and $\mathtt{c} \in \mathcal{N}_{c}$ is physical compartment within which it is considered. Moreover, two atomic agents with the same name cannot appear in partial composition.
+\end{defn}
 
 \begin{notation}
 {~}
 \begin{itemize}
 \item We denote $\mathtt{A} \in \mathtt{T}$ the fact that $\mathtt{A}$ is included in partial composition $\gamma_p$ of structure agent $\mathtt{T}$.
 \item We denote $\mathtt{c}(\mathtt{T})$ the fact that $\mathtt{T}$ is in compartment $\mathtt{c}$.
-\item Note that a compartment of a structure agent is uniquely given by the compartment specified in its parts. We restrict ourselves to structure agents where all atomic agents in the partial composition have the same compartment. Assuming this restriction, we can shorten the notation by omitting compartments in the atomic agents of a partial composition. 
 \end{itemize}
 \end{notation}
 
@@ -124,10 +121,10 @@ Structure agent expressions have the following syntax:
 
 \begin{center}
 {\small
-\hspace*{-1cm}\begin{tabular}{ ll ll }
- structure agent expression & $\mathtt{T} ::= \tau(\gamma_p)::\mathtt{c}$\\
- structure name & $\tau ::= n \in \mathcal{N}_{T}$\\
- partial composition & $\gamma_p ::= \mathtt{A},~\gamma_p~\choice~\mathtt{A}$\\
+\hspace*{-1cm}\begin{tabular}{ l l l l }
+ structure agent expression & $\mathtt{T} ::= \tau(\gamma_p)::\mathtt{c}$ & structure name & $\tau ::= n \in \mathcal{N}_{T}$\\
+ partial composition & $\gamma_p ::= \mathtt{A}_1, \mathtt{A}_2, ..., \mathtt{A}_n$ & atomic agent & $\mathtt{A}_i ::= n \in \mathcal{E}_\mathcal{A}$\\
+ & & compartment & $\mathtt{c} ::= n \in \mathcal{N}_{c}$\\
 \end{tabular}
 }
 \end{center}   
@@ -135,30 +132,34 @@ Structure agent expressions have the following syntax:
 \begin{notation}
 ~
 \begin{itemize}
-\item Note that an structure agent expression fully defines a structure agent. However, a structure agent might be written by more expressions due to order in partial composition. We write $\Upsilon_\mathtt{T}$ as set of all possible structure agent expressions created from structure agent $\mathtt{T}$.
+\item Note that a compartment of a structure agent is uniquely given by the compartment specified in its parts. We restrict ourselves to structure agents where all atomic agents in the partial composition have the same compartment. Assuming this restriction, we can shorten the notation by omitting compartments in the atomic agents of a partial composition. 
+\item Note that a structure agent expression fully defines a structure agent. However, a structure agent might be written by more expressions due to order in partial composition. We denote $\Upsilon_\mathtt{T}$ as set of all possible structure agent expressions created from structure agent $\mathtt{T}$ (all possible orders in composition).
 \end{itemize}
 \end{notation}
 
 \begin{theorem}
-Since structure agents are constructed from sets $\mathcal{N}_{T},~\mathcal{N}_{c}$, and $\mathcal{A}$, we can define universe of structure agents $\mathcal{T} = \{ \mathtt{T}~|~\mathtt{T} = (\tau, \gamma_p, \mathtt{c}), \tau~\in~\mathcal{N}_{T}, \gamma_p~\subseteq~\mathcal{A},  \mathtt{c}~\in~\mathcal{N}_{c} \}$.
+Since structure agents are constructed from finite sets $\mathcal{N}_{T},~\mathcal{N}_{c}$, and $\mathcal{A}$, we can define universe of structure agents
 
-\noindent Similarly, we can define universe of structure agent expressions\\ $\mathcal{E}_\mathcal{T} = \{ \tau(\gamma_p)::\mathtt{c} ~|~ (\tau, \gamma_p, \mathtt{c}) \in \mathcal{T} \}$.
+ $\mathcal{T} = \{ \mathtt{T}~|~\mathtt{T} = (\tau, \gamma_p, \mathtt{c}), \tau~\in~\mathcal{N}_{T}, \gamma_p~\subseteq~\mathcal{A},  \mathtt{c}~\in~\mathcal{N}_{c} \}$.
+
+\noindent Similarly, we can define universe of structure agent expressions
+
+ $\mathcal{E}_\mathcal{T} = \{ \tau(\gamma_p)::\mathtt{c} ~|~ (\tau, \gamma_p, \mathtt{c}) \in \mathcal{T} \}$.
 \end{theorem}
 
 \subsection{Complex agents}
 
 In the following we define the last step in the hierarchy of agents. In particular, we define \textit{complex agents}. A complex agent represents a non-trivial composite biochemical object that is (inductively) constructed from already known biological objects. In common rule-based languages this is typically defined by introducing some kind of bonds between individual biochemical objects. In BCS we abstract from detailed specification of bonds and we rather assume a complex as a coexistence of certain objects in a particular group. Such a group can be optionally referred to by a unique name. A complex agent is constructed from atomic and structure agents.
 
-\begin{definition}
+\begin{defn}
 Complex agent $\mathtt{X}$ is defined as pair ($\gamma_f, \mathtt{c}$) where $\gamma_f \subseteq \mathcal{A} \cup \mathcal{T}$ is finite multiset of atomic and structure agents called \emph{full composition} and $\mathtt{c} \in \mathcal{N}_{c}$ is physical compartment within which it is considered.
-\end{definition}
+\end{defn}
 
 \begin{notation}
 ~
 \begin{itemize}
-\item  We denote $\mathtt{T} \in \mathtt{X}$ (resp. $\mathtt{A}\in \mathtt{X}$) the fact that~$\mathtt{T}$ (resp. $\mathtt{A}$) is a structure agent (resp. atomic agent) included in~$\gamma_f$. 
+\item  We denote $\mathtt{T} \in \mathtt{X}$ (resp. $\mathtt{A}\in \mathtt{X}$) the fact that~$\mathtt{T}$ (resp. $\mathtt{A}$) is a structure agent (resp. atomic agent) included in~$\gamma_f$ of complex agent $\mathtt{X}$. 
 \item We denote $\mathtt{c}(\mathtt{X})$ the fact that $\mathtt{X}$ is in compartment $\mathtt{c}$.
-\item Note that a compartment of a complex agent is uniquely given by the compartment specified in its parts. We restrict ourselves to complex agents where all atomic and structure agents in the full composition have the same compartment. Assuming this restriction, we can shorten the notation by omitting compartments in the atomic and structure agents of a full composition. 
 \end{itemize}
 \end{notation}
 
@@ -170,9 +171,10 @@ Complex agent expressions have the following syntax:
 
 \begin{center}
 {\small
-\hspace*{-1 cm}\begin{tabular}{ ll ll }
- complex agent expression & $\mathtt{X}::=\gamma_f::\mathtt{c}$\\
- full composition & $\gamma_f ::= \mathtt{T}.\mathtt{T}~|~\mathtt{A}.\mathtt{A}~|~\mathtt{T}.\gamma_{f}~|~\mathtt{A}.\gamma_{f}$
+\hspace*{-1 cm}\begin{tabular}{ l l l l }
+ complex agent expression & $\mathtt{X}::=\gamma_f::\mathtt{c}$ & compartment & $\mathtt{c} ::= n \in \mathcal{N}_{c}$\\
+ full composition & $\gamma_f ::= \beta_1.\beta_2.~...~.\beta_m$ & $\beta_i ::= \mathtt{T}~\choice~\mathtt{A} $\\
+ structure agent & $\mathtt{T} ::= n \in \mathcal{E}_\mathcal{T}$ & atomic agent & $\mathtt{A} ::= n \in \mathcal{E}_\mathcal{A}$
 \end{tabular}
 }
 \end{center}
@@ -180,36 +182,41 @@ Complex agent expressions have the following syntax:
 \begin{notation}
 ~
 \begin{itemize}
-\item Note that an complex agent expression fully defines a complex agent. However, a complex agent might be written by more expressions due to order in full composition. We write $\Upsilon_\mathtt{X}$ as set of all possible complex agent expressions created from complex agent $\mathtt{X}$.
+\item Note that a compartment of a complex agent is uniquely given by the compartment specified in its parts. We restrict ourselves to complex agents where all atomic and structure agents in the full composition have the same compartment. Assuming this restriction, we can shorten the notation by omitting compartments in the atomic and structure agents of a full composition. 
+\item Note that an complex agent expression fully defines a complex agent. However, a complex agent might be written by more expressions due to order in full composition. We denote $\Upsilon_\mathtt{X}$ as set of all possible complex agent expressions created from complex agent $\mathtt{X}$ (all possible orders in composition).
 \end{itemize}
 \end{notation}
 
 \begin{theorem}
-Since complex agents are constructed from sets $\mathcal{N}_{c}$, $\mathcal{A}$, and $\mathcal{T}$, we can define universe of complex agents $\mathcal{X} = \{ \mathtt{X}~|~\mathtt{X} = (\gamma_f, \mathtt{c}), \gamma_f \subseteq \mathcal{A} \cup \mathcal{T},  \mathtt{c}~\in~\mathcal{N}_{c} \}$.
+Since complex agents are constructed from finite sets $\mathcal{N}_{c}$, $\mathcal{A}$, and $\mathcal{T}$, we can define universe of complex agents 
 
-\noindent Similarly, we can define universe of complex agent expressions\\ $\mathcal{E}_\mathcal{X} = \{ \gamma_f::\mathtt{c} ~|~ (\gamma_f, \mathtt{c}) \in \mathcal{X} \}$.
+$\mathcal{X} = \{ \mathtt{X}~|~\mathtt{X} = (\gamma_f, \mathtt{c}), \gamma_f \subseteq \mathcal{A} \cup \mathcal{T},  \mathtt{c}~\in~\mathcal{N}_{c} \}$.
+
+\noindent Similarly, we can define universe of complex agent expressions
+
+ $\mathcal{E}_\mathcal{X} = \{ \gamma_f::\mathtt{c} ~|~ (\gamma_f, \mathtt{c}) \in \mathcal{X} \}$.
 \end{theorem}
 
 \subsection{Summary}
 
-\begin{definition}
+\begin{defn}
 We define universe of all agents $\mathcal{U} = \mathcal{A} \cup \mathcal{T} \cup \mathcal{X}.$
 
 Finally, we define universe of all agent expressions $\mathcal{E} = \mathcal{E}_\mathcal{A} \cup \mathcal{E}_\mathcal{T} \cup \mathcal{E}_\mathcal{X} \cup \{\varepsilon\}$.
-\end{definition}
+\end{defn}
 
 \begin{notation}
 ~
 \begin{itemize}
-\item Since an expression uniquely defines an agent, we can use compatibility between agent expressions.
+\item Since an expression uniquely defines an agent, we can use compatibility operator between agent expressions.
 \end{itemize}
 \end{notation}
 
 \section{Biochemical Space Rules}
 
-%\begin{definition}
+%\begin{defn}
 %Rule $\mathtt{R}$ is defined as pair ($\lambda, \rho$) where $\lambda, \rho \subseteq \mathcal{E}$ and $\lambda$ is \emph{left-hand-side} of the rule and $\rho$ is \emph{right-hand-side} of the rule. Both $\lambda$ and $\rho$ are ordered sets where order is given by rule expression and at most one of them might be $\varepsilon$.
-%\end{definition}
+%\end{defn}
 
 Rule is an expression defined from agent expressions $\mathcal{E}$ by the following grammar:
 
@@ -217,8 +224,8 @@ Rule is an expression defined from agent expressions $\mathcal{E}$ by the follow
 {\small
 \hspace*{-1cm}\begin{tabular}{ l l }
  rule expression & $\mathtt{R} ::= \lambda ~\Rightarrow~ \rho ~|~ \lambda ~\Rightarrow ~|~ \Rightarrow~ \rho $\\
-  & $\lambda ::= \Gamma$\\
-  & $\rho ::= \Gamma$\\
+ right-hand-side & $\lambda ::= \Gamma$\\
+ left-hand-side & $\rho ::= \Gamma$\\
  agent enumeration & $\Gamma ::= \varphi~ +~\Gamma ~|~ \varphi$\\
  rule agent & $\varphi :: = \mathtt{A}~|~\mathtt{T}~|~\mathtt{X}$\\
 \end{tabular}
@@ -232,7 +239,7 @@ Let $\mathtt{R},\mathtt{R}'$ be rules. We define the \emph{structural equivalenc
 \begin{notation}
 ~
 \begin{itemize}
-\item Agent enumeration $\Gamma$ is an expression of form $\varphi_1 + \varphi_2 + ... \varphi_n$. From now, when referencing it, it might be treated as tuple $(\varphi_1, \varphi_2, ..., \varphi_n)$.
+\item Agent enumeration $\Gamma$ is an expression of form $\varphi_1 + \varphi_2 + ... + \varphi_n$. From now, when referencing it, it might be treated as a tuple $(\varphi_1, \varphi_2, ..., \varphi_n)$.
 \end{itemize}
 \end{notation}
 
@@ -242,17 +249,17 @@ We define universe of rule expressions\\ $\mathcal{E}_\mathcal{R} = \{ \lambda ~
 
 \section{Semantics}
 
-How is semantics being applied on a model does not matter now. Briefly, using an algorithm, we choose a solution from given state and apply a rule on this solution. This step is quite forward and does not need any deeper investigation. What has to be defined is application of the rule on the solution.
+How is semantics being applied on a model does not matter now. Briefly, using an algorithm, we choose a solution from given state and apply a rule on this solution. This step is quite forward and does not need any deeper explanation (might be done later). What has to be defined is application of the rule on the solution.
 
-Let $\beta$ be an agent, $\mathtt{R} \in \mathcal{R}$ be a rule of form $\lambda \Rightarrow \rho$ where $\lambda$ and $\rho$ are agent enumerations, and $\mathtt{S} \subseteq \mathcal{U}$ be a solution. 
+Let $\beta$ be an agent, $\mathtt{R} \in \mathcal{E}_\mathcal{R}$ be a rule of form $\lambda \Rightarrow \rho$ where $\lambda$ and $\rho$ are agent enumerations, and $\mathtt{S} \subseteq \mathcal{U}$ be a solution. 
 
-\begin{definition}
+\begin{defn}
 For a given solution $\mathtt{S}$, we denote $\Upsilon_\mathtt{S}$ as set of all possible agent enumerations constructed from $\Upsilon_\mathtt{A}$, $\Upsilon_\mathtt{T}$, and $\Upsilon_\mathtt{X}$ for particular agents in $\mathtt{S}$. We denote $\mathtt{S}_\Upsilon$ an element in $\Upsilon_\mathtt{S}$.
-\end{definition}
+\end{defn}
 
-\begin{definition}
+\begin{defn}
 $ $ \\
-\textbf{Matching} is a function $\models ~: \Upsilon_\mathtt{S}~\bigtimes~\lambda~\rightarrow~\Upsilon_\mathtt{S}^{\lhd}$ defined pair-wise:
+\textbf{Matching} is a function $\models ~: \Upsilon_\mathtt{S}~\bigtimes~\lambda~\rightarrow~\Upsilon_\mathtt{S}^{\models}$ defined particularly:
 
 \begin{itemize}
 	\item $\mathtt{A}_\mathtt{S} \models \mathtt{A}_{\lambda} \Leftrightarrow \mathtt{A}_\mathtt{S} \lhd \mathtt{A}_{\lambda}$,
@@ -260,13 +267,13 @@ $ $ \\
 	\item $\mathtt{X}_\mathtt{S} \models \mathtt{X}_{\lambda} \Leftrightarrow \mathtt{c}(\mathtt{X}_\mathtt{S}) = \mathtt{c}(\mathtt{X}_{\lambda})$ and $\forall \beta_1, \beta_2, ..., \beta_n \in \mathtt{X}_\mathtt{S} $ \& $\forall \beta_1', \beta_2', ..., \beta_n' \in \mathtt{X}_{\lambda}$ : $\beta_i \lhd \beta_i'$.
 	
 \end{itemize}
-\noindent The resulting set $\Upsilon_\mathtt{S}^{\lhd}$ contains all those expressions from $\Upsilon_\mathtt{S}$ which match \emph{left-hand-side} $\lambda$ of the rule $\mathtt{R}$.
+\noindent The resulting set $\Upsilon_\mathtt{S}^{\models}$ contains all those expressions from $\Upsilon_\mathtt{S}$ which match \emph{left-hand-side} $\lambda$ of the rule $\mathtt{R}$.
 
-\end{definition}
+\end{defn}
 
-\begin{definition}
+\begin{defn}
 $ $ \\
-\textbf{Replacement} is a function $\Upsilon_\mathtt{S}^{\lhd}~\times~\rho~\rightarrow~\Upsilon_\mathtt{R}$, where $\Upsilon_\mathtt{R}$ is set of agent enumerations created according to six replacement categories:
+\textbf{Replacement} is a function $\Upsilon_\mathtt{S}^{\models}~\times~\rho~\rightarrow~\Upsilon_\mathtt{R}$, where $\Upsilon_\mathtt{R}$ is set of agent enumerations created according to six replacement categories:
 
 \begin{enumerate}
 \item \textit{state change }:
@@ -328,53 +335,53 @@ where $\beta_\mathtt{S} = \beta_\rho$ and $ c_\mathtt{S} \neq c_\rho $.
 \end{itemize}
 
 \end{enumerate}
-\end{definition}
+\end{defn}
 
 \section{Syntactic extensions}
 
-We define several syntactic extensions for better readability of the rules. Note that each rule in a extended form can be always translated to basic form defined above. All rules containing the following extensions but be converted to basic form before semantics can be applied.
+We define several syntactic extensions for better readability of the rules. Note that each rule in a extended form can be always translated to basic form defined above. All rules containing the following extensions must be converted to basic form before semantics can be applied.
 
 \subsection{Signatures}
 
 Signatures are used for associating properties to agent names.
 
-\begin{definition}
-Atomic agent signature $\Sigma_\mathtt{A}$ is pair ($\alpha, \mathcal{M}_\delta$) where $\alpha \in \mathcal{N}_{A}$ is name, $\delta \subseteq \mathcal{N}_{s}$ is finite non-empty set of states $\mathtt{s} \in \mathcal{N}_{s}$. It restricts each atomic agent $\mathtt{A}$ with name $\alpha$ to have its $\delta \subseteq \mathcal{M}_\delta$. 
-\end{definition}
+\begin{defn}
+Atomic agent signature $\Sigma_\mathtt{A}$ is triple ($\alpha, \mathcal{M}_\delta, \mathcal{M}_c$) where $\alpha \in \mathcal{N}_{A}$ is name, $\delta \subseteq \mathcal{N}_{s}$ is finite non-empty set of states $\mathtt{s} \in \mathcal{N}_{s}$, and $\mathcal{M}_c \subseteq \mathcal{N}_{c}$ is set of compartments. It restricts each atomic agent $\mathtt{A}$ with name $\alpha$ to have its $\delta \subseteq \mathcal{M}_\delta$ and its $\mathtt{c} \in \mathcal{M}_c$. 
+\end{defn}
 
 \begin{notation}
-If an atomic agent $\mathtt{A} = (\alpha, \delta, \mathtt{c})$ has defined its agent signature $\Sigma_\mathtt{A}$ = ($\alpha, \mathcal{M}_\delta$), then maximal set $\mathcal{M}_\delta$ of states is defined. For this reason, we can reference agent $\mathtt{A}$ with $\delta = \mathcal{M}_\delta$ as $\alpha::\mathtt{c}$ since $\delta$ can be reconstructed from $\Sigma_\mathtt{A}$.
+If an atomic agent $\mathtt{A} = (\alpha, \delta, \mathtt{c})$ has defined its agent signature $\Sigma_\mathtt{A}$ = ($\alpha, \mathcal{M}_\delta, \mathcal{M}_c$), then maximal set $\mathcal{M}_\delta$ of states is defined. For this reason, we can reference agent $\mathtt{A}$ with $\delta = \mathcal{M}_\delta$ as $\alpha::\mathtt{c}$ since $\delta$ can be reconstructed from $\Sigma_\mathtt{A}$.
 \end{notation}
 
-\begin{definition}
-Structure agent signature $\Sigma_\mathtt{T}$ is pair ($\tau, \mathcal{M}_{\gamma_p}$) where $\tau \in \mathcal{N}_{T}$ is name, $\mathcal{M}_{\gamma_p} \subseteq \mathcal{T}$ is finite set of atomic agents $\mathtt{A} \in \mathcal{A}$. It restricts each structure agent $\mathtt{T}$ with name $\tau$ to have $\gamma_p$ such that for each atomic agent $\mathtt{A} \in \gamma_p$ there exists an atomic agent $\mathtt{A}' \in \mathcal{M}_{\gamma_p}$ such that $\mathtt{A}~\lhd~\mathtt{A}'$. We denote this fact as $\gamma_p \lhd \mathcal{M}_{\gamma_p}$.
-\end{definition}
+\begin{defn}
+Structure agent signature $\Sigma_\mathtt{T}$ is triple ($\tau, \mathcal{M}_{\gamma_p}, \mathcal{M}_c$) where $\tau \in \mathcal{N}_{T}$ is name, $\mathcal{M}_{\gamma_p} \subseteq \mathcal{T}$ is finite set of atomic agents $\mathtt{A} \in \mathcal{A}$, and $\mathcal{M}_c \subseteq \mathcal{N}_{c}$ is set of compartments. It restricts each structure agent $\mathtt{T}$ with name $\tau$ to have $\gamma_p$ such that for each atomic agent $\mathtt{A} \in \gamma_p$ there exists an atomic agent $\mathtt{A}' \in \mathcal{M}_{\gamma_p}$ such that $\mathtt{A}~\lhd~\mathtt{A}'$. We denote this fact as $\gamma_p \lhd \mathcal{M}_{\gamma_p}$. Moreover, it restricts its compartment to $\mathtt{c} \in \mathcal{M}_c$. 
+\end{defn}
 
 \begin{notation}
-If a structure agent $\mathtt{T} = (\tau, \gamma_p, \mathtt{c})$ has defined its agent signature $\Sigma_\mathtt{T}$ = ($\tau, \mathcal{M}_{\gamma_p}$), then required composition $\mathcal{M}_{\gamma_p}$ is defined. For this reason, when referencing agent $\mathtt{T}$ with $\gamma_p \lhd \mathcal{M}_{\gamma_p}$, we can skip all those atomic agents $\mathtt{A} = (\alpha, \delta, \mathtt{c})$, which have defined its agent signature $\Sigma_\mathtt{A} = (\alpha, \mathcal{M}_\delta)$ and $\delta = \mathcal{M}_\delta$. They can be reconstructed from $\Sigma_\mathtt{T}$.
+If a structure agent $\mathtt{T} = (\tau, \gamma_p, \mathtt{c})$ has defined its agent signature $\Sigma_\mathtt{T}$ = ($\tau, \mathcal{M}_{\gamma_p}, \mathcal{M}_c$), then required composition $\mathcal{M}_{\gamma_p}$ is defined. For this reason, when referencing agent $\mathtt{T}$ with $\gamma_p \lhd \mathcal{M}_{\gamma_p}$, we can skip all those atomic agents $\mathtt{A} = (\alpha, \delta, \mathtt{c})$, which have defined its agent signature $\Sigma_\mathtt{A} = (\alpha, \mathcal{M}_\delta, \mathcal{M}_c)$ and $\delta = \mathcal{M}_\delta$. They can be reconstructed from $\Sigma_\mathtt{T}$.
 \end{notation}
 
-\begin{definition}
+\begin{defn}
 Complex agent signature $\Sigma_\mathtt{X}$ is pair ($\chi, \mathcal{M}_{\gamma_f}$) where $\chi \in \mathcal{N}_{X}$ is name, $\mathcal{M}_{\gamma_f} \subseteq \mathcal{A} \cup \mathcal{T}$ is finite multiset of atomic and structure agents. It associates a name to complex agent $\mathtt{X} = (\gamma_f, \mathtt{c})$ with $\gamma_f = \mathcal{M}_{\gamma_f}$.
-\end{definition}
+\end{defn}
 
 \begin{notation}
-If a complex agent $\mathtt{X} = (\gamma_f, \mathtt{c})$ has defined its agent signature $\Sigma_\mathtt{X}$ = ($\chi, \mathcal{M}_{\gamma_f}$). Then, the agent can be referenced using $\chi$ and agent can be reconstructed from $\Sigma_\mathtt{X}$.
+If a complex agent $\mathtt{X} = (\gamma_f, \mathtt{c})$ has defined its agent signature $\Sigma_\mathtt{X}$ = ($\chi, \mathcal{M}_{\gamma_f}$). Then, the agent can be referenced using $\chi$ instead of full composition and it can be reconstructed from $\Sigma_\mathtt{X}$.
 \end{notation}
 
 \subsection{Direction}
 
-We allow rules to be bi-directional -- it is just a shortcut for two rules and it can be converted to basic rule form. A rule $\mathtt{R} = \lambda ~\Leftrightarrow~ \rho~\nu$ might be written as two rules $\mathtt{R}_1 = \lambda ~\Rightarrow~ \rho~\nu$ and $\mathtt{R}_2 = \rho ~\Rightarrow~ \lambda~\nu$. Similarly for all rule forms.
+We allow rules to be bi-directional -- it is just a shortcut for two rules and it can be converted to basic rule form. A rule $\mathtt{R} = \lambda ~\Leftrightarrow~ \rho$ might be written as two rules $\mathtt{R}_1 = \lambda ~\Rightarrow~ \rho$ and $\mathtt{R}_2 = \rho ~\Rightarrow~ \lambda$. Similarly for all rule forms.
 
 \subsection{Stoichiometry}
 
-In agent enumeration $\Gamma = (\varphi_1, \varphi_2, ..., \varphi_n)$, we enrich $\varphi_i$ context to pair $(\zeta, \varphi_i)$ where $\zeta = 1$. However, some rule agents in $\Gamma$ might be equivalent. For this reason, there are equivalence groups $\mathcal{G}_\equiv$ of \textit{k} rule agents $\varphi_i, ..., \varphi_j$. Each of there groups $\mathcal{G}_\equiv$ might be written as one pair $(\zeta, \varphi_i)$ where $\zeta = k$ for some $\varphi_m \in \mathcal{G}_\equiv$.
+In agent enumeration $\Gamma = (\varphi_1, \varphi_2, ..., \varphi_n)$, we enrich $\varphi_i$ context to pair $(\zeta, \varphi_i)$ where $\zeta = 1$. However, some rule agents in $\Gamma$ might be equivalent. For this reason, there are equivalence groups $\mathcal{G}_\equiv$ of \textit{k} rule agents $\varphi_i, ..., \varphi_j$. Each of these groups $\mathcal{G}_\equiv$ might be written as one pair $(\zeta, \varphi_i)$ where $\zeta = k$ for some $\varphi_m \in \mathcal{G}_\equiv$.
 
 Note that this process is fully reversible, so agent enumeration in basic form can be easily reconstructed.
 
 \subsection{Locations}
 
-\begin{definition}
+\begin{defn}
 We define operator `::' between two rule agents:
 
 \begin{enumerate}
@@ -387,9 +394,9 @@ We define operator `::' between two rule agents:
 \item $\mathtt{X}'::\mathtt{X}$ $\Leftrightarrow$ there exists subexpression $\mathtt{X}'' \in \mathtt{X}$ such that $\forall \beta_1', \beta_2', ..., \beta_n' \in \mathtt{X}' $ \& $\forall \beta_1'', \beta_2'', ..., \beta_n'' \in \mathtt{X}''$ : $\beta_i' \lhd \beta_i''$.
 
 \end{enumerate}
-\end{definition}
+\end{defn}
 
-Then, each rule agent $\varphi$ can be written by the following grammar with respect to operator `::'  definition:
+Then, each rule agent $\varphi$ can be written by the following grammar with respect to operator `::' definition:
 
 \begin{center}
 {\small
