@@ -25,6 +25,7 @@ To generate reaction network explicitely, use following insturctions:
   * output reactions - file name
   
 Example
+
    python explicit.py vertices.txt edges.txt reactants.txt reactions.txt
 
 **Implicit Reaction network generator**
