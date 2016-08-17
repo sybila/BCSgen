@@ -45,7 +45,7 @@ class Complex_Agent:
         return self.compartment
 
     def setFullComposition(self, full_composition):
-            self.full_composition = full_composition
+        self.full_composition = full_composition
 
     def setCompartment(self, compartment):
         self.compartment = compartment

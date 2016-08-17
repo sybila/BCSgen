@@ -1,8 +1,15 @@
 from generate import *
 from time import time
 
+#############################################################
+# define agents
+
+# atomic agents
+
 Aagent1 = BCSL.Atomic_Agent('S', ['u'], 'cyt')
 Aagent12 = BCSL.Atomic_Agent('S', ['p'], 'cyt')
+
+# structure agents
 
 Sagent1 = BCSL.Structure_Agent('KaiC', [Aagent1], 'cyt')
 Sagent2 = BCSL.Structure_Agent('KaiC', [Aagent12], 'cyt')
@@ -11,6 +18,8 @@ Sagent4 = BCSL.Structure_Agent('KaiB', [], 'cyt')
 Sagent5 = BCSL.Structure_Agent('KaiA', [], 'cyt')
 Sagent6 = BCSL.Structure_Agent('KaiA', [Aagent1], 'cyt')
 Sagent7 = BCSL.Structure_Agent('KaiA', [Aagent12], 'cyt')
+
+# complex agents
 
 Xagent1 = BCSL.Complex_Agent([Sagent1, Sagent4], 'cyt')
 Xagent2 = BCSL.Complex_Agent([Sagent2, Sagent4], 'cyt')
@@ -24,11 +33,8 @@ Xagent9 = BCSL.Complex_Agent([Sagent3, Sagent3, Sagent3, Sagent3, Sagent4, Sagen
 Xagent10 = BCSL.Complex_Agent([Sagent3, Sagent3, Sagent3], 'cyt')
 Xagent11 = BCSL.Complex_Agent([Sagent3, Sagent4, Sagent7], 'cyt')
 
-State1 = State([Sagent1, Sagent4])
-State2 = State([Sagent1, Sagent4, Sagent1])
-State3 = State([Sagent1, Sagent4, Sagent1, Sagent1, Sagent1])
-State4 = State([Sagent1, Sagent4, Sagent1, Sagent1])
-State5 = State([Sagent1, Sagent4, Sagent1, Sagent1, Sagent1, Sagent6])
+#############################################################
+# define rules
 
 Rule1 = BCSL.Rule([Sagent3, Sagent4], [Xagent3])
 Rule2 = BCSL.Rule([Xagent3], [Sagent3, Sagent4])
@@ -42,19 +48,14 @@ Rule9 = BCSL.Rule([Xagent9], [Xagent10, Xagent11])
 Rule10 = BCSL.Rule([Xagent10], [Sagent3, Sagent3, Sagent3])
 Rule11 = BCSL.Rule([Xagent11], [Sagent3, Sagent4, Sagent7])
 
-'''
-print Rule1
-print Rule2
-print Rule3
-print Rule4
-print Rule5
-print Rule6
-print Rule7
-print Rule8
-print Rule9
-print Rule10
-print Rule11
-'''
+#############################################################
+# define states
+
+State1 = State([Sagent1, Sagent4])
+State2 = State([Sagent1, Sagent4, Sagent1])
+State3 = State([Sagent1, Sagent4, Sagent1, Sagent1, Sagent1])
+State4 = State([Sagent1, Sagent4, Sagent1, Sagent1])
+State5 = State([Sagent1, Sagent4, Sagent1, Sagent1, Sagent1, Sagent6])
 
 '''
 *****sequential_work******

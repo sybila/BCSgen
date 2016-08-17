@@ -1,3 +1,4 @@
+import dill
 import pathos.multiprocessing as mp
 from Memo import *
 
