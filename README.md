@@ -12,6 +12,8 @@ To generate state space of a model, the most proper way is to edit state_space.p
 * set initial state(s), rules, output files names (vertices and edges) and boundary of the model (in case of potentially infinite state space),
 * run the file (python state_space.py).
 
+For an example, see examply.py file.
+
 **Explicit Reaction network generator**
 
 To generate reaction network explicitely, use following insturctions:
