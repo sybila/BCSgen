@@ -1,9 +1,9 @@
-## BCSgen
+# BCSgen
 Biochemical Space language software tool
 
 This tool serves for interpreting basic functionality to maintain Biochemical Space language. It provides several utilities:
 
-# Explicit State space generator
+## Explicit State space generator
 
 To generate state space of a model, the most proper way is to edit state_space.py file in the Explicit_state_space_generator folder as following (untill import is done):
 
@@ -14,7 +14,7 @@ To generate state space of a model, the most proper way is to edit state_space.p
 
 > For an example, see example.py file.
 
-# Explicit Reaction network generator
+## Explicit Reaction network generator
 
 To generate reaction network explicitely, use following insturctions:
 
