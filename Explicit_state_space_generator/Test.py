@@ -5,6 +5,9 @@ from time import time
 def toStr(my_list):
     return sorted(map(lambda a: str(a), my_list))
 
+"""
+Test functions for class State
+"""
 class TestState(unittest.TestCase):
     def setUp(self):
         self.Aagent1 = Atomic_Agent('S', ['u'], 'cyt')

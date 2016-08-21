@@ -4,6 +4,9 @@ from Structure_Agent import *
 from Complex_Agent import *
 from Rule import *
 
+"""
+Test functions for class Atomic Agent
+"""
 class TestAtomicAgent(unittest.TestCase):
     def setUp(self):
         self.Aagent1 = Atomic_Agent('S', ['p'], 'cyt')
@@ -51,6 +54,9 @@ class TestAtomicAgent(unittest.TestCase):
 suite = unittest.TestLoader().loadTestsFromTestCase(TestAtomicAgent)
 unittest.TextTestRunner(verbosity=2).run(suite)
 
+"""
+Test functions for class Structure Agent
+"""
 class TestStructureAgent(unittest.TestCase):
     def setUp(self):
         self.Aagent1 = Atomic_Agent('S', ['u'], 'cyt')
@@ -110,6 +116,9 @@ class TestStructureAgent(unittest.TestCase):
 suite = unittest.TestLoader().loadTestsFromTestCase(TestStructureAgent)
 unittest.TextTestRunner(verbosity=2).run(suite)
 
+"""
+Test functions for class Complex Agent
+"""
 class TestComplexAgent(unittest.TestCase):
     def setUp(self):
         self.Aagent1 = Atomic_Agent('S', ['u'], 'cyt')
@@ -182,6 +191,9 @@ class TestComplexAgent(unittest.TestCase):
 suite = unittest.TestLoader().loadTestsFromTestCase(TestComplexAgent)
 unittest.TextTestRunner(verbosity=2).run(suite)
 
+"""
+Test functions for class Rule
+"""
 class TestRule(unittest.TestCase):
     def setUp(self):
         self.Aagent1 = Atomic_Agent('S', ['u'], 'cyt')

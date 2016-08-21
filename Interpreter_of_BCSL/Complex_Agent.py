@@ -53,6 +53,11 @@ class Complex_Agent:
     def getAllCompositions(self):
         return [Complex_Agent(element, self.compartment) for element in itertools.permutations(self.full_composition, len(self.full_composition))]
 
+    """
+    Checks if the first complex agent is compatible with the second one
+    :param other: the second agent
+    :return: True if it is compatible
+    """
     def isCompatibleWith(self, other):
         if not isinstance(other, Complex_Agent):
             return False

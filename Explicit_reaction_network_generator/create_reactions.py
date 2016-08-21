@@ -41,6 +41,11 @@ def print_reactions(reactions, vertices, output_reactions):
         f.write(create_string_chain(vertices[left]) + " -> " + create_string_chain(vertices[right]) + '\n')
     f.close()
 
+"""
+Imports reactions from given file
+:param input_edges: given input file
+:return: list of edges
+"""
 def import_rxns(input_edges):
     edges = []
     with open(input_edges) as in_edges:

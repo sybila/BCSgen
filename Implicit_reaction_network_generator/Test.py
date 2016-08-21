@@ -2,6 +2,9 @@ import unittest
 from implicit import *
 from time import time
 
+"""
+Test functions for implicit network generating
+"""
 class TestImplicit(unittest.TestCase):
     def setUp(self):
         self.Aagent1 = Atomic_Agent('S', ['u'], 'cyt')
