@@ -26,9 +26,11 @@ To generate reaction network explicitely, use following insturctions:
   
 Example
 
-   python explicit.py vertices.txt edges.txt reactants.txt reactions.txt
+ `python explicit.py vertices.txt edges.txt reactants.txt reactions.txt`
 
 **Implicit Reaction network generator**
 
 - in development
 - works similarly to state space generator but it has output of explicit reaction network generator
+
+> Both state space or reaction network might be visualised with [this](https://github.com/mathooo/NetworkVISUAL) utility.
