@@ -43,6 +43,8 @@ Changes state of an atomic agent according to another one
 :return: Counter of atomic agent from given solution with state of second agent
 """
 def changeAtomicStates(rhs, atomic_agent_original):
+    if atomic_agent_original.getStates().issubset(rhs.getStates()):
+        return atomic_agent_original
     atomic_agent = copy.deepcopy(atomic_agent_original)
     atomic_agent.setStates(rhs.getStates())
     atomic_agent.setCompartment(rhs.getCompartment())
