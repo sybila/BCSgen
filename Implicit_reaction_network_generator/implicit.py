@@ -4,10 +4,7 @@ import itertools
 
 def generate_reaction(solution, rule, memo):
     solution_rule_hash = hash((solution.__str__(), rule))
-    if memo.isInRecords(solution_rule_hash):
-        print 'yes'
     if not memo.isInRecords(solution_rule_hash):
-        print 'no'
         new_solutions = rule.replacement(solution)
         memo.addRecord(solution_rule_hash, new_solutions)
     new_solutions = filter(lambda new_solution: new_solution != solution, memo.getRecord(solution_rule_hash)) #caused by uncertainty in state change
