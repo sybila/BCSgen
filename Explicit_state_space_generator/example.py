@@ -70,27 +70,33 @@ memoization = True
 
 states = {State1}
 rules = [Rule1, Rule2, Rule3]
-work_manager(states, rules, "vertices1.txt", "edges1.txt", 1, parallel, memoization)
+bound = 1
+work_manager(states, rules, "vertices1.txt", "edges1.txt", bound, parallel, memoization)
 
 states = {State2}
 rules = [Rule1, Rule2, Rule3]
-work_manager(states, rules, "vertices2.txt", "edges2.txt", 2, parallel, memoization)
+bound = 2
+work_manager(states, rules, "vertices2.txt", "edges2.txt", bound, parallel, memoization)
 
 states = {State2}
 rules = [Rule1, Rule2, Rule3, Rule4]
-work_manager(states, rules, "vertices3.txt", "edges3.txt", 2, parallel, memoization)
+bound = 2
+work_manager(states, rules, "vertices3.txt", "edges3.txt", bound, parallel, memoization)
 
 states = {State3}
 rules = [Rule1, Rule2, Rule3, Rule4, Rule5, Rule6]
-work_manager(states, rules, "vertices4.txt", "edges4.txt", 4, parallel, memoization)
+bound = 4
+work_manager(states, rules, "vertices4.txt", "edges4.txt", bound, parallel, memoization)
 
 states ={State4}
 rules = [Rule1, Rule2, Rule3, Rule4, Rule5]
-work_manager(states, rules, "vertices5.txt", "edges5.txt", 3, parallel, memoization)
+bound = 3
+work_manager(states, rules, "vertices5.txt", "edges5.txt", bound, parallel, memoization)
 
 states = {State5}
 rules = [Rule1, Rule2, Rule3, Rule4, Rule5, Rule6, Rule7, Rule8, Rule9, Rule10, Rule11]
-work_manager(states, rules, "vertices6.txt", "edges6.txt", 4, parallel, memoization)
+bound = 4
+work_manager(states, rules, "vertices6.txt", "edges6.txt", bound, parallel, memoization)
 
 endtime = time() - starttime
 print "Single process: {0:.2f}sec".format(endtime)
@@ -108,27 +114,33 @@ memoization = False
 
 states = {State1}
 rules = [Rule1, Rule2, Rule3]
-work_manager(states, rules, "par_vertices1.txt", "par_edges1.txt", 1, parallel, memoization)
+bound = 1
+work_manager(states, rules, "par_vertices1.txt", "par_edges1.txt", bound, parallel, memoization)
 
 states = {State2}
 rules = [Rule1, Rule2, Rule3]
-work_manager(states, rules, "par_vertices2.txt", "par_edges2.txt", 2, parallel, memoization)
+bound = 2
+work_manager(states, rules, "par_vertices2.txt", "par_edges2.txt", bound, parallel, memoization)
 
 states = {State2}
 rules = [Rule1, Rule2, Rule3, Rule4]
-work_manager(states, rules, "par_vertices3.txt", "par_edges3.txt", 2, parallel, memoization)
+bound = 2
+work_manager(states, rules, "par_vertices3.txt", "par_edges3.txt", bound, parallel, memoization)
 
 states = {State3}
 rules = [Rule1, Rule2, Rule3, Rule4, Rule5, Rule6]
-work_manager(states, rules, "par_vertices4.txt", "par_edges4.txt", 4, parallel, memoization)
+bound = 4
+work_manager(states, rules, "par_vertices4.txt", "par_edges4.txt", bound, parallel, memoization)
 
 states = {State4}
 rules = [Rule1, Rule2, Rule3, Rule4, Rule5]
-work_manager(states, rules, "par_vertices5.txt", "par_edges5.txt", 3, parallel, memoization)
+bound = 3
+work_manager(states, rules, "par_vertices5.txt", "par_edges5.txt", bound, parallel, memoization)
 
 states = {State5}
 rules = [Rule1, Rule2, Rule3, Rule4, Rule5, Rule6, Rule7, Rule8, Rule9, Rule10, Rule11]
-work_manager(states, rules, "par_vertices6.txt", "par_edges6.txt", 4, parallel, memoization)
+bound = 4
+work_manager(states, rules, "par_vertices6.txt", "par_edges6.txt", bound, parallel, memoization)
 
 endtime = time() - starttime
 print "Multiple processes: {0:.2f}sec".format(endtime)
