@@ -86,9 +86,9 @@ Atomic agent expressions have the following syntax:
 \end{notation}
 
 \begin{theorem}
-Since atomic agents are constructed from finite sets $\mathcal{N}_{A},~\mathcal{N}_{c}$, and $\mathcal{N}_{s}$, we can define universe of atomic agents $\mathcal{A} = \{ \mathtt{A}~|~\mathtt{A} = (\alpha, \delta, \mathtt{c}), \alpha~\in~\mathcal{N}_{A}, \delta~\subseteq~\mathcal{N}_{s},  \mathtt{c}~\in~\mathcal{N}_{c} \}$. 
+Since atomic agents are constructed from finite sets $\mathcal{N}_{A},~\mathcal{N}_{c}$, and $\mathcal{N}_{s}$, we can define finite universe of atomic agents $\mathcal{A} = \{ \mathtt{A}~|~\mathtt{A} = (\alpha, \delta, \mathtt{c}), \alpha~\in~\mathcal{N}_{A}, \delta~\subseteq~\mathcal{N}_{s},  \mathtt{c}~\in~\mathcal{N}_{c} \}$. 
 
-\noindent Similarly, we can define universe of atomic agent expressions\\ $\mathcal{E}_\mathcal{A} = \{ \alpha\{\delta\}::\mathtt{c} ~|~ (\alpha, \delta, \mathtt{c}) \in \mathcal{A} \} $.
+\noindent Similarly, we can define finite universe of atomic agent expressions\\ $\mathcal{E}_\mathcal{A} = \{ \alpha\{\delta\}::\mathtt{c} ~|~ (\alpha, \delta, \mathtt{c}) \in \mathcal{A} \} $.
 \end{theorem}
 
 \subsection{Structure agents}
@@ -123,7 +123,7 @@ Structure agent expressions have the following syntax:
 {\small
 \hspace*{-1cm}\begin{tabular}{ l l l l }
  structure agent expression & $\mathtt{T} ::= \tau(\gamma_p)::\mathtt{c}$ & structure name & $\tau ::= n \in \mathcal{N}_{T}$\\
- partial composition & $\gamma_p ::= \mathtt{A}_1, \mathtt{A}_2, ..., \mathtt{A}_n$ & atomic agent & $\mathtt{A}_i ::= n \in \mathcal{E}_\mathcal{A}$\\
+ partial composition & $\gamma_p ::= \mathtt{A}_1, \mathtt{A}_2, ..., \mathtt{A}_m$ & atomic agent & $\mathtt{A}_i ::= n \in \mathcal{E}_\mathcal{A}$\\
  & & compartment & $\mathtt{c} ::= n \in \mathcal{N}_{c}$\\
 \end{tabular}
 }
@@ -132,17 +132,17 @@ Structure agent expressions have the following syntax:
 \begin{notation}
 ~
 \begin{itemize}
-\item Note that a compartment of a structure agent is uniquely given by the compartment specified in its parts. We restrict ourselves to structure agents where all atomic agents in the partial composition have the same compartment. Assuming this restriction, we can shorten the notation by omitting compartments in the atomic agents of a partial composition. 
+\item Note that a compartment of a structure agent is uniquely given by the compartment specified in its parts. We restrict ourselves to structure agents where all atomic agents in the partial composition have the same compartment. Assuming this restriction, we can shorten the notation by omitting compartments in the atomic agent expressions of a partial composition. 
 \item Note that a structure agent expression fully defines a structure agent. However, a structure agent might be written by more expressions due to order in partial composition. We denote $\Upsilon_\mathtt{T}$ as set of all possible structure agent expressions created from structure agent $\mathtt{T}$ (all possible orders in composition).
 \end{itemize}
 \end{notation}
 
 \begin{theorem}
-Since structure agents are constructed from finite sets $\mathcal{N}_{T},~\mathcal{N}_{c}$, and $\mathcal{A}$, we can define universe of structure agents
+Since structure agents are constructed from finite sets $\mathcal{N}_{T},~\mathcal{N}_{c}$, and $\mathcal{A}$, we can define finite universe of structure agents
 
  $\mathcal{T} = \{ \mathtt{T}~|~\mathtt{T} = (\tau, \gamma_p, \mathtt{c}), \tau~\in~\mathcal{N}_{T}, \gamma_p~\subseteq~\mathcal{A},  \mathtt{c}~\in~\mathcal{N}_{c} \}$.
 
-\noindent Similarly, we can define universe of structure agent expressions
+\noindent Similarly, we can define finite universe of structure agent expressions
 
  $\mathcal{E}_\mathcal{T} = \{ \tau(\gamma_p)::\mathtt{c} ~|~ (\tau, \gamma_p, \mathtt{c}) \in \mathcal{T} \}$.
 \end{theorem}
@@ -173,8 +173,7 @@ Complex agent expressions have the following syntax:
 {\small
 \hspace*{-1 cm}\begin{tabular}{ l l l l }
  complex agent expression & $\mathtt{X}::=\gamma_f::\mathtt{c}$ & compartment & $\mathtt{c} ::= n \in \mathcal{N}_{c}$\\
- full composition & $\gamma_f ::= \beta_1.\beta_2.~...~.\beta_m$ & $\beta_i ::= \mathtt{T}~\choice~\mathtt{A} $\\
- structure agent & $\mathtt{T} ::= n \in \mathcal{E}_\mathcal{T}$ & atomic agent & $\mathtt{A} ::= n \in \mathcal{E}_\mathcal{A}$
+ full composition & $\gamma_f ::= \beta_1.\beta_2.~...~.\beta_m$ & agent & $\beta_i ::= n \in \mathcal{E}_\mathcal{T}~\choice~n \in \mathcal{E}_\mathcal{A}$
 \end{tabular}
 }
 \end{center}
@@ -182,17 +181,17 @@ Complex agent expressions have the following syntax:
 \begin{notation}
 ~
 \begin{itemize}
-\item Note that a compartment of a complex agent is uniquely given by the compartment specified in its parts. We restrict ourselves to complex agents where all atomic and structure agents in the full composition have the same compartment. Assuming this restriction, we can shorten the notation by omitting compartments in the atomic and structure agents of a full composition. 
+\item Note that a compartment of a complex agent is uniquely given by the compartment specified in its parts. We restrict ourselves to complex agents where all atomic and structure agents in the full composition have the same compartment. Assuming this restriction, we can shorten the notation by omitting compartments in the atomic and structure agent expressions of a full composition. 
 \item Note that an complex agent expression fully defines a complex agent. However, a complex agent might be written by more expressions due to order in full composition. We denote $\Upsilon_\mathtt{X}$ as set of all possible complex agent expressions created from complex agent $\mathtt{X}$ (all possible orders in composition).
 \end{itemize}
 \end{notation}
 
 \begin{theorem}
-Since complex agents are constructed from finite sets $\mathcal{N}_{c}$, $\mathcal{A}$, and $\mathcal{T}$, we can define universe of complex agents 
+Since complex agents are constructed from finite sets $\mathcal{N}_{c}$, $\mathcal{A}$, and $\mathcal{T}$, we can define finite universe of complex agents 
 
 $\mathcal{X} = \{ \mathtt{X}~|~\mathtt{X} = (\gamma_f, \mathtt{c}), \gamma_f \subseteq \mathcal{A} \cup \mathcal{T},  \mathtt{c}~\in~\mathcal{N}_{c} \}$.
 
-\noindent Similarly, we can define universe of complex agent expressions
+\noindent Similarly, we can define finite universe of complex agent expressions
 
  $\mathcal{E}_\mathcal{X} = \{ \gamma_f::\mathtt{c} ~|~ (\gamma_f, \mathtt{c}) \in \mathcal{X} \}$.
 \end{theorem}
@@ -200,9 +199,9 @@ $\mathcal{X} = \{ \mathtt{X}~|~\mathtt{X} = (\gamma_f, \mathtt{c}), \gamma_f \su
 \subsection{Summary}
 
 \begin{defn}
-We define universe of all agents $\mathcal{U} = \mathcal{A} \cup \mathcal{T} \cup \mathcal{X}.$
+We define finite universe of all agents $\mathcal{U} = \mathcal{A} \cup \mathcal{T} \cup \mathcal{X}.$
 
-Finally, we define universe of all agent expressions $\mathcal{E} = \mathcal{E}_\mathcal{A} \cup \mathcal{E}_\mathcal{T} \cup \mathcal{E}_\mathcal{X} \cup \{\varepsilon\}$.
+Finally, we define finite universe of all agent expressions $\mathcal{E} = \mathcal{E}_\mathcal{A} \cup \mathcal{E}_\mathcal{T} \cup \mathcal{E}_\mathcal{X} \cup \{\varepsilon\}$.
 \end{defn}
 
 \begin{notation}
@@ -227,13 +226,13 @@ Rule is an expression defined from agent expressions $\mathcal{E}$ by the follow
  right-hand-side & $\lambda ::= \Gamma$\\
  left-hand-side & $\rho ::= \Gamma$\\
  agent enumeration & $\Gamma ::= \varphi~ +~\Gamma ~|~ \varphi$\\
- rule agent & $\varphi :: = \mathtt{A}~|~\mathtt{T}~|~\mathtt{X}$\\
+ rule agent & $\varphi :: = n \in \mathcal{E}_\mathcal{A}~\choice~n \in \mathcal{E}_\mathcal{T}~\choice~n \in \mathcal{E}_\mathcal{X}$\\
 \end{tabular}
 }
 \end{center}
 
 \begin{defn}
-Let $\mathtt{R},\mathtt{R}'$ be rules. We define the \emph{structural equivalence of rules} by claiming $\mathtt{R} \equiv \mathtt{R}'$ iff there exist $\lambda, \lambda', \rho, \rho', \nu, \nu'$ such that $\mathtt{R}=\lambda ~\Rightarrow~ \rho$, $\mathtt{R}'=\lambda' ~\Rightarrow~ \rho'$, $\lambda=\lambda'$, and $\rho=\rho'$.
+Let $\mathtt{R},\mathtt{R}'$ be rules. We define the \emph{structural equivalence of rules} by claiming $\mathtt{R} \equiv \mathtt{R}'$ iff TBA...
 \end{defn}
 
 \begin{notation}
@@ -244,7 +243,7 @@ Let $\mathtt{R},\mathtt{R}'$ be rules. We define the \emph{structural equivalenc
 \end{notation}
 
 \begin{theorem}
-We define universe of rule expressions\\ $\mathcal{E}_\mathcal{R} = \{ \lambda ~\Rightarrow~ \rho \} \cup \{ \lambda ~\Rightarrow  \} \cup \{ \Rightarrow~ \rho \}$.
+We define (potentially infinite) universe of rule expressions $\mathcal{E}_\mathcal{R} $ as all possible rule expressions which can be connstucted.
 \end{theorem}
 
 \section{Semantics}
@@ -259,21 +258,19 @@ For a given solution $\mathtt{S}$, we denote $\Upsilon_\mathtt{S}$ as set of all
 
 \begin{defn}
 $ $ \\
-\textbf{Matching} is a function $\models ~: \Upsilon_\mathtt{S}~\bigtimes~\lambda~\rightarrow~\Upsilon_\mathtt{S}^{\models}$ defined particularly:
+For a rule $\mathtt{R}$, we define:
+\begin{enumerate}
+\item \textbf{Matching} as a function $\models ~: \Upsilon_\mathtt{S}~\bigtimes~\lambda~\rightarrow~\Upsilon_\mathtt{S}^{\models}$ defined particularly:
 
 \begin{itemize}
 	\item $\mathtt{A}_\mathtt{S} \models \mathtt{A}_{\lambda} \Leftrightarrow \mathtt{A}_\mathtt{S} \lhd \mathtt{A}_{\lambda}$,
 	\item $\mathtt{T}_\mathtt{S} \models \mathtt{T}_{\lambda} \Leftrightarrow \mathtt{T}_\mathtt{S} \lhd \mathtt{T}_{\lambda}$,
-	\item $\mathtt{X}_\mathtt{S} \models \mathtt{X}_{\lambda} \Leftrightarrow \mathtt{c}(\mathtt{X}_\mathtt{S}) = \mathtt{c}(\mathtt{X}_{\lambda})$ and $\forall \beta_1, \beta_2, ..., \beta_n \in \mathtt{X}_\mathtt{S} $ \& $\forall \beta_1', \beta_2', ..., \beta_n' \in \mathtt{X}_{\lambda}$ : $\beta_i \lhd \beta_i'$.
+	\item $\mathtt{X}_\mathtt{S} \models \mathtt{X}_{\lambda} \Leftrightarrow \mathtt{c}(\mathtt{X}_\mathtt{S}) = \mathtt{c}(\mathtt{X}_{\lambda})$ and\\ \hspace*{2cm} $\forall \beta_1, \beta_2, ..., \beta_n \in \mathtt{X}_\mathtt{S} ~\&~ \forall \beta_1', \beta_2', ..., \beta_n' \in \mathtt{X}_{\lambda}$ : $\beta_i \lhd \beta_i'$.
 	
 \end{itemize}
 \noindent The resulting set $\Upsilon_\mathtt{S}^{\models}$ contains all those expressions from $\Upsilon_\mathtt{S}$ which match \emph{left-hand-side} $\lambda$ of the rule $\mathtt{R}$.
 
-\end{defn}
-
-\begin{defn}
-$ $ \\
-\textbf{Replacement} is a function $\Upsilon_\mathtt{S}^{\models}~\times~\rho~\rightarrow~\Upsilon_\mathtt{R}$, where $\Upsilon_\mathtt{R}$ is set of agent enumerations created according to six replacement categories:
+\item \textbf{Replacement} as a (partial) function $\Upsilon_\mathtt{S}^{\models}~\times~\rho~\rightarrow~\Upsilon_\mathtt{R}$, where $\Upsilon_\mathtt{R}$ is set of agent enumerations created according to six replacement categories:
 
 \begin{enumerate}
 \item \textit{state change }:
@@ -334,6 +331,7 @@ $\mathtt{R}_\Upsilon = \beta_{\mathtt{R}_1}::c + \beta_{\mathtt{R}o_2}::c + ~...
 where $\beta_\mathtt{S} = \beta_\rho$ and $ c_\mathtt{S} \neq c_\rho $.
 \end{itemize}
 
+\end{enumerate}
 \end{enumerate}
 \end{defn}
 
