@@ -10,21 +10,17 @@ if not os.path.isdir('output/'):
 
 #############################################################
 
-print(sys.argv)
-parallel = False
-memoization = True
-bound = 3
-
-'''
-*****sequential_work******
-'''
+memoization = bool(sys.argv[-1])
+parallel = bool(sys.argv[-2])
+bound = sys.argv[-3]
 
 print
-print "Processing parallel..."
-print "Processing sequenal..."
+if parallel:
+	print "Processing parallel..."
+else:
+	print "Processing sequenal..."
+
 starttime = time()
-
-
 
 rules, state = Import.import_rules("rules.txt", "initial_cond.txt", "subs.txt")
 states = {state}
