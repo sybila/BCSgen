@@ -217,7 +217,7 @@ Finally, we define finite universe of all agent expressions $\mathcal{E} = \math
 %Rule $\mathtt{R}$ is defined as pair ($\lambda, \rho$) where $\lambda, \rho \subseteq \mathcal{E}$ and $\lambda$ is \emph{left-hand-side} of the rule and $\rho$ is \emph{right-hand-side} of the rule. Both $\lambda$ and $\rho$ are ordered sets where order is given by rule expression and at most one of them might be $\varepsilon$.
 %\end{defn}
 
-Rule is an expression defined from agent expressions $\mathcal{E}$ by the following grammar:
+Rule is defined as an expression constructed from agent expressions by the following grammar:
 
 \begin{center}
 {\small
@@ -231,19 +231,16 @@ Rule is an expression defined from agent expressions $\mathcal{E}$ by the follow
 }
 \end{center}
 
+\begin{notation}
+Agent enumeration $\Gamma$ is an expression of form $\varphi_1 + \varphi_2 + ... + \varphi_n$. From now, when referencing it, it might be treated as a tuple $(\varphi_1, \varphi_2, ..., \varphi_n)$. Moreover, each rule agent $\varphi_i$ is an agent expression which fully defines its agent. For this reason, the tuple can be treated as tuple of agents. 
+\end{notation}
+
 \begin{defn}
 Let $\mathtt{R},\mathtt{R}'$ be rules. We define the \emph{structural equivalence of rules} by claiming $\mathtt{R} \equiv \mathtt{R}'$ iff TBA...
 \end{defn}
 
-\begin{notation}
-~
-\begin{itemize}
-\item Agent enumeration $\Gamma$ is an expression of form $\varphi_1 + \varphi_2 + ... + \varphi_n$. From now, when referencing it, it might be treated as a tuple $(\varphi_1, \varphi_2, ..., \varphi_n)$.
-\end{itemize}
-\end{notation}
-
 \begin{theorem}
-We define (potentially infinite) universe of rule expressions $\mathcal{E}_\mathcal{R} $ as all possible rule expressions which can be connstucted.
+We define (potentially infinite) universe of rule expressions $\mathcal{E}_\mathcal{R} $ as all possible rule expressions which can be constucted.
 \end{theorem}
 
 \section{Semantics}
