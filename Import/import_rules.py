@@ -4,6 +4,7 @@ import re
 import os
 sys.path.append(os.path.abspath('../'))
 import Interpreter_of_BCSL as BCSL
+import Explicit_state_space_generator as Gen
 
 '''
 Functions for parsing common rules (human-readable)
@@ -314,7 +315,7 @@ def create_rule(rule):
 Imports rules from file
 :param rules_file: name of file with rules
 """
-def import_rules(rules_file, sub_file):
+def import_rules(rules_file, init_file, sub_file):
     created_rules = []
     with open(rules_file) as rules:
         for rule in rules:
@@ -329,7 +330,7 @@ def import_rules(rules_file, sub_file):
             created_rules.append(create_rule(rule))
     #for rule in created_rules:
     #    print rule
-    return created_rules
+    return created_rules, import_initial_state(init_file)
 
 """
 Imports agent names to be substituted
@@ -343,3 +344,17 @@ def import_substitutions(subs_file):
             line = line.rstrip()
             substitutions.append(line.split("=="))
     return substitutions
+
+"""
+Imports agent names for initial state
+:param init_file: file containing lines number agent
+:return: initial State
+"""
+def import_initial_state(init_file):
+    agents = []
+    with open(init_file) as complexes:
+        for line in complexes:
+            line = line.rstrip()
+            for i in xrange(0, int(line.split(" ")[0])):
+                agents.append(create_agent(line.split(" ")[1]))
+    return Gen.State(agents)

@@ -84,8 +84,6 @@ Controls workers and coordinates them .
 :memoization: True if memoization should be applied
 """
 def work_manager(states, rules, vertices_name, edges_name, bound, parallel, memoization):
-    vertices_name = 'results/' + vertices_name
-    edges_name = 'results/' + edges_name
     f = open(vertices_name,'w')
     f.close()
 
