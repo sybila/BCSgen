@@ -5,14 +5,15 @@ This tool serves for interpreting basic functionality to maintain Biochemical Sp
 
 ## Explicit State space generator
 
-To generate state space of a model, the most proper way is to edit state_space.py file in the Explicit_state_space_generator folder as following (untill import is done):
+To generate state space of a model, the most proper way is:
 
-1. define agents, rules and (if any) states of your model,
-2. set parallel<sup>1</sup> and memoization attributes to True/False in case want/don't want to use them,
-3. set initial state(s), rules, output files names (vertices and edges) and boundary of the model (in case of potentially infinite state space),
-4. run the file (python state_space.py).
+1. go into folder Example,
+2. write rules and initial_cond in appopriate text files (see inputs/ for an example),
+3. in my_model.py, set parallel<sup>1</sup> and memoization attributes to True/False in case want/don't want to use them,
+4. set boundary of the model (in case of potentially infinite state space),
+4. run the file (python my_model.py).
 
-> For an example, see example.py file.
+> For an example, run python example.py file and see input in folder inputs and results in folder outputs
 
 ## Explicit Reaction network generator
 
