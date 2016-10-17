@@ -7,13 +7,18 @@ This tool serves for interpreting basic functionality to maintain Biochemical Sp
 
 To generate state space of a model, the most proper way is:
 
-1. go into folder Example,
-2. write rules and initial_cond in appopriate text files (see inputs/ for an example),
-3. in my_model.py, set parallel<sup>1</sup> and memoization attributes to True/False in case want/don't want to use them,
-4. set boundary of the model (in case of potentially infinite state space),
-4. run the file (python my_model.py).
+1. enter Model directory,
+2. write your model as rules (into rules.txt) and initial conditions (into initial_cond.txt),
+3. run script:
 
-> For an example, run python example.py file and see input in folder inputs and results in folder outputs
+ `python state_space.py bound memoization parallel`
+
+ where 
+ * bound (Interger) - indicates maximal bound of the model
+ * memoization (True/False) - True if you want to apply memoization during computation
+ * parallel<sup>1</sup> (True/False) - True if you want to apply parallel cumputing
+
+> in Example directory, there are several models, to run them just use 'python example.py'
 
 ## Explicit Reaction network generator
 
