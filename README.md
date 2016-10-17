@@ -7,7 +7,7 @@ This tool serves for interpreting basic functionality to maintain Biochemical Sp
 
 To generate state space of a model, the most proper way is:
 
-1. enter Model directory,
+1. enter Model directory (serves as user's workspace),
 2. write your model as rules (into rules.txt) and initial conditions (into initial_cond.txt),
 3. run script:
 
@@ -24,15 +24,15 @@ To generate state space of a model, the most proper way is:
 
 To generate reaction network explicitely, use following insturctions:
 
-1. in folder Explicit_reaction_network_generator, run the script explicit.py with the following parameters:
-  * input vertices - from State space generator
-  * input edges - from State space generator
-  * output vertices - file name
-  * output reactions - file name
+in Model directory, run the script reaction_network.py with the following parameters:
+* input vertices - from State space generator
+* input edges - from State space generator
+* output vertices - file name
+* output reactions - file name
   
 Example
 
- `python explicit.py vertices.txt edges.txt reactants.txt reactions.txt`
+ `python reaction_network.py outputs/vertices.txt outputs/edges.txt network/reactants.txt network/reactions.txt`
 
 **Implicit Reaction network generator**
 
