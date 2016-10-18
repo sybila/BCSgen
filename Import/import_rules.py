@@ -315,21 +315,19 @@ def create_rule(rule):
 Imports rules from file
 :param rules_file: name of file with rules
 """
-def import_rules(rules_file, init_file, sub_file):
+def import_rules(rules_file, init_file, sub_file = None):
     created_rules = []
     with open(rules_file) as rules:
         for rule in rules:
             rule = rule.rstrip().replace("\"", "")
             rule = remove_spaces(rule)
             rule = remove_steichiometry(rule)
-            rule = substitute_rule(import_substitutions(sub_file), rule)
+            if sub_file:
+                rule = substitute_rule(import_substitutions(sub_file), rule)
             #rule = flattenRule(rule)
 
             #here the rule has to be well-formed
-
             created_rules.append(create_rule(rule))
-    #for rule in created_rules:
-    #    print rule
     return created_rules, import_initial_state(init_file)
 
 """
