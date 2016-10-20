@@ -30,40 +30,50 @@ class Application(Frame):
     	self.memoization = not self.memoization
     	print self.memoization
 
+    def set_bound(self):
+        self.bound = self.bound.get()
+
     def createWidgets(self):
 
-		self.mes = Message(text='Set input files.', width=300, font="bold", borderwidth=8, relief= RIDGE)
-		self.mes.pack(fill=X)
+        self.mes = Message(text='Input.', width=300, font="bold", borderwidth=8, relief= RIDGE)
+        self.mes.pack(fill=X)
 
-		#self.text_rules = Text()
-		#self.text_rules.pack(side=RIGHT, anchor=N, fill=X)
+        #self.text_rules = Text()
+        #self.text_rules.pack(side=RIGHT, anchor=N, fill=X)
 
-		self.button_rules = Button(root,text="Rules",command=self.set_rules)
-		self.button_rules.pack(fill=X)
+        self.button_rules = Button(root,text="Rules",command=self.set_rules)
+        self.button_rules.pack(fill=X)
 
-		#self.text_initial = Text()
-		#self.text_initial.pack(side=RIGHT, anchor=N, fill=X)
+        #self.text_initial = Text()
+        #self.text_initial.pack(side=RIGHT, anchor=N, fill=X)
 
-		self.button_init = Button(root,text="Initial state",command=self.set_initial)
-		self.button_init.pack(fill=X)
+        self.button_init = Button(root,text="Initial state",command=self.set_initial)
+        self.button_init.pack(fill=X)
 
-		self.mes = Message(text='Choose techniques to apply.', width=300, font="bold", borderwidth=8, relief= RIDGE)
-		self.mes.pack(fill=X)
+        self.bound_name = Label(text="Bound:").pack()
+        self.bound_wid = Entry()
+        self.bound_wid.pack()
+        self.bound = self.bound_wid.get()
 
-		self.c1 = Checkbutton(text="    Parallel    ", command=self.set_parallel)
-		self.c1.pack()
+        self.mes = Message(text='Choose techniques to apply.', width=300, font="bold", borderwidth=8, relief= RIDGE)
+        self.mes.pack(fill=X)
 
-		self.c2 = Checkbutton(text="Memoization", command=self.set_memo) 
-		self.c2.pack()
+        self.c1 = Checkbutton(text="    Parallel    ", command=self.set_parallel)
+        self.c1.pack()
 
-		self.mes = Message(text='Set output files.', width=300, font="bold", borderwidth=8, relief= RIDGE)
-		self.mes.pack(fill=X)
+        self.c2 = Checkbutton(text="Memoization", command=self.set_memo) 
+        self.c2.pack()
 
-		self.button_vert = Button(root,text="Vertices",command=self.set_vertices)
-		self.button_vert.pack(fill=X)
+        self.mes = Message(text='Output.', width=300, font="bold", borderwidth=8, relief= RIDGE)
+        self.mes.pack(fill=X)
 
-		self.button_edg = Button(root,text="Edges",command=self.set_edges)
-		self.button_edg.pack(fill=X)
+        self.button_vert = Button(root,text="Vertices",command=self.set_vertices)
+        self.button_vert.pack(fill=X)
+
+        self.button_edg = Button(root,text="Edges",command=self.set_edges)
+        self.button_edg.pack(fill=X)
+
+        print self.bound
 
 
     def __init__(self, master=None):
@@ -74,6 +84,7 @@ class Application(Frame):
         self.edges = None
         self.parallel = False
         self.memoization = False
+        self.bound = 1
         self.pack()
         self.createWidgets()
 
@@ -81,3 +92,4 @@ root = Tk()
 root.title("BCSgen state space generating")
 app = Application(master=root)
 app.mainloop()
+
