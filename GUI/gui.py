@@ -10,8 +10,8 @@ from tkFileDialog import askopenfilename
 
 class Application(Frame):
     def get_ready(self, *args):
-        if self.rules and self.initial and self.vertices and self.edges and self.bound:
-    	   self.compute.config(state=NORMAL)
+        if self.rules and self.initial and self.vertices and self.edges and self.bound.get() != "":
+           self.compute.config(state=NORMAL)
 
     def compute(self):
         self.compute.config(state=DISABLED)
@@ -59,15 +59,6 @@ class Application(Frame):
 
     def set_memo(self):
         self.memoization = not self.memoization
-
-    def print_all(self):
-        print "rules: ", self.rules
-        print "initial: ", self.initial
-        print "vertices: ", self.vertices
-        print "edges: ", self.edges
-        print "parallel: ", self.parallel
-        print "memoization: ", self.memoization
-        print "bound: ", int(self.bound.get())
 
     def createWidgets(self):
         self.mes = Message(root,text='Input', width=300, font="bold", borderwidth=8, relief= RIDGE)
@@ -123,6 +114,7 @@ class Application(Frame):
         self.edgVar.trace("w", self.get_ready)
         self.initVar.trace("w", self.get_ready)
         self.rulesVar.trace("w", self.get_ready)
+        self.bound.trace("w", self.get_ready)
 
 
     def __init__(self, master=None):
@@ -137,7 +129,7 @@ class Application(Frame):
         self.edgVar = StringVar()
         self.initVar = StringVar()
         self.rulesVar = StringVar()
-        self.bound = StringVar()
+        self.bound = StringVar(value="")
         self.grid()
         self.createWidgets()
 
@@ -145,5 +137,3 @@ root = Tk()
 root.title("BCSgen state space generating")
 app = Application(master=root)
 app.mainloop()
-
-app.print_all()
