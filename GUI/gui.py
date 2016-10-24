@@ -19,8 +19,9 @@ class Application(Frame):
 
         rules, state = Import.import_rules(self.rules, self.initial)
         states = {state}
-        done = Gen.work_manager(states, rules, self.vertices, self.edges, self.bound, self.parallel, self.memoization)
-        
+        bound = int(self.bound.get())
+        done = Gen.work_manager(states, rules, self.vertices, self.edges, bound, self.parallel, self.memoization)
+
         self.compute.config(state=NORMAL)
         self.compute.config(text="Finish")
         self.compute.config(command=root.destroy)
@@ -66,7 +67,7 @@ class Application(Frame):
         print "edges: ", self.edges
         print "parallel: ", self.parallel
         print "memoization: ", self.memoization
-        print "bound: |", int(self.bound.get()), "|"
+        print "bound: ", int(self.bound.get())
 
     def createWidgets(self):
         self.mes = Message(root,text='Input', width=300, font="bold", borderwidth=8, relief= RIDGE)
