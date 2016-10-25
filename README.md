@@ -5,7 +5,11 @@ This tool serves for interpreting basic functionality to maintain Biochemical Sp
 
 ## Explicit State space generator
 
-To generate state space of a model, the most proper way is:
+1. To generate state space of a model, the most proper way is to use Graphical User Interface (in GUI directory). To execute it, you need to have [Tkinter](https://wiki.python.org/moin/TkInter) python library installed. Then, run it by:
+
+ `python gui.py`
+
+Alternatively use Command Line Intereface:
 
 1. enter Model directory (serves as user's workspace),
 2. write your model as rules (into rules.txt) and initial conditions (into initial_cond.txt),
