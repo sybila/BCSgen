@@ -5,7 +5,7 @@ This tool serves for interpreting basic functionality to maintain Biochemical Sp
 
 ## Explicit State space generator
 
-1. To generate state space of a model, the most proper way is to use *Graphical User Interface* (in GUI directory). To execute it, you need to have [Tkinter](https://wiki.python.org/moin/TkInter) python library installed. Then, run it by:
+1. To generate state space of a model, the most proper way is to use *Graphical User Interface*<sup>2</sup> (in GUI directory). Run it by:
 
  `python gui.py`
 
@@ -20,7 +20,7 @@ Alternatively use *Command Line Intereface*:
  where 
  * bound (Interger) - indicates maximal bound of the model
  * memoization (True/False) - True if you want to apply memoization during computation
- * parallel<sup>2</sup> (True/False) - True if you want to apply parallel cumputing
+ * parallel<sup>3</sup> (True/False) - True if you want to apply parallel cumputing
 
 > in Example directory, there are several models, to run them just use 'python example.py'
 
@@ -44,9 +44,10 @@ Example
 - works similarly to state space generator but it has output of explicit reaction network generator
 
 ---
+> <sup>1</sup> To execute it, you need to have [Tkinter](https://wiki.python.org/moin/TkInter) python library installed. 
 
-> <sup>1</sup> Both state space or reaction network might be visualised with [this](https://github.com/mathooo/NetworkVISUAL) utility.
+> <sup>2</sup> Both state space or reaction network might be visualised with [this](https://github.com/mathooo/NetworkVISUAL) utility.
 
-> <sup>2</sup> In order to use parallel computing, you need to use [anaconda](http://conda.pydata.org/docs/install/quick.html) (Python distribution) and install [pathos](https://github.com/uqfoundation/pathos) library (use pip install git+https://github.com/uqfoundation/pathos.git@master on __unix machines__ (including Linux and OS X) — it should install all dependencies required by the package. Under __Windows__, multiprocessing is [not supported](http://i.imgur.com/s3OimLn.png).
+> <sup>3</sup> In order to use parallel computing, you need to use [anaconda](http://conda.pydata.org/docs/install/quick.html) (Python distribution) and install [pathos](https://github.com/uqfoundation/pathos) library (use pip install git+https://github.com/uqfoundation/pathos.git@master on __unix machines__ (including Linux and OS X) — it should install all dependencies required by the package. Under __Windows__, multiprocessing is [not supported](http://i.imgur.com/s3OimLn.png).
 
 > **WARNING**: Installing anaconda python distribution will replace your default python distribution (which can be usually found and still used in /usr/bin/).
