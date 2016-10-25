@@ -34,9 +34,9 @@ To generate reaction network explicitely, use the following instructions:
 * output vertices - file name
 * output reactions - file name
   
- Example
+Example
 
- `python reaction_network.py outputs/vertices.txt outputs/edges.txt network/reactants.txt network/reactions.txt`
+`python reaction_network.py outputs/vertices.txt outputs/edges.txt network/reactants.txt network/reactions.txt`
 
 ## Implicit Reaction network generator
 
