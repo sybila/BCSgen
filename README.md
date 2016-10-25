@@ -5,11 +5,11 @@ This tool serves for interpreting basic functionality to maintain Biochemical Sp
 
 ## Explicit State space generator
 
-1. To generate state space of a model, the most proper way is to use Graphical User Interface (in GUI directory). To execute it, you need to have [Tkinter](https://wiki.python.org/moin/TkInter) python library installed. Then, run it by:
+1. To generate state space of a model, the most proper way is to use *Graphical User Interface* (in GUI directory). To execute it, you need to have [Tkinter](https://wiki.python.org/moin/TkInter) python library installed. Then, run it by:
 
  `python gui.py`
 
-Alternatively use Command Line Intereface:
+Alternatively use *Command Line Intereface*:
 
 1. enter Model directory (serves as user's workspace),
 2. write your model as rules (into rules.txt) and initial conditions (into initial_cond.txt),
@@ -26,19 +26,19 @@ Alternatively use Command Line Intereface:
 
 ## Explicit Reaction network generator
 
-To generate reaction network explicitely, use following instructions:
+To generate reaction network explicitely, use the following instructions:
 
-in Model directory, run the script reaction_network.py with the following parameters:
+1. in Model directory, run the script reaction_network.py with the following parameters:
 * input vertices - from State space generator
 * input edges - from State space generator
 * output vertices - file name
 * output reactions - file name
   
-Example
+ Example
 
  `python reaction_network.py outputs/vertices.txt outputs/edges.txt network/reactants.txt network/reactions.txt`
 
-**Implicit Reaction network generator**
+## Implicit Reaction network generator
 
 - in development
 - works similarly to state space generator but it has output of explicit reaction network generator
