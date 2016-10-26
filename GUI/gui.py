@@ -8,11 +8,20 @@ import Explicit_state_space_generator as Gen
 from Tkinter import *
 from tkFileDialog import askopenfilename
 
+"""
+Application is main framework for the GUI
+"""
 class Application(Frame):
+    """
+    Checks if all fields are filled
+    """
     def get_ready(self, *args):
         if self.rules and self.initial and self.vertices and self.edges and self.bound.get() != "":
            self.compute.config(state=NORMAL)
 
+    """
+    Computes the state space above set parameters
+    """
     def compute(self):
         self.compute.config(state=DISABLED)
         self.compute.config(text="Computing...")
@@ -26,6 +35,9 @@ class Application(Frame):
         self.compute.config(text="Finish")
         self.compute.config(command=root.destroy)
 
+    """
+    Sets path to file with rules
+    """
     def set_rules(self):
         self.rules = askopenfilename()
         self.text_rules.config(state=NORMAL)
@@ -33,6 +45,9 @@ class Application(Frame):
         self.text_rules.insert(END, self.rules.__str__())
         self.text_rules.config(state="readonly")
 
+    """
+    Sets path to file with initial conditions
+    """
     def set_initial(self):
         self.initial = askopenfilename()
         self.text_initial.config(state=NORMAL)
@@ -40,6 +55,9 @@ class Application(Frame):
         self.text_initial.insert(END, self.initial.__str__())
         self.text_initial.config(state="readonly")
 
+    """
+    Sets path to output vertices file 
+    """
     def set_vertices(self):
         self.vertices = askopenfilename()
         self.text_vert.config(state=NORMAL)
@@ -47,6 +65,9 @@ class Application(Frame):
         self.text_vert.insert(END, self.vertices.__str__())
         self.text_vert.config(state="readonly")
 
+    """
+    Sets path to output edges file 
+    """
     def set_edges(self):
         self.edges = askopenfilename()
         self.text_edg.config(state=NORMAL)
@@ -54,12 +75,21 @@ class Application(Frame):
         self.text_edg.insert(END, self.edges.__str__())
         self.text_edg.config(state="readonly")
 
+    """
+    Sets variable parallel in order to (not) apply paralle computing
+    """
     def set_parallel(self):
         self.parallel = not self.parallel
 
+    """
+    Sets variable memoization in order to (not) apply memoization
+    """
     def set_memo(self):
         self.memoization = not self.memoization
 
+    """
+    This is where visual behaviour is maintained
+    """
     def createWidgets(self):
         self.mes = Message(root,text='Input', width=300, font="bold", borderwidth=8, relief= RIDGE)
         self.mes.grid(row=0, column=0, columnspan=2, ipadx=205)
