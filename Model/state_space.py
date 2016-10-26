@@ -22,7 +22,7 @@ else:
 
 starttime = time()
 
-rules, state = Import.import_rules("rules.txt", "initial_cond.txt", "subs.txt")
+rules, state = Import.import_rules("rules.txt", "initial_cond.txt")
 states = {state}
 Gen.work_manager(states, rules, "output/vertices.txt", "output/edges.txt", bound, parallel, memoization)
 
