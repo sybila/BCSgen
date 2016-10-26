@@ -50,4 +50,4 @@ Example
 
 > <sup>3</sup> In order to use parallel computing, you need to use [anaconda](http://conda.pydata.org/docs/install/quick.html) (Python distribution) and install [pathos](https://github.com/uqfoundation/pathos) library (use pip install git+https://github.com/uqfoundation/pathos.git@master on __unix machines__ (including Linux and OS X) — it should install all dependencies required by the package. Under __Windows__, multiprocessing is [not supported](http://i.imgur.com/s3OimLn.png).
 
-> **WARNING**: Installing anaconda python distribution will replace your default python distribution (which can be usually found and still used in /usr/bin/).
+> **WARNING**: Installing Anaconda python distribution might replace your default python distribution in your $PATH (it will ask you about it during the installation). Best option is to reject this option and create an alias (particularly under Linux) or a symbolic link (particularly under Mac since it's independent on Mac ports).
