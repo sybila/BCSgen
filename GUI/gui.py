@@ -110,8 +110,8 @@ class Application(Frame):
         self.bound_wid = Entry(root,textvariable=self.bound, width=30)
         self.bound_wid.grid(row=3, column=1)
 
-        self.mes = Message(root,text='Choose techniques to apply', width=300, font="bold", borderwidth=8, relief= RIDGE)
-        self.mes.grid(row=4, column=0, columnspan=2, ipadx=115)
+        self.mes = Message(root,text='Choose techniques to be applied', width=300, font="bold", borderwidth=8, relief= RIDGE)
+        self.mes.grid(row=4, column=0, columnspan=2, ipadx=95)
 
         self.c1 = Checkbutton(root,text="Parallel", command=self.set_parallel)
         self.c1.grid(row=5, column=0)
