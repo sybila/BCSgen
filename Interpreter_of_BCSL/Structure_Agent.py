@@ -44,7 +44,6 @@ class Structure_Agent:
     def __repr__(self, part = ""):
         if len(self.partial_composition) > 0:
             return self.name + "(" + "|".join(map(lambda k: k.__repr__(), sorted(self.partial_composition))) + ")" + part
-            #return self.name + "(" + "|".join(filter(None, map(lambda k: k.__repr__(), sorted(list(self.partial_composition.elements()))))) + ")" + part
         else:
             return self.name + part
 

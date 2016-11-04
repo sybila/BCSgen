@@ -69,7 +69,7 @@ def changeStructureStates(rhs, structure_agent_original):
                     composition |= {changeAtomicStates(a_r, a_s)}
                     composition.remove(a_s)
                 break
-        if no_change_happened:  # THIS MIGHT CAUSE TROUBLES !!!
+        if no_change_happened:
             return structure_agent_original #no change is possible
     structure_agent.setPartialComposition(composition)
     structure_agent.setCompartment(rhs.getCompartment())

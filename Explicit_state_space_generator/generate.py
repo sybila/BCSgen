@@ -67,7 +67,7 @@ def worker(state, state_hashes, rules, vertices_name, bound, memo):
     return new_states, new_edges, new_memos
 
 """
-Controls workers and coordinates them .
+Controls workers and coordinates them.
 1. sets files names
 2. while there are new states:
     2.1. maps worker on each state

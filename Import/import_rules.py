@@ -324,9 +324,10 @@ def import_rules(rules_file, init_file, sub_file = None):
             rule = remove_steichiometry(rule)
             if sub_file:
                 rule = substitute_rule(import_substitutions(sub_file), rule)
+            # Flatenning is not supported yet
             #rule = flattenRule(rule)
 
-            #here the rule has to be well-formed
+            # here the rule has to be well-formed !
             created_rules.append(create_rule(rule))
     return created_rules, import_initial_state(init_file)
 
