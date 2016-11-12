@@ -268,20 +268,36 @@ $ $ \\
 
     \begin{center}
 {\scriptsize
-\begin{tabular}{ c c | c |}
-    $n_{\iota}^{\lambda} \models n_{\iota}^{\lambda}$ & 
-        $n_{\iota}^{\lambda}[n_{\iota_r}^{\lambda_r}] = n_{\iota_r}^{\lambda_r}$  \\[0.15cm]
-    $n_{\iota}^{\lambda} \models n^{\lambda}$ & 
-        $n_{\iota}^{\lambda}[n^{\lambda_r}] = n_{\iota}^{\lambda_r}$  \\[0.15cm]
-    $\sigma \models \emptyset$ & $\sigma[\emptyset] = \sigma$ \\[0.15cm]
-    $\frac{\displaystyle s \models s_l \quad \sigma \models \sigma_l}{\displaystyle s,\sigma \models s_l,\sigma_l}$ &
-        $s,\sigma[s_r,\sigma_r] = s[s_r], \sigma[\sigma_r]$ \\ [0.3cm]
-    $\frac{\displaystyle \sigma \models \sigma_l}{\displaystyle N(\sigma) \models N(\sigma_l)}$ &
-        $N(\sigma)[N(\sigma_r)] = N(\sigma[\sigma_r])$ \\ [0.3cm]
-    $E \models \emptyset$ & $E[\emptyset] = E$ \\ [0.15cm]
-    $\frac{\displaystyle a \models a_l \quad E \models E_l}{\displaystyle a,E \models a_l,E_l}$ &
-        $(a, E)[a_r,E_r] = a[a_r], E[E_r]$ \\
-\end{tabular}}
+\begin{tabular}{ c | c | l }
+	Matching & Replacement & Conditions \\
+
+	\hline
+
+    $ \frac{\mathtt{A}_\mathtt{S}~\lhd~\mathtt{A}_{\lambda}}{\mathtt{A}_\mathtt{S}~\models~\mathtt{A}_{\lambda}}$ & 
+    $ \mathtt{A}_\mathtt{S}[\mathtt{A}_\rho] = \mathtt{A}_\mathtt{R} $ & 
+    $ \mathtt{A}_\mathtt{S} = \alpha_\mathtt{S}\{p\}::c_\mathtt{S}$ ~~~~~ $ \alpha_\mathtt{S} = \alpha_\rho = \alpha_\mathtt{R}$ \\
+
+     &  & $\mathtt{A}_\rho = \alpha_\rho\{t\}::c_\rho$ ~~~~~ $p \neq t$ \\
+     &  & $\mathtt{A}_\mathtt{R} = \alpha_\mathtt{R}\{t\}::c_\mathtt{R}$ ~~~~~ $ c_\mathtt{S} = c_\rho = c_\mathtt{R}$\\
+
+    \hline
+
+    $\frac{\mathtt{T}_\mathtt{S}~\lhd~\mathtt{T}_{\lambda}}{\mathtt{T}_\mathtt{S}~\models~\mathtt{T}_{\lambda}}$ & 
+    $ \mathtt{T}_\mathtt{S}[\mathtt{T}_\rho] = \mathtt{T}_\mathtt{R} $ & 
+    $ \mathtt{T}_\mathtt{R} = \tau(\gamma_{p_\mathtt{R}})::\mathtt{c} $ \\
+
+     &  & $\mathtt{A}_\rho = \alpha_\rho\{t\}::c$ ~~~~~ $p \neq t$ \\
+
+    \hline
+
+    $\frac{\mathtt{A}_\mathtt{S}~\lhd~\mathtt{A}_{\lambda}}{\mathtt{A}_\mathtt{S}~\models~\mathtt{A}_{\lambda}}$ & 
+    $ \alpha_\mathtt{S}\{p\}::c[\alpha_\rho\{t\}::c] = \alpha_\mathtt{\mathtt{S}}\{t\}::c $ & 
+    $\mathtt{A}_\mathtt{S} = \alpha_\mathtt{S}\{p\}::c$ ~~~~~ $ \alpha_\mathtt{S} = \alpha_\rho $ \\
+
+     &  & $\mathtt{A}_\rho = \alpha_\rho\{t\}::c$ ~~~~~ $p \neq t$ \\
+
+    \hline
+    \end{tabular}}
     \end{center}
 
 \end{defn}
