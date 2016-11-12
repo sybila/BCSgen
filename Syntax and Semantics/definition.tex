@@ -268,7 +268,7 @@ $ $ \\
 
     \begin{center}
 {\scriptsize
-\begin{tabular}{ c | c | l }
+\begin{tabular}{ c | | c | l }
 	Matching & Replacement & Conditions \\
 
 	\hline
@@ -284,13 +284,22 @@ $ $ \\
 
     $\frac{\mathtt{T}_\mathtt{S}~\lhd~\mathtt{T}_{\lambda}}{\mathtt{T}_\mathtt{S}~\models~\mathtt{T}_{\lambda}}$ & 
     $ \mathtt{T}_\mathtt{S}[\mathtt{T}_\rho] = \mathtt{T}_\mathtt{R} $ & 
-    $ \mathtt{T}_\mathtt{R} = \tau(\gamma_{p_\mathtt{R}})::\mathtt{c} $ \\
+    $ \mathtt{T}_\mathtt{S} = \tau(\gamma_{p_\mathtt{S}})::\mathtt{c}$ ~~~~~ $ \gamma_{p_\mathtt{S}} = \mathtt{A}_\mathtt{S_1}, \mathtt{A}_\mathtt{S_2}, ..., \mathtt{A}_\mathtt{S_n} $\\
 
-     &  & $\mathtt{A}_\rho = \alpha_\rho\{t\}::c$ ~~~~~ $p \neq t$ \\
+     &  & $ \mathtt{T}_\rho = \tau(\gamma_{p_\rho})::\mathtt{c}$ ~~~~~ $ \gamma_{p_\rho} = \mathtt{A}_{\rho_1}, \mathtt{A}_{\rho_2}, ..., \mathtt{A}_{\rho_n} $ \\
+     &  & $\mathtt{T}_\mathtt{R} = \tau(\gamma_{p_\mathtt{R}})::\mathtt{c} $ ~~~~~ $\gamma_{p_\mathtt{R}} = \mathtt{A}_\mathtt{S_1}[\mathtt{A}_{\rho_1}], \mathtt{A}_\mathtt{S_2}[\mathtt{A}_{\rho_2}],... , \mathtt{A}_\mathtt{S_n}[\mathtt{A}_{\rho_n}]$ \\
 
     \hline
 
-    $\frac{\mathtt{A}_\mathtt{S}~\lhd~\mathtt{A}_{\lambda}}{\mathtt{A}_\mathtt{S}~\models~\mathtt{A}_{\lambda}}$ & 
+    $\frac{\mathtt{X}_\mathtt{S}~\lhd~\mathtt{X}_{\lambda}}{\mathtt{X}_\mathtt{S}~\models~\mathtt{X}_{\lambda}}$ & 
+    $ \mathtt{X}_\mathtt{S}[\mathtt{X}_\rho] = \mathtt{X}_\mathtt{R} $ & 
+    $ \mathtt{X}_\mathtt{S} = \gamma_{f_\mathtt{S}}::c$ ~~~~~ $ \mathtt{X}_\rho = \gamma_{f_\rho}::c $ ~~~~~ $ \mathtt{X}_\mathtt{R} = \gamma_{f_\mathtt{R}}::c $\\
+
+     &  & $\gamma_{f_\mathtt{R}} = \beta_1.\beta_2.~...~.\beta_n : \forall y_i \in \gamma_{f_\mathtt{S}}$ and $ \forall z_i \in \gamma_{f_\rho} : \beta_i = y_i[z_i]$ \\
+
+    \hline
+
+     & 
     $ \alpha_\mathtt{S}\{p\}::c[\alpha_\rho\{t\}::c] = \alpha_\mathtt{\mathtt{S}}\{t\}::c $ & 
     $\mathtt{A}_\mathtt{S} = \alpha_\mathtt{S}\{p\}::c$ ~~~~~ $ \alpha_\mathtt{S} = \alpha_\rho $ \\
 
