@@ -186,6 +186,10 @@ Complex agent expressions have the following syntax:
 \end{itemize}
 \end{notation}
 
+\begin{defn}
+Let $\mathtt{X},\mathtt{X}'$ be complex agents expressions. We say $\mathtt{X}$ \emph{is compatible with} $\mathtt{X}'$, written $\mathtt{X} \lhd \mathtt{X}'$, iff $\mathtt{X} = \beta_1 . \beta_2 . ... . \beta_n $, $\mathtt{X}' = \beta'_1 . \beta'_2 . ... . \beta'_n $ and \\$\forall \beta_1, \beta_2, ..., \beta_n~\in~\mathtt{X} ~\&~ \forall \beta_1', \beta_2', ..., \beta_n'~\in~\mathtt{X}'$ : $\beta_i \lhd \beta_i'$. Moreover, $\mathtt{c}(\mathtt{X}) = \mathtt{c}(\mathtt{X}')$.
+\end{defn}
+
 \begin{theorem}
 Since complex agents are constructed from finite sets $\mathcal{N}_{c}$, $\mathcal{A}$, and $\mathcal{T}$, we can define finite universe of complex agents 
 
@@ -201,7 +205,7 @@ $\mathcal{X} = \{ \mathtt{X}~|~\mathtt{X} = (\gamma_f, \mathtt{c}), \gamma_f \su
 \begin{defn}
 We define finite universe of all agents $\mathcal{U} = \mathcal{A} \cup \mathcal{T} \cup \mathcal{X}.$
 
-Finally, we define finite universe of all agent expressions $\mathcal{E} = \mathcal{E}_\mathcal{A} \cup \mathcal{E}_\mathcal{T} \cup \mathcal{E}_\mathcal{X} \cup \{\varepsilon\}$.
+\noindent Finally, we define finite universe of all agent expressions $\mathcal{E} = \mathcal{E}_\mathcal{A} \cup \mathcal{E}_\mathcal{T} \cup \mathcal{E}_\mathcal{X} \cup \{\varepsilon\}$.
 \end{defn}
 
 \begin{notation}
@@ -233,7 +237,7 @@ Rule is defined as an expression constructed from agent expressions by the follo
 
 \begin{notation}
 Agent enumeration $\Gamma$ is an expression of form $\varphi_1 + \varphi_2 + ... + \varphi_n$. From now, when referencing it, it might be treated as a tuple $(\varphi_1, \varphi_2, ..., \varphi_n)$. Moreover, each rule agent $\varphi_i$ is an agent expression which fully defines its agent. For this reason, the tuple can be treated as tuple of agents. 
-\end{notation}
+\end{notation} \label{mynote}
 
 \begin{defn}
 Let $\mathtt{R},\mathtt{R}'$ be rules. We define the \emph{structural equivalence of rules} by claiming $\mathtt{R} \equiv \mathtt{R}'$ iff TBA...
@@ -253,84 +257,110 @@ Let $\beta$ be an agent, $\mathtt{R} \in \mathcal{E}_\mathcal{R}$ be a rule of f
 For a given solution $\mathtt{S}$, we denote $\Upsilon_\mathtt{S}$ as set of all possible agent enumerations constructed from $\Upsilon_\mathtt{A}$, $\Upsilon_\mathtt{T}$, and $\Upsilon_\mathtt{X}$ for particular agents in $\mathtt{S}$. We denote $\mathtt{S}_\Upsilon$ an element in $\Upsilon_\mathtt{S}$.
 \end{defn}
 
+\begin{notation}
+At this point, it is good to sumarize what a $\mathtt{S}_\Upsilon$ actually is. Since $\Upsilon_\mathtt{S}$ is set of all possible agent enumerations, $\mathtt{S}_\Upsilon$ is an agent enumeration $\Gamma$. According to Notation~\ref{mynote}, it can be treated as a tuple of rule agents $(\varphi_1, \varphi_2, ..., \varphi_n)$. Moreover, a special case occurs when the tuple has a single item, i.e. single rule agent.
+\end{notation}
+
 \begin{defn}
 $ $ \\
-For a rule $\mathtt{R}$, we define:
-\begin{enumerate}
-\item \textbf{Matching} as a function $\models ~: \Upsilon_\mathtt{S}~\bigtimes~\lambda~\rightarrow~\Upsilon_\mathtt{S}^{\models}$ defined particularly:
+\emph{Matching} is a relation denoted as $\models \subseteq \Gamma \times \Gamma$ and defined inductively in the left column below.
+    \emph{Replacement} is a function $\Gamma \times \Gamma \rightarrow \Gamma$ defined in the right column below: 
 
-\begin{itemize}
-	\item $\mathtt{A}_\mathtt{S} \models \mathtt{A}_{\lambda} \Leftrightarrow \mathtt{A}_\mathtt{S} \lhd \mathtt{A}_{\lambda}$,
-	\item $\mathtt{T}_\mathtt{S} \models \mathtt{T}_{\lambda} \Leftrightarrow \mathtt{T}_\mathtt{S} \lhd \mathtt{T}_{\lambda}$,
-	\item $\mathtt{X}_\mathtt{S} \models \mathtt{X}_{\lambda} \Leftrightarrow \mathtt{c}(\mathtt{X}_\mathtt{S}) = \mathtt{c}(\mathtt{X}_{\lambda})$ and\\ \hspace*{2cm} $\forall \beta_1, \beta_2, ..., \beta_n \in \mathtt{X}_\mathtt{S} ~\&~ \forall \beta_1', \beta_2', ..., \beta_n' \in \mathtt{X}_{\lambda}$ : $\beta_i \lhd \beta_i'$.
-	
-\end{itemize}
-\noindent The resulting set $\Upsilon_\mathtt{S}^{\models}$ contains all those expressions from $\Upsilon_\mathtt{S}$ which match \emph{left-hand-side} $\lambda$ of the rule $\mathtt{R}$.
+    \begin{center}
+{\scriptsize
+\begin{tabular}{ c c | c |}
+    $n_{\iota}^{\lambda} \models n_{\iota}^{\lambda}$ & 
+        $n_{\iota}^{\lambda}[n_{\iota_r}^{\lambda_r}] = n_{\iota_r}^{\lambda_r}$  \\[0.15cm]
+    $n_{\iota}^{\lambda} \models n^{\lambda}$ & 
+        $n_{\iota}^{\lambda}[n^{\lambda_r}] = n_{\iota}^{\lambda_r}$  \\[0.15cm]
+    $\sigma \models \emptyset$ & $\sigma[\emptyset] = \sigma$ \\[0.15cm]
+    $\frac{\displaystyle s \models s_l \quad \sigma \models \sigma_l}{\displaystyle s,\sigma \models s_l,\sigma_l}$ &
+        $s,\sigma[s_r,\sigma_r] = s[s_r], \sigma[\sigma_r]$ \\ [0.3cm]
+    $\frac{\displaystyle \sigma \models \sigma_l}{\displaystyle N(\sigma) \models N(\sigma_l)}$ &
+        $N(\sigma)[N(\sigma_r)] = N(\sigma[\sigma_r])$ \\ [0.3cm]
+    $E \models \emptyset$ & $E[\emptyset] = E$ \\ [0.15cm]
+    $\frac{\displaystyle a \models a_l \quad E \models E_l}{\displaystyle a,E \models a_l,E_l}$ &
+        $(a, E)[a_r,E_r] = a[a_r], E[E_r]$ \\
+\end{tabular}}
+    \end{center}
 
-\item \textbf{Replacement} as a (partial) function $\Upsilon_\mathtt{S}^{\models}~\times~\rho~\rightarrow~\Upsilon_\mathtt{R}$, where $\Upsilon_\mathtt{R}$ is set of agent enumerations created according to six replacement categories:
-
-\begin{enumerate}
-\item \textit{state change }:
-
-\begin{itemize}
-\item $ \pmb{\alpha_\mathtt{S}\{p\}::c[\alpha_\rho\{t\}::c] = \alpha_\mathtt{\mathtt{S}}\{t\}::c} $
-
-where $ \alpha_\mathtt{S} = \alpha_\rho $ and $p \neq t$.
-
-\item $ \pmb{\mathtt{T}_\mathtt{S}::c[\mathtt{T}_\rho::c] = \mathtt{T}_\mathtt{R}::c}$ 
-
-$\mathtt{T}_\mathtt{R} = \mathtt{A}_{\mathtt{R}_1}, \mathtt{A}_{\mathtt{R}_2}, ..., \mathtt{A}_{\mathtt{R}_n} : \mathtt{A}_{\mathtt{R}_1} = \alpha_\mathtt{S}\{p\}::c[\alpha_\rho\{t\}::c]$
-
-and $\alpha_\rho\{t\} \in \mathtt{T}_\rho, ~\alpha_\mathtt{S}\{p\} \in \mathtt{T}_\mathtt{S} $ and $\alpha_\mathtt{S} = \alpha_\rho$.
-
-\item $ \pmb{\mathtt{X}_\mathtt{S}::c[\mathtt{X}_\rho::c] = \mathtt{X}_\mathtt{R}::c}$
-
-$ \mathtt{X}_\mathtt{R} = \beta_1.\beta_2. ~...~ .\beta_n \pmb{:} \forall y_1, y_2, ..., y_n \in \mathtt{X}_\mathtt{S}~and~z_1, z_2, ..., z_n \in \mathtt{X}_\rho \pmb{:}$
-
-$\beta_i = y_i::c~[z_i::c].$
-
-\end{itemize}
-
-\item \textit{complex formation}:
-
-\begin{itemize}
-\item $\pmb{\mathtt{S}_\Upsilon[\mathtt{X}_\rho::c] = \mathtt{X}_\mathtt{R}::c}$
-
-$\mathtt{X}_\mathtt{R} = \beta_1.\beta_2. ~...~ .\beta_n \pmb{:} \forall \beta_i::c \in \mathtt{S}_\Upsilon.$
-
-\end{itemize}
-
-\item \textit{complex dissociation}:
-
-\begin{itemize}
-\item $ \pmb{\mathtt{X}_\mathtt{S}::c[\rho] = \mathtt{R}_\Upsilon}$ 
-
-$\rho = \beta_{\rho_1}::c + \beta_{\rho_2}::c + ~...~ + {\rho_n}::c$ and $\mathtt{X}_\mathtt{S} = \beta_{\mathtt{S}_1}.\beta_{\mathtt{S}_2}. ~...~ .{\mathtt{S}_n}::c$.
-
-$\mathtt{R}_\Upsilon = \beta_{\mathtt{R}_1}::c + \beta_{\mathtt{R}o_2}::c + ~...~ + {\mathtt{R}_n}::c \pmb{:}$ $ \beta_{\mathtt{R}_i} = \beta_{\mathtt{S}_i} \Leftrightarrow \beta_{\mathtt{S}_i} \models \beta_{\rho_i}.$
-
-\end{itemize}
-
-\item \textit{degradation}
-\begin{itemize}
-\item $  \pmb{\mathtt{S}_\Upsilon[\emptyset] = \emptyset} $
-\end{itemize}
-
-\item \textit{translation}
-\begin{itemize}
-\item $ \pmb{\emptyset[\rho] = \rho} $
-\end{itemize}
-
-\item \textit{transport}:
-\begin{itemize}
-\item $ \pmb{\beta_\mathtt{S}::c_\mathtt{S}[\beta_\rho::c_\rho] = \beta_\mathtt{S}::c_\rho} $
-
-where $\beta_\mathtt{S} = \beta_\rho$ and $ c_\mathtt{S} \neq c_\rho $.
-\end{itemize}
-
-\end{enumerate}
-\end{enumerate}
 \end{defn}
+
+
+% \begin{enumerate}
+% \item \textbf{Matching} as a function $\models ~: \Upsilon_\mathtt{S}~\bigtimes~\lambda~\rightarrow~\Upsilon_\mathtt{S}^{\models}$ defined particularly:
+
+% \begin{itemize}
+% 	\item $\mathtt{A}_\mathtt{S} \models \mathtt{A}_{\lambda} \Leftrightarrow \mathtt{A}_\mathtt{S} \lhd \mathtt{A}_{\lambda}$,
+% 	\item $\mathtt{T}_\mathtt{S} \models \mathtt{T}_{\lambda} \Leftrightarrow \mathtt{T}_\mathtt{S} \lhd \mathtt{T}_{\lambda}$,
+% 	\item $\mathtt{X}_\mathtt{S} \models \mathtt{X}_{\lambda} \Leftrightarrow $ .
+% \end{itemize}
+% \noindent The resulting set $\Upsilon_\mathtt{S}^{\models}$ contains all those expressions from $\Upsilon_\mathtt{S}$ which match \emph{left-hand-side} $\lambda$ of the rule $\mathtt{R}$.
+
+% \item \textbf{Replacement} as a (partial) function $\Upsilon_\mathtt{S}^{\models}~\times~\rho~\rightarrow~\Upsilon_\mathtt{R}$, where $\Upsilon_\mathtt{R}$ is set of agent enumerations created according to six replacement categories:
+
+% \begin{enumerate}
+% \item \textit{state change }:
+
+% \begin{itemize}
+% \item $ \pmb{\alpha_\mathtt{S}\{p\}::c[\alpha_\rho\{t\}::c] = \alpha_\mathtt{\mathtt{S}}\{t\}::c} $
+
+% where $ \alpha_\mathtt{S} = \alpha_\rho $ and $p \neq t$.
+
+% \item $ \pmb{\mathtt{T}_\mathtt{S}::c[\mathtt{T}_\rho::c] = \mathtt{T}_\mathtt{R}::c}$ 
+
+% $\mathtt{T}_\mathtt{R} = \mathtt{A}_{\mathtt{R}_1}, \mathtt{A}_{\mathtt{R}_2}, ..., \mathtt{A}_{\mathtt{R}_n} : \mathtt{A}_{\mathtt{R}_1} = \alpha_\mathtt{S}\{p\}::c[\alpha_\rho\{t\}::c]$
+
+% and $\alpha_\rho\{t\} \in \mathtt{T}_\rho, ~\alpha_\mathtt{S}\{p\} \in \mathtt{T}_\mathtt{S} $ and $\alpha_\mathtt{S} = \alpha_\rho$.
+
+% \item $ \pmb{\mathtt{X}_\mathtt{S}::c[\mathtt{X}_\rho::c] = \mathtt{X}_\mathtt{R}::c}$
+
+% $ \mathtt{X}_\mathtt{R} = \beta_1.\beta_2. ~...~ .\beta_n \pmb{:} \forall y_1, y_2, ..., y_n \in \mathtt{X}_\mathtt{S}~and~z_1, z_2, ..., z_n \in \mathtt{X}_\rho \pmb{:}$
+
+% $\beta_i = y_i::c~[z_i::c].$
+
+% \end{itemize}
+
+% \item \textit{complex formation}:
+
+% \begin{itemize}
+% \item $\pmb{\mathtt{S}_\Upsilon[\mathtt{X}_\rho::c] = \mathtt{X}_\mathtt{R}::c}$
+
+% $\mathtt{X}_\mathtt{R} = \beta_1.\beta_2. ~...~ .\beta_n \pmb{:} \forall \beta_i::c \in \mathtt{S}_\Upsilon.$
+
+% \end{itemize}
+
+% \item \textit{complex dissociation}:
+
+% \begin{itemize}
+% \item $ \pmb{\mathtt{X}_\mathtt{S}::c[\rho] = \mathtt{R}_\Upsilon}$ 
+
+% $\rho = \beta_{\rho_1}::c + \beta_{\rho_2}::c + ~...~ + {\rho_n}::c$ and $\mathtt{X}_\mathtt{S} = \beta_{\mathtt{S}_1}.\beta_{\mathtt{S}_2}. ~...~ .{\mathtt{S}_n}::c$.
+
+% $\mathtt{R}_\Upsilon = \beta_{\mathtt{R}_1}::c + \beta_{\mathtt{R}o_2}::c + ~...~ + {\mathtt{R}_n}::c \pmb{:}$ $ \beta_{\mathtt{R}_i} = \beta_{\mathtt{S}_i} \Leftrightarrow \beta_{\mathtt{S}_i} \models \beta_{\rho_i}.$
+
+% \end{itemize}
+
+% \item \textit{degradation}
+% \begin{itemize}
+% \item $  \pmb{\mathtt{S}_\Upsilon[\emptyset] = \emptyset} $
+% \end{itemize}
+
+% \item \textit{translation}
+% \begin{itemize}
+% \item $ \pmb{\emptyset[\rho] = \rho} $
+% \end{itemize}
+
+% \item \textit{transport}:
+% \begin{itemize}
+% \item $ \pmb{\beta_\mathtt{S}::c_\mathtt{S}[\beta_\rho::c_\rho] = \beta_\mathtt{S}::c_\rho} $
+
+% where $\beta_\mathtt{S} = \beta_\rho$ and $ c_\mathtt{S} \neq c_\rho $.
+% \end{itemize}
+
+% \end{enumerate}
+% \end{enumerate}
+% \end{defn}
 
 \section{Syntactic extensions}
 
