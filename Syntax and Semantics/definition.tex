@@ -264,7 +264,7 @@ At this point, it is good to sumarize what a $\mathtt{S}_\Upsilon$ actually is. 
 \begin{defn}
 $ $ \\
 \emph{Matching} is a relation denoted as $\models \subseteq \Gamma \times \Gamma$ and defined inductively in the left column below.
-    \emph{Replacement} is a function $\Gamma \times \Gamma \rightarrow \Gamma$ defined in the right column below: 
+    \emph{Replacement} is a function $\Gamma \times \Gamma \rightarrow \Gamma$ defined in the middle column below with its required conditions in the right column:
 
     \begin{center}
 {\scriptsize
@@ -272,6 +272,8 @@ $ $ \\
 	Matching & Replacement & Conditions \\
 
 	\hline
+	& & \\[0.02cm]
+	% atomic states
 
     $ \frac{\mathtt{A}_\mathtt{S}~\lhd~\mathtt{A}_{\lambda}}{\mathtt{A}_\mathtt{S}~\models~\mathtt{A}_{\lambda}}$ & 
     $ \mathtt{A}_\mathtt{S}[\mathtt{A}_\rho] = \mathtt{A}_\mathtt{R} $ & 
@@ -280,16 +282,22 @@ $ $ \\
      &  & $\mathtt{A}_\rho = \alpha_\rho\{t\}::c_\rho$ ~~~~~ $p \neq t$ \\
      &  & $\mathtt{A}_\mathtt{R} = \alpha_\mathtt{R}\{t\}::c_\mathtt{R}$ ~~~~~ $ c_\mathtt{S} = c_\rho = c_\mathtt{R}$\\
 
+    & & \\[0.02cm]
     \hline
+    & & \\[0.02cm]
+    % structure states
 
     $\frac{\mathtt{T}_\mathtt{S}~\lhd~\mathtt{T}_{\lambda}}{\mathtt{T}_\mathtt{S}~\models~\mathtt{T}_{\lambda}}$ & 
     $ \mathtt{T}_\mathtt{S}[\mathtt{T}_\rho] = \mathtt{T}_\mathtt{R} $ & 
-    $ \mathtt{T}_\mathtt{S} = \tau(\gamma_{p_\mathtt{S}})::\mathtt{c}$ ~~~~~ $ \gamma_{p_\mathtt{S}} = \mathtt{A}_\mathtt{S_1}, \mathtt{A}_\mathtt{S_2}, ..., \mathtt{A}_\mathtt{S_n} $\\
+    $ \mathtt{T}_\mathtt{S} = \tau(\gamma_{p_\mathtt{S}})::\mathtt{c}$ ~~~~~ $ \gamma_{p_\mathtt{S}} = \mathtt{A}_\mathtt{S_1},~ \mathtt{A}_\mathtt{S_2},~ ..., ~\mathtt{A}_\mathtt{S_n} $\\
 
-     &  & $ \mathtt{T}_\rho = \tau(\gamma_{p_\rho})::\mathtt{c}$ ~~~~~ $ \gamma_{p_\rho} = \mathtt{A}_{\rho_1}, \mathtt{A}_{\rho_2}, ..., \mathtt{A}_{\rho_n} $ \\
-     &  & $\mathtt{T}_\mathtt{R} = \tau(\gamma_{p_\mathtt{R}})::\mathtt{c} $ ~~~~~ $\gamma_{p_\mathtt{R}} = \mathtt{A}_\mathtt{S_1}[\mathtt{A}_{\rho_1}], \mathtt{A}_\mathtt{S_2}[\mathtt{A}_{\rho_2}],... , \mathtt{A}_\mathtt{S_n}[\mathtt{A}_{\rho_n}]$ \\
+     &  & $ \mathtt{T}_\rho = \tau(\gamma_{p_\rho})::\mathtt{c}$ ~~~~~ $ \gamma_{p_\rho} = \mathtt{A}_{\rho_1}, ~\mathtt{A}_{\rho_2}, ~..., ~\mathtt{A}_{\rho_n} $ \\
+     &  & $\mathtt{T}_\mathtt{R} = \tau(\gamma_{p_\mathtt{R}})::\mathtt{c} $ ~~~~~ $\gamma_{p_\mathtt{R}} = \mathtt{A}_\mathtt{S_1}[\mathtt{A}_{\rho_1}],~\mathtt{A}_\mathtt{S_2}[\mathtt{A}_{\rho_2}],~... ,~\mathtt{A}_\mathtt{S_n}[\mathtt{A}_{\rho_n}]$ \\
 
+    & & \\[0.02cm]
     \hline
+    & & \\[0.02cm]
+    % complex states
 
     $\frac{\mathtt{X}_\mathtt{S}~\lhd~\mathtt{X}_{\lambda}}{\mathtt{X}_\mathtt{S}~\models~\mathtt{X}_{\lambda}}$ & 
     $ \mathtt{X}_\mathtt{S}[\mathtt{X}_\rho] = \mathtt{X}_\mathtt{R} $ & 
@@ -297,14 +305,59 @@ $ $ \\
 
      &  & $\gamma_{f_\mathtt{R}} = \beta_1.\beta_2.~...~.\beta_n : \forall y_i \in \gamma_{f_\mathtt{S}}$ and $ \forall z_i \in \gamma_{f_\rho} : \beta_i = y_i[z_i]$ \\
 
+	& & \\[0.02cm]
     \hline
+    & & \\[0.02cm]
+    % dissotiation
 
      & 
-    $ \alpha_\mathtt{S}\{p\}::c[\alpha_\rho\{t\}::c] = \alpha_\mathtt{\mathtt{S}}\{t\}::c $ & 
-    $\mathtt{A}_\mathtt{S} = \alpha_\mathtt{S}\{p\}::c$ ~~~~~ $ \alpha_\mathtt{S} = \alpha_\rho $ \\
+    $ \mathtt{X}_\mathtt{S}[\Gamma_\rho] = \Gamma_\mathtt{R} $ & 
+    $ \mathtt{X}_\mathtt{S} = \gamma_{f_\mathtt{S}}::c $ ~~~~~ $ \gamma_{f_\mathtt{S}} = \beta_{\mathtt{S}_1}.\beta_{\mathtt{S}_2}.~...~.\beta_{\mathtt{S}_n} $\\
 
-     &  & $\mathtt{A}_\rho = \alpha_\rho\{t\}::c$ ~~~~~ $p \neq t$ \\
+     &  & $ \Gamma_\mathtt{R} = \beta_{\mathtt{R}_1}::c + \beta_{\mathtt{R}_2}::c + ~...~+ \beta_{\mathtt{R}_n}::c : \beta_{\mathtt{R}_i} = \beta_{\mathtt{S}_i}$ \\
 
+    & & \\[0.02cm]
+    \hline
+    & & \\[0.02cm]
+    % complexation
+
+	$\frac{\beta_{\mathtt{S}_1}~\lhd~\beta_{\lambda_1},~\beta_{\mathtt{S}_2}~\lhd~\beta_{\lambda_2},~...,~\beta_{\mathtt{S}_n}~\lhd~\beta_{\lambda_n}}{\beta_{\mathtt{S}_1} + \beta_{\mathtt{S}_2} + ~...~+ \beta_{\mathtt{S}_n} ~\models ~\beta_{\lambda_1} + \beta_{\lambda_2} + ~...~+ \beta_{\lambda_n}}$ & 
+    $ \mathtt{S}_\Upsilon[\mathtt{X}_\rho] = \mathtt{X}_\mathtt{R} $ & 
+    $ \mathtt{S}_\Upsilon = \beta_{\mathtt{S}_1}::c + \beta_{\mathtt{S}_2}::c + ~...~+ \beta_{\mathtt{S}_n}::c $\\
+
+     &  & $ \mathtt{X}_\mathtt{R} = \beta_{\mathtt{R}_1}.\beta_{\mathtt{R}_2}.~...~.\beta_{\mathtt{R}_n}::c : \beta_{\mathtt{R}_i} = \beta_{\mathtt{S}_i} $ \\
+
+    & & \\[0.02cm]
+    \hline
+    & & \\[0.02cm]
+    % degradation
+
+	$\frac{\Gamma_\mathtt{S}~\lhd~\Gamma_{\lambda}}{\Gamma_\mathtt{S}~\models~\Gamma_{\lambda}}$ & 
+    $ \Gamma_\mathtt{S}[\emptyset] = \emptyset $ & \\
+
+    & & \\[0.02cm]
+    \hline
+    & & \\[0.02cm]
+    % translation
+
+	$\emptyset \models \emptyset $ & 
+    $ \emptyset[\Gamma_\rho] = \Gamma_\mathtt{R} $ & 
+    $\Gamma_\mathtt{R} = \Gamma_\rho $ \\
+
+    & & \\[0.02cm]
+    \hline
+    & & \\[0.02cm]
+    % transport
+
+	$ \frac{\mathcal{E}_\mathtt{S}~\lhd~\mathcal{E}_\rho}{\mathcal{E}_\mathtt{S}~\models~\mathcal{E}_\rho} $ & 
+    $ \mathcal{E}_\mathtt{S}[\mathcal{E}_\rho] = \mathcal{E}_\mathtt{R} $ & 
+    $ \mathcal{E}_\mathtt{S} = \beta_\mathtt{S}::c_\mathtt{S} $ ~~~~~ $ c_\mathtt{S} \neq c_\rho $ \\
+
+    &  & $ \mathcal{E}_\rho = \beta_\rho::c_\rho $ ~~~~~ $ c_\rho = c_\mathtt{R} $\\
+
+    &  & $ \mathcal{E}_\mathtt{R} = \beta_\mathtt{R}::c_\mathtt{R} $ ~~~~~ $ \beta_\mathtt{R} = \beta_\rho = \beta_\mathtt{S} $\\
+
+    & & \\[0.02cm]
     \hline
     \end{tabular}}
     \end{center}
