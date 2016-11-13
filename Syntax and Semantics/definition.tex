@@ -251,7 +251,7 @@ We define (potentially infinite) universe of rule expressions $\mathcal{E}_\math
 
 How is semantics being applied on a model does not matter now. Briefly, using an algorithm, we choose a solution from given state and apply a rule on this solution. This step is quite forward and does not need any deeper explanation (might be done later). What has to be defined is application of the rule on the solution.
 
-Let $\beta$ be an agent, $\mathtt{R} \in \mathcal{E}_\mathcal{R}$ be a rule of form $\lambda \Rightarrow \rho$ where $\lambda$ and $\rho$ are agent enumerations, and $\mathtt{S} \subseteq \mathcal{U}$ be a solution. 
+Let $\beta$ be an agent, $\mathtt{R} \in \mathcal{E}_\mathcal{R}$ be a rule of form $\lambda \Rightarrow \rho$ where $\lambda$ and $\rho$ are agent enumerations, $\mathtt{State} \subseteq \mathcal{U}$ be a state, and $\mathtt{S} \subseteq \mathtt{State}$ be a solution. 
 
 \begin{defn}
 For a given solution $\mathtt{S}$, we denote $\Upsilon_\mathtt{S}$ as set of all possible agent enumerations constructed from $\Upsilon_\mathtt{A}$, $\Upsilon_\mathtt{T}$, and $\Upsilon_\mathtt{X}$ for particular agents in $\mathtt{S}$. We denote $\mathtt{S}_\Upsilon$ an element in $\Upsilon_\mathtt{S}$.
@@ -364,6 +364,13 @@ $ $ \\
 
 \end{defn}
 
+\begin{defn}
+$\emph{Rule application}$ is mapping $\mathtt{State}_{\blacksquare} \times \mathtt{R} \rightarrow \{\mathtt{State}\}$ such that for the $\mathtt{State}_{\blacksquare}$ there exists solution $\mathtt{S}_{\blacksquare} \subseteq \mathtt{State}_{\blacksquare}$: $\forall ~\mathtt{S}_{\Upsilon_{\blacksquare}} \in \Upsilon_{\mathtt{S}_{\blacksquare}}$ we get a new solution $\mathtt{S}$ by application of the rule $\mathtt{R}$ (defined above) such that $\mathtt{S} \subseteq \mathtt{State}$.
+\end{defn}
+
+\begin{defn}
+$\emph{Rule-based model}$ $\mathcal{M}$ is a pair $ (\mathtt{State},~\mathcal{R}) $ such that $\mathcal{R}$ is set of rules $\mathtt{R}$. The model yields $\emph{transition system}$ between states by applying $\emph{Rule application}$.
+\end{defn}
 
 % \begin{enumerate}
 % \item \textbf{Matching} as a function $\models ~: \Upsilon_\mathtt{S}~\bigtimes~\lambda~\rightarrow~\Upsilon_\mathtt{S}^{\models}$ defined particularly:
