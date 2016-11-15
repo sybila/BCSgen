@@ -248,7 +248,16 @@ Let $\mathtt{R},\mathtt{R}'$ be rules. We define the \emph{structural equivalenc
 \end{defn}
 
 \begin{defn}
-We say $\mathtt{R}$ is \emph{well-formed} iff
+We say rule $\mathtt{R}$ is \emph{well-formed} iff it has one of the following forms:
+\begin{center}
+\begin{tabular}{c@{\hskip 1in}l}
+	$\mathcal{E}_\lambda \Rightarrow \mathcal{E}_\rho$ & at least one of $\mathcal{E}_\lambda, \mathcal{E}_\rho \neq \varepsilon $\\
+	$\Gamma \Rightarrow \mathcal{E}$ & $\Gamma = (\varphi_1, \varphi_2, ..., \varphi_n) $ and $\mathcal{E} = \beta_1.\beta_2.~...~.\beta_m$ \\
+	 & and $ m \geq n $\\
+	$\mathcal{E} \Rightarrow \Gamma$ & $\Gamma = (\varphi_1, \varphi_2, ..., \varphi_n) $ and $\mathcal{E} = \beta_1.\beta_2.~...~.\beta_m$ \\
+	 & and $ \varphi_1.\varphi_2.~...~.\varphi_n = \mathcal{E} $\\
+\end{tabular}
+\end{center}
 \end{defn}
 
 \begin{theorem}
@@ -332,9 +341,9 @@ $ $ \\
 
      & 
     $ \mathtt{X}_{\square}[\Gamma_\rho] = \Gamma $ & 
-    $ \Gamma_\rho = \beta_{\rho_1}::c + \beta_{\rho_2}::c + ~...~+ \beta_{\rho_m}::c $\\
+    $ \Gamma_\rho = \beta_{\rho_1}::c + \beta_{\rho_2}::c + ~...~+ \beta_{\rho_m}::c $ ~~~~~ $ n \geq m $\\
 
-     &  & $ \Gamma = \beta_1::c + \beta_2::c + ~...~+ \beta_n::c $~ \emph{such that} ~$ \beta_i = \beta_{\mathtt{C}_i}$ \\
+     &  & $ \Gamma = \beta_1::c + \beta_2::c + ~...~+ \beta_n::c $~ \emph{such that} ~$ \beta_i \lhd \beta_{\rho_i}$ \\
 
     & & \\[0.02cm]
     \hline
