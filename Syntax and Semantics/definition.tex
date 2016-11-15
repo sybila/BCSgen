@@ -240,6 +240,10 @@ Agent enumeration $\Gamma$ is an expression of form $\varphi_1 + \varphi_2 + ...
 \end{notation} 
 
 \begin{defn}
+We extend definition of compatibility operator $\lhd$ to agent enumerations $\Gamma$. $\Gamma^{l} \lhd \Gamma^{r} \Leftrightarrow \Gamma^{l} = (\varphi^{l}_1, \varphi^{l}_2, ..., \varphi^{l}_n)$ \emph{and} $\Gamma^{r} = (\varphi^{r}_1, \varphi^{r}_2, ..., \varphi^{r}_n)$ \emph{and} $\\ \forall i \in [1,~n] : \varphi^{l}_i \lhd \varphi^{r}_i $.
+\end{defn}
+
+\begin{defn}
 Let $\mathtt{R},\mathtt{R}'$ be rules. We define the \emph{structural equivalence of rules} by claiming $\mathtt{R} \equiv \mathtt{R}'$ iff TBA...
 \end{defn}
 
@@ -319,7 +323,7 @@ $ $ \\
     $ \mathtt{X}_{\square}[\mathtt{X}_\rho] = \mathtt{X} $ & 
     $ \mathtt{X}_{\square} = \gamma_{f_{\square}}::c$ ~~~~~ $ \mathtt{X}_\rho = \gamma_{f_\rho}::c $ ~~~~~ $ \mathtt{X} = \gamma_{f}::c $\\
 
-     &  & $\gamma_{f} = \beta_1.\beta_2.~...~.\beta_n $ such that $ \forall y_i \in \gamma_{f_{\square}}$ and $ \forall z_i \in \gamma_{f_\rho} : \beta_i = y_i[z_i]$ \\
+     &  & $\gamma_{f} = \beta_1.\beta_2.~...~.\beta_n $~ \emph{such that} ~$ \forall y_i \in \gamma_{f_{\square}}$ and $ \forall z_i \in \gamma_{f_\rho} : \beta_i = y_i[z_i]$ \\
 
 	& & \\[0.02cm]
     \hline
@@ -328,28 +332,28 @@ $ $ \\
 
      & 
     $ \mathtt{X}_{\square}[\Gamma_\rho] = \Gamma $ & 
-    $ \mathtt{X}_{\square} = \gamma_{f_{\square}}::c $ ~~~~~ $ \gamma_{f_{\square}} = \beta_{\mathtt{C}_1}.\beta_{\mathtt{C}_2}.~...~.\beta_{\mathtt{C}_n} $\\
+    $ \Gamma_\rho = \beta_{\rho_1}::c + \beta_{\rho_2}::c + ~...~+ \beta_{\rho_m}::c $\\
 
-     &  & $ \Gamma = \beta_1::c + \beta_2::c + ~...~+ \beta_n::c $ such that $ \beta_i = \beta_{\mathtt{C}_i}$ \\
+     &  & $ \Gamma = \beta_1::c + \beta_2::c + ~...~+ \beta_n::c $~ \emph{such that} ~$ \beta_i = \beta_{\mathtt{C}_i}$ \\
 
     & & \\[0.02cm]
     \hline
     & & \\[0.02cm]
     % complexation
 
-	$\frac{\beta_{\mathtt{C}_1}~\lhd~\beta_{\lambda_1},~\beta_{\mathtt{C}_2}~\lhd~\beta_{\lambda_2},~...,~\beta_{\mathtt{C}_n}~\lhd~\beta_{\lambda_n}}{\beta_{\mathtt{C}_1} + \beta_{\mathtt{C}_2} + ~...~+ \beta_{\mathtt{C}_n} ~\models ~\beta_{\lambda_1} + \beta_{\lambda_2} + ~...~+ \beta_{\lambda_n}}$ & 
+	$ \frac{\Gamma_{\square}~\lhd~\Gamma_\lambda}{\Gamma_{\square}~\models~\Gamma_\lambda} $ & 
     $ \Gamma_{\square}[\mathtt{X}_\rho] = \mathtt{X} $ & 
     $ \Gamma_{\square} = \beta_{\mathtt{C}_1}::c + \beta_{\mathtt{C}_2}::c + ~...~+ \beta_{\mathtt{C}_n}::c $\\
 
-     &  & $ \mathtt{X} = \beta_1.\beta_2.~...~.\beta_n::c $ such that $ \beta_i = \beta_{\mathtt{C}_i} $ \\
+     &  & $ \mathtt{X} = \beta_1.\beta_2.~...~.\beta_n::c $~ \emph{such that} ~$ \beta_i = \beta_{\mathtt{C}_i} $ \\
 
     & & \\[0.02cm]
     \hline
     & & \\[0.02cm]
     % degradation
 
-	$ \frac{\mathcal{E}_{\square}~\lhd~\mathcal{E}_\rho}{\mathcal{E}_{\square}~\models~\mathcal{E}_\rho} $ & 
-    $ \mathcal{E}_{\square}[\emptyset] = \emptyset $ & \\
+	 & 
+    $ \Gamma_{\square}[\emptyset] = \emptyset $ & \\
 
     & & \\[0.02cm]
     \hline
