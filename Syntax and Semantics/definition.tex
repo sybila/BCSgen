@@ -47,7 +47,7 @@ Let $\mathcal{N}_{A},~\mathcal{N}_{T},~\mathcal{N}_{X},~\mathcal{N}_{c},~\mathca
 Agents are defined hierarchically starting from \emph{atomic agents}. These agents are the smallest units in our hierarchy and represent ...
 
 \begin{defn}
-Atomic agent $\mathtt{A}$ is defined as triple ($\alpha, \delta, \mathtt{c}$) where $\alpha \in \mathcal{N}_{A}$ is name, $\delta \subseteq \mathcal{N}_{s}$ is finite non-empty set of states $\mathtt{s} \in \mathcal{N}_{s}$, and $\mathtt{c} \in \mathcal{N}_{c}$ is physical compartment within which it is considered.
+Atomic agent $\mathtt{A}$ is defined as triple ($\alpha, \delta, \mathtt{c}$) where $\alpha \in \mathcal{N}_{A}$ is name, $\delta \subseteq \mathcal{N}_{s}$ is finite non-empty set of states $\mathtt{C} \in \mathcal{N}_{s}$, and $\mathtt{c} \in \mathcal{N}_{c}$ is physical compartment within which it is considered.
 \end{defn}
 
 \begin{defn}
@@ -61,7 +61,7 @@ Let $\mathtt{A},\mathtt{A}'$ be atomic agents. We say agent $\mathtt{A}=(\alpha,
 \begin{notation}
 {~}
 \begin{itemize}
-\item We denote $\mathtt{s}\in\delta$ the fact that $\mathtt{s}$ is included in the state signature~$\delta$.
+\item We denote $\mathtt{C}\in\delta$ the fact that $\mathtt{C}$ is included in the state signature~$\delta$.
 \item We denote $\mathtt{c}(\mathtt{A})$ the fact that $\mathtt{A}$ is in compartment $\mathtt{c}$.
 \end{itemize}
 \end{notation}
@@ -72,7 +72,7 @@ Atomic agent expressions have the following syntax:
 {\small
 \hspace*{-1cm}\begin{tabular}{ ll ll ll ll }
  atomic agent expression & $\mathtt{A} ::= \alpha\{\delta\}::\mathtt{c}$ & states & $ \delta ::= s_1, s_2, ..., s_m$ \\
- name & $\alpha ::= n \in \mathcal{N}_{A}$  & state & $\mathtt{s}_i ::= n \in \mathcal{N}_{s}$\\
+ name & $\alpha ::= n \in \mathcal{N}_{A}$  & state & $\mathtt{C}_i ::= n \in \mathcal{N}_{s}$\\
  compartment & $\mathtt{c} ::= n \in \mathcal{N}_{c}$\\
 \end{tabular}
 }
@@ -235,9 +235,9 @@ Rule is defined as an expression constructed from agent expressions by the follo
 }
 \end{center}
 
-\begin{notation}
+\begin{notation} \label{mynote}
 Agent enumeration $\Gamma$ is an expression of form $\varphi_1 + \varphi_2 + ... + \varphi_n$. From now, when referencing it, it might be treated as a tuple $(\varphi_1, \varphi_2, ..., \varphi_n)$. Moreover, each rule agent $\varphi_i$ is an agent expression which fully defines its agent. For this reason, the tuple can be treated as tuple of agents. 
-\end{notation} \label{mynote}
+\end{notation} 
 
 \begin{defn}
 Let $\mathtt{R},\mathtt{R}'$ be rules. We define the \emph{structural equivalence of rules} by claiming $\mathtt{R} \equiv \mathtt{R}'$ iff TBA...
@@ -249,19 +249,31 @@ We define (potentially infinite) universe of rule expressions $\mathcal{E}_\math
 
 \section{Semantics}
 
-How is semantics being applied on a model does not matter now. Briefly, using an algorithm, we choose a solution from given state and apply a rule on this solution. This step is quite forward and does not need any deeper explanation (might be done later). What has to be defined is application of the rule on the solution.
+How is semantics being applied on a model does not matter now. Briefly, using an algorithm, we choose a candidate from given state and apply a rule on this candidate. This step is quite forward and does not need any deeper explanation (might be done later). What has to be defined is application of the rule on the candidate.
 
-Let $\beta$ be an agent, $\mathtt{R} \in \mathcal{E}_\mathcal{R}$ be a rule of form $\lambda \Rightarrow \rho$ where $\lambda$ and $\rho$ are agent enumerations, $\mathtt{State} \subseteq \mathcal{U}$ be a state, and $\mathtt{S} \subseteq \mathtt{State}$ be a solution. 
+Let $\beta$ be an agent, $\mathtt{R} \in \mathcal{E}_\mathcal{R}$ be a rule of form $\lambda \Rightarrow \rho$ where $\lambda$ and $\rho$ are agent enumerations.
 
 \begin{defn}
-For a given solution $\mathtt{S}$, we denote $\Upsilon_\mathtt{S}$ as set of all possible agent enumerations constructed from $\Upsilon_\mathtt{A}$, $\Upsilon_\mathtt{T}$, and $\Upsilon_\mathtt{X}$ for particular agents in $\mathtt{S}$. We denote $\mathtt{S}_\Upsilon$ an element in $\Upsilon_\mathtt{S}$.
+$\mathtt{State}$ is a multiset generated from members of $\mathcal{U}$. Then, a candidate $\mathtt{C}$ is a subset of the $\mathtt{State}$ ($\mathtt{C} \subseteq \mathtt{State}$). The rest of the set $ \mathtt{State}$ $\setminus$ $\mathtt{C}$ be a remainder $\mathcal{I}$.
+\end{defn}
+
+\begin{defn}
+For a given candidate $\mathtt{C}$, we denote $\Upsilon_{\square}$ as set of all possible agent enumerations constructed from $\Upsilon_\mathtt{A}$, $\Upsilon_\mathtt{T}$, and $\Upsilon_\mathtt{X}$ for particular agents in $\mathtt{C}$ (including all possible orders). We denote $\mathtt{C}_\Upsilon$ an element in $\Upsilon_{\square}$.
 \end{defn}
 
 \begin{notation}
-At this point, it is good to sumarize what a $\mathtt{S}_\Upsilon$ actually is. Since $\Upsilon_\mathtt{S}$ is set of all possible agent enumerations, $\mathtt{S}_\Upsilon$ is an agent enumeration $\Gamma$. According to Notation~\ref{mynote}, it can be treated as a tuple of rule agents $(\varphi_1, \varphi_2, ..., \varphi_n)$. Moreover, a special case occurs when the tuple has a single item, i.e. single rule agent.
+At this point, it is good to sumarize what a $\mathtt{C}_\Upsilon$ actually is. Since $\Upsilon_{\square}$ is set of all possible agent enumerations, $\mathtt{C}_\Upsilon$ is an agent enumeration $\Gamma$. According to Notation~\ref{mynote}, it can be treated as a tuple of rule agents $(\varphi_1, \varphi_2, ..., \varphi_n)$. Moreover, a special case occurs when the tuple is singleton, i.e. there is just one rule agent.
 \end{notation}
 
 \begin{defn}
+$\emph{Rule-based model}$ $\mathcal{M}$ is a pair $ (\mathtt{State},~\mathcal{R}) $ such that $\mathcal{R}$ is set of rules $\mathtt{R}$. We assume all rules in a $\emph{Rule-based model}$ are well-formed. The model yields $\emph{transition system}$ between states by applying $\emph{Rule application}$~(\ref{app}).
+\end{defn}
+
+\begin{defn} \label{app}
+$\emph{Rule application}$ is mapping $\mathtt{State}_{\square} \times \mathtt{R} \rightarrow \{\mathtt{State}\}$ such that for the $\mathtt{State}_{\square}$ there exists candidate $\mathtt{C}_{\square} \subseteq \mathtt{State}_{\square}$ such that $\mathtt{C}_{\square} \cup \mathcal{I} = \mathtt{State}_{\square}$. Then, $\forall ~\mathtt{C}_{\Upsilon_{\square}} \in \Upsilon_{\mathtt{C}_{\square}}$ we get a new candidate $\mathtt{C}$ by application of the replacement function for the rule $\mathtt{R}$ (Definition~\ref{repla}) such that $\mathtt{C} \cup \mathcal{I} = \mathtt{State}$.
+\end{defn}
+
+\begin{defn} \label{repla}
 $ $ \\
 \emph{Matching} is a relation denoted as $\models \subseteq \Gamma \times \Gamma$ and defined inductively in the left column below.
     \emph{Replacement} is a function $\Gamma \times \Gamma \rightarrow \Gamma$ defined in the middle column below with its required conditions in the right column:
@@ -275,35 +287,35 @@ $ $ \\
 	& & \\[0.02cm]
 	% atomic states
 
-    $ \frac{\mathtt{A}_\mathtt{S}~\lhd~\mathtt{A}_{\lambda}}{\mathtt{A}_\mathtt{S}~\models~\mathtt{A}_{\lambda}}$ & 
-    $ \mathtt{A}_\mathtt{S}[\mathtt{A}_\rho] = \mathtt{A}_\mathtt{R} $ & 
-    $ \mathtt{A}_\mathtt{S} = \alpha_\mathtt{S}\{p\}::c_\mathtt{S}$ ~~~~~ $ \alpha_\mathtt{S} = \alpha_\rho = \alpha_\mathtt{R}$ \\
+    $ \frac{\mathtt{A}_{\square}~\lhd~\mathtt{A}_{\lambda}}{\mathtt{A}_{\square}~\models~\mathtt{A}_{\lambda}}$ & 
+    $ \mathtt{A}_{\square}[\mathtt{A}_\rho] = \mathtt{A} $ & 
+    $ \mathtt{A}_{\square} = \alpha_{\square}\{p\}::c_{\square}$ ~~~~~ $ \alpha_{\square} = \alpha_\rho = \alpha$ \\
 
      &  & $\mathtt{A}_\rho = \alpha_\rho\{t\}::c_\rho$ ~~~~~ $p \neq t$ \\
-     &  & $\mathtt{A}_\mathtt{R} = \alpha_\mathtt{R}\{t\}::c_\mathtt{R}$ ~~~~~ $ c_\mathtt{S} = c_\rho = c_\mathtt{R}$\\
+     &  & $\mathtt{A} = \alpha\{t\}::c$ ~~~~~ $ c_{\square} = c_\rho = c$\\
 
     & & \\[0.02cm]
     \hline
     & & \\[0.02cm]
     % structure states
 
-    $\frac{\mathtt{T}_\mathtt{S}~\lhd~\mathtt{T}_{\lambda}}{\mathtt{T}_\mathtt{S}~\models~\mathtt{T}_{\lambda}}$ & 
-    $ \mathtt{T}_\mathtt{S}[\mathtt{T}_\rho] = \mathtt{T}_\mathtt{R} $ & 
-    $ \mathtt{T}_\mathtt{S} = \tau(\gamma_{p_\mathtt{S}})::\mathtt{c}$ ~~~~~ $ \gamma_{p_\mathtt{S}} = \mathtt{A}_\mathtt{S_1},~ \mathtt{A}_\mathtt{S_2},~ ..., ~\mathtt{A}_\mathtt{S_n} $\\
+    $\frac{\mathtt{T}_{\square}~\lhd~\mathtt{T}_{\lambda}}{\mathtt{T}_{\square}~\models~\mathtt{T}_{\lambda}}$ & 
+    $ \mathtt{T}_{\square}[\mathtt{T}_\rho] = \mathtt{T} $ & 
+    $ \mathtt{T}_{\square} = \tau(\gamma_{p_{\square}})::\mathtt{c}$ ~~~~~ $ \gamma_{p_{\square}} = \mathtt{A}_\mathtt{S_1},~ \mathtt{A}_\mathtt{S_2},~ ..., ~\mathtt{A}_\mathtt{S_n} $\\
 
      &  & $ \mathtt{T}_\rho = \tau(\gamma_{p_\rho})::\mathtt{c}$ ~~~~~ $ \gamma_{p_\rho} = \mathtt{A}_{\rho_1}, ~\mathtt{A}_{\rho_2}, ~..., ~\mathtt{A}_{\rho_n} $ \\
-     &  & $\mathtt{T}_\mathtt{R} = \tau(\gamma_{p_\mathtt{R}})::\mathtt{c} $ ~~~~~ $\gamma_{p_\mathtt{R}} = \mathtt{A}_\mathtt{S_1}[\mathtt{A}_{\rho_1}],~\mathtt{A}_\mathtt{S_2}[\mathtt{A}_{\rho_2}],~... ,~\mathtt{A}_\mathtt{S_n}[\mathtt{A}_{\rho_n}]$ \\
+     &  & $\mathtt{T} = \tau(\gamma_{p})::\mathtt{c} $ ~~~~~ $\gamma_{p} = \mathtt{A}_\mathtt{S_1}[\mathtt{A}_{\rho_1}],~\mathtt{A}_\mathtt{S_2}[\mathtt{A}_{\rho_2}],~... ,~\mathtt{A}_\mathtt{S_n}[\mathtt{A}_{\rho_n}]$ \\
 
     & & \\[0.02cm]
     \hline
     & & \\[0.02cm]
     % complex states
 
-    $\frac{\mathtt{X}_\mathtt{S}~\lhd~\mathtt{X}_{\lambda}}{\mathtt{X}_\mathtt{S}~\models~\mathtt{X}_{\lambda}}$ & 
-    $ \mathtt{X}_\mathtt{S}[\mathtt{X}_\rho] = \mathtt{X}_\mathtt{R} $ & 
-    $ \mathtt{X}_\mathtt{S} = \gamma_{f_\mathtt{S}}::c$ ~~~~~ $ \mathtt{X}_\rho = \gamma_{f_\rho}::c $ ~~~~~ $ \mathtt{X}_\mathtt{R} = \gamma_{f_\mathtt{R}}::c $\\
+    $\frac{\mathtt{X}_{\square}~\lhd~\mathtt{X}_{\lambda}}{\mathtt{X}_{\square}~\models~\mathtt{X}_{\lambda}}$ & 
+    $ \mathtt{X}_{\square}[\mathtt{X}_\rho] = \mathtt{X} $ & 
+    $ \mathtt{X}_{\square} = \gamma_{f_{\square}}::c$ ~~~~~ $ \mathtt{X}_\rho = \gamma_{f_\rho}::c $ ~~~~~ $ \mathtt{X} = \gamma_{f}::c $\\
 
-     &  & $\gamma_{f_\mathtt{R}} = \beta_1.\beta_2.~...~.\beta_n : \forall y_i \in \gamma_{f_\mathtt{S}}$ and $ \forall z_i \in \gamma_{f_\rho} : \beta_i = y_i[z_i]$ \\
+     &  & $\gamma_{f} = \beta_1.\beta_2.~...~.\beta_n $ such that $ \forall y_i \in \gamma_{f_{\square}}$ and $ \forall z_i \in \gamma_{f_\rho} : \beta_i = y_i[z_i]$ \\
 
 	& & \\[0.02cm]
     \hline
@@ -311,29 +323,29 @@ $ $ \\
     % dissotiation
 
      & 
-    $ \mathtt{X}_\mathtt{S}[\Gamma_\rho] = \Gamma_\mathtt{R} $ & 
-    $ \mathtt{X}_\mathtt{S} = \gamma_{f_\mathtt{S}}::c $ ~~~~~ $ \gamma_{f_\mathtt{S}} = \beta_{\mathtt{S}_1}.\beta_{\mathtt{S}_2}.~...~.\beta_{\mathtt{S}_n} $\\
+    $ \mathtt{X}_{\square}[\Gamma_\rho] = \Gamma $ & 
+    $ \mathtt{X}_{\square} = \gamma_{f_{\square}}::c $ ~~~~~ $ \gamma_{f_{\square}} = \beta_{\mathtt{C}_1}.\beta_{\mathtt{C}_2}.~...~.\beta_{\mathtt{C}_n} $\\
 
-     &  & $ \Gamma_\mathtt{R} = \beta_{\mathtt{R}_1}::c + \beta_{\mathtt{R}_2}::c + ~...~+ \beta_{\mathtt{R}_n}::c : \beta_{\mathtt{R}_i} = \beta_{\mathtt{S}_i}$ \\
+     &  & $ \Gamma = \beta_1::c + \beta_2::c + ~...~+ \beta_n::c $ such that $ \beta_i = \beta_{\mathtt{C}_i}$ \\
 
     & & \\[0.02cm]
     \hline
     & & \\[0.02cm]
     % complexation
 
-	$\frac{\beta_{\mathtt{S}_1}~\lhd~\beta_{\lambda_1},~\beta_{\mathtt{S}_2}~\lhd~\beta_{\lambda_2},~...,~\beta_{\mathtt{S}_n}~\lhd~\beta_{\lambda_n}}{\beta_{\mathtt{S}_1} + \beta_{\mathtt{S}_2} + ~...~+ \beta_{\mathtt{S}_n} ~\models ~\beta_{\lambda_1} + \beta_{\lambda_2} + ~...~+ \beta_{\lambda_n}}$ & 
-    $ \mathtt{S}_\Upsilon[\mathtt{X}_\rho] = \mathtt{X}_\mathtt{R} $ & 
-    $ \mathtt{S}_\Upsilon = \beta_{\mathtt{S}_1}::c + \beta_{\mathtt{S}_2}::c + ~...~+ \beta_{\mathtt{S}_n}::c $\\
+	$\frac{\beta_{\mathtt{C}_1}~\lhd~\beta_{\lambda_1},~\beta_{\mathtt{C}_2}~\lhd~\beta_{\lambda_2},~...,~\beta_{\mathtt{C}_n}~\lhd~\beta_{\lambda_n}}{\beta_{\mathtt{C}_1} + \beta_{\mathtt{C}_2} + ~...~+ \beta_{\mathtt{C}_n} ~\models ~\beta_{\lambda_1} + \beta_{\lambda_2} + ~...~+ \beta_{\lambda_n}}$ & 
+    $ \Gamma_{\square}[\mathtt{X}_\rho] = \mathtt{X} $ & 
+    $ \Gamma_{\square} = \beta_{\mathtt{C}_1}::c + \beta_{\mathtt{C}_2}::c + ~...~+ \beta_{\mathtt{C}_n}::c $\\
 
-     &  & $ \mathtt{X}_\mathtt{R} = \beta_{\mathtt{R}_1}.\beta_{\mathtt{R}_2}.~...~.\beta_{\mathtt{R}_n}::c : \beta_{\mathtt{R}_i} = \beta_{\mathtt{S}_i} $ \\
+     &  & $ \mathtt{X} = \beta_1.\beta_2.~...~.\beta_n::c $ such that $ \beta_i = \beta_{\mathtt{C}_i} $ \\
 
     & & \\[0.02cm]
     \hline
     & & \\[0.02cm]
     % degradation
 
-	$\frac{\Gamma_\mathtt{S}~\lhd~\Gamma_{\lambda}}{\Gamma_\mathtt{S}~\models~\Gamma_{\lambda}}$ & 
-    $ \Gamma_\mathtt{S}[\emptyset] = \emptyset $ & \\
+	$ \frac{\mathcal{E}_{\square}~\lhd~\mathcal{E}_\rho}{\mathcal{E}_{\square}~\models~\mathcal{E}_\rho} $ & 
+    $ \mathcal{E}_{\square}[\emptyset] = \emptyset $ & \\
 
     & & \\[0.02cm]
     \hline
@@ -341,21 +353,21 @@ $ $ \\
     % translation
 
 	$\emptyset \models \emptyset $ & 
-    $ \emptyset[\Gamma_\rho] = \Gamma_\mathtt{R} $ & 
-    $\Gamma_\mathtt{R} = \Gamma_\rho $ \\
+    $ \emptyset[\Gamma_\rho] = \Gamma $ & 
+    $\Gamma = \Gamma_\rho $ \\
 
     & & \\[0.02cm]
     \hline
     & & \\[0.02cm]
     % transport
 
-	$ \frac{\mathcal{E}_\mathtt{S}~\lhd~\mathcal{E}_\rho}{\mathcal{E}_\mathtt{S}~\models~\mathcal{E}_\rho} $ & 
-    $ \mathcal{E}_\mathtt{S}[\mathcal{E}_\rho] = \mathcal{E}_\mathtt{R} $ & 
-    $ \mathcal{E}_\mathtt{S} = \beta_\mathtt{S}::c_\mathtt{S} $ ~~~~~ $ c_\mathtt{S} \neq c_\rho $ \\
+	$ \frac{\mathcal{E}_{\square}~\lhd~\mathcal{E}_\rho}{\mathcal{E}_{\square}~\models~\mathcal{E}_\rho} $ & 
+    $ \mathcal{E}_{\square}[\mathcal{E}_\rho] = \mathcal{E} $ & 
+    $ \mathcal{E}_{\square} = \beta_{\square}::c_{\square} $ ~~~~~ $ c_{\square} \neq c_\rho $ \\
 
-    &  & $ \mathcal{E}_\rho = \beta_\rho::c_\rho $ ~~~~~ $ c_\rho = c_\mathtt{R} $\\
+    &  & $ \mathcal{E}_\rho = \beta_\rho::c_\rho $ ~~~~~ $ c_\rho = c $\\
 
-    &  & $ \mathcal{E}_\mathtt{R} = \beta_\mathtt{R}::c_\mathtt{R} $ ~~~~~ $ \beta_\mathtt{R} = \beta_\rho = \beta_\mathtt{S} $\\
+    &  & $ \mathcal{E} = \beta::c $ ~~~~~ $ \beta = \beta_\rho = \beta_{\square} $\\
 
     & & \\[0.02cm]
     \hline
@@ -364,43 +376,39 @@ $ $ \\
 
 \end{defn}
 
-\begin{defn}
-$\emph{Rule application}$ is mapping $\mathtt{State}_{\blacksquare} \times \mathtt{R} \rightarrow \{\mathtt{State}\}$ such that for the $\mathtt{State}_{\blacksquare}$ there exists solution $\mathtt{S}_{\blacksquare} \subseteq \mathtt{State}_{\blacksquare}$: $\forall ~\mathtt{S}_{\Upsilon_{\blacksquare}} \in \Upsilon_{\mathtt{S}_{\blacksquare}}$ we get a new solution $\mathtt{S}$ by application of the rule $\mathtt{R}$ (defined above) such that $\mathtt{S} \subseteq \mathtt{State}$.
-\end{defn}
 
-\begin{defn}
-$\emph{Rule-based model}$ $\mathcal{M}$ is a pair $ (\mathtt{State},~\mathcal{R}) $ such that $\mathcal{R}$ is set of rules $\mathtt{R}$. The model yields $\emph{transition system}$ between states by applying $\emph{Rule application}$.
-\end{defn}
+
+
 
 % \begin{enumerate}
-% \item \textbf{Matching} as a function $\models ~: \Upsilon_\mathtt{S}~\bigtimes~\lambda~\rightarrow~\Upsilon_\mathtt{S}^{\models}$ defined particularly:
+% \item \textbf{Matching} as a function $\models ~: \Upsilon_{\square}~\bigtimes~\lambda~\rightarrow~\Upsilon_{\square}^{\models}$ defined particularly:
 
 % \begin{itemize}
-% 	\item $\mathtt{A}_\mathtt{S} \models \mathtt{A}_{\lambda} \Leftrightarrow \mathtt{A}_\mathtt{S} \lhd \mathtt{A}_{\lambda}$,
-% 	\item $\mathtt{T}_\mathtt{S} \models \mathtt{T}_{\lambda} \Leftrightarrow \mathtt{T}_\mathtt{S} \lhd \mathtt{T}_{\lambda}$,
-% 	\item $\mathtt{X}_\mathtt{S} \models \mathtt{X}_{\lambda} \Leftrightarrow $ .
+% 	\item $\mathtt{A}_{\square} \models \mathtt{A}_{\lambda} \Leftrightarrow \mathtt{A}_{\square} \lhd \mathtt{A}_{\lambda}$,
+% 	\item $\mathtt{T}_{\square} \models \mathtt{T}_{\lambda} \Leftrightarrow \mathtt{T}_{\square} \lhd \mathtt{T}_{\lambda}$,
+% 	\item $\mathtt{X}_{\square} \models \mathtt{X}_{\lambda} \Leftrightarrow $ .
 % \end{itemize}
-% \noindent The resulting set $\Upsilon_\mathtt{S}^{\models}$ contains all those expressions from $\Upsilon_\mathtt{S}$ which match \emph{left-hand-side} $\lambda$ of the rule $\mathtt{R}$.
+% \noindent The resulting set $\Upsilon_{\square}^{\models}$ contains all those expressions from $\Upsilon_{\square}$ which match \emph{left-hand-side} $\lambda$ of the rule $\mathtt{R}$.
 
-% \item \textbf{Replacement} as a (partial) function $\Upsilon_\mathtt{S}^{\models}~\times~\rho~\rightarrow~\Upsilon_\mathtt{R}$, where $\Upsilon_\mathtt{R}$ is set of agent enumerations created according to six replacement categories:
+% \item \textbf{Replacement} as a (partial) function $\Upsilon_{\square}^{\models}~\times~\rho~\rightarrow~\Upsilon$, where $\Upsilon$ is set of agent enumerations created according to six replacement categories:
 
 % \begin{enumerate}
 % \item \textit{state change }:
 
 % \begin{itemize}
-% \item $ \pmb{\alpha_\mathtt{S}\{p\}::c[\alpha_\rho\{t\}::c] = \alpha_\mathtt{\mathtt{S}}\{t\}::c} $
+% \item $ \pmb{\alpha_{\square}\{p\}::c[\alpha_\rho\{t\}::c] = \alpha_\mathtt{\mathtt{C}}\{t\}::c} $
 
-% where $ \alpha_\mathtt{S} = \alpha_\rho $ and $p \neq t$.
+% where $ \alpha_{\square} = \alpha_\rho $ and $p \neq t$.
 
-% \item $ \pmb{\mathtt{T}_\mathtt{S}::c[\mathtt{T}_\rho::c] = \mathtt{T}_\mathtt{R}::c}$ 
+% \item $ \pmb{\mathtt{T}_{\square}::c[\mathtt{T}_\rho::c] = \mathtt{T}::c}$ 
 
-% $\mathtt{T}_\mathtt{R} = \mathtt{A}_{\mathtt{R}_1}, \mathtt{A}_{\mathtt{R}_2}, ..., \mathtt{A}_{\mathtt{R}_n} : \mathtt{A}_{\mathtt{R}_1} = \alpha_\mathtt{S}\{p\}::c[\alpha_\rho\{t\}::c]$
+% $\mathtt{T} = \mathtt{A}_{\mathtt{R}_1}, \mathtt{A}_{\mathtt{R}_2}, ..., \mathtt{A}_{\mathtt{R}_n} : \mathtt{A}_{\mathtt{R}_1} = \alpha_{\square}\{p\}::c[\alpha_\rho\{t\}::c]$
 
-% and $\alpha_\rho\{t\} \in \mathtt{T}_\rho, ~\alpha_\mathtt{S}\{p\} \in \mathtt{T}_\mathtt{S} $ and $\alpha_\mathtt{S} = \alpha_\rho$.
+% and $\alpha_\rho\{t\} \in \mathtt{T}_\rho, ~\alpha_{\square}\{p\} \in \mathtt{T}_{\square} $ and $\alpha_{\square} = \alpha_\rho$.
 
-% \item $ \pmb{\mathtt{X}_\mathtt{S}::c[\mathtt{X}_\rho::c] = \mathtt{X}_\mathtt{R}::c}$
+% \item $ \pmb{\mathtt{X}_{\square}::c[\mathtt{X}_\rho::c] = \mathtt{X}::c}$
 
-% $ \mathtt{X}_\mathtt{R} = \beta_1.\beta_2. ~...~ .\beta_n \pmb{:} \forall y_1, y_2, ..., y_n \in \mathtt{X}_\mathtt{S}~and~z_1, z_2, ..., z_n \in \mathtt{X}_\rho \pmb{:}$
+% $ \mathtt{X} = \beta_1.\beta_2. ~...~ .\beta_n \pmb{:} \forall y_1, y_2, ..., y_n \in \mathtt{X}_{\square}~and~z_1, z_2, ..., z_n \in \mathtt{X}_\rho \pmb{:}$
 
 % $\beta_i = y_i::c~[z_i::c].$
 
@@ -409,26 +417,26 @@ $\emph{Rule-based model}$ $\mathcal{M}$ is a pair $ (\mathtt{State},~\mathcal{R}
 % \item \textit{complex formation}:
 
 % \begin{itemize}
-% \item $\pmb{\mathtt{S}_\Upsilon[\mathtt{X}_\rho::c] = \mathtt{X}_\mathtt{R}::c}$
+% \item $\pmb{\mathtt{C}_\Upsilon[\mathtt{X}_\rho::c] = \mathtt{X}::c}$
 
-% $\mathtt{X}_\mathtt{R} = \beta_1.\beta_2. ~...~ .\beta_n \pmb{:} \forall \beta_i::c \in \mathtt{S}_\Upsilon.$
+% $\mathtt{X} = \beta_1.\beta_2. ~...~ .\beta_n \pmb{:} \forall \beta_i::c \in \mathtt{C}_\Upsilon.$
 
 % \end{itemize}
 
 % \item \textit{complex dissociation}:
 
 % \begin{itemize}
-% \item $ \pmb{\mathtt{X}_\mathtt{S}::c[\rho] = \mathtt{R}_\Upsilon}$ 
+% \item $ \pmb{\mathtt{X}_{\square}::c[\rho] = \mathtt{R}_\Upsilon}$ 
 
-% $\rho = \beta_{\rho_1}::c + \beta_{\rho_2}::c + ~...~ + {\rho_n}::c$ and $\mathtt{X}_\mathtt{S} = \beta_{\mathtt{S}_1}.\beta_{\mathtt{S}_2}. ~...~ .{\mathtt{S}_n}::c$.
+% $\rho = \beta_{\rho_1}::c + \beta_{\rho_2}::c + ~...~ + {\rho_n}::c$ and $\mathtt{X}_{\square} = \beta_{\mathtt{C}_1}.\beta_{\mathtt{C}_2}. ~...~ .{\mathtt{C}_n}::c$.
 
-% $\mathtt{R}_\Upsilon = \beta_{\mathtt{R}_1}::c + \beta_{\mathtt{R}o_2}::c + ~...~ + {\mathtt{R}_n}::c \pmb{:}$ $ \beta_{\mathtt{R}_i} = \beta_{\mathtt{S}_i} \Leftrightarrow \beta_{\mathtt{S}_i} \models \beta_{\rho_i}.$
+% $\mathtt{R}_\Upsilon = \beta_{\mathtt{R}_1}::c + \beta_{\mathtt{R}o_2}::c + ~...~ + {\mathtt{R}_n}::c \pmb{:}$ $ \beta_{\mathtt{R}_i} = \beta_{\mathtt{C}_i} \Leftrightarrow \beta_{\mathtt{C}_i} \models \beta_{\rho_i}.$
 
 % \end{itemize}
 
 % \item \textit{degradation}
 % \begin{itemize}
-% \item $  \pmb{\mathtt{S}_\Upsilon[\emptyset] = \emptyset} $
+% \item $  \pmb{\mathtt{C}_\Upsilon[\emptyset] = \emptyset} $
 % \end{itemize}
 
 % \item \textit{translation}
@@ -438,9 +446,9 @@ $\emph{Rule-based model}$ $\mathcal{M}$ is a pair $ (\mathtt{State},~\mathcal{R}
 
 % \item \textit{transport}:
 % \begin{itemize}
-% \item $ \pmb{\beta_\mathtt{S}::c_\mathtt{S}[\beta_\rho::c_\rho] = \beta_\mathtt{S}::c_\rho} $
+% \item $ \pmb{\beta_{\square}::c_{\square}[\beta_\rho::c_\rho] = \beta_{\square}::c_\rho} $
 
-% where $\beta_\mathtt{S} = \beta_\rho$ and $ c_\mathtt{S} \neq c_\rho $.
+% where $\beta_{\square} = \beta_\rho$ and $ c_{\square} \neq c_\rho $.
 % \end{itemize}
 
 % \end{enumerate}
@@ -456,7 +464,7 @@ We define several syntactic extensions for better readability of the rules. Note
 Signatures are used for associating properties to agent names.
 
 \begin{defn}
-Atomic agent signature $\Sigma_\mathtt{A}$ is triple ($\alpha, \mathcal{M}_\delta, \mathcal{M}_c$) where $\alpha \in \mathcal{N}_{A}$ is name, $\delta \subseteq \mathcal{N}_{s}$ is finite non-empty set of states $\mathtt{s} \in \mathcal{N}_{s}$, and $\mathcal{M}_c \subseteq \mathcal{N}_{c}$ is set of compartments. It restricts each atomic agent $\mathtt{A}$ with name $\alpha$ to have its $\delta \subseteq \mathcal{M}_\delta$ and its $\mathtt{c} \in \mathcal{M}_c$. 
+Atomic agent signature $\Sigma_\mathtt{A}$ is triple ($\alpha, \mathcal{M}_\delta, \mathcal{M}_c$) where $\alpha \in \mathcal{N}_{A}$ is name, $\delta \subseteq \mathcal{N}_{s}$ is finite non-empty set of states $\mathtt{C} \in \mathcal{N}_{s}$, and $\mathcal{M}_c \subseteq \mathcal{N}_{c}$ is set of compartments. It restricts each atomic agent $\mathtt{A}$ with name $\alpha$ to have its $\delta \subseteq \mathcal{M}_\delta$ and its $\mathtt{c} \in \mathcal{M}_c$. 
 \end{defn}
 
 \begin{notation}
