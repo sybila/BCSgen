@@ -243,21 +243,27 @@ Agent enumeration $\Gamma$ is an expression of form $\varphi_1 + \varphi_2 + ...
 We extend definition of compatibility operator $\lhd$ to agent enumerations $\Gamma$. $\Gamma^{l} \lhd \Gamma^{r} \Leftrightarrow \Gamma^{l} = (\varphi^{l}_1, \varphi^{l}_2, ..., \varphi^{l}_n)$ \emph{and} $\Gamma^{r} = (\varphi^{r}_1, \varphi^{r}_2, ..., \varphi^{r}_n)$ \emph{and} $\\ \forall i \in [1,~n] : \varphi^{l}_i \lhd \varphi^{r}_i $.
 \end{defn}
 
-\begin{defn}
-Let $\mathtt{R},\mathtt{R}'$ be rules. We define the \emph{structural equivalence of rules} by claiming $\mathtt{R} \equiv \mathtt{R}'$ iff TBA...
-\end{defn}
-
-\begin{defn}
+\begin{defn} \label{well}
 We say rule $\mathtt{R}$ is \emph{well-formed} iff it has one of the following forms:
 \begin{center}
 \begin{tabular}{c@{\hskip 1in}l}
 	$\mathcal{E}_\lambda \Rightarrow \mathcal{E}_\rho$ & at least one of $\mathcal{E}_\lambda, \mathcal{E}_\rho \neq \varepsilon $\\
+	\hline
 	$\Gamma \Rightarrow \mathcal{E}$ & $\Gamma = (\varphi_1, \varphi_2, ..., \varphi_n) $ and $\mathcal{E} = \beta_1.\beta_2.~...~.\beta_m$ \\
-	 & and $ m \geq n $\\
+	 & and $ m \geq n $ and $n \geq 2$ \\
+	 \hline
 	$\mathcal{E} \Rightarrow \Gamma$ & $\Gamma = (\varphi_1, \varphi_2, ..., \varphi_n) $ and $\mathcal{E} = \beta_1.\beta_2.~...~.\beta_m$ \\
-	 & and $ \varphi_1.\varphi_2.~...~.\varphi_n = \mathcal{E} $\\
+	 & and $ \varphi_1.\varphi_2.~...~.\varphi_n = \mathcal{E} $ and $n \geq 2$\\
 \end{tabular}
 \end{center}
+\end{defn}
+
+\begin{defn}
+\emph{Reordering} of a \emph{well-formed} rule $\mathtt{R}$ is a function $(\mathbb{N} \times \mathbb{N}) \times \mathtt{R} \rightarrow \mathtt{R}$. Since the rule $\mathtt{R}$ is \emph{well-formed}, at most one agent enumeration $\Gamma = (\varphi_1, \varphi_2, ..., \varphi_n)$ with $n \geq 2$ can occur either on left or right-hand side of the rule. Then, for some $(i, j) \in \mathbb{N} \times \mathbb{N}$ where $ i,j \leq n $ and $ i \neq j $, we construct new $\Gamma' = (\varphi'_1, \varphi'_2, ..., \varphi'_n)$ such that $\varphi'_i = \varphi_j$ and $\varphi'_j = \varphi_i$. In case $\Gamma = (\varphi)$ (i.e. it is a singleton), the reordering is always the same rule.
+\end{defn}
+
+\begin{defn}
+Let $\mathtt{R},\mathtt{R}'$ be \emph{well-formed} rules. We define the \emph{structural equivalence of rules} by claiming $\mathtt{R} \equiv \mathtt{R}'$ iff TBA...
 \end{defn}
 
 \begin{theorem}
@@ -268,7 +274,7 @@ We define (potentially infinite) universe of rule expressions $\mathcal{E}_\math
 
 How is semantics being applied on a model does not matter now. Briefly, using an algorithm, we choose a candidate from given state and apply a rule on this candidate. This step is quite forward and does not need any deeper explanation (might be done later). What has to be defined is application of the rule on the candidate.
 
-Let $\beta$ be an agent, $\mathtt{R} \in \mathcal{E}_\mathcal{R}$ be a rule of form $\lambda \Rightarrow \rho$ where $\lambda$ and $\rho$ are agent enumerations $\Gamma_\lambda$ and $\Gamma_\rho$.
+Let $\beta$ be an agent, $\mathtt{R} \in \mathcal{E}_\mathcal{R}$ be a \emph{well-formed} rule of form $\lambda \Rightarrow \rho$ where $\lambda$ and $\rho$ are agent enumerations $\Gamma_\lambda$ and $\Gamma_\rho$ (w.r.t. Definition~\ref{well}).
 
 \begin{defn}
 $\mathtt{State}$ is a multiset generated from members of $\mathcal{U}$. Then, a candidate $\mathtt{C}$ is a subset of the $\mathtt{State}$ ($\mathtt{C} \subseteq \mathtt{State}$). The rest of the set $ \mathtt{State}$ $\setminus$ $\mathtt{C}$ be a remainder $\mathcal{I}$.
@@ -341,7 +347,9 @@ $ $ \\
 
      & 
     $ \mathtt{X}_{\square}[\Gamma_\rho] = \Gamma $ & 
-    $ \Gamma_\rho = \beta_{\rho_1}::c + \beta_{\rho_2}::c + ~...~+ \beta_{\rho_m}::c $ ~~~~~ $ n \geq m $\\
+    $ \Gamma_\rho = \beta_{\rho_1}::c + \beta_{\rho_2}::c + ~...~+ \beta_{\rho_n}::c $ \\
+
+	 &  & $ \mathtt{X}_{\square} = \beta_1.\beta_2.~...~.\beta_m::c $\\
 
      &  & $ \Gamma = \beta_1::c + \beta_2::c + ~...~+ \beta_n::c $~ \emph{such that} ~$ \beta_i \lhd \beta_{\rho_i}$ \\
 
@@ -352,9 +360,9 @@ $ $ \\
 
 	$ \frac{\Gamma_{\square}~\lhd~\Gamma_\lambda}{\Gamma_{\square}~\models~\Gamma_\lambda} $ & 
     $ \Gamma_{\square}[\mathtt{X}_\rho] = \mathtt{X} $ & 
-    $ \Gamma_{\square} = \beta_{\mathtt{C}_1}::c + \beta_{\mathtt{C}_2}::c + ~...~+ \beta_{\mathtt{C}_n}::c $\\
+    $ \Gamma_{\square} = \beta_{\mathtt{C}_1}::c + \beta_{\mathtt{C}_2}::c + ~...~+ \beta_{\mathtt{C}_n}::c $ ~~~~~ $ m \geq n $\\
 
-     &  & $ \mathtt{X} = \beta_1.\beta_2.~...~.\beta_n::c $~ \emph{such that} ~$ \beta_i = \beta_{\mathtt{C}_i} $ \\
+     &  & $ \mathtt{X} = \beta_1.\beta_2.~...~.\beta_m::c $~ \emph{such that} ~$ \beta_i = \beta_{\mathtt{C}_j} $ \\
 
     & & \\[0.02cm]
     \hline
