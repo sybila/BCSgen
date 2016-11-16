@@ -263,7 +263,21 @@ We say rule $\mathtt{R}$ is \emph{well-formed} iff it has one of the following f
 \end{defn}
 
 \begin{defn}
-Let $\mathtt{R},\mathtt{R}'$ be \emph{well-formed} rules. We define the \emph{structural equivalence of rules} by claiming $\mathtt{R} \equiv \mathtt{R}'$ iff TBA...
+Let $\mathtt{R},\mathtt{R}'$ be \emph{well-formed} rules. We define the \emph{equivalence of rules} by claiming $\mathtt{R} \equiv \mathtt{R}'$ iff both rules has the same form and holds following conditions:
+
+\begin{center}
+\begin{tabular}{c@{\hskip 1in}l}
+	$\mathtt{R}: \mathcal{E}_\lambda \Rightarrow \mathcal{E}_\rho$ & $\mathtt{R} \equiv \mathtt{R}' \Leftrightarrow \mathcal{E}_\lambda \equiv \mathcal{E}'_\lambda$ and $\mathcal{E}_\rho \equiv \mathcal{E}'_\rho$ \\
+	$\mathtt{R}': \mathcal{E}'_\lambda \Rightarrow \mathcal{E}'_\rho$ &  \\
+	\hline
+	$\mathtt{R}: \Gamma \Rightarrow \mathcal{E}$ & $\mathtt{R} \equiv \mathtt{R}' \Leftrightarrow \mathcal{E} \equiv \mathcal{E}'$ and there exists a set of pairs $(i,j) \in \mathbb{N} \times \mathbb{N}$ such \\
+	$\mathtt{R}': \Gamma' \Rightarrow \mathcal{E}'$ & that by applying reorderings on $\Gamma'$ we obtain $\Gamma^*$ such that $\Gamma^* \equiv \Gamma$.  \\
+	\hline
+	$\mathtt{R}: \mathcal{E} \Rightarrow \Gamma $ & $\mathtt{R} \equiv \mathtt{R}' \Leftrightarrow \mathcal{E} \equiv \mathcal{E}'$ and there exists a set of pairs $(i,j) \in \mathbb{N} \times \mathbb{N}$ such \\
+	$\mathtt{R}': \mathcal{E}' \Rightarrow \Gamma' $ & that by applying reorderings on $\Gamma'$ we obtain $\Gamma^*$ such that $\Gamma^* \equiv \Gamma$.  \\
+\end{tabular}
+\end{center}
+
 \end{defn}
 
 \begin{theorem}
@@ -271,8 +285,6 @@ We define (potentially infinite) universe of rule expressions $\mathcal{E}_\math
 \end{theorem}
 
 \section{Semantics}
-
-How is semantics being applied on a model does not matter now. Briefly, using an algorithm, we choose a candidate from given state and apply a rule on this candidate. This step is quite forward and does not need any deeper explanation (might be done later). What has to be defined is application of the rule on the candidate.
 
 Let $\beta$ be an agent, $\mathtt{R} \in \mathcal{E}_\mathcal{R}$ be a \emph{well-formed} rule of form $\lambda \Rightarrow \rho$ where $\lambda$ and $\rho$ are agent enumerations $\Gamma_\lambda$ and $\Gamma_\rho$ (w.r.t. Definition~\ref{well}).
 
