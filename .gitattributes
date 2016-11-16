@@ -1,4 +1,4 @@
 .gitattributes export-ignore
 .gitignore export-ignore
-Syntax and Semantics export-ignore
-README.md
+/Syntax and Semantics export-ignore
+/README.md
