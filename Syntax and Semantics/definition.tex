@@ -240,7 +240,15 @@ Agent enumeration $\Gamma$ is an expression of form $\varphi_1 + \varphi_2 + ...
 \end{notation} 
 
 \begin{defn}
+We define the \emph{equivalence of agent enumerations} by claiming $\Gamma \equiv \Gamma'$ iff $\Gamma = (\varphi_1, \varphi_2, ..., \varphi_n)$, $\Gamma' = (\varphi'_1, \varphi'_2, ..., \varphi'_n)$, and $\forall i \in [1, n]: \varphi_i \equiv \varphi'_i$.
+\end{defn}
+
+\begin{defn}
 We extend definition of compatibility operator $\lhd$ to agent enumerations $\Gamma$. $\Gamma^{l} \lhd \Gamma^{r} \Leftrightarrow \Gamma^{l} = (\varphi^{l}_1, \varphi^{l}_2, ..., \varphi^{l}_n)$ \emph{and} $\Gamma^{r} = (\varphi^{r}_1, \varphi^{r}_2, ..., \varphi^{r}_n)$ \emph{and} $\\ \forall i \in [1,~n] : \varphi^{l}_i \lhd \varphi^{r}_i $.
+\end{defn}
+
+\begin{defn}
+\emph{Reordering} of a agent enumeration $\Gamma = (\varphi_1, \varphi_2, ..., \varphi_n)$ is a function $(\mathbb{N} \times \mathbb{N}) \times \Gamma \rightarrow \Gamma$ where $n \geq 2$. Then, for some $(i, j) \in \mathbb{N} \times \mathbb{N}$ where $ i,j \leq n $ and $ i \neq j $, we construct new $\Gamma' = (\varphi'_1, \varphi'_2, ..., \varphi'_n)$ such that $\varphi'_i = \varphi_j$ and $\varphi'_j = \varphi_i$. 
 \end{defn}
 
 \begin{defn} \label{well}
@@ -256,10 +264,6 @@ We say rule $\mathtt{R}$ is \emph{well-formed} iff it has one of the following f
 	 & and $ \varphi_1.\varphi_2.~...~.\varphi_n = \mathcal{E} $ and $n \geq 2$\\
 \end{tabular}
 \end{center}
-\end{defn}
-
-\begin{defn}
-\emph{Reordering} of a \emph{well-formed} rule $\mathtt{R}$ is a function $(\mathbb{N} \times \mathbb{N}) \times \mathtt{R} \rightarrow \mathtt{R}$. Since the rule $\mathtt{R}$ is \emph{well-formed}, at most one agent enumeration $\Gamma = (\varphi_1, \varphi_2, ..., \varphi_n)$ with $n \geq 2$ can occur either on left or right-hand side of the rule. Then, for some $(i, j) \in \mathbb{N} \times \mathbb{N}$ where $ i,j \leq n $ and $ i \neq j $, we construct new $\Gamma' = (\varphi'_1, \varphi'_2, ..., \varphi'_n)$ such that $\varphi'_i = \varphi_j$ and $\varphi'_j = \varphi_i$. In case $\Gamma = (\varphi)$ (i.e. it is a singleton), the reordering is always the same rule.
 \end{defn}
 
 \begin{defn}
