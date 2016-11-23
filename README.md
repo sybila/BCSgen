@@ -1,7 +1,7 @@
 # BCSgen
 Biochemical Space language software tool
 
-----------------------------------
+---
 
 This tool serves for interpreting basic functionality to maintain Biochemical Space language. It provides state space generating and subsequent reaction network abstraction which can be used for analysis and visualisation<sup>1</sup>. For instance, there is Example directory, where can be seen functionality applied on several models. Users might enter Model directory, which serves as user's workspace. Here, a model can be defined and generating utilities applied on it. 
 
@@ -9,7 +9,7 @@ This tool serves for interpreting basic functionality to maintain Biochemical Sp
 
 To generate state space of a model, the most proper way is to use __Graphical User Interface__<sup>2</sup> (in GUI directory). Run it by:
 
-   `python gui.py`
+    `python gui.py`
 
 Alternatively use __Command Line Intereface__:
 
@@ -17,7 +17,7 @@ Alternatively use __Command Line Intereface__:
 2. write your model as rules (into rules.txt) and initial conditions (into initial_cond.txt),
 3. run script:
 
-   `python state_space.py bound memoization parallel`
+        `python state_space.py bound memoization parallel`
 
  where 
  * bound (Interger) - indicates maximal bound of the model
