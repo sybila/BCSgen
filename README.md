@@ -9,7 +9,7 @@ This tool serves for interpreting basic functionality to maintain Biochemical Sp
 
 To generate state space of a model, the most proper way is to use __Graphical User Interface__<sup>2</sup> (in GUI directory). Run it by:
 
-    `python gui.py`
+    python gui.py
 
 Alternatively use __Command Line Intereface__:
 
@@ -17,7 +17,7 @@ Alternatively use __Command Line Intereface__:
 2. write your model as rules (into rules.txt) and initial conditions (into initial_cond.txt),
 3. run script:
 
-        `python state_space.py bound memoization parallel`
+        python state_space.py bound memoization parallel
 
  where 
  * bound (Interger) - indicates maximal bound of the model
@@ -38,7 +38,7 @@ To generate reaction network explicitely, use the following instructions:
   
 Example
 
-    `python reaction_network.py outputs/vertices.txt outputs/edges.txt network/reactants.txt network/reactions.txt`
+    python reaction_network.py outputs/vertices.txt outputs/edges.txt network/reactants.txt network/reactions.txt
 
 ## Implicit Reaction network generator
 
