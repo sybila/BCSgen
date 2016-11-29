@@ -2,38 +2,38 @@ import pathos.multiprocessing as mp
 from Memo import *
 
 """
-Constructs new states from rest of state and result of replacement applied on a solution
-where solution + rest is original.
-:param solution: a solution chosen from state according to length of LHS of the rule
+Constructs new states from rest of state and result of replacement applied on a candidate
+where candidate + rest is original.
+:param candidate: a candidate chosen from state according to length of LHS of the rule
 :param rest: remainder of the state
 :param rule: given rule
 :return: list of new states
 """
-def generate_states_without_memo(solution, rest, rule):
-    return map(lambda a: State(a + rest), rule.replacement(solution)), None
+def generate_states_without_memo(candidate, rest, rule):
+    return map(lambda a: State(a + rest), rule.replacement(candidate)), None
 
 """
-Constructs new states from rest of state and result of replacement applied on a solution
-where solution + rest is original state using memoization.
-:param solution: a solution chosen from state according to length of LHS of the rule
+Constructs new states from rest of state and result of replacement applied on a candidate
+where candidate + rest is original state using memoization.
+:param candidate: a candidate chosen from state according to length of LHS of the rule
 :param rest: remainder of the state
 :param rule: given rule
 :memo: memoization object
 :return: list of new states
 """
-def generate_states_with_memo(solution, rest, rule, memo):
+def generate_states_with_memo(candidate, rest, rule, memo):
     if not memo:
-        return generate_states_without_memo(solution, rest, rule)
-    solution_rule_hash = hash((solution.__str__(), rule))
-    if not memo.isInRecords(solution_rule_hash):
-        new_solutions = rule.replacement(solution)
-        memo.addRecord(solution_rule_hash, new_solutions)
-    return map(lambda a: State(a + rest), memo.getRecord(solution_rule_hash)), memo
+        return generate_states_without_memo(candidate, rest, rule)
+    candidate_rule_hash = hash((candidate.__str__(), rule))
+    if not memo.isInRecords(candidate_rule_hash):
+        new_candidates = rule.replacement(candidate)
+        memo.addRecord(candidate_rule_hash, new_candidates)
+    return map(lambda a: State(a + rest), memo.getRecord(candidate_rule_hash)), memo
 
 """
 Worker's job:
 1. takes a state
-2. for each rule chooses a solution and transforms it according to the rule
+2. for each rule chooses a candidate and transforms it according to the rule
 3. creates new edges
 :param state: given state
 :param state_hashes: hashes of all previously created states
@@ -54,7 +54,7 @@ def worker(state, state_hashes, rules, vertices_name, bound, memo):
     f.close()
 
     for rule in rules:
-        new = map(lambda (solution, rest): generate_states_with_memo(solution, rest, rule, memo), state.getAllSolutions(rule))
+        new = map(lambda (candidate, rest): generate_states_with_memo(candidate, rest, rule, memo), state.getAllcandidates(rule))
         if new:
             new, memos = map(list, zip(*new))
             new = filter(None, map(list, new))

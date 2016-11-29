@@ -87,11 +87,11 @@ class TestState(unittest.TestCase):
         self.assertNotEqual(hash(self.State1), hash(self.State3))
         self.assertNotEqual(hash(self.State4), hash(self.State5))
 
-    def test_getAllSolutions(self):
+    def test_getAllcandidates(self):
         all_possibilities = [([self.Xagent1], [self.Xagent1, self.Sagent4, self.Aagent2]),
                              ([self.Sagent4], [self.Xagent1, self.Xagent1, self.Aagent2]),
                              ([self.Aagent2], [self.Xagent1, self.Xagent1, self.Sagent4])]
-        self.assertEqual(toStr(self.State1.getAllSolutions(self.Rule1)), toStr(all_possibilities))
+        self.assertEqual(toStr(self.State1.getAllcandidates(self.Rule1)), toStr(all_possibilities))
         all_possibilities = [([self.Xagent1, self.Xagent1], [self.Sagent4, self.Aagent2]),
                              ([self.Xagent1, self.Sagent4], [self.Xagent1, self.Aagent2]),
                              ([self.Sagent4, self.Xagent1], [self.Xagent1, self.Aagent2]),
@@ -99,7 +99,7 @@ class TestState(unittest.TestCase):
                              ([self.Aagent2, self.Xagent1], [self.Xagent1, self.Sagent4]),
                              ([self.Sagent4, self.Aagent2], [self.Xagent1, self.Xagent1]),
                              ([self.Aagent2, self.Sagent4], [self.Xagent1, self.Xagent1])]
-        self.assertEqual(toStr(self.State1.getAllSolutions(self.Rule2)), toStr(all_possibilities))
+        self.assertEqual(toStr(self.State1.getAllcandidates(self.Rule2)), toStr(all_possibilities))
 
 suite = unittest.TestLoader().loadTestsFromTestCase(TestState)
 unittest.TextTestRunner(verbosity=2).run(suite)

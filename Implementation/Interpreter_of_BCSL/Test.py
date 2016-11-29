@@ -284,39 +284,39 @@ class TestRule(unittest.TestCase):
         self.assertNotEqual(hash(self.Rule1), hash(self.Rule2))
         self.assertEqual(hash(self.Rule2), hash(self.Rule2))
 
-    def test_checkSolutionAndLhs(self):
-        self.assertTrue(self.Rule7.checkSolutionAndLhs([self.Xagent3, self.Sagent5]))
-        self.assertFalse(self.Rule7.checkSolutionAndLhs([self.Xagent4, self.Sagent5]))
+    def test_checkcandidateAndLhs(self):
+        self.assertTrue(self.Rule7.checkcandidateAndLhs([self.Xagent3, self.Sagent5]))
+        self.assertFalse(self.Rule7.checkcandidateAndLhs([self.Xagent4, self.Sagent5]))
 
     def test_match(self):
-        solution1 = [self.Xagent3, self.Sagent5]
-        self.assertEqual(self.Rule7.match(solution1), [tuple(solution1)])
+        candidate1 = [self.Xagent3, self.Sagent5]
+        self.assertEqual(self.Rule7.match(candidate1), [tuple(candidate1)])
 
     def test_formComplex(self):
-        solution_old = [self.Aagent1, self.Aagent1]
-        solution_new = [self.Xagent10]
-        self.assertEqual(self.Rule4.formComplex(solution_old), solution_new)
-        solution_old = [self.Xagent3, self.Sagent5]
-        solution_new = [self.Xagent14]
-        self.assertEqual(self.Rule7.formComplex(solution_old), solution_new)
+        candidate_old = [self.Aagent1, self.Aagent1]
+        candidate_new = [self.Xagent10]
+        self.assertEqual(self.Rule4.formComplex(candidate_old), candidate_new)
+        candidate_old = [self.Xagent3, self.Sagent5]
+        candidate_new = [self.Xagent14]
+        self.assertEqual(self.Rule7.formComplex(candidate_old), candidate_new)
 
     def test_dissociateComplex(self):
-        solution_old = [self.Xagent10]
-        solution_new = [self.Aagent1, self.Aagent1]
-        self.assertEqual(self.Rule10.dissociateComplex(solution_old), solution_new)
-        solution_old = [self.Xagent14]
-        solution_new = [self.Xagent3, self.Sagent5]
-        self.assertEqual(self.Rule11.dissociateComplex(solution_old), solution_new)
+        candidate_old = [self.Xagent10]
+        candidate_new = [self.Aagent1, self.Aagent1]
+        self.assertEqual(self.Rule10.dissociateComplex(candidate_old), candidate_new)
+        candidate_old = [self.Xagent14]
+        candidate_new = [self.Xagent3, self.Sagent5]
+        self.assertEqual(self.Rule11.dissociateComplex(candidate_old), candidate_new)
 
     def test_translate(self):
-        solution_old = []
-        solution_new = [self.Aagent32 ]
-        self.assertEqual(self.Rule5.translate(), solution_new)
+        candidate_old = []
+        candidate_new = [self.Aagent32 ]
+        self.assertEqual(self.Rule5.translate(), candidate_new)
 
     def test_degrade(self):
-        solution_old = [self.Aagent32]
-        solution_new = []
-        self.assertEqual(self.Rule3.degrade(solution_old), solution_new)
+        candidate_old = [self.Aagent32]
+        candidate_new = []
+        self.assertEqual(self.Rule3.degrade(candidate_old), candidate_new)
 
     def test_changeAtomicStates(self):
         self.assertEqual(changeAtomicStates(self.Aagent12, self.Aagent1), self.Aagent12)
@@ -328,44 +328,44 @@ class TestRule(unittest.TestCase):
         self.assertEqual(changeComplexStates(self.Xagent11, self.Xagent12), self.Xagent13)
 
     def test_replace(self):
-        solution_old = [self.Aagent1, self.Aagent1]
-        solution_new = [self.Xagent10]
-        self.assertEqual(self.Rule4.replace(solution_old), solution_new)
-        solution_old = []
-        solution_new = [self.Aagent32]
-        self.assertEqual(self.Rule5.replace(solution_old), solution_new)
-        solution_old = [self.Aagent32]
-        solution_new = []
-        self.assertEqual(self.Rule3.replace(solution_old), solution_new)
-        solution_old = [self.Aagent1]
-        solution_new = [self.Aagent12]
-        self.assertEqual(self.Rule1.replace(solution_old), solution_new)
-        solution_old = [self.Sagent1]
-        solution_new = [self.Sagent9]
-        self.assertEqual(self.Rule2.replace(solution_old), solution_new)
-        solution_old = [self.Xagent12]
-        solution_new = [self.Xagent13]
-        self.assertEqual(self.Rule6.replace(solution_old), solution_new)
-        solution_old = [self.Xagent10]
-        solution_new = [self.Aagent1, self.Aagent1]
-        self.assertEqual(self.Rule10.replace(solution_old), solution_new)
+        candidate_old = [self.Aagent1, self.Aagent1]
+        candidate_new = [self.Xagent10]
+        self.assertEqual(self.Rule4.replace(candidate_old), candidate_new)
+        candidate_old = []
+        candidate_new = [self.Aagent32]
+        self.assertEqual(self.Rule5.replace(candidate_old), candidate_new)
+        candidate_old = [self.Aagent32]
+        candidate_new = []
+        self.assertEqual(self.Rule3.replace(candidate_old), candidate_new)
+        candidate_old = [self.Aagent1]
+        candidate_new = [self.Aagent12]
+        self.assertEqual(self.Rule1.replace(candidate_old), candidate_new)
+        candidate_old = [self.Sagent1]
+        candidate_new = [self.Sagent9]
+        self.assertEqual(self.Rule2.replace(candidate_old), candidate_new)
+        candidate_old = [self.Xagent12]
+        candidate_new = [self.Xagent13]
+        self.assertEqual(self.Rule6.replace(candidate_old), candidate_new)
+        candidate_old = [self.Xagent10]
+        candidate_new = [self.Aagent1, self.Aagent1]
+        self.assertEqual(self.Rule10.replace(candidate_old), candidate_new)
 
     def test_replacement(self):
-        solution_old = [self.Xagent3, self.Sagent5]
-        solution_new = [[self.Xagent14]]
-        self.assertEqual(sorted(self.Rule7.replacement(solution_old)), sorted(solution_new))
-        solution_old = [self.Sagent1, self.Sagent3]
-        solution_new = [[self.Xagent3]]
-        self.assertEqual(sorted(self.Rule8.replacement(solution_old)), sorted(solution_new))
-        solution_old = [self.Xagent18, self.Xagent19]
-        solution_new = [[self.Xagent22]]
-        self.assertEqual(sorted(self.Rule9.replacement(solution_old)), sorted(solution_new))
-        solution_old = [self.Xagent22]
-        solution_new = [[self.Xagent19, self.Xagent19], [self.Xagent6, self.Xagent26]]
-        self.assertEqual(sorted(self.Rule12.replacement(solution_old)), sorted(solution_new))
-        solution_old = [self.Aagent33]
-        solution_new = [[self.Aagent4]]
-        self.assertEqual(sorted(self.Rule13.replacement(solution_old)), sorted(solution_new))
+        candidate_old = [self.Xagent3, self.Sagent5]
+        candidate_new = [[self.Xagent14]]
+        self.assertEqual(sorted(self.Rule7.replacement(candidate_old)), sorted(candidate_new))
+        candidate_old = [self.Sagent1, self.Sagent3]
+        candidate_new = [[self.Xagent3]]
+        self.assertEqual(sorted(self.Rule8.replacement(candidate_old)), sorted(candidate_new))
+        candidate_old = [self.Xagent18, self.Xagent19]
+        candidate_new = [[self.Xagent22]]
+        self.assertEqual(sorted(self.Rule9.replacement(candidate_old)), sorted(candidate_new))
+        candidate_old = [self.Xagent22]
+        candidate_new = [[self.Xagent19, self.Xagent19], [self.Xagent6, self.Xagent26]]
+        self.assertEqual(sorted(self.Rule12.replacement(candidate_old)), sorted(candidate_new))
+        candidate_old = [self.Aagent33]
+        candidate_new = [[self.Aagent4]]
+        self.assertEqual(sorted(self.Rule13.replacement(candidate_old)), sorted(candidate_new))
 
 
 suite = unittest.TestLoader().loadTestsFromTestCase(TestRule)

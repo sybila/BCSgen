@@ -31,11 +31,11 @@ class State:
         return self.hash
 
     """
-    Creates all possible solutions according to the size of left-hand-side of a rule
+    Creates all possible candidates according to the size of left-hand-side of a rule
     :param rule: given rule
-    :return: list of created solutions
+    :return: list of created candidates
     """
-    def getAllSolutions(self, rule):
+    def getAllcandidates(self, rule):
         r = len(rule.getLeftHandSide())
         product = map(lambda a: list(a), list(set([element for element in itertools.permutations(self.agents.elements(), r)])))
         the_rest = map(lambda a: list((self.agents - collections.Counter(a)).elements()), product)

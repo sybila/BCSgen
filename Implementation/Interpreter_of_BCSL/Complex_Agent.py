@@ -5,7 +5,7 @@ from Structure_Agent import *
 
 """
 Checks if for every agent from full composition_s there exist unique compatible agent from full composition_l
-:param composition_s:  solution's full composition (List)
+:param composition_s:  candidate's full composition (List)
 :param composition_l: left-hand-side's full composition (List)
 :return: True if the condition is satisfied
 """

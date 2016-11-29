@@ -13,7 +13,7 @@ def extractValue(composition, agent):
 
 """
 Checks if for every agent from partial composition_s there exist unique compatible agent from partial composition_l
-:param composition_s: solution's partial composition (Set)
+:param composition_s: candidate's partial composition (Set)
 :param composition_l: left-hand-side's partial composition (Set)
 :return: True if the condition is satisfied
 """
