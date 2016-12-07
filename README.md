@@ -20,15 +20,15 @@ Alternatively use __Command Line Intereface__:
         python state_space.py bound memoization parallel
 
  where 
- * bound (Interger) - indicates maximal bound of the model
+ * bound (Integer) - indicates maximal bound of the model
  * memoization (True/False) - True if you want to apply memoization during computation
- * parallel<sup>3</sup> (True/False) - True if you want to apply parallel cumputing
+ * parallel<sup>3</sup> (True/False) - True if you want to apply parallel computing
 
 > in Example directory, there are several models, to run them just use 'python example.py'
 
 ## Explicit Reaction network generator
 
-To generate reaction network explicitely, use the following instructions:
+To generate reaction network explicitly, use the following instructions:
 
 1. in Model directory, run the script reaction_network.py with the following parameters:
 * input vertices - from State space generator
