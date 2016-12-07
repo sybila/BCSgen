@@ -42,8 +42,8 @@ Example
 
 ## Implicit Reaction network generator
 
-- in development
 - works similarly to state space generator but it has output of explicit reaction network generator
+- in development, for more information see this [issue](https://github.com/sybila/BCSgen/issues/6)
 
 ---
 > <sup>1</sup> Both state space or reaction network might be visualised with [this](https://github.com/mathooo/NetworkVISUAL) utility.
