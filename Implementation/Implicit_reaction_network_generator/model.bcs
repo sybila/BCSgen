@@ -1,6 +1,5 @@
 # rules
 KaiC::cyt + KaiB::cyt => KaiC.KaiB::cyt
-KaiC.KaiB::cyt => KaiC::cyt + KaiB::cyt
 KaiC(S{u}).KaiB::cyt => KaiC(S{p}).KaiB::cyt
 
 # Initial state

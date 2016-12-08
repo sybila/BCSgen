@@ -4,6 +4,20 @@ import itertools
 from Structure_Agent import *
 
 """
+Checks if for every agent from full composition_s there exist unique compatible agent from full composition_l (order is NOT important)
+:param composition_s:  solution's full composition (List)
+:param composition_l: left-hand-side's full composition (List)
+:return: True if the condition is satisfied
+"""
+def softCompareFullCompositions(composition_s, composition_l):
+    if not composition_l:
+        return True
+    for agent in composition_s:
+        if agent.isSimilarTo(composition_l[0]):
+            return softCompareFullCompositions(extractValue(composition_s, agent), composition_l[1:])
+    return False
+
+"""
 Checks if for every agent from full composition_s there exist unique compatible agent from full composition_l
 :param composition_s:  candidate's full composition (List)
 :param composition_l: left-hand-side's full composition (List)
@@ -65,6 +79,16 @@ class Complex_Agent:
             return False
         return ( self.compartment == other.compartment and len(self.full_composition) == len(other.full_composition)
                 and compareFullCompositions(copy.deepcopy(self.full_composition), copy.deepcopy(other.full_composition)) )
+
+    """
+    Checks if the first complex agent is similar to the second one
+    :param other: the second agent
+    :return: True if it is similar
+    """
+    def isSimilarTo(self, other):
+        if not isinstance(other, Complex_Agent):
+            return False
+        return ( self.compartment == other.compartment and len(self.full_composition) == len(other.full_composition) and softCompareFullCompositions(copy.deepcopy(self.full_composition), copy.deepcopy(other.full_composition)) )
 
     """
     Returns compatible agent (first found) from full composition with given agent

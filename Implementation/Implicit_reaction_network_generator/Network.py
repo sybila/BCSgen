@@ -14,7 +14,13 @@ class Network:
 		return self.__repr__()
 
 	def __repr__(self):
-		return "----------- Network ---------- \n" + str(self.Nodes) + "\n +++++++++++++++++++ \n" + str(self.Edges) + "\n -------------------------"
+		return "----------- Network ---------- \n" + "\n".join(map(lambda node: str(node), self.Nodes)) + "\n +++++++++ Edges +++++++++ \n" + "\n".join(map(lambda edge: str(edge), self.Edges)) + "\n +++++++ reactions ++++++++ \n" + "\n".join(map(lambda reaction: str(reaction), self.Reactions)) + "\n -------------------------"
+
+	def getEdges(self):
+		return self.Edges
+
+	def getNumOfReactions(self):
+		return len(self.Reactions)
 
 	def addNode(self, header):
 		newNode = Node(header)
@@ -24,16 +30,38 @@ class Network:
 		else:
 			return self.Nodes[self.Nodes.index(newNode)]
 
-	def addEdge(self, From, To):
-		self.Edges.add(Edge(map(lambda item: self.addNode(item), From), map(lambda item: self.addNode(item), To)))
+	def printReactions(self):
+		print "\n".join(map(lambda reaction: str(reaction), self.Reactions))
+
+	def addEdge(self, From, To, rule):
+		self.Edges.add(Edge(map(lambda item: self.addNode(item), From), map(lambda item: self.addNode(item), To), rule))
 
 	def createNetwork(self, bcsModelFile):
 		rules, state = Import.import_model(bcsModelFile)
 		for rule in rules:
-			self.addEdge(rule.getLeftHandSide(), rule.getRightHandSide())
+			self.addEdge(rule.getLeftHandSide(), rule.getRightHandSide(), rule)
+		self.introduceNewAgents(state)
 
-	def interpretEdges():
-		return
+	def interpretEdges(self):
+		globallyNewAgents = set()
+		for edge in self.Edges:
+			reactions, newAgents = edge.applyEdge()
+			self.Reactions.update(reactions)
+			globallyNewAgents.update(newAgents)
+		return S_gen.State(globallyNewAgents)
 
-	def introduceNewAgents():
-		return
+	def introduceNewAgents(self, agents):
+		for agent in agents.getAgents().elements():
+			map(lambda node: node.includeAgent(agent), self.Nodes)
+
+	"""
+	This should check what the network can/cannot do, get some usefull properties etc.
+	But the most important is to remove edges which cannot be used at all AND change Nodes' buckets to sets.
+	Maybe some error is returned or something...
+	"""
+	def applyStaticAnalysis(self):
+		# magic is here
+		networkIsOK = True
+		message = "Sweet life"
+		map(lambda node: node.switchToSet(), self.Nodes)
+		return networkIsOK, message

@@ -54,3 +54,11 @@ class Atomic_Agent:
         if not isinstance(other, Atomic_Agent):
             return False
         return self.__eq__(other) or ( self.name == other.name and self.compartment == other.compartment and self.states.issubset(other.states) )
+
+    """
+    Checks if the first atomic agent is similar to the second one
+    :param other: the second agent
+    :return: True if it is similar
+    """
+    def isSimilarTo(self, other):
+        return self.isCompatibleWith(other)

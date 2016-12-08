@@ -14,11 +14,20 @@ class Node:
 		return self.__repr__()
 
 	def __repr__(self):
-		return "*** Node *** \n" + str(self.header) + "\n" + str(self.bucket) + "\n ***********" 
+		return "*** Node : " + str(self.header) + ", bucket: " + str(self.bucket) + " ***" 
 
 	def __hash__(self):
 		return hash(self.header)
 
+	def getBucket(self):
+		return self.bucket
+
+	def switchToSet(self):
+		self.bucket = set(self.bucket)
+
 	def includeAgent(self, agent):
-		if agent.icCompatibleWith(self.header):
-			self.bucket += collections.Counter([agent])
+		if agent.isSimilarTo(self.header):
+			if isinstance(self.bucket, set):
+				self.bucket.add(agent)
+			else:
+				self.bucket += collections.Counter([agent])

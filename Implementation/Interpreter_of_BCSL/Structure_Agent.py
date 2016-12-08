@@ -89,6 +89,14 @@ class Structure_Agent:
                 and comparePartialCompositions(copy.deepcopy(self.partial_composition), copy.deepcopy(other.partial_composition)) )
 
     """
+    Checks if the first structural agent is similar to the second one
+    :param other: the second agent
+    :return: True if it is similar
+    """
+    def isSimilarTo(self, other):
+        return self.isCompatibleWith(other)
+
+    """
     Returns compatible agent from partial composition with given agent
     :param agent: given atomic agent
     :return: compatible agent
