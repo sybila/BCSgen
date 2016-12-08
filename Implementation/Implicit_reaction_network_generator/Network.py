@@ -14,7 +14,7 @@ class Network:
 		return self.__repr__()
 
 	def __repr__(self):
-		return "----------- Network ---------- \n" + str(self.Nodes) + "\n" + str(self.Edges) + "\n -------------------------"
+		return "----------- Network ---------- \n" + str(self.Nodes) + "\n +++++++++++++++++++ \n" + str(self.Edges) + "\n -------------------------"
 
 	def addNode(self, header):
 		newNode = Node(header)
@@ -31,3 +31,9 @@ class Network:
 		rules, state = Import.import_model(bcsModelFile)
 		for rule in rules:
 			self.addEdge(rule.getLeftHandSide(), rule.getRightHandSide())
+
+	def interpretEdges():
+		return
+
+	def introduceNewAgents():
+		return
