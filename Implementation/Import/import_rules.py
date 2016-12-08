@@ -315,21 +315,29 @@ def create_rule(rule):
 Imports rules from file
 :param rules_file: name of file with rules
 """
-def import_rules(rules_file, init_file, sub_file = None):
-    created_rules = []
-    with open(rules_file) as rules:
-        for rule in rules:
-            rule = rule.rstrip().replace("\"", "")
-            rule = remove_spaces(rule)
-            rule = remove_steichiometry(rule)
-            if sub_file:
-                rule = substitute_rule(import_substitutions(sub_file), rule)
-            # Flatenning is not supported yet
-            #rule = flattenRule(rule)
+def import_rules(input_file, sub_file = None):
+    inits, created_rules = [], []
 
-            # here the rule has to be well-formed !
-            created_rules.append(create_rule(rule))
-    return created_rules, import_initial_state(init_file)
+    lineNum = 0
+    with open(input_file) as lines:
+        for line in lines:
+            lineNum += 1
+            line = line.rstrip().replace("\"", "")
+            if not line:
+                for line in lines:
+                    inits.append(line.rstrip().replace("\"", ""))
+                break
+            if not line.startswith('#'):
+                rule = remove_spaces(line)
+                rule = remove_steichiometry(rule)
+                if sub_file:
+                    rule = substitute_rule(import_substitutions(sub_file), rule)
+                # Flatenning is not supported yet
+                #rule = flattenRule(rule)
+
+                # here the rule has to be well-formed !
+                created_rules.append(create_rule(rule))
+    return created_rules, import_initial_state(inits[1:])
 
 """
 Imports agent names to be substituted
@@ -349,11 +357,10 @@ Imports agent names for initial state
 :param init_file: file containing lines number agent
 :return: initial State
 """
-def import_initial_state(init_file):
+def import_initial_state(inits):
     agents = []
-    with open(init_file) as complexes:
-        for line in complexes:
-            line = line.rstrip()
-            for i in xrange(0, int(line.split(" ")[0])):
-                agents.append(create_agent(line.split(" ")[1]))
+    for line in inits:
+        line = line.rstrip()
+        for i in xrange(0, int(line.split(" ")[0])):
+            agents.append(create_agent(line.split(" ")[1]))
     return Gen.State(agents)
