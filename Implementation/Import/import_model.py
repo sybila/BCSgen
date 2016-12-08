@@ -315,7 +315,7 @@ def create_rule(rule):
 Imports rules from file
 :param rules_file: name of file with rules
 """
-def import_rules(input_file, sub_file = None):
+def import_model(input_file, sub_file = None):
     inits, created_rules = [], []
 
     lineNum = 0

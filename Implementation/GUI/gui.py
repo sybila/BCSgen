@@ -26,7 +26,7 @@ class Application(Frame):
         self.compute.config(state=DISABLED)
         self.compute.config(text="Computing...")
 
-        rules, state = Import.import_rules(self.rules, self.initial)
+        rules, state = Import.import_model(self.rules, self.initial)
         states = {state}
         bound = int(self.bound.get())
         done = Gen.work_manager(states, rules, self.vertices, self.edges, bound, self.parallel, self.memoization)
