@@ -33,7 +33,9 @@ class Structure_Agent:
         self.compartment = compartment
 
     def __eq__(self, other):
-        return self.name == other.name and self.partial_composition == other.partial_composition and self.compartment == other.compartment
+        if isinstance(other, Structure_Agent):
+            return self.name == other.name and self.partial_composition == other.partial_composition and self.compartment == other.compartment
+        return False
 
     def __ne__(self, other):
         return not self.__eq__(other)

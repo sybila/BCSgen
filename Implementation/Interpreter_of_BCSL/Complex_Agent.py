@@ -21,7 +21,9 @@ class Complex_Agent:
         self.compartment = compartment
 
     def __eq__(self, other):
-        return collections.Counter(self.full_composition) == collections.Counter(other.full_composition) and self.compartment == other.compartment
+        if isinstance(other, Complex_Agent):
+            return collections.Counter(self.full_composition) == collections.Counter(other.full_composition) and self.compartment == other.compartment
+        return False
 
     def __ne__(self, other):
         return not self.__eq__(other)

@@ -1,1 +1,1 @@
-from import_rules import *
+from import_model import *
