@@ -21,7 +21,7 @@ class Edge:
 	def __hash__(self):
 		return hash(str(self.From) + str(self.To))
 
-	def applyEdge(self):
+	def applyEdge(self, memo):
 		reactions = set()
 		newAgents = set()
 
@@ -30,9 +30,13 @@ class Edge:
 			From = map(lambda node: list(node.getBucket()), self.From)
 			possibleReactants = itertools.product(*From)
 			for reactants in possibleReactants:
-				results = self.Rule.replacement(reactants)
-				for result in results:
+				reactants_rule_hash = hash((str(reactants), self.Rule))
+				if not memo.isInRecords(reactants_rule_hash):
+					results = self.Rule.replacement(reactants)
+					memo.addRecord(reactants_rule_hash, results)
+
+				for result in memo.getRecord(reactants_rule_hash):
 					reactions.add(Reaction(S_gen.State(reactants), S_gen.State(result)))
 					newAgents.update(result)
 
-		return reactions, newAgents
+		return reactions, newAgents, memo
