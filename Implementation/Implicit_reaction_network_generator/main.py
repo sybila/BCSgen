@@ -21,4 +21,6 @@ else:
 		old_numberOfReactions = new_numberOfReactions
 		new_numberOfReactions = myNet.getNumOfReactions()
 
+		print new_numberOfReactions
+
 	print myNet.printReactions()

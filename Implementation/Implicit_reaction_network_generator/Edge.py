@@ -7,6 +7,7 @@ class Edge:
 		self.From = From 			# list of Nodes
 		self.To = To 				# list of Nodes
 		self.Rule = rule
+		self.Hash = hash(self)
 
 	def __eq__(self, other):
 		return self.From == other.From and self.To == other.To
@@ -23,11 +24,15 @@ class Edge:
 	def applyEdge(self):
 		reactions = set()
 		newAgents = set()
-		From = map(lambda node: list(node.getBucket()), self.From)
-		possibleReactants = itertools.product(*From)
-		for reactants in possibleReactants:
-			results = self.Rule.replacement(reactants)
-			for result in results:
-				reactions.add(Reaction(S_gen.State(reactants), S_gen.State(result)))
-				newAgents.update(result)
+
+		if self.Hash != hash(self):
+			self.Hash = hash(self)
+			From = map(lambda node: list(node.getBucket()), self.From)
+			possibleReactants = itertools.product(*From)
+			for reactants in possibleReactants:
+				results = self.Rule.replacement(reactants)
+				for result in results:
+					reactions.add(Reaction(S_gen.State(reactants), S_gen.State(result)))
+					newAgents.update(result)
+
 		return reactions, newAgents
