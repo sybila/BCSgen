@@ -47,8 +47,10 @@ class Network:
 		else:
 			return self.Nodes[self.Nodes.index(newNode)]
 
-	def printReactions(self):
-		print "\n".join(map(lambda reaction: str(reaction), self.Reactions))
+	def printReactions(self, outputFile):
+		output = open(outputFile,'w')
+		output.write("\n".join(map(lambda reaction: str(reaction), self.Reactions)))
+		output.close()
 
 	"""
 	Adds new Edge to network's Edges

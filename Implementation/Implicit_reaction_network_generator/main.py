@@ -1,7 +1,8 @@
 import sys
 from Network import *
 
-inputFile = sys.argv[-1]
+inputFile = sys.argv[-2]
+outputFile = sys.argv[-1]
 
 # initialize the network and create it
 myNet = Network()
@@ -23,4 +24,4 @@ else: 	# if network is OK, proceed
 		old_numberOfReactions = new_numberOfReactions
 		new_numberOfReactions = myNet.getNumOfReactions()
 
-	print myNet.printReactions()
+	myNet.printReactions(outputFile)

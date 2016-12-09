@@ -1,0 +1,10 @@
+# rules
+6 KaiC::cyt => KaiC.KaiC.KaiC.KaiC.KaiC.KaiC::cyt
+KaiC.KaiC.KaiC.KaiC.KaiC.KaiC::cyt => 6 KaiC::cyt
+KaiC(S{u}).KaiC.KaiC.KaiC.KaiC.KaiC::cyt => KaiC(S{p}).KaiC.KaiC.KaiC.KaiC.KaiC::cyt
+KaiC(S{p}).KaiC.KaiC.KaiC.KaiC.KaiC::cyt => KaiC(S{u}).KaiC.KaiC.KaiC.KaiC.KaiC::cyt
+
+# Initial state
+1 KaiC(S{u}|T{u})::cyt
+1 KaiB::cyt
+1 KaiA::cyt
