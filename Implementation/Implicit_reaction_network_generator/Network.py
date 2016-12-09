@@ -4,6 +4,14 @@ from Reaction import *
 sys.path.append(os.path.abspath('../'))
 import Import as Import
 
+"""
+Class Network
+Its rule network which holds all needed to create initialized reaction network
+:attribute Nodes: list of Nodes
+:attribute Edges: set of Edges
+:attribute Reactions: set of Reactions
+:attribute Memo: memoization object to improve performance
+"""
 class Network:
 	def __init__(self):
 		self.Nodes = []
@@ -26,6 +34,11 @@ class Network:
 	def getReactions(self):
 		return self.Reactions
 
+	"""
+	Adds new Node to network's Nodes (if there is not such Node)
+	:param header: header of new Node
+	:return: new Node or same existing Node
+	"""
 	def addNode(self, header):
 		newNode = Node(header)
 		if newNode not in self.Nodes:
@@ -37,15 +50,29 @@ class Network:
 	def printReactions(self):
 		print "\n".join(map(lambda reaction: str(reaction), self.Reactions))
 
+	"""
+	Adds new Edge to network's Edges
+	:param From: list of Nodes
+	:param To: list of Nodes
+	:param rule: associated rule
+	"""
 	def addEdge(self, From, To, rule):
 		self.Edges.add(Edge(map(lambda item: self.addNode(item), From), map(lambda item: self.addNode(item), To), rule))
 
+	"""
+	Creates new network from imported BCS file
+	:param bcsModelFile: BCS file
+	"""
 	def createNetwork(self, bcsModelFile):
 		rules, state = Import.import_model(bcsModelFile)
 		for rule in rules:
 			self.addEdge(rule.getLeftHandSide(), rule.getRightHandSide(), rule)
 		self.introduceNewAgents(state)
 
+	"""
+	Apply Edge's associated rule to it's buckets of agents
+	:return: State of newly created agents
+	"""
 	def interpretEdges(self):
 		globallyNewAgents = set()
 		for edge in self.Edges:
@@ -54,6 +81,10 @@ class Network:
 			globallyNewAgents.update(newAgents)
 		return S_gen.State(globallyNewAgents)
 
+	"""
+	Adds agents to all Nodes' buckets (if they fit)
+	:param agents: State of agents
+	"""
 	def introduceNewAgents(self, agents):
 		for agent in agents.getAgents().elements():
 			map(lambda node: node.includeAgent(agent), self.Nodes)

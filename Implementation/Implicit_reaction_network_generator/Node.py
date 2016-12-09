@@ -1,5 +1,11 @@
 import collections
 
+"""
+Class Node
+Holds data about an none in Network
+:attribute header: parent Agent of all agents in bucket
+:attribute bucket: multiset of agents (later just a set !)
+"""
 class Node:
 	def __init__(self, header):
 		self.header = header
@@ -22,9 +28,16 @@ class Node:
 	def getBucket(self):
 		return self.bucket
 
+	"""
+	Changes buckets from multiset to set (after static analysis is applied)
+	"""
 	def switchToSet(self):
 		self.bucket = set(self.bucket)
 
+	"""
+	Adds agent to bucket if it is compatible with (similar to) header
+	:param agent: given agent
+	"""
 	def includeAgent(self, agent):
 		if agent.isSimilarTo(self.header):
 			if isinstance(self.bucket, set):

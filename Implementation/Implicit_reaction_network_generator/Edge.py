@@ -2,10 +2,18 @@ import collections
 from Reaction import *
 import itertools
 
+"""
+Class Edge
+An Edge holds data abuut edge in the Network
+:attribute From: list of Nodes
+:attribute To: list of Nodes
+:attribute Rule: associated rule
+:attribute Hash: calculated hash up to current state of buckets
+"""
 class Edge:
 	def __init__(self, From, To, rule):
-		self.From = From 			# list of Nodes
-		self.To = To 				# list of Nodes
+		self.From = From
+		self.To = To
 		self.Rule = rule
 		self.Hash = hash(self)
 
@@ -21,6 +29,14 @@ class Edge:
 	def __hash__(self):
 		return hash(str(self.From) + str(self.To))
 
+	"""
+	Apply Edge's associated rule to it's buckets of agents
+	Checks if the Edge's buckets have changed (by hash),
+	if they didn't, do nothing, else apply rule
+	Uses memoization to remember tuples (reactants, rule, results)
+	:param memo: memoization object to improve performance
+	:return: new Reactions, set of new Agents and updated memo
+	"""
 	def applyEdge(self, memo):
 		reactions = set()
 		newAgents = set()
