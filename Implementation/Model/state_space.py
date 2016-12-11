@@ -10,8 +10,8 @@ if not os.path.isdir('output/'):
 
 #############################################################
 
-memoization = bool(sys.argv[-1])
-parallel = bool(sys.argv[-2])
+memoization = bool(int(sys.argv[-1]))
+parallel = bool(int(sys.argv[-2]))
 bound = sys.argv[-3]
 
 print
@@ -22,7 +22,7 @@ else:
 
 starttime = time()
 
-rules, state = Import.import_model("rules.txt", "initial_cond.txt")
+rules, state = Import.import_model("model.txt")
 
 states = {state}
 Gen.work_manager(states, rules, "output/vertices.txt", "output/edges.txt", bound, parallel, memoization)
