@@ -16,7 +16,7 @@ class Application(Frame):
     Checks if all fields are filled
     """
     def get_ready(self, *args):
-        if self.rules and self.initial and self.vertices and self.edges and self.bound.get() != "":
+        if self.model and self.vertices and self.edges and self.bound.get() != "":
            self.compute.config(state=NORMAL)
 
     """
@@ -26,7 +26,7 @@ class Application(Frame):
         self.compute.config(state=DISABLED)
         self.compute.config(text="Computing...")
 
-        rules, state = Import.import_model(self.rules, self.initial)
+        rules, state = Import.import_model(self.model)
         states = {state}
         bound = int(self.bound.get())
         done = Gen.work_manager(states, rules, self.vertices, self.edges, bound, self.parallel, self.memoization)
@@ -38,22 +38,12 @@ class Application(Frame):
     """
     Sets path to file with rules
     """
-    def set_rules(self):
-        self.rules = askopenfilename()
-        self.text_rules.config(state=NORMAL)
-        self.text_rules.delete(0, END)
-        self.text_rules.insert(END, self.rules.__str__())
-        self.text_rules.config(state="readonly")
-
-    """
-    Sets path to file with initial conditions
-    """
-    def set_initial(self):
-        self.initial = askopenfilename()
-        self.text_initial.config(state=NORMAL)
-        self.text_initial.delete(0, END)
-        self.text_initial.insert(END, self.initial.__str__())
-        self.text_initial.config(state="readonly")
+    def set_model(self):
+        self.model = askopenfilename()
+        self.text_model.config(state=NORMAL)
+        self.text_model.delete(0, END)
+        self.text_model.insert(END, self.model.__str__())
+        self.text_model.config(state="readonly")
 
     """
     Sets path to output vertices file 
@@ -94,17 +84,11 @@ class Application(Frame):
         self.mes = Message(root,text='Input', width=300, font="bold", borderwidth=8, relief= RIDGE)
         self.mes.grid(row=0, column=0, columnspan=2, ipadx=205)
 
-        self.text_rules = Entry(root,width=30, state="readonly", readonlybackground='white', textvariable=self.rulesVar)
-        self.text_rules.grid(row=1, column=1)
+        self.text_model = Entry(root,width=30, state="readonly", readonlybackground='white', textvariable=self.modelVar)
+        self.text_model.grid(row=1, column=1)
 
-        self.button_rules = Button(root,text="Rules",command=self.set_rules, width=25)
+        self.button_rules = Button(root,text="Model",command=self.set_model, width=25)
         self.button_rules.grid(row=1, column=0)
-
-        self.text_initial = Entry(root,width=30, state="readonly", readonlybackground='white', textvariable=self.initVar)
-        self.text_initial.grid(row=2, column=1)
-
-        self.button_init = Button(root,text="Initial state",command=self.set_initial,  width=25)
-        self.button_init.grid(row=2, column=0)
 
         self.bound_name = Label(root,text="Bound:",  width=25).grid(row=3, column=0)
         self.bound_wid = Entry(root,textvariable=self.bound, width=30)
@@ -142,8 +126,7 @@ class Application(Frame):
 
         self.vertVar.trace("w", self.get_ready)
         self.edgVar.trace("w", self.get_ready)
-        self.initVar.trace("w", self.get_ready)
-        self.rulesVar.trace("w", self.get_ready)
+        self.modelVar.trace("w", self.get_ready)
         self.bound.trace("w", self.get_ready)
 
 
@@ -157,8 +140,7 @@ class Application(Frame):
         self.memoization = False
         self.vertVar = StringVar()
         self.edgVar = StringVar()
-        self.initVar = StringVar()
-        self.rulesVar = StringVar()
+        self.modelVar = StringVar()
         self.bound = StringVar(value="")
         self.grid()
         self.createWidgets()
