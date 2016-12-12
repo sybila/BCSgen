@@ -14,7 +14,7 @@ To generate state space of a model, the most proper way is to use __Graphical Us
 Alternatively use __Command Line Intereface__:
 
 1. enter Model directory (serves as user's workspace),
-2. write your model as rules (into rules.txt) and initial conditions (into initial_cond.txt),
+2. write your model as rules and initial conditions (into model.bcs),
 3. run script:
 
         python state_space.py bound memoization parallel
@@ -42,9 +42,19 @@ Example
 
 ## Implicit Reaction network generator
 
-- works similarly to state space generator but it has output of explicit reaction network generator
-- in development, for more information see this [issue](https://github.com/sybila/BCSgen/issues/6)
+Works similarly to state space generator but it has output of explicit reaction network generator, i.e. combines functionality of previous two model directly.
 
+Currently, usage of this module is via __Command Line Intereface__:
+
+1. enter Model directory (serves as user's workspace),
+2. write your model as rules and initial conditions (into model.bcs),
+3. run script:
+
+        python reaction_network.py model.bcs output_file
+        
+ where 
+  * output_file - destination file for output reactions
+        
 ---
 > <sup>1</sup> Both state space or reaction network might be visualised with [this](https://github.com/mathooo/NetworkVISUAL) utility.
 
