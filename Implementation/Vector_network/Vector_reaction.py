@@ -7,6 +7,7 @@ class Vector_reaction:
 		self.To = To
 
 	def __eq__(self, other):
+		print self, other
 		return self.From == other.From and self.To == other.To
 
 	def __str__(self):
@@ -20,5 +21,4 @@ class Vector_reaction:
 
 	def applyVector(self, state):
 		if (state >= self.From).all():
-			return new_state - self.From + self.To
-		return None
+			return state - self.From + self.To

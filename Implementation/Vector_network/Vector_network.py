@@ -13,7 +13,11 @@ class Vector_network:
 		return str(self.State) + "\n ------- \n" + "\n".join(map(lambda vector: str(vector), self.Vectors)) + \
 			   "\n ----- \n" + "\n".join(map(lambda item: str(self.Translations.index(item) + 1) + " | " + str(item), self.Translations))
 
+	def getState(self):
+		return self.State
+
 	def toVectorReactions(self, vectors):
 		return map(lambda vector: Vector_reaction(*vector), vectors)
 
-	def 
+	def applyVectors(self, state):
+		return filter(lambda item: item is not None, map(lambda vector: vector.applyVector(state), self.Vectors))

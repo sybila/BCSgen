@@ -33,3 +33,16 @@ else: 	# if network is OK, proceed
 
 VN = Vector_network(np.array(Implicit.solveSide(state, [0]*len(orderedAgents), orderedAgents)), vectorReactions, orderedAgents)
 print VN
+
+print '*****RESULTS******'
+
+new_states = [VN.getState()]
+states = [VN.getState()]
+edges = []
+
+while new_states:
+	new_states = sum(map(lambda state: VN.applyVectors(state) , states), [])
+	print list(states)
+	print list(new_states)
+	new_states = filter(lambda state: state not in states, new_states)
+	states |= set(new_states)
