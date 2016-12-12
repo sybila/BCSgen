@@ -12,7 +12,7 @@ if not os.path.isdir('output/'):
 
 memoization = bool(int(sys.argv[-1]))
 parallel = bool(int(sys.argv[-2]))
-bound = sys.argv[-3]
+bound = int(sys.argv[-3])
 
 print
 if parallel:

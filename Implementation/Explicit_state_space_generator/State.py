@@ -47,7 +47,9 @@ class State:
     :return: True if condition is satisfied
     """
     def isInBound(self, bound):
-        return self.agents.most_common(1)[0][1] <= bound
+    	if self.agents:
+       		return self.agents.most_common(1)[0][1] <= bound
+        return True
 
     """
     Normalizes state such that number of all agents is equal or lower to given bound
