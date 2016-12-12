@@ -2,6 +2,7 @@ import os
 import sys
 sys.path.append(os.path.abspath('../'))
 import Implicit_reaction_network_generator as Implicit
+from Vector_network import *
 
 inputFile = sys.argv[-1]
 
@@ -28,11 +29,6 @@ else: 	# if network is OK, proceed
 		new_numberOfReactions = myNet.getNumOfReactions()
 
 	orderedAgents, vectorReactions = myNet.createVectorModel()
-numOfAgents = len(orderedAgents)
 
-print tuple(Implicit.solveSide(state, [0]*numOfAgents, orderedAgents))
-
-for i in range(numOfAgents):
-	print i, orderedAgents[i]
-for reactionVector in vectorReactions:
-	print str(reactionVector[0]) + " -> " + str(reactionVector[1])
+VN = Vector_network(tuple(Implicit.solveSide(state, [0]*len(orderedAgents), orderedAgents)), vectorReactions, orderedAgents)
+print VN
