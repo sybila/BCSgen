@@ -1,3 +1,5 @@
+import numpy as np
+from copy import deepcopy
 
 class Vector_reaction:
 	def __init__(self, From, To):
@@ -15,3 +17,8 @@ class Vector_reaction:
 
 	def __hash__(self):
 		return hash(str(self.From) + str(self.To))
+
+	def applyVector(self, state):
+		if (state >= self.From).all():
+			return new_state - self.From + self.To
+		return None

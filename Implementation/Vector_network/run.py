@@ -3,6 +3,7 @@ import sys
 sys.path.append(os.path.abspath('../'))
 import Implicit_reaction_network_generator as Implicit
 from Vector_network import *
+import numpy as np
 
 inputFile = sys.argv[-1]
 
@@ -30,5 +31,5 @@ else: 	# if network is OK, proceed
 
 	orderedAgents, vectorReactions = myNet.createVectorModel()
 
-VN = Vector_network(tuple(Implicit.solveSide(state, [0]*len(orderedAgents), orderedAgents)), vectorReactions, orderedAgents)
+VN = Vector_network(np.array(Implicit.solveSide(state, [0]*len(orderedAgents), orderedAgents)), vectorReactions, orderedAgents)
 print VN

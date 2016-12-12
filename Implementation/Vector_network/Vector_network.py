@@ -15,3 +15,5 @@ class Vector_network:
 
 	def toVectorReactions(self, vectors):
 		return map(lambda vector: Vector_reaction(*vector), vectors)
+
+	def 
