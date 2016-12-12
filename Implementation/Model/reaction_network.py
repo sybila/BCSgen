@@ -1,6 +1,6 @@
 import os
+import sys
 
-if not os.path.isdir('network/'):
-    os.mkdir('network/')
+sys.path.append(os.path.abspath('../Implicit_reaction_network_generator/'))
 
-execfile('../Explicit_reaction_network_generator/explicit.py')
+execfile('../Implicit_reaction_network_generator/main.py')
