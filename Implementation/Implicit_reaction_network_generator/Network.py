@@ -3,6 +3,7 @@ from Node import *
 from Reaction import *
 sys.path.append(os.path.abspath('../'))
 import Import as Import
+import itertools
 
 """
 Class Network
@@ -52,6 +53,15 @@ class Network:
 		output.write("\n".join(map(lambda reaction: str(reaction), self.Reactions)))
 		output.close()
 
+	def collectAgents(self):
+		return list(set(itertools.chain(*map(lambda reaction: reaction.getUniqueAgents(), self.Reactions))))
+
+	def createVectorModel(self):
+		orderedAgents = self.collectAgents()
+		numOfAgents = len(orderedAgents)
+		vectorReactions = map(lambda reaction: reaction.toVectors(orderedAgents, numOfAgents), self.Reactions)
+		return orderedAgents, vectorReactions
+
 	"""
 	Adds new Edge to network's Edges
 	:param From: list of Nodes
@@ -70,6 +80,7 @@ class Network:
 		for rule in rules:
 			self.addEdge(rule.getLeftHandSide(), rule.getRightHandSide(), rule)
 		self.introduceNewAgents(state)
+		return state
 
 	"""
 	Apply Edge's associated rule to it's buckets of agents

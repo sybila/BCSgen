@@ -3,6 +3,11 @@ import sys
 sys.path.append(os.path.abspath('../'))
 import Explicit_state_space_generator as S_gen
 
+def solveSide(side, vector, orderedAgents):
+    for item in list(side.getAgents()):
+        vector[orderedAgents.index(item)] = side.getAgents()[item]
+    return vector
+
 def create_string_chain(side):
     new_side = map(lambda (a, n): n.__str__() + " " + a.__str__(), side.getAgents().items())
     return " + ".join(new_side)
@@ -35,3 +40,10 @@ class Reaction:
 
     def getRightHandSide(self):
         return self.right_hand_side
+
+    def toVectors(self, orderedAgents, numOfAgents):
+        return tuple(solveSide(self.left_hand_side, [0] * numOfAgents, orderedAgents)), \
+               tuple(solveSide(self.right_hand_side, [0] * numOfAgents, orderedAgents))
+
+    def getUniqueAgents(self):
+        return set(list(self.left_hand_side.getAgents().elements()) + list(self.right_hand_side.getAgents().elements()))
