@@ -7,18 +7,17 @@ class Vector_reaction:
 		self.To = To
 
 	def __eq__(self, other):
-		print self, other
-		return self.From == other.From and self.To == other.To
+		return (self.From == other.From).all() and (self.To == other.To).all()
 
 	def __str__(self):
 		return self.__repr__()
 
 	def __repr__(self):
-		return str(self.From) + " -> " + str(self.To)
+		return "".join(map(lambda item: str(item), self.From)) + " -> " + "".join(map(lambda item: str(item), self.To))
 
 	def __hash__(self):
 		return hash(str(self.From) + str(self.To))
 
 	def applyVector(self, state):
 		if (state >= self.From).all():
-			return state - self.From + self.To
+			return tuple(np.array(state) - self.From + self.To)

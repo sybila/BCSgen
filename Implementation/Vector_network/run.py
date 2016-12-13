@@ -5,7 +5,27 @@ import Implicit_reaction_network_generator as Implicit
 from Vector_network import *
 import numpy as np
 
-inputFile = sys.argv[-1]
+def createState(state, orderedAgents):
+	multiset = []
+	for i in range(len(orderedAgents)):
+		if state[i] != 0:
+			multiset.append((state[i], orderedAgents[i]))
+	return 'vertex ID: ' + "".join(map(lambda item: str(item), state)) + '\n' + '\n'.join(map(lambda (a, b): str(a) + " " + str(b), multiset)) + '\n\n'
+
+def printStateSpace(states, edges, orderedAgents, statesFile, edgesFile):
+	f = open(statesFile,'w')
+	for state in states:
+		f.write(createState(state, orderedAgents))
+	f.close()
+
+	f = open(edgesFile,'w')
+	for edge in edges:
+		f.write(str(edge) + "\n")
+	f.close()
+
+inputFile = sys.argv[-3]
+statesFile = sys.argv[-2]
+edgesFile = sys.argv[-1]
 
 # initialize the network and create it
 myNet = Implicit.Network()
@@ -31,18 +51,21 @@ else: 	# if network is OK, proceed
 
 	orderedAgents, vectorReactions = myNet.createVectorModel()
 
-VN = Vector_network(np.array(Implicit.solveSide(state, [0]*len(orderedAgents), orderedAgents)), vectorReactions, orderedAgents)
-print VN
+VN = Vector_network(tuple(Implicit.solveSide(state, [0]*len(orderedAgents), orderedAgents)), vectorReactions, orderedAgents)
 
-print '*****RESULTS******'
+#print VN
 
 new_states = [VN.getState()]
-states = [VN.getState()]
-edges = []
+states = set([VN.getState()])
+edges = set()
 
 while new_states:
-	new_states = sum(map(lambda state: VN.applyVectors(state) , states), [])
-	print list(states)
-	print list(new_states)
-	new_states = filter(lambda state: state not in states, new_states)
+	results = []
+	for state in new_states:
+		result_states = VN.applyVectors(state)
+		edges |= set(map(lambda vec: Vector_reaction(np.array(state), np.array(vec)), result_states))
+		results += result_states
+	new_states = filter(lambda st: st not in states, results)
 	states |= set(new_states)
+
+printStateSpace(states, edges, orderedAgents, statesFile, edgesFile)
