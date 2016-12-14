@@ -4,7 +4,7 @@ import collections
 import copy
 import itertools
 from Edge import *
-sys.path.append(os.path.abspath('../'))
+sys.path.append(os.path.abspath('../Core/'))
 import Interpreter_of_BCSL as BCSL
 
 class State:

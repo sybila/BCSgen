@@ -1,6 +1,6 @@
 import os
 import sys
-sys.path.append(os.path.abspath('../'))
+sys.path.append(os.path.abspath('../Core/'))
 import Implicit_reaction_network_generator as Implicit
 from Vector_network import *
 import numpy as np
