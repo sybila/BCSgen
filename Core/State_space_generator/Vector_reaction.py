@@ -18,6 +18,8 @@ class Vector_reaction:
 	def __hash__(self):
 		return hash(str(self.From) + str(self.To))
 
-	def applyVector(self, state):
+	def applyVector(self, state, bound):
 		if (state >= self.From).all():
-			return tuple(np.array(state) - self.From + self.To)
+			vec = tuple(np.array(state) - self.From + self.To)
+			if max(vec) <= bound:
+				return vec

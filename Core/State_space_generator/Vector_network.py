@@ -19,5 +19,5 @@ class Vector_network:
 	def toVectorReactions(self, vectors):
 		return map(lambda vector: Vector_reaction(*vector), vectors)
 
-	def applyVectors(self, state):
-		return filter(lambda item: item is not None, map(lambda vector: vector.applyVector(state), self.Vectors))
+	def applyVectors(self, state, bound):
+		return filter(lambda item: item is not None, map(lambda vector: vector.applyVector(state, bound), self.Vectors))

@@ -16,4 +16,8 @@ Core/Interpreter_of_BCSL/__init__.pyc
 Core/State_space_generator/Vector_network.pyc
 Core/State_space_generator/Vector_reaction.pyc
 Model/output/
+Core/Implicit_reaction_network_generator/main.pyc
+Core/State_space_generator/__init__.pyc
+Core/State_space_generator/main.pyc
+Examples/outputs/
 threads/
