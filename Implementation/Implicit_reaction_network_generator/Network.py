@@ -18,7 +18,7 @@ class Network:
 		self.Nodes = []
 		self.Edges = set([])
 		self.Reactions = set([])
-		self.Memo = S_gen.Memo()
+		self.Memo = Memo()
 
 	def __str__(self):
 		return self.__repr__()
@@ -92,7 +92,7 @@ class Network:
 			reactions, newAgents, self.Memo = edge.applyEdge(self.Memo)
 			self.Reactions.update(reactions)
 			globallyNewAgents.update(newAgents)
-		return S_gen.State(globallyNewAgents)
+		return State(globallyNewAgents)
 
 	"""
 	Adds agents to all Nodes' buckets (if they fit)

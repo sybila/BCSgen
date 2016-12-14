@@ -1,8 +1,7 @@
 import os
 import sys
-sys.path.append(os.path.abspath('../'))
-import Explicit_state_space_generator as S_gen
 import numpy as np
+from Memo import *
 
 def solveSide(side, vector, orderedAgents):
     for item in list(side.getAgents()):

@@ -52,7 +52,7 @@ class Edge:
 					memo.addRecord(reactants_rule_hash, results)
 
 				for result in memo.getRecord(reactants_rule_hash):
-					reactions.add(Reaction(S_gen.State(reactants), S_gen.State(result)))
+					reactions.add(Reaction(State(reactants), State(result)))
 					newAgents.update(result)
 
 		return reactions, newAgents, memo
