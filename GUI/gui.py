@@ -7,6 +7,7 @@ import Implicit_reaction_network_generator as Implicit
 
 from Tkinter import *
 from tkFileDialog import askopenfilename
+import ttk
 
 """
 Application is main framework for the GUI
@@ -27,9 +28,12 @@ class Application(Frame):
         self.compute.config(text="Computing...")
 
         myNet, state = Implicit.generateReactions(self.model)
-        states, edges, orderedAgents = Gen.generateStateSpace(myNet, state, int(self.bound.get()))
-        Gen.printStateSpace(states, edges, orderedAgents, self.vertices, self.edges)
         myNet.printReactions(self.reactions)
+        self.len_reactions['text'] = "Reactions: " + str(myNet.getNumOfReactions())#.config(text="Reactions: " + str(myNet.getNumOfReactions()))
+        states, edges, orderedAgents = Gen.generateStateSpace(myNet, state, int(self.bound.get()))
+        self.len_states.config(text="States: " + str(len(states)))
+        self.len_edges.config(text="Edges: " + str(len(edges)))
+        Gen.printStateSpace(states, edges, orderedAgents, self.vertices, self.edges)
 
         self.compute.config(state=NORMAL)
         self.compute.config(text="Finish")
@@ -111,11 +115,23 @@ class Application(Frame):
         self.button_reaction = Button(root,text="Reactions",command=self.set_reactions, width=15)
         self.button_reaction.grid(row=6, column=0)
 
+        self.mes = Message(root,text='Results', width=200, font="bold", borderwidth=8, relief= RIDGE)
+        self.mes.grid(row=7, column=0, columnspan=2, ipadx=95)
+
+        self.bar = ttk.Progressbar(root, orient="horizontal", length=280, mode="indeterminate", variable=self.barVar, maximum=100)
+        self.bar.grid(row=8, column=0, columnspan=2)
+
+        self.len_states = Label(root,text="States:",  width=20).grid(row=9, column=0)
+
+        self.len_reactions = Label(root,text="Reactions:",  width=20).grid(row=9, column=1)
+
+        self.len_edges = Label(root,text="Edges:",  width=20).grid(row=10, column=0)
+
         self.compute = Button(root,text="Compute",command=self.compute, width=15, state=DISABLED)
-        self.compute.grid(row=7, column=1)
+        self.compute.grid(row=12, column=1)
 
         self.exit = Button(root,text="Cancel",command=root.destroy, width=15)
-        self.exit.grid(row=7, column=0)
+        self.exit.grid(row=12, column=0)
 
         self.vertVar.trace("w", self.get_ready)
         self.edgVar.trace("w", self.get_ready)
@@ -123,17 +139,18 @@ class Application(Frame):
         self.bound.trace("w", self.get_ready)
         self.reactVar.trace("w", self.get_ready)
 
-
     def __init__(self, master=None):
         Frame.__init__(self, master)
         self.reactions = None
         self.vertices = None
         self.edges = None
         self.model = None
+        self.barVar = StringVar()
         self.vertVar = StringVar()
         self.edgVar = StringVar()
         self.reactVar = StringVar()
         self.modelVar = StringVar()
+        self.numOfReactions = StringVar()
         self.bound = StringVar(value="")
         self.grid()
         self.createWidgets()
