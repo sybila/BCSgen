@@ -4,7 +4,7 @@ import re
 import os
 sys.path.append(os.path.abspath('../'))
 import Interpreter_of_BCSL as BCSL
-import Explicit_state_space_generator as Gen
+import Implicit_reaction_network_generator as Gen
 
 '''
 Functions for parsing common rules (human-readable)
