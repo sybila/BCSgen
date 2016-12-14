@@ -1,14 +1,16 @@
 import os
 import sys
-
-sys.path.append(os.path.abspath('../Core/State_space_generator/'))
-from main import *
+sys.path.append(os.path.abspath('../Core/'))
+import State_space_generator as Gen
+import Implicit_reaction_network_generator as Implicit
 
 inputFile = sys.argv[-4]
 bound = sys.argv[-3]
 statesFile = sys.argv[-2]
 edgesFile = sys.argv[-1]
 
-states, edges, orderedAgents = generateStateSpace(inputFile, bound)
+myNet, state = Implicit.generateReactions(inputFile)
 
-printStateSpace(states, edges, orderedAgents, statesFile, edgesFile)
+states, edges, orderedAgents = Gen.generateStateSpace(myNet, state, bound)
+
+Gen.printStateSpace(states, edges, orderedAgents, statesFile, edgesFile)

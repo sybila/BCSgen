@@ -3,7 +3,7 @@ import sys
 import os.path
 sys.path.append(os.path.abspath('../'))
 import Import as Import
-import Explicit_state_space_generator as Gen
+import State_space_generator as Gen
 
 from Tkinter import *
 from tkFileDialog import askopenfilename

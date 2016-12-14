@@ -23,8 +23,7 @@ def printStateSpace(states, edges, orderedAgents, statesFile, edgesFile):
 		f.write(str(edge) + "\n")
 	f.close()
 
-def generateStateSpace(inputFile, bound):
-	myNet, state = Implicit.generateReactions(inputFile)
+def generateStateSpace(myNet, state, bound):
 	orderedAgents, vectorReactions = myNet.createVectorModel()
 
 	VN = Vector_network(tuple(Implicit.solveSide(state, [0]*len(orderedAgents), orderedAgents)), vectorReactions, orderedAgents)
