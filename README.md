@@ -3,63 +3,53 @@ Biochemical Space language software tool
 
 ---
 
-This tool serves for interpreting basic functionality to maintain Biochemical Space language. It provides state space generating and subsequent reaction network abstraction which can be used for analysis and visualisation<sup>1</sup>. For instance, there is Example directory, where can be seen functionality applied on several models. Users might enter Model directory, which serves as user's workspace. Here, a model can be defined and generating utilities applied on it. 
+This tool serves for interpreting basic functionality to maintain Biochemical Space language. It provides __state space__ and __reactions__ generating which can be used for analysis and visualisation<sup>1</sup>.
 
-## Explicit State space generator
+## Graphical User Interface
 
-To generate state space of a model, the most proper way is to use __Graphical User Interface__<sup>2</sup> (in GUI directory). Run it by:
+The most proper way is to use __Graphical User Interface__<sup>2</sup> (in GUI directory).
+
+Run it by:
 
     python gui.py
+    
+and fill required fields:
 
-Alternatively use __Command Line Intereface__:
+* Input
+ * Model - file containing a BCS model<sup>3</sup>
+ * Bound - maximal number of agents' repetitions in a state
+* Output
+ * Vertices - file for storing states of state space
+ * Edges - file for storing edges of state space
+ * Reactions - file for storing reactions
 
-1. enter Model directory (serves as user's workspace),
-2. write your model as rules and initial conditions (into model.bcs),
-3. run script:
-
-        python state_space.py bound memoization parallel
-
- where 
- * bound (Integer) - indicates maximal bound of the model
- * memoization (True/False) - True if you want to apply memoization during computation
- * parallel<sup>3</sup> (True/False) - True if you want to apply parallel computing
-
-> in Example directory, there are several models, to run them just use 'python example.py'
-
-## Explicit Reaction network generator
-
-To generate reaction network explicitly, use the following instructions:
-
-1. in Model directory, run the script reaction_network.py with the following parameters:
-* input vertices - from State space generator
-* input edges - from State space generator
-* output vertices - file name
-* output reactions - file name
-  
-Example
-
-    python reaction_network.py outputs/vertices.txt outputs/edges.txt network/reactants.txt network/reactions.txt
-
-## Implicit Reaction network generator
-
-Works similarly to state space generator but it has output of explicit reaction network generator, i.e. combines functionality of previous two model directly.
-
-Currently, usage of this module is via __Command Line Intereface__:
+## Command Line Interface
 
 1. enter Model directory (serves as user's workspace),
 2. write your model as rules and initial conditions (into model.bcs),
-3. run script:
+3. to obtain __state space__, run script:
 
-        python reaction_network.py model.bcs output_file
+        python state_space.py <model> <bound> <statesFile> <edgesFile>
         
- where 
-  * output_file - destination file for output reactions
+  where:
+    * model - given BCS model<sup>3</sup>
+    * bound - maximal number of agents' repetitions in a state
+    * statesFile - file for storing states of state space
+    * edgesFile - file for storing edges of state space
+    
+4. to obtain __reactions__, run script:
+
+        python reaction_network.py <model> <reactionsFile>
         
+   where:
+     * model - given BCS model<sup>3</sup>
+     * reactionsFile - file for storing reactions
+
+> in Examples directory, there are several models, to run them just use 'python example.py'
+
 ---
-> <sup>1</sup> Both state space or reaction network might be visualised with [this](https://github.com/mathooo/NetworkVISUAL) utility.
+> <sup>1</sup> State space might be visualised with [this](https://github.com/mathooo/NetworkVISUAL) utility.
 
 > <sup>2</sup> To execute it, you need to have [Tkinter](https://wiki.python.org/moin/TkInter) python library installed (usually in default library).
 
-> <sup>3</sup> In order to use parallel computing, you need to use [anaconda](http://conda.pydata.org/docs/install/quick.html) (Python distribution) and install [pathos](https://github.com/uqfoundation/pathos) library (use pip install git+https://github.com/uqfoundation/pathos.git@master on __unix machines__ (including Linux and OS X) — it should install all dependencies required by the package. Under __Windows__, multiprocessing is [not supported](http://i.imgur.com/s3OimLn.png).
-
-> **WARNING**: Installing Anaconda python distribution might replace your default python distribution in your $PATH (it will ask you about it during the installation). Best option is to reject this option and create an alias (particularly under Linux) or a symbolic link (particularly under Mac since it's independent on Mac ports).
+> <sup>3</sup> BCS model is simple text file format containing initialized model, i.e. set of rules and initial state. Examples of such models are in Examples directory.
