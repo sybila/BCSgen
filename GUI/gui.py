@@ -7,7 +7,7 @@ import Implicit_reaction_network_generator as Implicit
 
 from Tkinter import *
 from tkFileDialog import askopenfilename
-import ttk
+import tkFont
 
 """
 Application is main framework for the GUI
@@ -24,18 +24,14 @@ class Application(Frame):
     Computes the state space above set parameters
     """
     def compute(self):
-        self.compute.config(state=DISABLED)
-        self.compute.config(text="Computing...")
-
         myNet, state = Implicit.generateReactions(self.model)
         myNet.printReactions(self.reactions)
-        self.len_reactions['text'] = "Reactions: " + str(myNet.getNumOfReactions())#.config(text="Reactions: " + str(myNet.getNumOfReactions()))
+        self.len_reactions.config(text="Reactions: " + str(myNet.getNumOfReactions()))
         states, edges, orderedAgents = Gen.generateStateSpace(myNet, state, int(self.bound.get()))
         self.len_states.config(text="States: " + str(len(states)))
         self.len_edges.config(text="Edges: " + str(len(edges)))
         Gen.printStateSpace(states, edges, orderedAgents, self.vertices, self.edges)
 
-        self.compute.config(state=NORMAL)
         self.compute.config(text="Finish")
         self.compute.config(command=root.destroy)
 
@@ -118,14 +114,20 @@ class Application(Frame):
         self.mes = Message(root,text='Results', width=200, font="bold", borderwidth=8, relief= RIDGE)
         self.mes.grid(row=7, column=0, columnspan=2, ipadx=95)
 
-        self.bar = ttk.Progressbar(root, orient="horizontal", length=280, mode="indeterminate", variable=self.barVar, maximum=100)
-        self.bar.grid(row=8, column=0, columnspan=2)
+        self.state_space = Label(root,text="State space", width=20, font=tkFont.Font(family="TkDefaultFont",size=9, underline=1))
+        self.state_space.grid(row=8, column=0)
 
-        self.len_states = Label(root,text="States:",  width=20).grid(row=9, column=0)
+        self.reaction_network = Label(root,text="Reaction network", width=20, font=tkFont.Font(family="TkDefaultFont",size=9, underline=1))
+        self.reaction_network.grid(row=8, column=1)
 
-        self.len_reactions = Label(root,text="Reactions:",  width=20).grid(row=9, column=1)
+        self.len_states = Label(root,text="States:",  width=20)
+        self.len_states.grid(row=9, column=0)
 
-        self.len_edges = Label(root,text="Edges:",  width=20).grid(row=10, column=0)
+        self.len_reactions = Label(root,text="Reactions:",  width=20)
+        self.len_reactions.grid(row=9, column=1)
+
+        self.len_edges = Label(root,text="Edges:",  width=20)
+        self.len_edges.grid(row=10, column=0)
 
         self.compute = Button(root,text="Compute",command=self.compute, width=15, state=DISABLED)
         self.compute.grid(row=12, column=1)
@@ -145,7 +147,6 @@ class Application(Frame):
         self.vertices = None
         self.edges = None
         self.model = None
-        self.barVar = StringVar()
         self.vertVar = StringVar()
         self.edgVar = StringVar()
         self.reactVar = StringVar()
