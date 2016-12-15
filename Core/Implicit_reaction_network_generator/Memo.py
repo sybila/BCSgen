@@ -1,27 +1,5 @@
 from State import *
 
-"""
-Connects two memos to one memo
-:param memos: input list of memos
-:return: one memo containing all records
-"""
-def connect_memos(memos):
-    m = Memo()
-    for memo in memos:
-        m = connect_two_memos(m, memo)
-    return m
-
-"""
-Connects two memos
-:param first: first memo
-:param second: second memo
-:return: connected memo
-"""
-def connect_two_memos(first, second):
-    first.getRecords().update(second.getRecords())
-    first.getAgents().update(second.getAgents())
-    return first
-
 class Memo:
     def __init__(self, records = [], agents = []):
         self.records = dict(records)

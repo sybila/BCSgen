@@ -1,6 +1,11 @@
 import sys
 from Network import *
 
+"""
+Generates Reaction network from BCS model
+:param inputFile: given BCS model
+:return: created Network (with created reactions) and initial state
+"""
 def generateReactions(inputFile):
 	# initialize the network and create it
 	myNet = Network()

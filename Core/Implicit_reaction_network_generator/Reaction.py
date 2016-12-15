@@ -8,10 +8,15 @@ def solveSide(side, vector, orderedAgents):
         vector[orderedAgents.index(item)] = side.getAgents()[item]
     return vector
 
-def create_string_chain(side):
-    new_side = map(lambda (a, n): n.__str__() + " " + a.__str__(), side.getAgents().items())
-    return " + ".join(new_side)
+def createStringChain(side):
+    return " + ".join(map(lambda (a, n): n.__str__() + " " + a.__str__(), side.getAgents().items()))
 
+"""
+Class Reaction
+An Edge holds data about reaction in the Network
+:attribute left_hand_side: State
+:attribute right_hand_side: State
+"""
 class Reaction:
     def __init__(self, left_hand_side, right_hand_side):
         self.left_hand_side = left_hand_side
@@ -27,7 +32,7 @@ class Reaction:
         return self.__repr__()
 
     def __repr__(self):
-        return create_string_chain(self.left_hand_side) + " -> " + create_string_chain(self.right_hand_side)
+        return createStringChain(self.left_hand_side) + " -> " + createStringChain(self.right_hand_side)
 
     def __hash__(self):
         return hash((str(self.left_hand_side), str(self.right_hand_side)))
@@ -41,6 +46,12 @@ class Reaction:
     def getRightHandSide(self):
         return self.right_hand_side
 
+    """
+    Translates Reaction to tuple of vectors
+    :param orderedAgents: list of unique ordered agents
+    :param numOfAgents: length of previous parameter
+    :return: tuple of vectors
+    """
     def toVectors(self, orderedAgents, numOfAgents):
         return np.array(solveSide(self.left_hand_side, [0] * numOfAgents, orderedAgents)), \
                np.array(solveSide(self.right_hand_side, [0] * numOfAgents, orderedAgents))

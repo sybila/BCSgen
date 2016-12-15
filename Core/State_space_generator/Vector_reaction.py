@@ -1,6 +1,12 @@
 import numpy as np
 from copy import deepcopy
 
+"""
+Class Vector_reaction
+Vector representation of Reaction
+:attribute From: vector (numpy array)
+:attribute To: vector (numpy array)
+"""
 class Vector_reaction:
 	def __init__(self, From, To):
 		self.From = From

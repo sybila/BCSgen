@@ -1,5 +1,12 @@
 from Vector_reaction import *
 
+"""
+Class Vector_network
+Holds vector representation of reaction-based model
+:attribute State: initial State
+:attribute Vectors: list of Vector reactions
+:attribute Translations: list of unique ordered Agents
+"""
 class Vector_network:
 	def __init__(self, state, vectors, table):
 		self.State = state

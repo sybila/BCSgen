@@ -4,7 +4,7 @@ import itertools
 
 """
 Class Edge
-An Edge holds data abuut edge in the Network
+An Edge holds data about edge in the Network
 :attribute From: list of Nodes
 :attribute To: list of Nodes
 :attribute Rule: associated rule
