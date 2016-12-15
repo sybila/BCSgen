@@ -6,11 +6,8 @@ from Vector_network import *
 import numpy as np
 
 def createState(state, orderedAgents):
-	multiset = []
-	for i in range(len(orderedAgents)):
-		if state[i] != 0:
-			multiset.append((state[i], orderedAgents[i]))
-	return 'vertex ID: ' + "".join(map(lambda item: str(item), state)) + '\n' + '\n'.join(map(lambda (a, b): str(a) + " " + str(b), multiset)) + '\n\n'
+	multiset = sum(map(lambda i: [orderedAgents[i]] * state[i], range(len(orderedAgents))), [])
+	return str(Implicit.State(multiset, "".join(map(lambda item: str(item), state))))
 
 def printStateSpace(states, edges, orderedAgents, statesFile, edgesFile):
 	f = open(statesFile,'w')
