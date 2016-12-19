@@ -115,13 +115,22 @@ class Network:
 		return networkIsOK, message
 
 	def createIncidenceMatrix(self):
-		edges = self.Edges
+		edges = list(self.Edges)
 		nodes = self.Nodes
-		matrix = np.array([])
-
+		matrix = []
 		for edge in edges:
-			matrix = np.vstack([matrix, map(lambda node: edge.containsNode(node), nodes)])
+			matrix.append(map(lambda node: edge.containsNode(node), nodes))
+		return matrix
 
-		print " ".join(map(str, range(len(edges)))) + "~"
-		for i in range(len(nodes)):
-			print matrix[i] + nodes[i]
+	def printIncidenceMatrix(self, matrix):
+		edges = list(self.Edges)
+		columns = zip(*matrix)
+
+		print "---------------------------"
+		for i in range(len(edges)):
+			print str(i) + " " + str(edges[i].getRule())
+
+		print "---------------------------"
+		print " " + "  ".join(map(str, range(len(edges)))) + "  ~"
+		for i in range(len(self.Nodes)):
+			print str(columns[i]) + " | " + str(self.Nodes[i].getHeader())

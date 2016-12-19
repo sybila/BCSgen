@@ -12,7 +12,8 @@ def generateReactions(inputFile):
 	state = myNet.createNetwork(inputFile)
 
 	networkStatus, message = myNet.applyStaticAnalysis()  # apply static analysis
-	myNet.createIncidenceMatrix()
+	matrix = myNet.createIncidenceMatrix()
+	myNet.printIncidenceMatrix(matrix)
 
 	if not networkStatus:
 		print message
