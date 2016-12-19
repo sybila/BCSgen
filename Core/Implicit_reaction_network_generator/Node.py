@@ -28,6 +28,9 @@ class Node:
 	def getBucket(self):
 		return self.bucket
 
+	def getHeader(self):
+		return self.header
+
 	"""
 	Changes buckets from multiset to set (after static analysis is applied)
 	"""

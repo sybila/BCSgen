@@ -1,7 +1,7 @@
 from Edge import *
 from Node import *
 from Reaction import *
-sys.path.append(os.path.abspath('../'))
+sys.path.append(os.path.abspath('../Core/'))
 import Import as Import
 import itertools
 
@@ -113,3 +113,15 @@ class Network:
 		message = "Sweet life"
 		map(lambda node: node.switchToSet(), self.Nodes)
 		return networkIsOK, message
+
+	def createIncidenceMatrix(self):
+		edges = self.Edges
+		nodes = self.Nodes
+		matrix = np.array([])
+
+		for edge in edges:
+			matrix = np.vstack([matrix, map(lambda node: edge.containsNode(node), nodes)])
+
+		print " ".join(map(str, range(len(edges)))) + "~"
+		for i in range(len(nodes)):
+			print matrix[i] + nodes[i]

@@ -29,6 +29,16 @@ class Edge:
 	def __hash__(self):
 		return hash(str(self.From) + str(self.To))
 
+	def getRule(self):
+		return self.Rule
+
+	def containsNode(self, node):
+		num = self.From.count(node)
+		if num != 0:
+			return num
+		else:
+			return self.To.count(node)
+
 	"""
 	Apply Edge's associated rule to it's buckets of agents
 	Checks if the Edge's buckets have changed (by hash),
