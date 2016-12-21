@@ -37,7 +37,7 @@ class Edge:
 		if num != 0:
 			return num
 		else:
-			return self.To.count(node)
+			return - self.To.count(node)
 
 	"""
 	Apply Edge's associated rule to it's buckets of agents

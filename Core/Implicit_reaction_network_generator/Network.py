@@ -5,6 +5,11 @@ sys.path.append(os.path.abspath('../Core/'))
 import Import as Import
 import itertools
 
+def toStr(i):
+	if i < 0:
+		return " " + str(i)
+	return "  " + str(i)
+
 """
 Class Network
 Its rule network which holds all needed to create initialized reaction network
@@ -108,6 +113,8 @@ class Network:
 	Maybe some error is returned or something...
 	"""
 	def applyStaticAnalysis(self):
+		matrix = self.createIncidenceMatrix()
+		self.printIncidenceMatrix(matrix)
 		# magic is here
 		networkIsOK = True
 		message = "Sweet life"
@@ -131,6 +138,7 @@ class Network:
 			print str(i) + " " + str(edges[i].getRule())
 
 		print "---------------------------"
-		print " " + "  ".join(map(str, range(len(edges)))) + "  ~"
+		print "  " + "   ".join(map(str, range(len(edges)))) + "  ~"
+		print "____" * len(edges)
 		for i in range(len(self.Nodes)):
-			print str(columns[i]) + " | " + str(self.Nodes[i].getHeader())
+			print str(" ".join(map(toStr, columns[i]))) + " | " + str(self.Nodes[i].getHeader())
