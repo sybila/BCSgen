@@ -1,40 +1,9 @@
 import collections
 import copy
 from Complex_Agent import *
+import numpy as np
 
 direction = " => "
-
-"""
-Removes duplicates from an list of unhashable objects
-:param my_list: list of unhashable objects
-:return: list of unique unhashable objects
-"""
-def unique(my_list):
-    indices = sorted(range(len(my_list)), key=my_list.__getitem__)
-    indices = set(next(it) for k, it in itertools.groupby(indices, key=my_list.__getitem__))
-    return [x for i, x in enumerate(my_list) if i in indices]
-
-"""
-Reduces given list of products from replace function to only the unique ones.
-Assumes the order in a Complex agent's does not matter.
-:param result_original: a list of produces results
-:return: list of produces results without duplicates
-"""
-def reduce(result_original):
-    new_result = []
-    for res in result_original:
-        part = collections.Counter([])
-        for agent in res:
-            part += collections.Counter([agent])
-        new_result.append(part)
-    new_result = unique(new_result)
-    new_reduced_list = []
-    for res in new_result:
-        new_part = []
-        for item in res.elements():
-            new_part.append(item)
-        new_reduced_list.append(new_part)
-    return new_reduced_list
 
 """
 Changes state of an atomic agent according to another one
@@ -159,11 +128,15 @@ class Rule:
     :return: transformed candidates
     """
     def replacement(self, candidate_original):
-        result = []
+        result = np.array([])
         candidates = list(set(self.match(candidate_original)))
         for candidate in candidates:
-            result += [ self.replace(candidate) ]
-        return reduce(result)
+            result = np.append(result, self.replace(candidate))
+
+        result = np.unique(result)
+        result = [[row] for row in result]
+
+        return list(result)
 
     """
     Function replace takes a rule and candidate and applies changes according to the rule type:
@@ -199,11 +172,11 @@ class Rule:
         rhs = self.getRightHandSide()[0]
         candidate = candidate[0]
         if isinstance(candidate, Atomic_Agent):
-            return [changeAtomicStates(rhs, candidate)]
+            return changeAtomicStates(rhs, candidate)
         elif isinstance(candidate, Structure_Agent):
-            return [changeStructureStates(rhs, candidate)]
+            return changeStructureStates(rhs, candidate)
         else:
-            return [changeComplexStates(rhs, candidate)]
+            return changeComplexStates(rhs, candidate)
 
     """
     Degrades given candidate of agents
@@ -211,7 +184,7 @@ class Rule:
     :return: empty Counter
     """
     def degrade(self, candidate):
-        return []
+        return 
 
     """
     Translates new candidate according to the right-hand-side of the rule
@@ -234,7 +207,7 @@ class Rule:
                 new_candidate += agent.getFullComposition()
             else:
                 new_candidate.append(agent)
-        return [Complex_Agent(sorted(new_candidate), compartment)]
+        return Complex_Agent(sorted(new_candidate), compartment)
 
     """
     Dissociates complex agent to new agents (might be complexes)
