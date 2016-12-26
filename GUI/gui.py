@@ -17,7 +17,7 @@ class Application(Frame):
     Checks if all fields are filled
     """
     def get_ready(self, *args):
-        if self.model and self.vertices and self.edges and self.reactions and self.bound.get() != "":
+        if self.model and self.vertices and self.edges and self.reactions:
            self.compute.config(state=NORMAL)
 
     """
@@ -27,7 +27,8 @@ class Application(Frame):
         myNet, state = Implicit.generateReactions(self.model)
         myNet.printReactions(self.reactions)
         self.len_reactions.config(text="Reactions: " + str(myNet.getNumOfReactions()))
-        states, edges, orderedAgents = Gen.generateStateSpace(myNet, state, int(self.bound.get()))
+        bound = myNet.calculateBound()
+        states, edges, orderedAgents = Gen.generateStateSpace(myNet, state, bound)
         self.len_states.config(text="States: " + str(len(states)))
         self.len_edges.config(text="Edges: " + str(len(edges)))
         Gen.printStateSpace(states, edges, orderedAgents, self.vertices, self.edges)
@@ -86,10 +87,6 @@ class Application(Frame):
         self.button_rules = Button(root,text="Model",command=self.set_model, width=15)
         self.button_rules.grid(row=1, column=0)
 
-        self.bound_name = Label(root,text="Bound:",  width=20).grid(row=2, column=0)
-        self.bound_wid = Entry(root,textvariable=self.bound, width=20)
-        self.bound_wid.grid(row=2, column=1)
-
         self.mes = Message(root,text='Output', width=200, font="bold", borderwidth=8, relief= RIDGE)
         self.mes.grid(row=3, column=0, columnspan=2, ipadx=100)
 
@@ -138,7 +135,6 @@ class Application(Frame):
         self.vertVar.trace("w", self.get_ready)
         self.edgVar.trace("w", self.get_ready)
         self.modelVar.trace("w", self.get_ready)
-        self.bound.trace("w", self.get_ready)
         self.reactVar.trace("w", self.get_ready)
 
     def __init__(self, master=None):
@@ -152,7 +148,6 @@ class Application(Frame):
         self.reactVar = StringVar()
         self.modelVar = StringVar()
         self.numOfReactions = StringVar()
-        self.bound = StringVar(value="")
         self.grid()
         self.createWidgets()
 

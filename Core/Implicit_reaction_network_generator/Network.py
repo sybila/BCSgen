@@ -107,6 +107,10 @@ class Network:
 		for agent in agents.getAgents().elements():
 			map(lambda node: node.includeAgent(agent), self.Nodes)
 
+	def calculateBound(self):
+		rules = map(lambda edge: edge.getRule(), self.Edges)
+		return max(map(lambda rule: rule.getMinimalBound(), rules))
+
 	"""
 	This should check what the network can/cannot do, get some usefull properties etc.
 	But the most important is to remove edges which cannot be used at all AND change Nodes' buckets to sets.

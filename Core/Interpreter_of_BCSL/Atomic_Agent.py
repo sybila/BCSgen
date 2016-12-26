@@ -62,3 +62,6 @@ class Atomic_Agent:
     """
     def isSimilarTo(self, other):
         return self.isCompatibleWith(other)
+
+    def maxOccurence(self):
+        return 1

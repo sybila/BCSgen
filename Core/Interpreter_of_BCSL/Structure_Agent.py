@@ -106,3 +106,6 @@ class Structure_Agent:
             if agent.isCompatibleWith(partial_agent):
                 return partial_agent
         return None
+
+    def maxOccurence(self):
+        return 1

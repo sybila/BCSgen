@@ -223,3 +223,9 @@ class Rule:
             else:
                 result.append(candidate.pop(0))
         return result
+
+    def getMinimalBound(self):
+        if len(self.left_hand_side) == 1:
+            return self.left_hand_side[0].maxOccurence()
+        else:
+            return self.right_hand_side[0].maxOccurence()

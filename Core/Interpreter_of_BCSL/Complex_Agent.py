@@ -108,3 +108,7 @@ class Complex_Agent:
     """
     def getAllCompatibleAgents(self, agent):
         return [i for i, full_agent in enumerate(self.full_composition) if agent.isCompatibleWith(full_agent)]
+
+    def maxOccurence(self):
+        names = collections.Counter(map(lambda agent: agent.getName(), self.full_composition))
+        return max(names.values())
