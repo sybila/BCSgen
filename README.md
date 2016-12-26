@@ -17,7 +17,6 @@ and fill required fields:
 
 * Input
  * Model - file containing a BCS model<sup>3</sup>
- * Bound - maximal number of agents' repetitions in a state
 * Output
  * Vertices - file for storing states of state space
  * Edges - file for storing edges of state space
@@ -29,11 +28,10 @@ and fill required fields:
 2. write your model as rules and initial conditions (into model.bcs),
 3. to obtain __state space__, run script:
 
-        python state_space.py <model> <bound> <statesFile> <edgesFile>
+        python state_space.py <model> <statesFile> <edgesFile>
         
   where:
     * model - given BCS model<sup>3</sup>
-    * bound - maximal number of agents' repetitions in a state
     * statesFile - file for storing states of state space
     * edgesFile - file for storing edges of state space
     
