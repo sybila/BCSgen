@@ -128,15 +128,12 @@ class Rule:
     :return: transformed candidates
     """
     def replacement(self, candidate_original):
-        result = np.array([])
+        result = collections.Counter([])
         candidates = list(set(self.match(candidate_original)))
         for candidate in candidates:
-            result = np.append(result, self.replace(candidate))
-
-        result = np.unique(result)
-        result = [[row] for row in result]
-
-        return list(result)
+            result += collections.Counter([self.replace(candidate)])
+        result = map(lambda item: list(item), list(result))
+        return result
 
     """
     Function replace takes a rule and candidate and applies changes according to the rule type:
@@ -172,11 +169,11 @@ class Rule:
         rhs = self.getRightHandSide()[0]
         candidate = candidate[0]
         if isinstance(candidate, Atomic_Agent):
-            return changeAtomicStates(rhs, candidate)
+            return tuple([changeAtomicStates(rhs, candidate)])
         elif isinstance(candidate, Structure_Agent):
-            return changeStructureStates(rhs, candidate)
+            return tuple([changeStructureStates(rhs, candidate)])
         else:
-            return changeComplexStates(rhs, candidate)
+            return tuple([changeComplexStates(rhs, candidate)])
 
     """
     Degrades given candidate of agents
@@ -184,14 +181,14 @@ class Rule:
     :return: empty Counter
     """
     def degrade(self, candidate):
-        return 
+        return tuple([])
 
     """
     Translates new candidate according to the right-hand-side of the rule
     :return: new candidate
     """
     def translate(self):
-        return self.getRightHandSide()
+        return tuple(self.getRightHandSide())
 
     """
     Creates complex from given candidate
@@ -207,7 +204,7 @@ class Rule:
                 new_candidate += agent.getFullComposition()
             else:
                 new_candidate.append(agent)
-        return Complex_Agent(sorted(new_candidate), compartment)
+        return tuple([Complex_Agent(sorted(new_candidate), compartment)])
 
     """
     Dissociates complex agent to new agents (might be complexes)
@@ -222,7 +219,7 @@ class Rule:
                 result.append(Complex_Agent(sorted([candidate.pop(0) for _ in range(len(agent.getFullComposition()))]), agent.getCompartment()))
             else:
                 result.append(candidate.pop(0))
-        return result
+        return tuple(result)
 
     def getMinimalBound(self):
         if len(self.left_hand_side) == 1:
