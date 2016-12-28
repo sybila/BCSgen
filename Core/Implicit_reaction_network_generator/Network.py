@@ -121,7 +121,7 @@ class Network:
 		self.printIncidenceMatrix(matrix)
 		# magic is here
 		networkIsOK = True
-		message = "Sweet life"
+		message = "No conflicts in the model."
 		map(lambda node: node.switchToSet(), self.Nodes)
 		return networkIsOK, message
 

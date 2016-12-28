@@ -8,7 +8,7 @@ inputFile = sys.argv[-3]
 statesFile = sys.argv[-2]
 edgesFile = sys.argv[-1]
 
-myNet, state = Implicit.generateReactions(inputFile)
+myNet, state, message = Implicit.generateReactions(inputFile)
 
 bound = myNet.calculateBound()
 

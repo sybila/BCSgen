@@ -14,7 +14,7 @@ def generateReactions(inputFile):
 	networkStatus, message = myNet.applyStaticAnalysis()  # apply static analysis
 
 	if not networkStatus:
-		print message
+		return None, None, message
 	else: 	# if network is OK, proceed
 
 		old_numberOfReactions = 0
@@ -26,4 +26,4 @@ def generateReactions(inputFile):
 
 			old_numberOfReactions = new_numberOfReactions
 			new_numberOfReactions = myNet.getNumOfReactions()
-	return myNet, state
+		return myNet, state, message

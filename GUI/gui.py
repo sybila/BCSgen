@@ -24,14 +24,17 @@ class Application(Frame):
     Computes the state space above set parameters
     """
     def compute(self):
-        myNet, state = Implicit.generateReactions(self.model)
-        myNet.printReactions(self.reactions)
-        self.len_reactions.config(text="Reactions: " + str(myNet.getNumOfReactions()))
-        bound = myNet.calculateBound()
-        states, edges, orderedAgents = Gen.generateStateSpace(myNet, state, bound)
-        self.len_states.config(text="States: " + str(len(states)))
-        self.len_edges.config(text="Edges: " + str(len(edges)))
-        Gen.printStateSpace(states, edges, orderedAgents, self.vertices, self.edges)
+        myNet, state, message = Implicit.generateReactions(self.model)
+        if myNet:
+            myNet.printReactions(self.reactions)
+            self.len_reactions.config(text="Reactions: " + str(myNet.getNumOfReactions()))
+            bound = myNet.calculateBound()
+            states, edges, orderedAgents = Gen.generateStateSpace(myNet, state, bound)
+            self.len_states.config(text="States: " + str(len(states)))
+            self.len_edges.config(text="Edges: " + str(len(edges)))
+            Gen.printStateSpace(states, edges, orderedAgents, self.vertices, self.edges)
+        else:
+            # do something else here
 
         self.compute.config(text="Finish")
         self.compute.config(command=root.destroy)
