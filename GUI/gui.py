@@ -25,8 +25,8 @@ class Application(Frame):
     Computes the state space above set parameters
     """
     def compute(self):
-        myNet, state, message = Implicit.generateReactions(self.model)
-        if myNet:
+        myNet, state, networkStatus, message = Implicit.generateReactions(self.model)
+        if networkStatus:
             myNet.printReactions(self.reactions)
             self.len_reactions.config(text="Reactions: " + str(myNet.getNumOfReactions()))
             bound = myNet.calculateBound()

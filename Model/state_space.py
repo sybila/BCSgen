@@ -8,10 +8,10 @@ inputFile = sys.argv[-3]
 statesFile = sys.argv[-2]
 edgesFile = sys.argv[-1]
 
-myNet, state, message = Implicit.generateReactions(inputFile)
+myNet, state, networkStatus, message = Implicit.generateReactions(inputFile)
 
-bound = myNet.calculateBound()
-
-states, edges, orderedAgents = Gen.generateStateSpace(myNet, state, bound)
-
-Gen.printStateSpace(states, edges, orderedAgents, statesFile, edgesFile)
+print message
+if networkStatus:
+	bound = myNet.calculateBound()
+	states, edges, orderedAgents = Gen.generateStateSpace(myNet, state, bound)
+	Gen.printStateSpace(states, edges, orderedAgents, statesFile, edgesFile)

@@ -5,6 +5,25 @@ sys.path.append(os.path.abspath('../Core/'))
 import Import as Import
 import itertools
 
+def isNegative(i):
+	if i > 0:
+		return True
+	return False
+
+def checkVector(vector):
+	concurrent = set()
+	dependent = set()
+	lenvec = len(vector)
+	for i in range(lenvec):
+		for j in range(i, lenvec):
+			if vector[i] and vector[j]:
+				if isNegative(vector[i]) and isNegative(vector[j]):
+					concurrent.add((i,j))
+				if (isNegative(vector[i]) and not isNegative(vector[j])) or (not isNegative(vector[i]) and isNegative(vector[j])):
+					dependent.add((i,j))
+	return concurrent, dependent
+
+
 def toStr(i):
 	if i < 0:
 		return " " + str(i)
@@ -118,10 +137,7 @@ class Network:
 	"""
 	def applyStaticAnalysis(self):
 		matrix = self.createIncidenceMatrix()
-		self.printIncidenceMatrix(matrix)
-		# magic is here
-		networkIsOK = True
-		message = "No conflicts in the model."
+		message, networkIsOK = self.analyseMatrix(matrix)
 		map(lambda node: node.switchToSet(), self.Nodes)
 		return networkIsOK, message
 
@@ -146,3 +162,23 @@ class Network:
 		print "____" * len(edges)
 		for i in range(len(self.Nodes)):
 			print str(" ".join(map(toStr, columns[i]))) + " | " + str(self.Nodes[i].getHeader())
+
+	def analyseMatrix(self, matrix):
+		rules = map(lambda edge: edge.getRule(), self.Edges)
+		columns = zip(*matrix)
+
+		concurrent = set()
+		dependent = set()
+
+		for column in columns:
+			c, d = checkVector(column)
+			concurrent.update(c)
+			dependent.update(d)
+
+		conflict = concurrent & dependent
+		if conflict:
+			message = "The following rules are in conflict:\n"
+			message += "\n\n".join(map(lambda (i, j): "*" + str(rules[i]) + "\n" + str(rules[j]), conflict))
+			return message, False
+		else:
+			return "Network is OK, \n compuation proceeds...", True

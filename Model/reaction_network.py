@@ -7,5 +7,8 @@ from main import *
 inputFile = sys.argv[-2]
 outputFile = sys.argv[-1]
 
-myNet, state, message = generateReactions(inputFile)
-myNet.printReactions(outputFile)
+myNet, state, networkStatus, message = generateReactions(inputFile)
+
+print message
+if networkStatus:
+	myNet.printReactions(outputFile)
