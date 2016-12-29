@@ -14,6 +14,16 @@ from tkMessageBox import *
 Application is main framework for the GUI
 """
 class Application(Frame):
+
+    def generate(self, myNet, state):
+        myNet.printReactions(self.reactions)
+        self.len_reactions.config(text="Reactions: " + str(myNet.getNumOfReactions()))
+        bound = myNet.calculateBound()
+        states, edges, orderedAgents = Gen.generateStateSpace(myNet, state, bound)
+        self.len_states.config(text="States: " + str(len(states)))
+        self.len_edges.config(text="Edges: " + str(len(edges)))
+        Gen.printStateSpace(states, edges, orderedAgents, self.vertices, self.edges)
+
     """
     Checks if all fields are filled
     """
@@ -27,17 +37,11 @@ class Application(Frame):
     def compute(self):
         myNet, state, networkStatus, message = Implicit.generateReactions(self.model)
         if networkStatus:
-            myNet.printReactions(self.reactions)
-            self.len_reactions.config(text="Reactions: " + str(myNet.getNumOfReactions()))
-            bound = myNet.calculateBound()
-            states, edges, orderedAgents = Gen.generateStateSpace(myNet, state, bound)
-            self.len_states.config(text="States: " + str(len(states)))
-            self.len_edges.config(text="Edges: " + str(len(edges)))
-            Gen.printStateSpace(states, edges, orderedAgents, self.vertices, self.edges)
-            showinfo("Status", message)
+            self.generate(myNet, state)
         else:
-            showwarning("Conflict", message)
-
+            if askyesno("Conflicts", message):
+                self.generate(myNet, state)
+        
         self.compute.config(text="Finish")
         self.compute.config(command=root.destroy)
 
@@ -83,7 +87,7 @@ class Application(Frame):
     This is where visual behaviour is maintained
     """
     def createWidgets(self):
-        self.mes = Label(root,text='Input', width=15, font="bold", borderwidth=8, relief= RIDGE)
+        self.mes = Label(root,text='Input', width=13, font="bold", borderwidth=8, relief= RIDGE)
         self.mes.grid(row=0, column=0, columnspan=2, ipadx=105)
 
         self.text_model = Entry(root,width=20, state="readonly", readonlybackground='white', textvariable=self.modelVar)
@@ -92,7 +96,7 @@ class Application(Frame):
         self.button_rules = Button(root,text="Model",command=self.set_model, width=15)
         self.button_rules.grid(row=1, column=0)
 
-        self.mes = Label(root,text='Output', width=15, font="bold", borderwidth=8, relief= RIDGE)
+        self.mes = Label(root,text='Output', width=14, font="bold", borderwidth=8, relief= RIDGE)
         self.mes.grid(row=3, column=0, columnspan=2, ipadx=100)
 
         self.text_vert = Entry(root,width=20, state="readonly", readonlybackground='white', textvariable=self.vertVar)
