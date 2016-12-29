@@ -1,33 +1,10 @@
 from Edge import *
 from Node import *
 from Reaction import *
+from Conflict import *
 sys.path.append(os.path.abspath('../Core/'))
 import Import as Import
 import itertools
-
-def isNegative(i):
-	if i > 0:
-		return True
-	return False
-
-def checkVector(vector):
-	concurrent = set()
-	dependent = set()
-	lenvec = len(vector)
-	for i in range(lenvec):
-		for j in range(i, lenvec):
-			if vector[i] and vector[j]:
-				if isNegative(vector[i]) and isNegative(vector[j]):
-					concurrent.add((i,j))
-				if (isNegative(vector[i]) and not isNegative(vector[j])) or (not isNegative(vector[i]) and isNegative(vector[j])):
-					dependent.add((i,j))
-	return concurrent, dependent
-
-
-def toStr(i):
-	if i < 0:
-		return " " + str(i)
-	return "  " + str(i)
 
 """
 Class Network
@@ -170,15 +147,16 @@ class Network:
 		concurrent = set()
 		dependent = set()
 
-		for column in columns:
-			c, d = checkVector(column)
+		for i in range(len(columns)):
+			c, d = checkVector(columns[i], i)
 			concurrent.update(c)
 			dependent.update(d)
 
-		conflict = concurrent & dependent
-		if conflict:
+		conflicts = concurrent & dependent
+		if conflicts:
 			message = "The following rules are in conflict:\n"
-			message += "\n\n".join(map(lambda (i, j): "*" + str(rules[i]) + "\n" + str(rules[j]), conflict))
+			message += "\n\n".join(map(lambda conflict: "* " + str(rules[conflict.getFrom()]) \
+					 + "\n* " + str(rules[conflict.getTo()]), conflicts))
 			return message, False
 		else:
-			return "Network is OK, \n compuation proceeds...", True
+			return "Network is OK, \ncompuation proceeds...", True
