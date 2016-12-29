@@ -8,6 +8,7 @@ import Implicit_reaction_network_generator as Implicit
 from Tkinter import *
 from tkFileDialog import askopenfilename
 import tkFont
+from tkMessageBox import *
 
 """
 Application is main framework for the GUI
@@ -33,8 +34,9 @@ class Application(Frame):
             self.len_states.config(text="States: " + str(len(states)))
             self.len_edges.config(text="Edges: " + str(len(edges)))
             Gen.printStateSpace(states, edges, orderedAgents, self.vertices, self.edges)
+            showinfo("Status", message)
         else:
-            # do something else here
+            showwarning("Conflict", message)
 
         self.compute.config(text="Finish")
         self.compute.config(command=root.destroy)
@@ -81,7 +83,7 @@ class Application(Frame):
     This is where visual behaviour is maintained
     """
     def createWidgets(self):
-        self.mes = Message(root,text='Input', width=200, font="bold", borderwidth=8, relief= RIDGE)
+        self.mes = Label(root,text='Input', width=15, font="bold", borderwidth=8, relief= RIDGE)
         self.mes.grid(row=0, column=0, columnspan=2, ipadx=105)
 
         self.text_model = Entry(root,width=20, state="readonly", readonlybackground='white', textvariable=self.modelVar)
@@ -90,7 +92,7 @@ class Application(Frame):
         self.button_rules = Button(root,text="Model",command=self.set_model, width=15)
         self.button_rules.grid(row=1, column=0)
 
-        self.mes = Message(root,text='Output', width=200, font="bold", borderwidth=8, relief= RIDGE)
+        self.mes = Label(root,text='Output', width=15, font="bold", borderwidth=8, relief= RIDGE)
         self.mes.grid(row=3, column=0, columnspan=2, ipadx=100)
 
         self.text_vert = Entry(root,width=20, state="readonly", readonlybackground='white', textvariable=self.vertVar)
@@ -111,7 +113,7 @@ class Application(Frame):
         self.button_reaction = Button(root,text="Reactions",command=self.set_reactions, width=15)
         self.button_reaction.grid(row=6, column=0)
 
-        self.mes = Message(root,text='Results', width=200, font="bold", borderwidth=8, relief= RIDGE)
+        self.mes = Label(root,text='Results', width=15, font="bold", borderwidth=8, relief= RIDGE)
         self.mes.grid(row=7, column=0, columnspan=2, ipadx=95)
 
         self.state_space = Label(root,text="State space", width=20, font=tkFont.Font(family="TkDefaultFont",size=9, underline=1))
