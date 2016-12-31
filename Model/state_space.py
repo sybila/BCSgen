@@ -8,10 +8,19 @@ inputFile = sys.argv[-3]
 statesFile = sys.argv[-2]
 edgesFile = sys.argv[-1]
 
-myNet, state, networkStatus, message = Implicit.generateReactions(inputFile)
+myNet, state, networkStatus, message = Implicit.initializeNetwork(inputFile)
 
-print message
+if not networkStatus:
+	message += ' (yes/no)'
+	print message
+	answer = raw_input('Enter your input:')
+	if answer == 'yes':
+		networkStatus = True
+else:
+	print message
+
 if networkStatus:
+	myNet = Implicit.generateReactions(myNet)
 	bound = myNet.calculateBound()
 	states, edges, orderedAgents = Gen.generateStateSpace(myNet, state, bound)
 	Gen.printStateSpace(states, edges, orderedAgents, statesFile, edgesFile)

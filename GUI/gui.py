@@ -16,6 +16,7 @@ Application is main framework for the GUI
 class Application(Frame):
 
     def generate(self, myNet, state):
+        myNet = Implicit.generateReactions(myNet)
         myNet.printReactions(self.reactions)
         self.len_reactions.config(text="Reactions: " + str(myNet.getNumOfReactions()))
         bound = myNet.calculateBound()
@@ -35,7 +36,7 @@ class Application(Frame):
     Computes the state space above set parameters
     """
     def compute(self):
-        myNet, state, networkStatus, message = Implicit.generateReactions(self.model)
+        myNet, state, networkStatus, message = Implicit.initializeNetwork(self.model)
         if networkStatus:
             self.generate(myNet, state)
         else:
