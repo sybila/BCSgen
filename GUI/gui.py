@@ -42,6 +42,10 @@ class Application(Frame):
         else:
             if askyesno("Conflicts", message):
                 self.generate(myNet, state)
+            else:
+                self.len_reactions.config(text="Reactions: N/A")
+                self.len_states.config(text="States: N/A")
+                self.len_edges.config(text="Edges: N/A")
         
         self.compute.config(text="Finish")
         self.compute.config(command=root.destroy)
@@ -162,6 +166,7 @@ class Application(Frame):
         self.createWidgets()
 
 root = Tk()
+root.option_add("*Dialog.msg.wrapLength", "20i")
 root.title("BCSgen state space generating")
 app = Application(master=root)
 app.mainloop()
