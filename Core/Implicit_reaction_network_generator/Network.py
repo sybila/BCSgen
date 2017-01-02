@@ -157,7 +157,7 @@ class Network:
 			message = "The following pairs of rules have conflict:\n\n"
 			message += "\n\n".join(map(lambda conflict: "~ " + str(rules[conflict.getFrom()]) \
 					 + "\n~ " + str(rules[conflict.getTo()]), conflicts))
-			message += "\n\nCompute despite conflicts?"
+			message += "\n\nCompute despite the conflicts?"
 			return message, False
 		else:
-			return "Network is OK, \ncompuation proceeds...", True
+			return "Network is OK, \ncomputation proceeds...", True
