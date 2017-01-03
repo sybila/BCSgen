@@ -18,8 +18,8 @@ and fill required fields:
 * Input
  * Model - file containing a BCS model<sup>3</sup>
 * Output
- * State space file - file for storing generated state space
- * Reactions file - file for storing reactions
+ * State space file - JSON file for storing generated state space
+ * Reactions file - text file for storing reactions
 
 ## Command Line Interface
 
@@ -31,7 +31,7 @@ and fill required fields:
         
   where:
     * model - given BCS model<sup>3</sup>
-    * stateSpaceFile - file for storing generated state space
+    * stateSpaceFile - JSON file for storing generated state space
     
 4. to obtain __reactions__, run script:
 
@@ -39,9 +39,13 @@ and fill required fields:
         
    where:
      * model - given BCS model<sup>3</sup>
-     * reactionsFile - file for storing reactions
+     * reactionsFile - text file for storing reactions
 
 > in Examples directory, there are several models, to run them just use 'python example.py'
+
+#### Note
+
+During computation, static analysis is applied to the model in order to detect some conflicts in rules. If there are such conflicts, they are announced and the user is asked whether continue (generate state space) or stop (save conflicts in log file and exit) the computation.
 
 ---
 > <sup>1</sup> State space might be visualised with [this](https://github.com/mathooo/NetworkVISUAL) utility.
