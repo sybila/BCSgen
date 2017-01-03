@@ -57,7 +57,7 @@ class Application(Frame):
     Sets path to file with rules
     """
     def set_model(self):
-        self.model = askopenfilename()
+        self.model = askopenfilename(filetypes = [('BCSL model', ('.bcs'))])
         self.text_model.config(state=NORMAL)
         self.text_model.delete(0, END)
         self.text_model.insert(END, self.model.__str__())
@@ -67,14 +67,14 @@ class Application(Frame):
     Sets path to output stateSpace file 
     """
     def set_stateSpace(self):
-        self.stateSpace = askopenfilename()
+        self.stateSpace = askopenfilename(filetypes = [('JSON', ('.json'))])
         self.text_stateSpace.config(state=NORMAL)
         self.text_stateSpace.delete(0, END)
         self.text_stateSpace.insert(END, self.stateSpace.__str__())
         self.text_stateSpace.config(state="readonly")
 
     def set_reactions(self):
-        self.reactions = askopenfilename()
+        self.reactions = askopenfilename(filetypes = [('Text file', ('.txt'))])
         self.text_reaction.config(state=NORMAL)
         self.text_reaction.delete(0, END)
         self.text_reaction.insert(END, self.reactions.__str__())
