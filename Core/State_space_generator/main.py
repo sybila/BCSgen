@@ -4,6 +4,7 @@ sys.path.append(os.path.abspath('../Core/'))
 import Implicit_reaction_network_generator as Implicit
 from Vector_network import *
 import numpy as np
+import json
 
 """
 Creates State from given vector and ordered unique agents
@@ -23,16 +24,21 @@ Prints state space to given output files
 :param statesFile: output file for states
 :param edgesFile: output file for edges
 """
-def printStateSpace(states, edges, orderedAgents, statesFile, edgesFile):
-	f = open(statesFile,'w')
-	for state in states:
-		f.write(str(createState(state, orderedAgents)))
-	f.close()
+def printStateSpace(states, transitions, orderedAgents, stateSpaceFile):
+	nodes = dict()
+	edges = dict()
+	for state in map(lambda s: createState(s, orderedAgents), states):
+		nodes[state.getID()] = state.getDictAgents()
 
-	f = open(edgesFile,'w')
-	for edge in edges:
-		f.write(str(edge) + "\n")
-	f.close()
+	transitions = list(transitions)
+
+	for i in range(len(transitions)):
+		edges[i] = transitions[i].getDict()
+
+	data = {'nodes' : nodes, 'edges' : sorted(edges.items())}
+
+	with open(stateSpaceFile, 'w') as f:
+		json.dump(data, f, indent=4)
 
 """
 For given Network and state compute state space (with given bound)

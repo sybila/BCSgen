@@ -23,13 +23,13 @@ class Application(Frame):
         states, edges, orderedAgents = Gen.generateStateSpace(myNet, state, bound)
         self.len_states.config(text="States: " + str(len(states)))
         self.len_edges.config(text="Edges: " + str(len(edges)))
-        Gen.printStateSpace(states, edges, orderedAgents, self.vertices, self.edges)
+        Gen.printStateSpace(states, edges, orderedAgents, self.stateSpace)
 
     """
     Checks if all fields are filled
     """
     def get_ready(self, *args):
-        if self.model and self.vertices and self.edges and self.reactions:
+        if self.model and self.stateSpace and self.reactions:
            self.compute.config(state=NORMAL)
 
     """
@@ -61,24 +61,14 @@ class Application(Frame):
         self.text_model.config(state="readonly")
 
     """
-    Sets path to output vertices file 
+    Sets path to output stateSpace file 
     """
-    def set_vertices(self):
-        self.vertices = askopenfilename()
-        self.text_vert.config(state=NORMAL)
-        self.text_vert.delete(0, END)
-        self.text_vert.insert(END, self.vertices.__str__())
-        self.text_vert.config(state="readonly")
-
-    """
-    Sets path to output edges file 
-    """
-    def set_edges(self):
-        self.edges = askopenfilename()
-        self.text_edg.config(state=NORMAL)
-        self.text_edg.delete(0, END)
-        self.text_edg.insert(END, self.edges.__str__())
-        self.text_edg.config(state="readonly")
+    def set_stateSpace(self):
+        self.stateSpace = askopenfilename()
+        self.text_stateSpace.config(state=NORMAL)
+        self.text_stateSpace.delete(0, END)
+        self.text_stateSpace.insert(END, self.stateSpace.__str__())
+        self.text_stateSpace.config(state="readonly")
 
     def set_reactions(self):
         self.reactions = askopenfilename()
@@ -104,22 +94,16 @@ class Application(Frame):
         self.mes = Label(root,text='Output', width=14, font="bold", borderwidth=8, relief= RIDGE)
         self.mes.grid(row=3, column=0, columnspan=2, ipadx=100)
 
-        self.text_vert = Entry(root,width=20, state="readonly", readonlybackground='white', textvariable=self.vertVar)
-        self.text_vert.grid(row=4, column=1)
+        self.text_stateSpace = Entry(root,width=20, state="readonly", readonlybackground='white', textvariable=self.stateSpaceVar)
+        self.text_stateSpace.grid(row=4, column=1)
 
-        self.button_vert = Button(root,text="Vertices",command=self.set_vertices, width=15)
-        self.button_vert.grid(row=4, column=0)
-
-        self.text_edg = Entry(root,width=20, state="readonly", readonlybackground='white', textvariable=self.edgVar)
-        self.text_edg.grid(row=5, column=1)
-
-        self.button_edg = Button(root,text="Edges",command=self.set_edges, width=15)
-        self.button_edg.grid(row=5, column=0)
+        self.button_stateSpace = Button(root,text="State space file",command=self.set_stateSpace, width=15)
+        self.button_stateSpace.grid(row=4, column=0)
 
         self.text_reaction = Entry(root,width=20, state="readonly", readonlybackground='white', textvariable=self.reactVar)
         self.text_reaction.grid(row=6, column=1)
 
-        self.button_reaction = Button(root,text="Reactions",command=self.set_reactions, width=15)
+        self.button_reaction = Button(root,text="Reactions file",command=self.set_reactions, width=15)
         self.button_reaction.grid(row=6, column=0)
 
         self.mes = Label(root,text='Results', width=15, font="bold", borderwidth=8, relief= RIDGE)
@@ -146,19 +130,16 @@ class Application(Frame):
         self.exit = Button(root,text="Cancel",command=root.destroy, width=15)
         self.exit.grid(row=12, column=0)
 
-        self.vertVar.trace("w", self.get_ready)
-        self.edgVar.trace("w", self.get_ready)
+        self.stateSpaceVar.trace("w", self.get_ready)
         self.modelVar.trace("w", self.get_ready)
         self.reactVar.trace("w", self.get_ready)
 
     def __init__(self, master=None):
         Frame.__init__(self, master)
         self.reactions = None
-        self.vertices = None
-        self.edges = None
+        self.stateSpace = None
         self.model = None
-        self.vertVar = StringVar()
-        self.edgVar = StringVar()
+        self.stateSpaceVar = StringVar()
         self.reactVar = StringVar()
         self.modelVar = StringVar()
         self.numOfReactions = StringVar()

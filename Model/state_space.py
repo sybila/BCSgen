@@ -4,9 +4,8 @@ sys.path.append(os.path.abspath('../Core/'))
 import State_space_generator as Gen
 import Implicit_reaction_network_generator as Implicit
 
-inputFile = sys.argv[-3]
-statesFile = sys.argv[-2]
-edgesFile = sys.argv[-1]
+inputFile = sys.argv[-2]
+stateSpaceFile = sys.argv[-1]
 
 myNet, state, networkStatus, message = Implicit.initializeNetwork(inputFile)
 
@@ -23,4 +22,4 @@ if networkStatus:
 	myNet = Implicit.generateReactions(myNet)
 	bound = myNet.calculateBound()
 	states, edges, orderedAgents = Gen.generateStateSpace(myNet, state, bound)
-	Gen.printStateSpace(states, edges, orderedAgents, statesFile, edgesFile)
+	Gen.printStateSpace(states, edges, orderedAgents, stateSpaceFile)

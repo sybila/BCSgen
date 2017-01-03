@@ -29,3 +29,6 @@ class Vector_reaction:
 			vec = tuple(np.array(state) - self.From + self.To)
 			if max(vec) <= bound:
 				return vec
+
+	def getDict(self):
+		return {'from' : "".join(map(str, self.From)), 'to' : "".join(map(str, self.To))}

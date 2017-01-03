@@ -21,13 +21,14 @@ print
 print "Example 1:"
 sys.stdout.write("Reaction network ... ")
 sys.stdout.flush()
-myNet, state = Implicit.generateReactions("inputs/model1.bcs")
+myNet, state, networkStatus, message = Implicit.initializeNetwork("inputs/model1.bcs")
+myNet = Implicit.generateReactions(myNet)
 print "DONE"
 sys.stdout.write("State space ... ")
 sys.stdout.flush()
 bound = myNet.calculateBound()
 states, edges, orderedAgents = Gen.generateStateSpace(myNet, state, bound)
-Gen.printStateSpace(states, edges, orderedAgents, "outputs/vertices1.txt", "outputs/edges1.txt")
+Gen.printStateSpace(states, edges, orderedAgents, "outputs/state_space1.txt")
 print "DONE"
 print "---------------------------"
 
@@ -36,13 +37,14 @@ print "---------------------------"
 print "Example 2"
 sys.stdout.write("Reaction network ... ")
 sys.stdout.flush()
-myNet, state = Implicit.generateReactions("inputs/model2.bcs")
+myNet, state, networkStatus, message = Implicit.initializeNetwork("inputs/model2.bcs")
+myNet = Implicit.generateReactions(myNet)
 print "DONE"
 sys.stdout.write("State space ... ")
 sys.stdout.flush()
 bound = myNet.calculateBound()
 states, edges, orderedAgents = Gen.generateStateSpace(myNet, state, bound)
-Gen.printStateSpace(states, edges, orderedAgents, "outputs/vertices2.txt", "outputs/edges2.txt")
+Gen.printStateSpace(states, edges, orderedAgents, "outputs/state_space2.txt")
 print "DONE"
 print "---------------------------"
 
@@ -51,13 +53,14 @@ print "---------------------------"
 print "Example 3"
 sys.stdout.write("Reaction network ... ")
 sys.stdout.flush()
-myNet, state = Implicit.generateReactions("inputs/model3.bcs")
+myNet, state, networkStatus, message = Implicit.initializeNetwork("inputs/model3.bcs")
+myNet = Implicit.generateReactions(myNet)
 print "DONE"
 sys.stdout.write("State space ... ")
 sys.stdout.flush()
 bound = myNet.calculateBound()
 states, edges, orderedAgents = Gen.generateStateSpace(myNet, state, bound)
-Gen.printStateSpace(states, edges, orderedAgents, "outputs/vertices3.txt", "outputs/edges3.txt")
+Gen.printStateSpace(states, edges, orderedAgents, "outputs/state_space3.txt")
 print "DONE"
 print "---------------------------"
 
@@ -66,13 +69,14 @@ print "---------------------------"
 print "Example 4"
 sys.stdout.write("Reaction network ... ")
 sys.stdout.flush()
-myNet, state = Implicit.generateReactions("inputs/model4.bcs")
+myNet, state, networkStatus, message = Implicit.initializeNetwork("inputs/model4.bcs")
+myNet = Implicit.generateReactions(myNet)
 print "DONE"
 sys.stdout.write("State space ... ")
 sys.stdout.flush()
 bound = myNet.calculateBound()
 states, edges, orderedAgents = Gen.generateStateSpace(myNet, state, bound)
-Gen.printStateSpace(states, edges, orderedAgents, "outputs/vertices4.txt", "outputs/edges4.txt")
+Gen.printStateSpace(states, edges, orderedAgents, "outputs/state_space4.txt")
 print "DONE"
 print "---------------------------"
 
@@ -81,13 +85,14 @@ print "---------------------------"
 print "Example 5"
 sys.stdout.write("Reaction network ... ")
 sys.stdout.flush()
-myNet, state = Implicit.generateReactions("inputs/model5.bcs")
+myNet, state, networkStatus, message = Implicit.initializeNetwork("inputs/model5.bcs")
+myNet = Implicit.generateReactions(myNet)
 print "DONE"
 sys.stdout.write("State space ... ")
 sys.stdout.flush()
 bound = myNet.calculateBound()
 states, edges, orderedAgents = Gen.generateStateSpace(myNet, state, bound)
-Gen.printStateSpace(states, edges, orderedAgents, "outputs/vertices5.txt", "outputs/edges5.txt")
+Gen.printStateSpace(states, edges, orderedAgents, "outputs/state_space5.txt")
 print "DONE"
 print "---------------------------"
 
@@ -96,13 +101,14 @@ print "---------------------------"
 print "Example 6"
 sys.stdout.write("Reaction network ... ")
 sys.stdout.flush()
-myNet, state = Implicit.generateReactions("inputs/model6.bcs")
+myNet, state, networkStatus, message = Implicit.initializeNetwork("inputs/model6.bcs")
+myNet = Implicit.generateReactions(myNet)
 print "DONE"
 sys.stdout.write("State space ... ")
 sys.stdout.flush()
 bound = myNet.calculateBound()
 states, edges, orderedAgents = Gen.generateStateSpace(myNet, state, bound)
-Gen.printStateSpace(states, edges, orderedAgents, "outputs/vertices6.txt", "outputs/edges6.txt")
+Gen.printStateSpace(states, edges, orderedAgents, "outputs/state_space6.txt")
 print "DONE"
 print "---------------------------"
 

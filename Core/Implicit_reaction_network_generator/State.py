@@ -29,3 +29,9 @@ class State:
     	if self.agents:
        		return self.agents.most_common(1)[0][1] <= bound
         return True
+
+    def getID(self):
+        return str(self.ID)
+
+    def getDictAgents(self):
+        return dict([(str(k), str(v)) for k, v in self.agents.items()])
