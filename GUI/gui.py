@@ -6,7 +6,7 @@ import State_space_generator as Gen
 import Implicit_reaction_network_generator as Implicit
 
 from Tkinter import *
-from tkFileDialog import askopenfilename
+from tkFileDialog import askopenfilename, asksaveasfilename
 import tkFont
 from tkMessageBox import *
 
@@ -67,14 +67,14 @@ class Application(Frame):
     Sets path to output stateSpace file 
     """
     def set_stateSpace(self):
-        self.stateSpace = askopenfilename(filetypes = [('JSON', ('.json'))])
+        self.stateSpace = asksaveasfilename(title = "State space file", filetypes = [('JSON', ('.json'))])
         self.text_stateSpace.config(state=NORMAL)
         self.text_stateSpace.delete(0, END)
         self.text_stateSpace.insert(END, self.stateSpace.__str__())
         self.text_stateSpace.config(state="readonly")
 
     def set_reactions(self):
-        self.reactions = askopenfilename(filetypes = [('Text file', ('.txt'))])
+        self.reactions = asksaveasfilename(title = "Reactions file", filetypes = [('Text file', ('.txt'))])
         self.text_reaction.config(state=NORMAL)
         self.text_reaction.delete(0, END)
         self.text_reaction.insert(END, self.reactions.__str__())
@@ -88,7 +88,7 @@ class Application(Frame):
         self.mes = Label(root,text='Input', width=13, font="bold", borderwidth=8, relief= RIDGE)
         self.mes.grid(row=0, column=0, columnspan=2, ipadx=105)
 
-        self.text_model = Entry(root,width=20, state="readonly", readonlybackground='white', textvariable=self.modelVar)
+        self.text_model = Entry(root,width=20, state="readonly", selectbackground='gray', readonlybackground='white', textvariable=self.modelVar)
         self.text_model.grid(row=1, column=1)
 
         self.button_rules = Button(root,text="Model",command=self.set_model, width=15)
@@ -97,13 +97,13 @@ class Application(Frame):
         self.mes = Label(root,text='Output', width=14, font="bold", borderwidth=8, relief= RIDGE)
         self.mes.grid(row=3, column=0, columnspan=2, ipadx=100)
 
-        self.text_stateSpace = Entry(root,width=20, state="readonly", readonlybackground='white', textvariable=self.stateSpaceVar)
+        self.text_stateSpace = Entry(root,width=20, state="readonly", selectbackground='gray', readonlybackground='white', textvariable=self.stateSpaceVar)
         self.text_stateSpace.grid(row=4, column=1)
 
         self.button_stateSpace = Button(root,text="State space file",command=self.set_stateSpace, width=15)
         self.button_stateSpace.grid(row=4, column=0)
 
-        self.text_reaction = Entry(root,width=20, state="readonly", readonlybackground='white', textvariable=self.reactVar)
+        self.text_reaction = Entry(root,width=20, state="readonly", selectbackground='gray', readonlybackground='white', textvariable=self.reactVar)
         self.text_reaction.grid(row=6, column=1)
 
         self.button_reaction = Button(root,text="Reactions file",command=self.set_reactions, width=15)
