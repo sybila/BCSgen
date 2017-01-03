@@ -15,6 +15,10 @@ if not networkStatus:
 	answer = raw_input('Enter your input:')
 	if answer == 'yes':
 		networkStatus = True
+	else:
+		f = open(os.path.basename(inputFile) + ".log",'w')
+		f.write(message[:-40])
+		f.close()
 else:
 	print message
 

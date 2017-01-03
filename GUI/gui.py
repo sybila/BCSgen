@@ -43,6 +43,9 @@ class Application(Frame):
             if askyesno("Conflicts", message):
                 self.generate(myNet, state)
             else:
+                f = open(os.path.basename(self.model) + ".log",'w')
+                f.write(message[:-40])
+                f.close()
                 self.len_reactions.config(text="Reactions: N/A")
                 self.len_states.config(text="States: N/A")
                 self.len_edges.config(text="Edges: N/A")
