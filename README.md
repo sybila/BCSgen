@@ -18,9 +18,8 @@ and fill required fields:
 * Input
  * Model - file containing a BCS model<sup>3</sup>
 * Output
- * Vertices - file for storing states of state space
- * Edges - file for storing edges of state space
- * Reactions - file for storing reactions
+ * State space file - file for storing generated state space
+ * Reactions file - file for storing reactions
 
 ## Command Line Interface
 
@@ -28,12 +27,11 @@ and fill required fields:
 2. write your model as rules and initial conditions (into model.bcs),
 3. to obtain __state space__, run script:
 
-        python state_space.py <model> <statesFile> <edgesFile>
+        python state_space.py <model> <stateSpaceFile>
         
   where:
     * model - given BCS model<sup>3</sup>
-    * statesFile - file for storing states of state space
-    * edgesFile - file for storing edges of state space
+    * stateSpaceFile - file for storing generated state space
     
 4. to obtain __reactions__, run script:
 
