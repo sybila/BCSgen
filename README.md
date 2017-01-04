@@ -20,6 +20,8 @@ and fill required fields:
 * Output
  * State space file - JSON file for storing generated state space
  * Reactions file - text file for storing reactions
+ 
+> __Short tutorial__: Fill all the required fields and press _Compute_ button. Then, [analysis](https://github.com/sybila/BCSgen#note) is applied. Computation is completed when _Compute_ button changes to _Finish_ button. The process can be cancelled by pressing _Cancel_ button only before the computation starts.
 
 ## Command Line Interface
 
