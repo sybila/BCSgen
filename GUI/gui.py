@@ -5,152 +5,183 @@ sys.path.append(os.path.abspath('../Core/'))
 import State_space_generator as Gen
 import Implicit_reaction_network_generator as Implicit
 
-from Tkinter import *
-from tkFileDialog import askopenfilename, asksaveasfilename
-import tkFont
-from tkMessageBox import *
+from PyQt4 import QtGui, QtCore
+from PyQt4.QtGui import *
 
-"""
-Application is main framework for the GUI
-"""
-class Application(Frame):
+class Worker(QtCore.QObject):
+    def __init__(self, parent=None):
+        QtCore.QObject.__init__(self, parent)
 
-    def generate(self, myNet, state):
-        myNet = Implicit.generateReactions(myNet)
-        myNet.printReactions(self.reactions)
-        self.len_reactions.config(text="Reactions: " + str(myNet.getNumOfReactions()))
-        bound = myNet.calculateBound()
-        states, edges, orderedAgents = Gen.generateStateSpace(myNet, state, bound)
-        self.len_states.config(text="States: " + str(len(states)))
-        self.len_edges.config(text="Edges: " + str(len(edges)))
-        Gen.printStateSpace(states, edges, orderedAgents, self.stateSpace)
+        self.TheWorker = QtCore.QThread()
+        self.moveToThread(self.TheWorker)
+        self.TheWorker.start()
 
-    """
-    Checks if all fields are filled
-    """
-    def get_ready(self, *args):
-        if self.model and self.stateSpace and self.reactions:
-           self.compute.config(state=NORMAL)
+    def open_model(self):
+        return
 
-    """
-    Computes the state space above set parameters
-    """
-    def compute(self):
-        myNet, state, networkStatus, message = Implicit.initializeNetwork(self.model)
-        if networkStatus:
-            self.generate(myNet, state)
-        else:
-            if askyesno("Conflicts", message):
-                self.generate(myNet, state)
-            else:
-                f = open(os.path.basename(self.model) + ".log",'w')
-                f.write(message[:-40])
-                f.close()
-                self.len_reactions.config(text="Reactions: N/A")
-                self.len_states.config(text="States: N/A")
-                self.len_edges.config(text="Edges: N/A")
-        
-        self.compute.config(text="Finish")
-        self.compute.config(command=root.destroy)
+    def save_stateSpace(self):
+        return
 
-    """
-    Sets path to file with rules
-    """
-    def set_model(self):
-        self.model = askopenfilename(filetypes = [('BCSL model', ('.bcs'))])
-        self.text_model.config(state=NORMAL)
-        self.text_model.delete(0, END)
-        self.text_model.insert(END, self.model.__str__())
-        self.text_model.config(state="readonly")
+    def save_reactions(self):
+        return
 
-    """
-    Sets path to output stateSpace file 
-    """
-    def set_stateSpace(self):
-        self.stateSpace = asksaveasfilename(title = "State space file", filetypes = [('JSON', ('.json'))])
-        self.text_stateSpace.config(state=NORMAL)
-        self.text_stateSpace.delete(0, END)
-        self.text_stateSpace.insert(END, self.stateSpace.__str__())
-        self.text_stateSpace.config(state="readonly")
+    def compute_space(self):
+        return
 
-    def set_reactions(self):
-        self.reactions = asksaveasfilename(title = "Reactions file", filetypes = [('Text file', ('.txt'))])
-        self.text_reaction.config(state=NORMAL)
-        self.text_reaction.delete(0, END)
-        self.text_reaction.insert(END, self.reactions.__str__())
-        self.text_reaction.config(state="readonly")
+    def cancel_computation(self):
+        return
 
+    def save_log(self):
+        return
 
-    """
-    This is where visual behaviour is maintained
-    """
-    def createWidgets(self):
-        self.mes = Label(root,text='Input', width=13, font="bold", borderwidth=8, relief= RIDGE)
-        self.mes.grid(row=0, column=0, columnspan=2, ipadx=105)
+    def compute_reactions(self):
+        return
 
-        self.text_model = Entry(root,width=20, state="readonly", selectbackground='gray', readonlybackground='white', textvariable=self.modelVar)
-        self.text_model.grid(row=1, column=1)
+class MainWindow(QtGui.QWidget):
+    def __init__(self, parent=None):
 
-        self.button_rules = Button(root,text="Model",command=self.set_model, width=15)
-        self.button_rules.grid(row=1, column=0)
+        #########################################
 
-        self.mes = Label(root,text='Output', width=14, font="bold", borderwidth=8, relief= RIDGE)
-        self.mes.grid(row=3, column=0, columnspan=2, ipadx=100)
+        # setup
 
-        self.text_stateSpace = Entry(root,width=20, state="readonly", selectbackground='gray', readonlybackground='white', textvariable=self.stateSpaceVar)
-        self.text_stateSpace.grid(row=4, column=1)
+        self.reactionsFile = None
+        self.stateSpaceFile = None
+        self.modelFile = None
+        self.logFile = None
 
-        self.button_stateSpace = Button(root,text="State space file",command=self.set_stateSpace, width=15)
-        self.button_stateSpace.grid(row=4, column=0)
+        QtGui.QWidget.__init__(self, parent)
+        self.worker = Worker()
 
-        self.text_reaction = Entry(root,width=20, state="readonly", selectbackground='gray', readonlybackground='white', textvariable=self.reactVar)
-        self.text_reaction.grid(row=6, column=1)
+        #########################################
 
-        self.button_reaction = Button(root,text="Reactions file",command=self.set_reactions, width=15)
-        self.button_reaction.grid(row=6, column=0)
+        # model file button
 
-        self.mes = Label(root,text='Results', width=15, font="bold", borderwidth=8, relief= RIDGE)
-        self.mes.grid(row=7, column=0, columnspan=2, ipadx=95)
+        self.model = QtGui.QPushButton('Model file', self)
+        self.model.clicked.connect(self.worker.open_model)  # connect directly with worker's method do_stuff
+        self.model.resize(150,30)
+        self.model.move(10, 10)
 
-        self.state_space = Label(root,text="State space", width=20, font=tkFont.Font(family="TkDefaultFont",size=9, underline=1))
-        self.state_space.grid(row=8, column=0)
+        self.model_text = QLineEdit(self)
+        self.model_text.resize(150,30)
+        self.model_text.move(160, 10)
+        self.model_text.setReadOnly(True)
 
-        self.reaction_network = Label(root,text="Reaction network", width=20, font=tkFont.Font(family="TkDefaultFont",size=9, underline=1))
-        self.reaction_network.grid(row=8, column=1)
+        #########################################
 
-        self.len_states = Label(root,text="States:",  width=20)
-        self.len_states.grid(row=9, column=0)
+        # state space file button
 
-        self.len_reactions = Label(root,text="Reactions:",  width=20)
-        self.len_reactions.grid(row=9, column=1)
+        self.stateSpace = QtGui.QPushButton('State space file', self)
+        self.stateSpace.clicked.connect(self.worker.save_stateSpace)  # connect directly with worker's method do_stuff
+        self.stateSpace.resize(150,30)
+        self.stateSpace.move(10, 50)
 
-        self.len_edges = Label(root,text="Edges:",  width=20)
-        self.len_edges.grid(row=10, column=0)
+        self.stateSpace_text = QLineEdit(self)
+        self.stateSpace_text.resize(150,30)
+        self.stateSpace_text.move(160, 50)
+        self.stateSpace_text.setReadOnly(True)
 
-        self.compute = Button(root,text="Compute",command=self.compute, width=15, state=DISABLED)
-        self.compute.grid(row=12, column=1)
+        # results fields
 
-        self.exit = Button(root,text="Cancel",command=root.destroy, width=15)
-        self.exit.grid(row=12, column=0)
+        self.num_of_states = QLineEdit(self)
+        self.num_of_states.setStyleSheet('''QLineEdit {background-color: rgb(214, 214, 214);}''')
+        self.num_of_states.setText('States: ')
+        self.num_of_states.resize(150,30)
+        self.num_of_states.move(10, 90)
+        self.num_of_states.setReadOnly(True)
 
-        self.stateSpaceVar.trace("w", self.get_ready)
-        self.modelVar.trace("w", self.get_ready)
-        self.reactVar.trace("w", self.get_ready)
+        self.num_of_edges = QLineEdit(self)
+        self.num_of_edges.setStyleSheet('''QLineEdit {background-color: rgb(214, 214, 214);}''')
+        self.num_of_edges.setText('Edges: ')
+        self.num_of_edges.resize(150,30)
+        self.num_of_edges.move(160, 90)
+        self.num_of_edges.setReadOnly(True)
 
-    def __init__(self, master=None):
-        Frame.__init__(self, master)
-        self.reactions = None
-        self.stateSpace = None
-        self.model = None
-        self.stateSpaceVar = StringVar()
-        self.reactVar = StringVar()
-        self.modelVar = StringVar()
-        self.numOfReactions = StringVar()
-        self.grid()
-        self.createWidgets()
+        # Compute button
 
-root = Tk()
-root.option_add("*Dialog.msg.wrapLength", "20i")
-root.title("BCSgen state space generating")
-app = Application(master=root)
-app.mainloop()
+        self.compute_space = QtGui.QPushButton('Compute', self)
+        self.compute_space.clicked.connect(self.worker.compute_space)  # connect directly with worker's method do_stuff
+        self.compute_space.resize(150,30)
+        self.compute_space.move(160, 130)
+        self.compute_space.setDisabled(True)
+
+        self.cancel = QtGui.QPushButton('Cancel', self)
+        self.cancel.clicked.connect(self.worker.cancel_computation)  # connect directly with worker's method do_stuff
+        self.cancel.resize(150,30)
+        self.cancel.move(10, 130)
+        self.cancel.setDisabled(True)
+
+        #########################################
+
+        # reactions file button
+
+        self.reactions = QtGui.QPushButton('Reactions file', self)
+        self.reactions.clicked.connect(self.worker.save_reactions)  # connect directly with worker's method do_stuff
+        self.reactions.resize(150,30)
+        self.reactions.move(10, 170)
+
+        self.reactions_text = QLineEdit(self)
+        self.reactions_text.resize(150,30)
+        self.reactions_text.move(160, 170)
+        self.reactions_text.setReadOnly(True)
+
+        # result field
+
+        self.num_of_reactions = QLineEdit(self)
+        self.num_of_reactions.setStyleSheet('''QLineEdit {background-color: rgb(214, 214, 214);}''')
+        self.num_of_reactions.setText('Reactions: ')
+        self.num_of_reactions.resize(150,30)
+        self.num_of_reactions.move(10, 210)
+        self.num_of_reactions.setReadOnly(True)
+
+        # log file
+
+        self.log = QtGui.QPushButton('Save log', self)
+        self.log.clicked.connect(self.worker.save_log)  # connect directly with worker's method do_stuff
+        self.log.resize(150,30)
+        self.log.move(160, 210)
+        self.log.setDisabled(True)
+
+        # Compute button
+
+        self.compute_reactions = QtGui.QPushButton('Compute', self)
+        self.compute_reactions.clicked.connect(self.worker.compute_reactions)  # connect directly with worker's method do_stuff
+        self.compute_reactions.resize(150,30)
+        self.compute_reactions.move(160, 250)
+        self.compute_reactions.setDisabled(True)
+
+        self.cancel = QtGui.QPushButton('Cancel', self)
+        self.cancel.clicked.connect(self.worker.cancel_computation)  # connect directly with worker's method do_stuff
+        self.cancel.resize(150,30)
+        self.cancel.move(10, 250)
+        self.cancel.setDisabled(True)
+
+        #########################################
+
+        self.exit = QtGui.QPushButton('Exit', self)
+        self.exit.clicked.connect(self.worker.open_model)  # connect directly with worker's method do_stuff
+        self.exit.resize(150,30)
+        self.exit.move(10, 290)
+
+    def paintEvent(self, event):
+        qp = QtGui.QPainter()
+        qp.begin(self)
+        self.drawLines(qp)
+        qp.end()
+
+    def drawLines(self, qp):
+      
+        pen = QtGui.QPen(QtCore.Qt.gray, 4, QtCore.Qt.SolidLine)
+
+        qp.setPen(pen)
+        qp.drawLine(10, 45, 310, 45)
+
+        qp.setPen(pen)
+        qp.drawLine(10, 165, 310, 165)
+
+        qp.setPen(pen)
+        qp.drawLine(10, 285, 310, 285)
+
+app = QtGui.QApplication(sys.argv)
+main = MainWindow()
+main.show()
+sys.exit(app.exec_())
