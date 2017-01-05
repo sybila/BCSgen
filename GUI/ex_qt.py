@@ -14,7 +14,6 @@ class Worker(QtCore.QObject):
     def do_stuff(self):
         while True:
             print 'loop'
-            time.sleep(1)
 
 class MainWindow(QtGui.QWidget):
     def __init__(self, parent=None):
@@ -25,6 +24,7 @@ class MainWindow(QtGui.QWidget):
 
         self.button = QtGui.QPushButton('start', self)
         self.button.clicked.connect(self.worker.do_stuff)  # connect directly with worker's method do_stuff
+        self.button.setDisabled(True)
 
         self.qbtn = QtGui.QPushButton('Quit', self)
         self.qbtn.clicked.connect(QtCore.QCoreApplication.instance().quit)
@@ -45,13 +45,17 @@ class MainWindow(QtGui.QWidget):
         self.setWindowTitle('Test')    
         self.show()
 
-        result = QMessageBox.question(self, 'Message', "Do you like Python?", QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
-
         #self.button.clicked.connect(lambda: self.worker.do_stuff())  # connect with lambda object containing do_stuff
 
     def Browse(self):
         self.filename = QFileDialog.getOpenFileName(self, 'Open File', '/')
         self.textbox.setText(self.filename)
+        result = False
+        if True:
+            result = QMessageBox.question(self, 'Message', "Do you like Python?", QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
+        print result
+        if result == 16384:
+            self.button.setDisabled(False)
 
 
 app = QtGui.QApplication(sys.argv)
