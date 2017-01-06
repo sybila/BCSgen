@@ -23,8 +23,8 @@ class Worker(QtCore.QObject):
         self.moveToThread(self.TheWorker)
         self.TheWorker.start()
 
-    def __del__(self):
-        return
+    def getTheWorker(self):
+        return self.TheWorker
 
     def setModelFile(self, modelFile):
         self.modelFile = modelFile
@@ -64,9 +64,6 @@ class Worker(QtCore.QObject):
 
     def compute_reactions(self):
         return
-
-    def cancel_computation(self):
-        self.TheWorker.stop()
 
     def save_log(self):
         return
@@ -134,7 +131,7 @@ class MainWindow(QtGui.QWidget):
         self.compute_space_button.setDisabled(True)
 
         self.cancel_state = QtGui.QPushButton('Cancel', self)
-        self.cancel_state.clicked.connect(self.worker.cancel_computation)  # connect directly with worker's method do_stuff
+        self.cancel_state.clicked.connect(self.cancel_computation)  # connect directly with worker's method do_stuff
         self.cancel_state.resize(150,30)
         self.cancel_state.move(10, 130)
         self.cancel_state.setDisabled(True)
@@ -179,7 +176,7 @@ class MainWindow(QtGui.QWidget):
         self.compute_reactions_button.setDisabled(True)
 
         self.cancel_rxns = QtGui.QPushButton('Cancel', self)
-        self.cancel_rxns.clicked.connect(self.worker.cancel_computation)  # connect directly with worker's method do_stuff
+        self.cancel_rxns.clicked.connect(self.cancel_computation)  # connect directly with worker's method do_stuff
         self.cancel_rxns.resize(150,30)
         self.cancel_rxns.move(10, 250)
         self.cancel_rxns.setDisabled(True)
@@ -187,6 +184,7 @@ class MainWindow(QtGui.QWidget):
         #########################################
 
         self.exit = QtGui.QPushButton('Exit', self)
+        self.exit.clicked.connect(QtCore.QCoreApplication.instance().quit)
         self.exit.resize(150,30)
         self.exit.move(10, 290)
 
@@ -228,6 +226,10 @@ class MainWindow(QtGui.QWidget):
 
     def save_log(self):
         self.worker.setLogFile(QFileDialog.getSaveFileName(self, 'Choose log file', filter ="TXT (*.txt)"))
+
+    def cancel_computation(self):
+        if not self.worker.getTheWorker().wait(1000):
+            self.worker.getTheWorker().terminate()
 
 app = QtGui.QApplication(sys.argv)
 main = MainWindow()
