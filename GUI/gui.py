@@ -8,23 +8,36 @@ import Implicit_reaction_network_generator as Implicit
 from PyQt4 import QtGui, QtCore
 from PyQt4.QtGui import *
 
+# def createButton()
+
 class Worker(QtCore.QObject):
     def __init__(self, parent=None):
         QtCore.QObject.__init__(self, parent)
 
+        self.theParent = None
         self.reactionsFile = None
         self.stateSpaceFile = None
         self.modelFile = None
         self.logFile = None
         self.lenStates = None
         self.lenEdges = None
+        self.lenReactions = None
 
         self.TheWorker = QtCore.QThread()
         self.moveToThread(self.TheWorker)
         self.TheWorker.start()
 
+    def setParent(self, parent):
+        self.theParent = parent
+
     def getTheWorker(self):
         return self.TheWorker
+
+    def setLenReactions(self, lenReactions):
+        self.lenReactions = lenReactions
+
+    def getLenReactions(self):
+        return self.lenReactions
 
     def setModelFile(self, modelFile):
         self.modelFile = modelFile
@@ -59,11 +72,14 @@ class Worker(QtCore.QObject):
         bound = myNet.calculateBound()
         states, edges, orderedAgents = Gen.generateStateSpace(myNet, state, bound)
         Gen.printStateSpace(states, edges, orderedAgents, self.stateSpaceFile)
-        self.lenStates.setText('States: ' + str(len(states)))
+        #self.lenStates.setText('States: ' + str(len(states)))
+        self.theParent.num_of_states.setText('States: ' + str(len(states)))
         self.lenEdges.setText('Edges: ' + str(len(edges)))
 
-    def compute_reactions(self):
-        return
+    def compute_reactions(self, myNet, state):
+        myNet = Implicit.generateReactions(myNet)
+        myNet.printReactions(self.reactionsFile)
+        self.lenReactions.setText('Reactions: ' + str(myNet.getNumOfReactions()))
 
     def save_log(self):
         return
@@ -170,7 +186,7 @@ class MainWindow(QtGui.QWidget):
         # Compute button
 
         self.compute_reactions_button = QtGui.QPushButton('Compute', self)
-        self.compute_reactions_button.clicked.connect(self.worker.compute_reactions)  # connect directly with worker's method do_stuff
+        self.compute_reactions_button.clicked.connect(self.compute_reactions)  # connect directly with worker's method do_stuff
         self.compute_reactions_button.resize(150,30)
         self.compute_reactions_button.move(160, 250)
         self.compute_reactions_button.setDisabled(True)
@@ -208,11 +224,11 @@ class MainWindow(QtGui.QWidget):
         qp.drawLine(10, 285, 310, 285)
 
     def open_model(self):
-        self.worker.setModelFile(QFileDialog.getOpenFileName(self, 'Choose model', directory = '../Examples/inputs/', filter ="BCS (*.bcs)"))
+        self.worker.setModelFile(QFileDialog.getOpenFileName(self, 'Choose model', directory = '../Examples/inputs/', filter =".bcs (*.bcs)"))
         self.model_text.setText(self.worker.getModelFile())
 
     def save_stateSpace(self):
-        self.worker.setStateSpaceFile(QFileDialog.getSaveFileName(self, 'Choose output file', filter ="JSON (*.json)"))
+        self.worker.setStateSpaceFile(QFileDialog.getSaveFileName(self, 'Choose output file', filter =".json (*.json)"))
         self.stateSpace_text.setText(self.worker.getStateSpaceFile())
         self.compute_space_button.setDisabled(False)
         self.worker.setLenStates(self.num_of_states)
@@ -220,16 +236,32 @@ class MainWindow(QtGui.QWidget):
         self.cancel_state.setDisabled(False)
 
     def save_reactions(self):
-        self.worker.setReactionsFile(QFileDialog.getSaveFileName(self, 'Choose output file', filter ="TXT (*.txt)"))
+        self.worker.setReactionsFile(QFileDialog.getSaveFileName(self, 'Choose output file', filter =".txt (*.txt)"))
         self.reactions_text.setText(self.worker.getReacionsFile())
         self.compute_reactions_button.setDisabled(False)
+        self.worker.setLenReactions(self.num_of_reactions)
+        self.cancel_rxns.setDisabled(False)
+        self.worker.setParent(self)
 
     def save_log(self):
-        self.worker.setLogFile(QFileDialog.getSaveFileName(self, 'Choose log file', filter ="TXT (*.txt)"))
+        self.worker.setLogFile(QFileDialog.getSaveFileName(self, 'Choose log file', filter =".log (*.log)"))
+
+    def compute_reactions(self):
+        myNet, state, networkStatus, message = Implicit.initializeNetwork(self.worker.getModelFile())
+        if not networkStatus:
+            result = QMessageBox.question(self, 'Conflicts', message, QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
+            if result == QMessageBox.Yes:
+                networkStatus = True
+
+        if networkStatus:
+            self.worker.compute_reactions(myNet, state)
 
     def cancel_computation(self):
-        if not self.worker.getTheWorker().wait(1000):
-            self.worker.getTheWorker().terminate()
+        try:
+            if not self.worker.getTheWorker().wait(1000):
+                self.worker.getTheWorker().terminate()
+        except: 
+            pass
 
 app = QtGui.QApplication(sys.argv)
 main = MainWindow()
