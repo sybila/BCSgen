@@ -14,7 +14,6 @@ class Worker(QtCore.QObject):
     def __init__(self, parent=None):
         QtCore.QObject.__init__(self, parent)
 
-        self.theParent = None
         self.reactionsFile = None
         self.stateSpaceFile = None
         self.modelFile = None
@@ -72,8 +71,7 @@ class Worker(QtCore.QObject):
         bound = myNet.calculateBound()
         states, edges, orderedAgents = Gen.generateStateSpace(myNet, state, bound)
         Gen.printStateSpace(states, edges, orderedAgents, self.stateSpaceFile)
-        #self.lenStates.setText('States: ' + str(len(states)))
-        self.theParent.num_of_states.setText('States: ' + str(len(states)))
+        self.lenStates.setText('States: ' + str(len(states)))
         self.lenEdges.setText('Edges: ' + str(len(edges)))
 
     def compute_reactions(self, myNet, state):
@@ -241,7 +239,6 @@ class MainWindow(QtGui.QWidget):
         self.compute_reactions_button.setDisabled(False)
         self.worker.setLenReactions(self.num_of_reactions)
         self.cancel_rxns.setDisabled(False)
-        self.worker.setParent(self)
 
     def save_log(self):
         self.worker.setLogFile(QFileDialog.getSaveFileName(self, 'Choose log file', filter =".log (*.log)"))
@@ -252,16 +249,12 @@ class MainWindow(QtGui.QWidget):
             result = QMessageBox.question(self, 'Conflicts', message, QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
             if result == QMessageBox.Yes:
                 networkStatus = True
-
         if networkStatus:
             self.worker.compute_reactions(myNet, state)
 
     def cancel_computation(self):
-        try:
-            if not self.worker.getTheWorker().wait(1000):
-                self.worker.getTheWorker().terminate()
-        except: 
-            pass
+        if not self.worker.getTheWorker().wait(1000):
+            self.worker.getTheWorker().terminate()
 
 app = QtGui.QApplication(sys.argv)
 main = MainWindow()
