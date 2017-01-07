@@ -8,7 +8,31 @@ import Implicit_reaction_network_generator as Implicit
 from PyQt4 import QtGui, QtCore
 from PyQt4.QtGui import *
 
-# def createButton()
+def createProgressBar(it, movex, movey):
+    progressBar = QtGui.QProgressBar(it)
+    progressBar.setRange(0,1)
+    progressBar.resize(300,30)
+    progressBar.move(movex, movey)
+    return progressBar
+
+def createTextBox(it, text, style, movex, movey, readonly):
+    box = QLineEdit(it)
+    if text:
+        box.setText(text)
+    if style:
+        box.setStyleSheet(style)
+    box.resize(150,30)
+    box.move(movex, movey)
+    box.setReadOnly(readonly)
+    return box
+
+def createButton(it, text, to_connect, movex, movey, disabled):
+    button = QtGui.QPushButton(text, it)
+    button.clicked.connect(to_connect)
+    button.resize(150, 30)
+    button.move(movex, movey)
+    button.setDisabled(disabled)
+    return button
 
 class Worker(QtCore.QObject):
     taskFinished = QtCore.pyqtSignal()
@@ -26,9 +50,6 @@ class Worker(QtCore.QObject):
         self.TheWorker = QtCore.QThread()
         self.moveToThread(self.TheWorker)
         self.TheWorker.start()
-
-    def setParent(self, parent):
-        self.theParent = parent
 
     def getTheWorker(self):
         return self.TheWorker
@@ -81,12 +102,12 @@ class Worker(QtCore.QObject):
         myNet = Implicit.generateReactions(myNet)
         myNet.printReactions(self.reactionsFile)
         self.lenReactions.setText('Reactions: ' + str(myNet.getNumOfReactions()))
-        if self.logFile:
+        if self.logFile and not networkStatus:
             self.save_log(message)
 
     def save_log(self, message):
         f = open(self.logFile,'w')
-        f.write(message[:-40])
+        f.write(message[:-30])
         f.close()
 
 class MainWindow(QtGui.QWidget):
@@ -103,128 +124,74 @@ class MainWindow(QtGui.QWidget):
 
         # model file button
 
-        self.model = QtGui.QPushButton('Model file', self)
-        self.model.clicked.connect(self.open_model)  # connect directly with worker's method do_stuff
-        self.model.resize(150,30)
-        self.model.move(10, 10)
+        self.model = createButton(self, 'Model file', self.open_model, 10, 10, False)
 
-        self.model_text = QLineEdit(self)
-        self.model_text.resize(150,30)
-        self.model_text.move(160, 10)
-        self.model_text.setReadOnly(True)
+        self.model_text = createTextBox(self, None, None, 160, 10, True)
 
         #########################################
 
         # state space file button
 
-        self.stateSpace = QtGui.QPushButton('State space file', self)
-        self.stateSpace.clicked.connect(self.save_stateSpace)  # connect directly with worker's method do_stuff
-        self.stateSpace.resize(150,30)
-        self.stateSpace.move(10, 50)
+        self.stateSpace = createButton(self, 'State space file', self.save_stateSpace, 10, 50, False)
 
-        self.stateSpace_text = QLineEdit(self)
-        self.stateSpace_text.resize(150,30)
-        self.stateSpace_text.move(160, 50)
-        self.stateSpace_text.setReadOnly(True)
+        self.stateSpace_text = createTextBox(self, None, None, 160, 50, True)
 
         # results fields
 
-        self.num_of_states = QLineEdit(self)
-        self.num_of_states.setStyleSheet('''QLineEdit {background-color: rgb(214, 214, 214); border: none ; }''')
-        self.num_of_states.setText('States: ')
-        self.num_of_states.resize(150,30)
-        self.num_of_states.move(10, 90)
-        self.num_of_states.setReadOnly(True)
+        style = '''QLineEdit {background-color: rgb(214, 214, 214); border: none ; }'''
+        self.num_of_states = createTextBox(self, 'States: ', style, 10, 90, True)
 
-        self.num_of_edges = QLineEdit(self)
-        self.num_of_edges.setStyleSheet('''QLineEdit {background-color: rgb(214, 214, 214); border: none ; }''')
-        self.num_of_edges.setText('Edges: ')
-        self.num_of_edges.resize(150,30)
-        self.num_of_edges.move(160, 90)
-        self.num_of_edges.setReadOnly(True)
+        self.num_of_edges = createTextBox(self, 'Edges: ', style, 160, 90, True)
 
         # progres bar
 
-        self.progress_bar_states = QtGui.QProgressBar(self)
-        self.progress_bar_states.setRange(0,1)
-        self.progress_bar_states.resize(300,30)
-        self.progress_bar_states.move(10, 130)
+        self.progress_bar_states = createProgressBar(self, 10, 130)
         self.worker.taskFinished.connect(self.progressbarStatesOnFinished)
 
-        # Compute button
+        # Compute states button
 
-        self.compute_space_button = QtGui.QPushButton('Compute', self)
-        self.compute_space_button.clicked.connect(self.worker.compute_space)
-        self.compute_space_button.resize(150,30)
-        self.compute_space_button.move(160, 170)
-        self.compute_space_button.setDisabled(True)
+        self.compute_space_button = createButton(self, 'Compute', self.worker.compute_space, 160, 170, True)
         self.compute_space_button.clicked.connect(self.progressbarStatesOnStart)
 
-        self.cancel_state = QtGui.QPushButton('Cancel', self)
-        self.cancel_state.clicked.connect(self.cancel_computation)  # connect directly with worker's method do_stuff
-        self.cancel_state.resize(150,30)
-        self.cancel_state.move(10, 170)
-        self.cancel_state.setDisabled(True)
+        self.cancel_state = createButton(self, 'Cancel', self.cancel_computation, 10, 170, True)
         self.cancel_state.clicked.connect(self.progressbarStatesOnFinished)
 
         #########################################
 
         # reactions file button
 
-        self.reactions = QtGui.QPushButton('Reactions file', self)
-        self.reactions.clicked.connect(self.save_reactions)  # connect directly with worker's method do_stuff
-        self.reactions.resize(150,30)
-        self.reactions.move(10, 210)
+        self.reactions = createButton(self, 'Reactions file', self.save_reactions, 10, 210, False)
 
-        self.reactions_text = QLineEdit(self)
-        self.reactions_text.resize(150,30)
-        self.reactions_text.move(160, 210)
-        self.reactions_text.setReadOnly(True)
+        self.reactions_text = createTextBox(self, None, None, 160, 210, True)
 
         # result field
 
-        self.num_of_reactions = QLineEdit(self)
-        self.num_of_reactions.setStyleSheet('''QLineEdit {background-color: rgb(214, 214, 214); border: none ; }''')
-        self.num_of_reactions.setText('Reactions: ')
-        self.num_of_reactions.resize(150,30)
-        self.num_of_reactions.move(10, 250)
-        self.num_of_reactions.setReadOnly(True)
+        self.num_of_reactions = createTextBox(self, 'Reactions: ', style, 10, 250, True)
 
         # log file
 
-        self.log = QtGui.QPushButton('Save log', self)
-        self.log.clicked.connect(self.save_log)  # connect directly with worker's method do_stuff
-        self.log.resize(150,30)
-        self.log.move(160, 250)
-        self.log.setDisabled(True)
+        self.log = createButton(self, 'Save log', self.save_log, 160, 250, True)
 
         # progres bar
 
-        self.progress_bar_reactions = QtGui.QProgressBar(self)
-        self.progress_bar_reactions.setRange(0,1)
-        self.progress_bar_reactions.resize(300,30)
-        self.progress_bar_reactions.move(10, 290)
+        self.progress_bar_reactions = createProgressBar(self, 10, 290)
+        self.worker.taskFinished.connect(self.progressbarReactionsOnFinished)
 
-        # Compute button
+        # Compute reactions button
 
-        self.compute_reactions_button = QtGui.QPushButton('Compute', self)
-        self.compute_reactions_button.clicked.connect(self.worker.compute_reactions)
-        self.compute_reactions_button.resize(150,30)
-        self.compute_reactions_button.move(160, 330)
-        self.compute_reactions_button.setDisabled(True)
+        self.compute_reactions_button = createButton(self, 'Compute', self.worker.compute_reactions, 160, 330, True)
+        self.compute_reactions_button.clicked.connect(self.progressbarReactionsOnStart)
 
-        self.cancel_rxns = QtGui.QPushButton('Cancel', self)
-        self.cancel_rxns.clicked.connect(self.cancel_computation)  # connect directly with worker's method do_stuff
-        self.cancel_rxns.resize(150,30)
-        self.cancel_rxns.move(10, 330)
-        self.cancel_rxns.setDisabled(True)
+        self.cancel_rxns = createButton(self, 'Cancel', self.cancel_computation, 10, 330, True)
+        self.cancel_rxns.clicked.connect(self.progressbarReactionsOnFinished)
 
         #########################################
 
-        self.exit = QtGui.QPushButton('Exit', self)
-        self.exit.clicked.connect(QtCore.QCoreApplication.instance().quit)
-        self.exit.resize(150,30)
-        self.exit.move(10, 370)
+        # quit button
+
+        self.exit = createButton(self, 'Exit', QtCore.QCoreApplication.instance().quit, 10, 370, False)
+
+        #########################################
 
     def progressbarStatesOnStart(self): 
         self.progress_bar_states.setRange(0,0)
@@ -232,6 +199,13 @@ class MainWindow(QtGui.QWidget):
     def progressbarStatesOnFinished(self):
         self.progress_bar_states.setRange(0,1)
         self.progress_bar_states.setValue(1)
+
+    def progressbarReactionsOnStart(self): 
+        self.progress_bar_reactions.setRange(0,0)
+
+    def progressbarReactionsOnFinished(self):
+        self.progress_bar_reactions.setRange(0,1)
+        self.progress_bar_reactions.setValue(1)
 
     def paintEvent(self, event):
         qp = QtGui.QPainter()
@@ -255,22 +229,31 @@ class MainWindow(QtGui.QWidget):
     def open_model(self):
         self.worker.setModelFile(QFileDialog.getOpenFileName(self, 'Choose model', directory = '../Examples/inputs/', filter =".bcs (*.bcs)"))
         self.model_text.setText(self.worker.getModelFile())
+        if self.worker.getStateSpaceFile():
+            self.compute_space_button.setDisabled(False)
+            self.cancel_state.setDisabled(False)
+        if self.worker.getReacionsFile():
+            self.compute_reactions_button.setDisabled(False)
+            self.cancel_rxns.setDisabled(False)
+            self.log.setDisabled(False)
 
     def save_stateSpace(self):
         self.worker.setStateSpaceFile(QFileDialog.getSaveFileName(self, 'Choose output file', filter =".json (*.json)"))
         self.stateSpace_text.setText(self.worker.getStateSpaceFile())
-        self.compute_space_button.setDisabled(False)
         self.worker.setLenStates(self.num_of_states)
         self.worker.setLenEdges(self.num_of_edges)
-        self.cancel_state.setDisabled(False)
+        if self.worker.getModelFile():
+            self.compute_space_button.setDisabled(False)
+            self.cancel_state.setDisabled(False)
 
     def save_reactions(self):
         self.worker.setReactionsFile(QFileDialog.getSaveFileName(self, 'Choose output file', filter =".txt (*.txt)"))
         self.reactions_text.setText(self.worker.getReacionsFile())
-        self.compute_reactions_button.setDisabled(False)
         self.worker.setLenReactions(self.num_of_reactions)
-        self.cancel_rxns.setDisabled(False)
-        self.log.setDisabled(False)
+        if self.worker.getModelFile():
+            self.compute_reactions_button.setDisabled(False)
+            self.cancel_rxns.setDisabled(False)
+            self.log.setDisabled(False)
 
     def save_log(self):
         self.worker.setLogFile(QFileDialog.getSaveFileName(self, 'Choose log file', filter =".log (*.log)"))
