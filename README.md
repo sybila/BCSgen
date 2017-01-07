@@ -9,19 +9,26 @@ This tool serves for interpreting basic functionality to maintain Biochemical Sp
 
 The most proper way is to use __Graphical User Interface__<sup>2</sup> (in GUI directory).
 
+<div align="center">
+  <img src="http://i.imgur.com/VnFpmuj.png"><br><br>
+</div>
+
 Run it by:
 
     python gui.py
     
-and fill required fields:
+To obtain __state space__:
+* fill 
+  * Model - file containing a BCS model<sup>3</sup>
+  * State space file - JSON file for storing generated state space
+  
+and press Compute button. The state space is consequently saved in choosen file.
 
-* Input
- * Model - file containing a BCS model<sup>3</sup>
-* Output
- * State space file - JSON file for storing generated state space
- * Reactions file - text file for storing reactions
- 
-> __Short tutorial__: Fill all the required fields and press _Compute_ button. Then, [analysis](https://github.com/sybila/BCSgen#note) is applied. Computation is completed when _Compute_ button changes to _Finish_ button. The process can be cancelled by pressing _Cancel_ button only before the computation starts.
+To obtain __reactions__:
+* fill 
+  * Model - file containing a BCS model<sup>3</sup>
+  * Reactions file - text file for storing reactions
+  * Save log<sup>4</sup> (optional)
 
 ## Command Line Interface
 
@@ -45,13 +52,13 @@ and fill required fields:
 
 > in Examples directory, there are several models, to run them just use 'python example.py'
 
-#### Note
-
-During computation, static analysis is applied to the model in order to detect some conflicts in rules. If there are such conflicts, they are announced and the user is asked whether continue (generate state space) or stop (save conflicts in log file and exit) the computation.
-
 ---
 > <sup>1</sup> State space might be visualised with [this](https://github.com/mathooo/NetworkVISUAL) utility.
 
-> <sup>2</sup> To execute it, you need to have [Tkinter](https://wiki.python.org/moin/TkInter) python library installed (usually in default library).
+> <sup>2</sup> To execute it, you need to have [PyQt](https://wiki.python.org/moin/PyQt) python library installed (usually in default library).
 
 > <sup>3</sup> BCS model is simple text file format containing initialized model, i.e. set of rules and initial state. Examples of such models are in Examples directory.
+
+> <sup>4</sup> During computation, static analysis is applied to the model in order to detect some conflicts in rules. These conflict might be saved in a log file.
+
+> In order to disable useless stderr command line output, use 2> /dev/null (UNIX machines) or 2> nul (Windows machines). Otherwise, ignore those messages.
