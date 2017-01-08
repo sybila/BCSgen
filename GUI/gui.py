@@ -132,6 +132,12 @@ class MainWindow(QtGui.QWidget):
     def __init__(self, parent=None):
         QtGui.QWidget.__init__(self, parent)
 
+        label = QLabel() 
+        pixmap = QPixmap('logo.png')
+        label.setPixmap(pixmap)
+        label.move(10, 10)
+        label.show()
+
         #########################################
 
         # setup
@@ -209,6 +215,7 @@ class MainWindow(QtGui.QWidget):
         # quit button
 
         self.exit = createButton(self, 'Exit', QtCore.QCoreApplication.instance().quit, 10, 370, False)
+
 
         #########################################
 
@@ -300,6 +307,7 @@ class MainWindow(QtGui.QWidget):
 
 app = QtGui.QApplication(sys.argv)
 main = MainWindow()
+main.setFixedSize(320, 410)
 main.setWindowTitle('BCSgen')
 main.show()
 sys.exit(app.exec_())
