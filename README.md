@@ -11,7 +11,7 @@ This tool serves for interpreting basic functionality to maintain Biochemical Sp
 The most proper way is to use __Graphical User Interface__<sup>2</sup> (in GUI directory).
 
 <div align="center">
-  <img src="http://i.imgur.com/VnFpmuj.png"><br><br>
+  <img src="http://i.imgur.com/yMW6T8k.png"><br><br>
 </div>
 
 Run it by:
