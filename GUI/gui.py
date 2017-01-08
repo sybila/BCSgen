@@ -300,5 +300,6 @@ class MainWindow(QtGui.QWidget):
 
 app = QtGui.QApplication(sys.argv)
 main = MainWindow()
+main.setWindowTitle('BCSgen')
 main.show()
 sys.exit(app.exec_())
