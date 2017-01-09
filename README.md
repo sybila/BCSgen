@@ -1,4 +1,4 @@
-# BCSgen <img src="https://raw.githubusercontent.com/sybila/BCSgen/master/GUI/icons/logo.png" width="64">  
+# BCSgen <img src="https://raw.githubusercontent.com/sybila/BCSgen/master/GUI/icons/128x128.png" width="64">  
 
 Biochemical Space language software tool
 
@@ -8,16 +8,12 @@ This tool serves for interpreting basic functionality to maintain Biochemical Sp
 
 ## Graphical User Interface
 
-The most proper way is to use __Graphical User Interface__<sup>2</sup> (in GUI directory).
+The most proper way is to run the binary file with __Graphical User Interface__ suitable for your platform.
 
 <div align="center">
   <img src="http://i.imgur.com/yMW6T8k.png"><br><br>
 </div>
 
-Run it by:
-
-    python gui.py
-    
 To obtain __state space__:
 * fill 
   * Model - file containing a BCS model<sup>3</sup>
@@ -30,8 +26,16 @@ To obtain __reactions__:
   * Model - file containing a BCS model<sup>3</sup>
   * Reactions file - text file for storing reactions
   * Save log<sup>4</sup> (optional)
+  
+---
 
+If binary file is not working, build __Graphical User Interface__<sup>2</sup> (in GUI directory) by running:
+
+    python gui.py
+    
 ## Command Line Interface
+
+Alternatively, CLI can be used.
 
 1. enter Model directory (serves as user's workspace),
 2. write your model as rules and initial conditions (into model.bcs),
@@ -56,7 +60,7 @@ To obtain __reactions__:
 ---
 > <sup>1</sup> State space might be visualised with [this](https://github.com/mathooo/NetworkVISUAL) utility.
 
-> <sup>2</sup> To execute it, you need to have [PyQt](https://wiki.python.org/moin/PyQt) python library [installed](http://pythoncentral.io/install-pyside-pyqt-on-windows-mac-linux/).
+> <sup>2</sup> To do it, you need to have [PyQt](https://wiki.python.org/moin/PyQt) python library [installed](http://pythoncentral.io/install-pyside-pyqt-on-windows-mac-linux/).
 
 > <sup>3</sup> BCS model is simple text file format containing initialized model, i.e. set of rules and initial state. Examples of such models are in Examples directory.
 
