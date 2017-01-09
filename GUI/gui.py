@@ -48,6 +48,9 @@ class ReactionWorker(QtCore.QObject):
         self.moveToThread(self.TheWorker)
         self.TheWorker.start()
 
+    def __del__(self):
+        return
+
     def getTheWorker(self):
         return self.TheWorker
 
@@ -97,6 +100,9 @@ class StateSpaceWorker(QtCore.QObject):
         self.moveToThread(self.TheWorker)
         self.TheWorker.start()
 
+    def __del__(self):
+        return
+
     def getTheWorker(self):
         return self.TheWorker
 
@@ -131,12 +137,6 @@ class StateSpaceWorker(QtCore.QObject):
 class MainWindow(QtGui.QWidget):
     def __init__(self, parent=None):
         QtGui.QWidget.__init__(self, parent)
-
-        label = QLabel() 
-        pixmap = QPixmap('logo.png')
-        label.setPixmap(pixmap)
-        label.move(10, 10)
-        label.show()
 
         #########################################
 
@@ -215,7 +215,6 @@ class MainWindow(QtGui.QWidget):
         # quit button
 
         self.exit = createButton(self, 'Exit', QtCore.QCoreApplication.instance().quit, 10, 370, False)
-
 
         #########################################
 
