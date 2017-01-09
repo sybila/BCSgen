@@ -56,10 +56,8 @@ To obtain __reactions__:
 ---
 > <sup>1</sup> State space might be visualised with [this](https://github.com/mathooo/NetworkVISUAL) utility.
 
-> <sup>2</sup> To execute it, you need to have [PyQt](https://wiki.python.org/moin/PyQt) python library installed (usually in default library).
+> <sup>2</sup> To execute it, you need to have [PyQt](https://wiki.python.org/moin/PyQt) python library [installed](http://pythoncentral.io/install-pyside-pyqt-on-windows-mac-linux/).
 
 > <sup>3</sup> BCS model is simple text file format containing initialized model, i.e. set of rules and initial state. Examples of such models are in Examples directory.
 
 > <sup>4</sup> During computation, static analysis is applied to the model in order to detect some conflicts in rules. These conflict might be saved in a log file.
-
-> In order to disable useless stderr command line output, use 2> /dev/null (UNIX machines) or 2> nul (Windows machines). Otherwise, ignore those messages.
