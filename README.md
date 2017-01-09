@@ -15,19 +15,17 @@ The most proper way is to run the binary file with __Graphical User Interface__ 
 </div>
 
 To obtain __state space__:
-* fill 
+* fill required fileds
   * Model - file containing a BCS model<sup>3</sup>
   * State space file - JSON file for storing generated state space
-  
-and press Compute button. The state space is consequently saved in the choosen file.
+* press Compute button. The state space is consequently saved in the choosen file.
 
 To obtain __reactions__:
-* fill 
+* fill required fileds
   * Model - file containing a BCS model<sup>3</sup>
   * Reactions file - text file for storing reactions
   * Save log<sup>4</sup> (optional)
-  
-and press Compute button. The reactions (and log) are consequently saved in the choosen file.
+* press Compute button. The reactions (and log) are consequently saved in the choosen file.
   
 ---
 
