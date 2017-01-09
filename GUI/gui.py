@@ -264,6 +264,8 @@ class MainWindow(QtGui.QWidget):
         qp.setPen(pen)
         qp.drawLine(10, 365, 310, 365)
 
+        qp.drawPixmap(225,372,QPixmap("logo.png"))
+
     def open_model(self):
         self.stateWorker.setModelFile(QFileDialog.getOpenFileName(self, 'Choose model', directory = '../Examples/inputs/', filter =".bcs (*.bcs)"))
         self.model_text.setText(self.stateWorker.getModelFile())
