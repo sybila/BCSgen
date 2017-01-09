@@ -1,4 +1,4 @@
-# BCSgen <img src="https://raw.githubusercontent.com/sybila/BCSgen/master/GUI/logo.png" width="64">  
+# BCSgen <img src="https://raw.githubusercontent.com/sybila/BCSgen/master/GUI/icons/logo.png" width="64">  
 
 Biochemical Space language software tool
 
