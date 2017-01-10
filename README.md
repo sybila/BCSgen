@@ -62,6 +62,6 @@ Alternatively, CLI can be used.
 
 > <sup>2</sup> To do it, you need to have [PyQt](https://wiki.python.org/moin/PyQt) python library installed. For Windows, use [this](http://www.lfd.uci.edu/~gohlke/pythonlibs/#pyqt4) binary file, for Unix machines use [following](http://pythoncentral.io/install-pyside-pyqt-on-windows-mac-linux/) instructions.
 
-> <sup>3</sup> BCS model is simple text file format containing initialized model, i.e. set of rules and initial state. Examples of such models are in Examples directory.
+> <sup>3</sup> [BCS model](http://sybila.fi.muni.cz/tools/bcsgen#bcsl_model) is simple text file format containing initialized model, i.e. set of rules and initial state. Examples of such models are in Examples directory.
 
 > <sup>4</sup> During computation, static analysis is applied to the model in order to detect some conflicts in rules. These conflict might be saved in a log file.
