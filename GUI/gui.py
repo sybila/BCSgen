@@ -180,6 +180,7 @@ class MainWindow(QtGui.QWidget):
 
         self.cancel_state = createButton(self, 'Cancel', self.cancel_computation_states, 10, 170, True)
         self.cancel_state.clicked.connect(self.progressbarStatesOnFinished)
+        self.cancel_state.clicked.connect(self.stateSpaceCanceled)
 
         #########################################
 
@@ -209,14 +210,28 @@ class MainWindow(QtGui.QWidget):
 
         self.cancel_rxns = createButton(self, 'Cancel', self.cancel_computation_reactions, 10, 330, True)
         self.cancel_rxns.clicked.connect(self.progressbarReactionsOnFinished)
+        self.cancel_rxns.clicked.connect(self.reactionsCanceled)
 
         #########################################
 
         # quit button
 
         self.exit = createButton(self, 'Exit', QtCore.QCoreApplication.instance().quit, 10, 370, False)
+        self.exit.clicked.connect(self.cancel_computation_states)
+        self.exit.clicked.connect(self.cancel_computation_reactions)
 
         #########################################
+
+    def stateSpaceCanceled(self):
+        self.num_of_states.setText('States: n\\a' )
+        self.num_of_edges.setText('Edges: n\\a' )
+        self.compute_space_button.setText('Interrupted')
+        self.progress_bar_states.setValue(0)
+
+    def reactionsCanceled(self):
+        self.num_of_reactions.setText('Reactions: n\\a')
+        self.compute_reactions_button.setText('Interrupted')
+        self.progress_bar_reactions.setValue(0)
 
     def progressbarStatesOnStart(self): 
         self.progress_bar_states.setRange(0,0)
@@ -299,11 +314,11 @@ class MainWindow(QtGui.QWidget):
         self.reactionWorker.setLogFile(QFileDialog.getSaveFileName(self, 'Choose log file', filter =".log (*.log)"))
 
     def cancel_computation_states(self):
-        if not self.stateWorker.getTheWorker().wait(1000):
+        if not self.stateWorker.getTheWorker().wait(100):
             self.stateWorker.getTheWorker().terminate()
 
     def cancel_computation_reactions(self):
-        if not self.reactionWorker.getTheWorker().wait(1000):
+        if not self.reactionWorker.getTheWorker().wait(100):
             self.reactionWorker.getTheWorker().terminate()
 
 app = QtGui.QApplication(sys.argv)
