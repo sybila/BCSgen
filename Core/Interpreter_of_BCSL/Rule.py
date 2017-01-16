@@ -8,8 +8,8 @@ direction = " => "
 """
 Changes state of an atomic agent according to another one
 :param rhs: Atomic agent from right-hand-side of a rule
-:param atomic_agent: Atomic agent from given candidate
-:return: Counter of atomic agent from given candidate with state of second agent
+:param atomic_agent_original: Atomic agent from given candidate
+:return: Atomic agent from given candidate with state of second agent
 """
 def changeAtomicStates(rhs, atomic_agent_original):
     if atomic_agent_original.getStates().issubset(rhs.getStates()):
@@ -22,24 +22,18 @@ def changeAtomicStates(rhs, atomic_agent_original):
 """
 Changes state(s) of a structure agent according to another one
 :param rhs: Structure agent from right-hand-side of a rule
-:param lhs: Structure agent from left-hand-side of a rule
-:param structure_agent: Structure agent from given candidate
-:return: Counter of structure agent from given candidate with changed atomic agents
+:param structure_agent_original: Structure agent from given candidate
+:return: Structure agent from given candidate with changed atomic agents
 """
 def changeStructureStates(rhs, structure_agent_original):
     structure_agent = copy.deepcopy(structure_agent_original)
     composition = structure_agent.getPartialComposition()
     for a_r in rhs.getPartialComposition():
-        no_change_happened = True
-        for a_s in composition:
-            if a_r.equalNames(a_s):
-                no_change_happened = False
-                if a_r != a_s:
-                    composition |= {changeAtomicStates(a_r, a_s)}
-                    composition.remove(a_s)
+        for a_c in composition:
+            if a_r.equalNames(a_c):
+                composition.remove(a_c)
+                composition |= {changeAtomicStates(a_r, a_c)}
                 break
-        if no_change_happened:
-            return structure_agent_original #no change is possible
     structure_agent.setPartialComposition(composition)
     structure_agent.setCompartment(rhs.getCompartment())
     return structure_agent
@@ -47,9 +41,8 @@ def changeStructureStates(rhs, structure_agent_original):
 """
 Changes state(s) of a complex agent according to another one
 :param lhs: Complex agent from left-hand-side of the rule
-:param rhs: Complex agent from right-hand-side of the rule
-:param complex_agent: Complex agent from given candidate
-:return: Array of complex agent from given candidate with changed composition agents
+:param complex_agent_original: Complex agent from given candidate
+:return: Complex agent from given candidate with changed composition agents
 """
 def changeComplexStates(rhs, complex_agent_original):
     complex_agent = copy.deepcopy(complex_agent_original)
@@ -57,11 +50,9 @@ def changeComplexStates(rhs, complex_agent_original):
     agent_composition = complex_agent.getFullComposition()
     for i in range(len(rhs_composition)):
         if isinstance(agent_composition[i], Atomic_Agent):
-            agent_composition.insert(i, changeAtomicStates(rhs_composition[i], agent_composition[i]))
-            del agent_composition[i + 1]
+            agent_composition[i] = changeAtomicStates(rhs_composition[i], agent_composition[i])
         else:
-            agent_composition.insert(i, changeStructureStates(rhs_composition[i], agent_composition[i]))
-            del agent_composition[i + 1]
+            agent_composition[i] = changeStructureStates(rhs_composition[i], agent_composition[i])
     complex_agent.setFullComposition(sorted(agent_composition))
     complex_agent.setCompartment(rhs.getCompartment())
     return complex_agent
