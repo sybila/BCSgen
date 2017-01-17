@@ -1,5 +1,5 @@
 import unittest
-from import_rules import *
+from import_model import *
 
 class TestImport(unittest.TestCase):
     def setUp(self):

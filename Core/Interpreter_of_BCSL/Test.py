@@ -18,14 +18,14 @@ class TestAtomicAgent(unittest.TestCase):
         self.Aagent5 = Atomic_Agent('S', ['p'], 'cyt')
 
     def test_print(self):
-        self.assertEqual(self.Aagent1.__str__(), 'S{p}::cyt')
-        self.assertEqual(self.Aagent3.__str__(), 'S::cyt')
+        self.assertEqual(str(self.Aagent1), 'S{p}::cyt')
+        self.assertEqual(str(self.Aagent3), 'S::cyt')
 
     def test_equal(self):
-        self.assertTrue(self.Aagent1.__eq__(self.Aagent1))
-        self.assertTrue(self.Aagent3.__eq__(Atomic_Agent('S', ['p', 'u'], 'cyt')))
-        self.assertFalse(self.Aagent2.__eq__(self.Aagent1))
-        self.assertTrue(self.Aagent1.__eq__(self.Aagent5))
+        self.assertTrue(self.Aagent1 == self.Aagent1)
+        self.assertTrue(self.Aagent3 == Atomic_Agent('S', ['p', 'u'], 'cyt'))
+        self.assertFalse(self.Aagent2 == self.Aagent1)
+        self.assertTrue(self.Aagent1 == self.Aagent5)
         self.assertFalse(self.Aagent1 != self.Aagent5)
 
     def test_isCompatibleWith(self):
@@ -40,9 +40,9 @@ class TestAtomicAgent(unittest.TestCase):
 
     def test_setter(self):
         self.Aagent1.setStates(['u'])
-        self.assertTrue(self.Aagent1.__eq__(self.Aagent12))
+        self.assertTrue(self.Aagent1 == self.Aagent12)
         self.Aagent2.setCompartment('cell')
-        self.assertTrue(self.Aagent2.__eq__(Atomic_Agent('T', ['u'], 'cell')))
+        self.assertTrue(self.Aagent2 == Atomic_Agent('T', ['u'], 'cell'))
 
     def test_comparing(self):
         self.assertFalse(self.Aagent3 > self.Aagent1)
@@ -81,15 +81,15 @@ class TestStructureAgent(unittest.TestCase):
         self.Sagent10 = Structure_Agent('KaiC', [], 'cyt')
 
     def test_equal(self):
-        self.assertTrue(self.Sagent1.__eq__(self.Sagent2))
-        self.assertTrue(self.Sagent1.__eq__(self.Sagent1))
-        self.assertFalse(self.Sagent1.__eq__(self.Sagent3))
+        self.assertTrue(self.Sagent1 == self.Sagent2)
+        self.assertTrue(self.Sagent1 == self.Sagent1)
+        self.assertFalse(self.Sagent1 == self.Sagent3)
 
     def test_print(self):
-        self.assertEqual(self.Sagent1.__str__(), self.Sagent1.__str__())
-        self.assertEqual(self.Sagent1.__str__(), self.Sagent2.__str__())
-        self.assertEqual(self.Sagent3.__str__(), 'KaiC(N{u}|T{u})::cyt')
-        self.assertEqual(self.Sagent10.__str__(), 'KaiC::cyt')
+        self.assertEqual(str(self.Sagent1), str(self.Sagent1))
+        self.assertEqual(str(self.Sagent1), str(self.Sagent2))
+        self.assertEqual(str(self.Sagent3), 'KaiC(N{u}|T{u})::cyt')
+        self.assertEqual(str(self.Sagent10), 'KaiC::cyt')
 
     def test_hash(self):
         self.assertEqual(hash(self.Sagent1), hash(self.Sagent1))
@@ -107,7 +107,7 @@ class TestStructureAgent(unittest.TestCase):
 
     def test_setter(self):
         self.Sagent1.setPartialComposition([self.Aagent13, self.Aagent23])
-        self.assertTrue(self.Sagent4.__eq__(self.Sagent1))
+        self.assertTrue(self.Sagent4 == self.Sagent1)
 
     def test_comparing(self):
         self.assertTrue(self.Sagent2 > self.Sagent3)
@@ -154,16 +154,16 @@ class TestComplexAgent(unittest.TestCase):
         self.Xagent9 = Complex_Agent([self.Sagent5, self.Sagent4, self.Sagent9], 'cyt')
 
     def test_equal(self):
-        self.assertTrue(self.Xagent1.__eq__(self.Xagent1))
-        self.assertTrue(self.Xagent1.__eq__(self.Xagent2))
-        self.assertFalse(self.Xagent1.__eq__(self.Xagent3))
-        self.assertTrue(self.Xagent3.__eq__(self.Xagent4))
-        self.assertTrue(self.Xagent3.__eq__(self.Xagent3))
+        self.assertTrue(self.Xagent1 == self.Xagent1)
+        self.assertTrue(self.Xagent1 == self.Xagent2)
+        self.assertFalse(self.Xagent1 == self.Xagent3)
+        self.assertTrue(self.Xagent3 == self.Xagent4)
+        self.assertTrue(self.Xagent3 == self.Xagent3)
 
     def test_print(self):
-        self.assertEqual(self.Xagent1.__str__(), self.Xagent2.__str__())
-        self.assertNotEqual(self.Xagent1.__str__(), self.Xagent3.__str__())
-        self.assertEqual(self.Xagent1.__str__(), "KaiC(S{u}|T{u}).KaiC(S{u}|T{u})::cyt")
+        self.assertEqual(str(self.Xagent1), str(self.Xagent2))
+        self.assertNotEqual(str(self.Xagent1), str(self.Xagent3))
+        self.assertEqual(str(self.Xagent1), "KaiC(S{u}|T{u}).KaiC(S{u}|T{u})::cyt")
 
     def test_hash(self):
         self.assertEqual(hash(self.Xagent1), hash(self.Xagent1))
@@ -176,9 +176,9 @@ class TestComplexAgent(unittest.TestCase):
 
     def test_setter(self):
         self.Xagent1.setFullComposition([self.Sagent1, self.Sagent3])
-        self.assertTrue(self.Xagent1.__eq__(self.Xagent3))
+        self.assertTrue(self.Xagent1 == self.Xagent3)
         self.Xagent2.setFullComposition(self.Xagent4.getFullComposition())
-        self.assertTrue(self.Xagent2.__eq__(self.Xagent4))
+        self.assertTrue(self.Xagent2 == self.Xagent4)
 
     def test_isCompatibleWith(self):
         self.assertTrue(self.Xagent6.isCompatibleWith(self.Xagent5))
@@ -272,13 +272,13 @@ class TestRule(unittest.TestCase):
         self.Rule20 = Rule([], [])
 
     def test_equal(self):
-        self.assertTrue(self.Rule1.__eq__(self.Rule1))
-        self.assertTrue(self.Rule2.__eq__(self.Rule2))
-        self.assertFalse(self.Rule1.__eq__(self.Rule2))
+        self.assertTrue(self.Rule1 == self.Rule1)
+        self.assertTrue(self.Rule2 == self.Rule2)
+        self.assertFalse(self.Rule1 == self.Rule2)
 
     def test_print(self):
-        self.assertEqual(self.Rule1.__str__(), self.Rule1.__str__())
-        self.assertEqual(self.Rule1.__str__(), "S{u}::cyt => S{p}::cyt")
+        self.assertEqual(str(self.Rule1), str(self.Rule1))
+        self.assertEqual(str(self.Rule1), "S{u}::cyt => S{p}::cyt")
 
     def test_hash(self):
         self.assertNotEqual(hash(self.Rule1), hash(self.Rule2))
