@@ -1,61 +1,8 @@
 import collections
-import copy
 from Complex_Agent import *
 import numpy as np
 
 direction = " => "
-
-"""
-Changes state of an atomic agent according to another one
-:param rhs: Atomic agent from right-hand-side of a rule
-:param atomic_agent_original: Atomic agent from given candidate
-:return: Atomic agent from given candidate with state of second agent
-"""
-def changeAtomicStates(rhs, atomic_agent_original):
-    if atomic_agent_original.getStates().issubset(rhs.getStates()):
-        return atomic_agent_original
-    atomic_agent = copy.deepcopy(atomic_agent_original)
-    atomic_agent.setStates(rhs.getStates())
-    atomic_agent.setCompartment(rhs.getCompartment())
-    return atomic_agent
-
-"""
-Changes state(s) of a structure agent according to another one
-:param rhs: Structure agent from right-hand-side of a rule
-:param structure_agent_original: Structure agent from given candidate
-:return: Structure agent from given candidate with changed atomic agents
-"""
-def changeStructureStates(rhs, structure_agent_original):
-    structure_agent = copy.deepcopy(structure_agent_original)
-    composition = structure_agent.getPartialComposition()
-    for a_r in rhs.getPartialComposition():
-        for a_c in composition:
-            if a_r.equalNames(a_c):
-                composition.remove(a_c)
-                composition |= {changeAtomicStates(a_r, a_c)}
-                break
-    structure_agent.setPartialComposition(composition)
-    structure_agent.setCompartment(rhs.getCompartment())
-    return structure_agent
-
-"""
-Changes state(s) of a complex agent according to another one
-:param lhs: Complex agent from left-hand-side of the rule
-:param complex_agent_original: Complex agent from given candidate
-:return: Complex agent from given candidate with changed composition agents
-"""
-def changeComplexStates(rhs, complex_agent_original):
-    complex_agent = copy.deepcopy(complex_agent_original)
-    rhs_composition = rhs.getFullComposition()
-    agent_composition = complex_agent.getFullComposition()
-    for i in range(len(rhs_composition)):
-        if isinstance(agent_composition[i], Atomic_Agent):
-            agent_composition[i] = changeAtomicStates(rhs_composition[i], agent_composition[i])
-        else:
-            agent_composition[i] = changeStructureStates(rhs_composition[i], agent_composition[i])
-    complex_agent.setFullComposition(sorted(agent_composition))
-    complex_agent.setCompartment(rhs.getCompartment())
-    return complex_agent
 
 class Rule:
     def __init__(self, left_hand_side, right_hand_side):
@@ -160,11 +107,11 @@ class Rule:
         rhs = self.getRightHandSide()[0]
         candidate = candidate[0]
         if isinstance(candidate, Atomic_Agent):
-            return tuple([changeAtomicStates(rhs, candidate)])
+            return tuple([rhs.changeState(candidate)])
         elif isinstance(candidate, Structure_Agent):
-            return tuple([changeStructureStates(rhs, candidate)])
+            return tuple([rhs.changeState(candidate)])
         else:
-            return tuple([changeComplexStates(rhs, candidate)])
+            return tuple([rhs.changeState(candidate)])
 
     """
     Degrades given candidate of agents

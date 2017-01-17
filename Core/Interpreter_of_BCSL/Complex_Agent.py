@@ -112,3 +112,14 @@ class Complex_Agent:
     def maxOccurence(self):
         names = collections.Counter(map(lambda agent: agent.getName(), self.full_composition))
         return max(names.values())
+
+    """
+    Changes state of Complex agent accoring to given other complex agent
+    :param other: given other complex agent
+    :return: new Complex agent with changed states
+    """
+    def changeState(self, other):
+        rhs_composition = copy.deepcopy(self.full_composition)
+        candidate_composition = other.full_composition
+        candidate_composition = map(lambda i: rhs_composition[i].changeState(candidate_composition[i]), range(len(rhs_composition)))
+        return Complex_Agent(sorted(candidate_composition), self.compartment)

@@ -1,3 +1,5 @@
+import copy
+
 class Atomic_Agent:
     def __init__(self, name, states, compartment):
         self.name = name
@@ -65,3 +67,13 @@ class Atomic_Agent:
 
     def maxOccurence(self):
         return 1
+
+    """
+    Changes state of Atomic agent accoring to given other Atomic agent
+    :param other: given other Atomic agent
+    :return: new Atomic agent with changed states
+    """
+    def changeState(self, other):
+        if other.states.issubset(self.states):
+            return other
+        return Atomic_Agent(other.name, self.states, self.compartment)

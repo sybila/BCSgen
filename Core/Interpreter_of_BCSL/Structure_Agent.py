@@ -109,3 +109,18 @@ class Structure_Agent:
 
     def maxOccurence(self):
         return 1
+
+    """
+    Changes state of Structure agent accoring to given other Structure agent
+    :param other: given other Structure agent
+    :return: new Structure agent with changed states
+    """
+    def changeState(self, other):
+        composition = copy.deepcopy(other.getPartialComposition())
+        for a_rhs in self.getPartialComposition():
+            for a_can in composition:
+                if a_rhs.equalNames(a_can):
+                    composition.remove(a_can)
+                    composition |= {a_rhs.changeState(a_can)}
+                    break
+        return Structure_Agent(self.name, composition, self.compartment)
