@@ -124,3 +124,11 @@ class Structure_Agent:
                     composition |= {a_rhs.changeState(a_can)}
                     break
         return Structure_Agent(self.name, composition, self.compartment)
+
+    """
+    Changes compartment of Structure agent accoring to given other Structure agent
+    :param other: given other Structure agent
+    :return: new Structure agent with changed compartment
+    """
+    def changeCompartment(self, other):
+        return Structure_Agent(other.name, other.composition, self.compartment)

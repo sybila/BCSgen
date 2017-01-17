@@ -77,3 +77,11 @@ class Atomic_Agent:
         if other.states.issubset(self.states):
             return other
         return Atomic_Agent(other.name, self.states, self.compartment)
+
+    """
+    Changes compartment of Atomic agent accoring to given other Atomic agent
+    :param other: given other Atomic agent
+    :return: new Atomic agent with changed compartment
+    """
+    def changeCompartment(self, other):
+        return Atomic_Agent(other.name, other.states, self.compartment)

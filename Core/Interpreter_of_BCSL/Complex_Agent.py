@@ -123,3 +123,11 @@ class Complex_Agent:
         candidate_composition = other.full_composition
         candidate_composition = map(lambda i: rhs_composition[i].changeState(candidate_composition[i]), range(len(rhs_composition)))
         return Complex_Agent(sorted(candidate_composition), self.compartment)
+
+    """
+    Changes compartment of Complex agent accoring to given other complex agent
+    :param other: given other complex agent
+    :return: new Complex agent with changed compartment
+    """
+    def changeCompartment(self, other):
+        return Complex_Agent(other.full_composition, self.compartment)

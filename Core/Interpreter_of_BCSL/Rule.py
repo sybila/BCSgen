@@ -87,7 +87,7 @@ class Rule:
         left_size = len(self.getLeftHandSide())
         right_size = len(self.getRightHandSide())
         if left_size == right_size:
-            return self.changeStates(candidate)
+            return self.changeStatesOrCompartment(candidate)
         elif left_size > right_size:
             if right_size == 0:
                 return self.degrade(candidate)
@@ -103,15 +103,18 @@ class Rule:
     Changes states according to type of the agent in candidate
     :param candidate: given array containing one agent
     """
-    def changeStates(self, candidate):
+    def changeStatesOrCompartment(self, candidate):
         rhs = self.getRightHandSide()[0]
         candidate = candidate[0]
-        if isinstance(candidate, Atomic_Agent):
-            return tuple([rhs.changeState(candidate)])
-        elif isinstance(candidate, Structure_Agent):
-            return tuple([rhs.changeState(candidate)])
+        if rhs.getCompartment() != candidate.getCompartment():
+            return tuple([rhs.changeCompartment(candidate)])
         else:
-            return tuple([rhs.changeState(candidate)])
+            if isinstance(candidate, Atomic_Agent):
+                return tuple([rhs.changeState(candidate)])
+            elif isinstance(candidate, Structure_Agent):
+                return tuple([rhs.changeState(candidate)])
+            else:
+                return tuple([rhs.changeState(candidate)])
 
     """
     Degrades given candidate of agents
