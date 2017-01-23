@@ -16,20 +16,20 @@ The most proper way is to run the binary file with __Graphical User Interface__ 
 
 To obtain __state space__:
 * fill required fileds
-  * Model - file containing a BCS model<sup>3</sup>
+  * Model - file containing a BCS model<sup>2</sup>
   * State space file - JSON file for storing generated state space
 * press Compute button. The state space is consequently saved in the choosen file.
 
 To obtain __reactions__:
 * fill required fileds
-  * Model - file containing a BCS model<sup>3</sup>
+  * Model - file containing a BCS model<sup>2</sup>
   * Reactions file - text file for storing reactions
-  * Save log<sup>4</sup> (optional)
+  * Save log<sup>3</sup> (optional)
 * press Compute button. The reactions (and log) are consequently saved in the choosen file.
   
 ---
 
-If binary file is not working, build __Graphical User Interface__<sup>2</sup> (in GUI directory) by running:
+If binary file is not working, build __Graphical User Interface__<sup>4</sup> (in GUI directory) by running:
 
     python gui.py
     
@@ -60,8 +60,8 @@ Alternatively, CLI can be used.
 ---
 > <sup>1</sup> State space might be visualised with [this](https://github.com/mathooo/NetworkVISUAL) utility.
 
-> <sup>2</sup> To do it, you need to have [PyQt](https://wiki.python.org/moin/PyQt) python library installed. For Windows, use [this](http://www.lfd.uci.edu/~gohlke/pythonlibs/#pyqt4) binary file, for Unix machines use [following](http://pythoncentral.io/install-pyside-pyqt-on-windows-mac-linux/) instructions.
+> <sup>2</sup> [BCS model](http://sybila.fi.muni.cz/tools/bcsgen#bcsl_model) is simple text file format containing initialized model, i.e. set of rules and initial state. Examples of such models are in Examples directory.
 
-> <sup>3</sup> [BCS model](http://sybila.fi.muni.cz/tools/bcsgen#bcsl_model) is simple text file format containing initialized model, i.e. set of rules and initial state. Examples of such models are in Examples directory.
+> <sup>3</sup> During computation, static analysis is applied to the model in order to detect some conflicts in rules. These conflict might be saved in a log file.
 
-> <sup>4</sup> During computation, static analysis is applied to the model in order to detect some conflicts in rules. These conflict might be saved in a log file.
+> <sup>4</sup> To do it, you need to have [PyQt](https://wiki.python.org/moin/PyQt) python library installed. For Windows, use [this](http://www.lfd.uci.edu/~gohlke/pythonlibs/#pyqt4) binary file, for Unix machines use [following](http://pythoncentral.io/install-pyside-pyqt-on-windows-mac-linux/) instructions.
