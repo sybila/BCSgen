@@ -66,3 +66,14 @@ def generateStateSpace(myNet, state, bound):
 		states |= set(new_states)
 
 	return states, edges, orderedAgents
+
+"""
+Estimates how long the computation should take.
+It takes into account bound, number of agents and reactions.
+:param bound: bound of the model
+:param numOfDistinctAgents: number of all different agents
+:param numOfReactions: number of reactions used in computation
+:return: estimated time
+"""
+def estimateComputation(bound, numOfDistinctAgents, numOfReactions):
+	return ((bound ** numOfDistinctAgents) * numOfReactions)/100000

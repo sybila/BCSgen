@@ -27,3 +27,13 @@ def generateReactions(myNet):
 		old_numberOfReactions = new_numberOfReactions
 		new_numberOfReactions = myNet.getNumOfReactions()
 	return myNet
+
+
+"""
+Estimates how long the computation should take.
+It takes into account ???
+:param number: ???
+:return: estimated time
+"""
+def estimateComputation(number):
+	return number * 5

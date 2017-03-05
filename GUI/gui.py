@@ -1,4 +1,4 @@
-from time import time
+import time
 import sys
 import os.path
 sys.path.append(os.path.abspath('../Core/'))
@@ -11,7 +11,7 @@ from PyQt4.QtGui import *
 def createProgressBar(it, movex, movey):
     progressBar = QtGui.QProgressBar(it)
     progressBar.setRange(0,1)
-    progressBar.resize(300,30)
+    progressBar.resize(150,30)
     progressBar.move(movex, movey)
     return progressBar
 
@@ -145,6 +145,18 @@ class MainWindow(QtGui.QWidget):
         self.stateWorker = StateSpaceWorker()
         self.reactionWorker = ReactionWorker()
 
+        self.stateSpaceTime = QtCore.QTime(0,0,0,0)
+        self.reactionsTime = QtCore.QTime(0,0,0,0)
+
+        self.spaceTimer = QtCore.QTimer(self)
+        self.spaceTimer.timeout.connect(self.showStateProgress)
+
+        self.reactionsTimer = QtCore.QTimer(self)
+        self.reactionsTimer.timeout.connect(self.showReactionProgress)
+
+        self.stateSpaceEstimate = 0
+        self.reactionsEstimate = 0
+
         #########################################
 
         # model file button
@@ -173,10 +185,17 @@ class MainWindow(QtGui.QWidget):
         self.progress_bar_states = createProgressBar(self, 10, 130)
         self.stateWorker.taskFinished.connect(self.progressbarStatesOnFinished)
 
+        # time bar
+
+        self.runningStates = QtGui.QLabel(self)
+        self.runningStates.setText(" Na:Na:Na /  Na:Na:Na")
+        self.runningStates.move(175, 135)
+
         # Compute states button
 
         self.compute_space_button = createButton(self, 'Compute', self.stateWorker.compute_space, 160, 170, True)
         self.compute_space_button.clicked.connect(self.progressbarStatesOnStart)
+        self.compute_space_button.clicked.connect(self.startStateSpaceTimer)
 
         self.cancel_state = createButton(self, 'Cancel', self.cancel_computation_states, 10, 170, True)
         self.cancel_state.clicked.connect(self.progressbarStatesOnFinished)
@@ -203,10 +222,17 @@ class MainWindow(QtGui.QWidget):
         self.progress_bar_reactions = createProgressBar(self, 10, 290)
         self.reactionWorker.taskFinished.connect(self.progressbarReactionsOnFinished)
 
+        # time bar
+
+        self.runningReactions = QtGui.QLabel(self)
+        self.runningReactions.setText(" Na:Na:Na /  Na:Na:Na")
+        self.runningReactions.move(175, 305)
+
         # Compute reactions button
 
         self.compute_reactions_button = createButton(self, 'Compute', self.reactionWorker.compute_reactions, 160, 330, True)
         self.compute_reactions_button.clicked.connect(self.progressbarReactionsOnStart)
+        self.compute_reactions_button.clicked.connect(self.stateReactionsTimes)
 
         self.cancel_rxns = createButton(self, 'Cancel', self.cancel_computation_reactions, 10, 330, True)
         self.cancel_rxns.clicked.connect(self.progressbarReactionsOnFinished)
@@ -222,16 +248,28 @@ class MainWindow(QtGui.QWidget):
 
         #########################################
 
+    def startStateSpaceTimer(self):
+        self.spaceTimer.start(1000)
+        self.stateSpaceEstimate = time.strftime("%H:%M:%S", time.gmtime(Gen.estimateComputation(3, 10, 10)))
+
+    def stateReactionsTimes(self):
+        self.reactionsTimer.start(1000)
+        self.reactionsEstimate = time.strftime("%H:%M:%S", time.gmtime(Implicit.estimateComputation(10)))
+
     def stateSpaceCanceled(self):
         self.num_of_states.setText('States: n\\a' )
         self.num_of_edges.setText('Edges: n\\a' )
         self.compute_space_button.setText('Interrupted')
         self.progress_bar_states.setValue(0)
 
+        self.spaceTimer.stop()
+
     def reactionsCanceled(self):
         self.num_of_reactions.setText('Reactions: n\\a')
         self.compute_reactions_button.setText('Interrupted')
         self.progress_bar_reactions.setValue(0)
+
+        self.reactionsTimer.stop()
 
     def progressbarStatesOnStart(self): 
         self.progress_bar_states.setRange(0,0)
@@ -246,6 +284,8 @@ class MainWindow(QtGui.QWidget):
         self.stateSpace.setDisabled(True)
         self.model.setDisabled(True)
 
+        self.spaceTimer.stop()
+
     def progressbarReactionsOnStart(self): 
         self.progress_bar_reactions.setRange(0,0)
 
@@ -258,6 +298,8 @@ class MainWindow(QtGui.QWidget):
         self.cancel_rxns.setDisabled(True)
         self.reactions.setDisabled(True)
         self.model.setDisabled(True)
+
+        self.reactionsTimer.stop()
 
     def paintEvent(self, event):
         qp = QtGui.QPainter()
@@ -320,6 +362,16 @@ class MainWindow(QtGui.QWidget):
     def cancel_computation_reactions(self):
         if not self.reactionWorker.getTheWorker().wait(100):
             self.reactionWorker.getTheWorker().terminate()
+
+    def showStateProgress(self):
+        self.stateSpaceTime = self.stateSpaceTime.addSecs(1)
+        text = self.stateSpaceTime.toString('hh:mm:ss')
+        self.runningStates.setText(text + " / " + self.stateSpaceEstimate)
+        
+    def showReactionProgress(self):
+        self.reactionsTime = self.reactionsTime.addSecs(1)
+        text = self.reactionsTime.toString('hh:mm:ss')
+        self.runningReactions.setText(text + " / " + self.reactionsEstimate)
 
 app = QtGui.QApplication(sys.argv)
 
