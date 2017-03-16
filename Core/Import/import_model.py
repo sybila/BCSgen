@@ -336,10 +336,6 @@ def import_model(input_file, sub_file = None):
 
             # here the rule has to be well-formed !
             created_rules.append(create_rule(rule))
-
-    print created_rules
-    print import_initial_state(inits)
-
     return created_rules, import_initial_state(inits)
 
 """
