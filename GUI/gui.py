@@ -36,10 +36,10 @@ def createButton(it, text, to_connect, movex, movey, disabled):
 
 class ReactionWorker(QtCore.QObject):
     taskFinished = QtCore.pyqtSignal()
-    def __init__(self, parent=None):
+    def __init__(self, model, parent=None):
         QtCore.QObject.__init__(self, parent)
 
-        self.modelFile = None
+        self.modelFile = model
         self.reactionsFile = None
         self.logFile = None
         self.lenReactions = None
@@ -53,9 +53,6 @@ class ReactionWorker(QtCore.QObject):
 
     def getTheWorker(self):
         return self.TheWorker
-
-    def setModelFile(self, modelFile):
-        self.modelFile = modelFile
 
     def getModelFile(self):
         return self.modelFile
@@ -73,7 +70,7 @@ class ReactionWorker(QtCore.QObject):
         self.logFile = logFile
 
     def compute_reactions(self):
-        myNet, state, networkStatus, message = Implicit.initializeNetwork(self.modelFile)
+        myNet, state, networkStatus, message = Implicit.initializeNetwork(str(self.modelFile.toPlainText()))
         myNet = Implicit.generateReactions(myNet)
         myNet.printReactions(self.reactionsFile)
         self.lenReactions.setText('Reactions: ' + str(myNet.getNumOfReactions()))
@@ -88,10 +85,10 @@ class ReactionWorker(QtCore.QObject):
 
 class StateSpaceWorker(QtCore.QObject):
     taskFinished = QtCore.pyqtSignal()
-    def __init__(self, parent=None):
+    def __init__(self, model, parent=None):
         QtCore.QObject.__init__(self, parent)
         
-        self.modelFile = None
+        self.modelFile = model
         self.stateSpaceFile = None
         self.lenStates = None
         self.lenEdges = None
@@ -105,9 +102,6 @@ class StateSpaceWorker(QtCore.QObject):
 
     def getTheWorker(self):
         return self.TheWorker
-
-    def setModelFile(self, modelFile):
-        self.modelFile = modelFile
 
     def getModelFile(self):
         return self.modelFile
@@ -125,7 +119,7 @@ class StateSpaceWorker(QtCore.QObject):
         self.lenEdges = lenObj
 
     def compute_space(self):
-        myNet, state, networkStatus, message = Implicit.initializeNetwork(self.modelFile)
+        myNet, state, networkStatus, message = Implicit.initializeNetwork(str(self.modelFile.toPlainText()))
         myNet = Implicit.generateReactions(myNet)
         bound = myNet.calculateBound()
         states, edges, orderedAgents = Gen.generateStateSpace(myNet, state, bound)
@@ -159,9 +153,6 @@ class MainWindow(QtGui.QMainWindow):
 
         # setup
 
-        self.stateWorker = StateSpaceWorker()
-        self.reactionWorker = ReactionWorker()
-
         #self.stateSpaceTime = QtCore.QTime(0,0,0,0)
         #self.reactionsTime = QtCore.QTime(0,0,0,0)
 
@@ -186,6 +177,8 @@ class MainWindow(QtGui.QMainWindow):
         self.textBox.setLineWrapColumnOrWidth(590)
         self.textBox.setLineWrapMode(QtGui.QTextEdit.FixedColumnWidth)
 
+        self.stateWorker = StateSpaceWorker(self.textBox)
+        self.reactionWorker = ReactionWorker(self.textBox)
 
         #########################################
 
@@ -274,14 +267,12 @@ class MainWindow(QtGui.QMainWindow):
     def stateSpaceCanceled(self):
         self.num_of_states.setText('States: n\\a' )
         self.num_of_edges.setText('Edges: n\\a' )
-        #self.compute_space_button.setText('Interrupted')
         self.progress_bar_states.setValue(0)
 
         #self.spaceTimer.stop()
 
     def reactionsCanceled(self):
         self.num_of_reactions.setText('Reactions: n\\a')
-        #self.compute_reactions_button.setText('Interrupted')
         self.progress_bar_reactions.setValue(0)
 
         #self.reactionsTimer.stop()
@@ -293,32 +284,12 @@ class MainWindow(QtGui.QMainWindow):
         self.progress_bar_states.setRange(0,1)
         self.progress_bar_states.setValue(1)
 
-        #self.compute_space_button.setDisabled(True)
-        #self.compute_space_button.setText('Finished')
-        #self.cancel_state.setDisabled(True)
-        #self.stateSpace.setDisabled(True)
-
-        #self.spaceTimer.stop()
-        modelFile = self.stateWorker.getModelFile()
-        stateSpaceFile = self.stateWorker.getStateSpaceFile()
-        self.stateWorker = StateSpaceWorker()
-        self.stateWorker.setModelFile(modelFile)
-        self.stateWorker.setStateSpaceFile(stateSpaceFile)
-        self.stateWorker.setLenStates(self.num_of_states)
-        self.stateWorker.setLenEdges(self.num_of_edges)
-        print self.stateWorker
-
     def progressbarReactionsOnStart(self): 
         self.progress_bar_reactions.setRange(0,0)
 
     def progressbarReactionsOnFinished(self):
         self.progress_bar_reactions.setRange(0,1)
         self.progress_bar_reactions.setValue(1)
-
-        self.compute_reactions_button.setDisabled(True)
-        self.compute_reactions_button.setText('Finished')
-        self.cancel_rxns.setDisabled(True)
-        self.reactions.setDisabled(True)
 
         #self.reactionsTimer.stop()
 
@@ -341,10 +312,8 @@ class MainWindow(QtGui.QMainWindow):
         qp.drawPixmap(825,410,QPixmap("icons/logo.png"))
 
     def open_model(self):
-        file = QFileDialog.getOpenFileName(self, 'Choose model', directory = '../Examples/inputs/', filter =".bcs (*.bcs)")
+        file = QFileDialog.getOpenFileName(self, 'Choose model', directory = '../Examples/inputs/', filter ="BCS (*.bcs);;All types (*)")
         if file:
-            self.stateWorker.setModelFile(file)
-            self.reactionWorker.setModelFile(file)
             file = open(file, "r")
             self.textBox.setPlainText(file.read())
             if self.stateWorker.getStateSpaceFile():
@@ -384,10 +353,15 @@ class MainWindow(QtGui.QMainWindow):
     def cancel_computation_states(self):
         if not self.stateWorker.getTheWorker().wait(100):
             self.stateWorker.getTheWorker().terminate()
+            self.compute_space_button.setDisabled(True)
+            self.cancel_state.setDisabled(True)
+            self.stateSpace.setDisabled(True)
 
     def cancel_computation_reactions(self):
         if not self.reactionWorker.getTheWorker().wait(100):
             self.reactionWorker.getTheWorker().terminate()
+            self.compute_reactions_button.setDisabled(True)
+            self.cancel_rxns.setDisabled(True)
 
     def showStateProgress(self):
         self.stateSpaceTime = self.stateSpaceTime.addSecs(1)

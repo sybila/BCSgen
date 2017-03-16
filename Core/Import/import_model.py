@@ -214,7 +214,7 @@ def create_structure_agent(agent, compartment):
     if "(" in agent:
         agent = agent[:-1]
         name = agent.split("(")[0]
-        partial_composition = map(lambda a: create_atomic_agent(a, compartment), agent.split("(")[1].split("|"))
+        partial_composition = map(lambda a: create_atomic_agent(a, compartment), agent.split("(")[1].split(","))
     else:
         name = agent
         partial_composition = []
@@ -318,26 +318,29 @@ Imports rules from file
 def import_model(input_file, sub_file = None):
     inits, created_rules = [], []
 
-    lineNum = 0
-    with open(input_file) as lines:
-        for line in lines:
-            lineNum += 1
-            line = line.rstrip().replace("\"", "")
-            if not line:
-                for line in lines:
-                    inits.append(line.rstrip().replace("\"", ""))
-                break
-            if not line.startswith('#'):
-                rule = remove_spaces(line)
-                rule = remove_steichiometry(rule)
-                if sub_file:
-                    rule = substitute_rule(import_substitutions(sub_file), rule)
-                # Flatenning is not supported yet
-                #rule = flattenRule(rule)
+    lines = filter(None, input_file.split("\n"))
 
-                # here the rule has to be well-formed !
-                created_rules.append(create_rule(rule))
-    return created_rules, import_initial_state(inits[1:])
+    lineNum = 0
+    for line in lines:
+        lineNum += 1
+        if line.startswith('#') and lineNum != 1:
+            for line in lines[lineNum:]:
+                inits.append(line)
+            break
+        elif not line.startswith('#'):
+            rule = remove_spaces(line)
+            rule = remove_steichiometry(rule)
+            if sub_file:
+                rule = substitute_rule(import_substitutions(sub_file), rule)
+            #rule = flattenRule(rule)
+
+            # here the rule has to be well-formed !
+            created_rules.append(create_rule(rule))
+
+    print created_rules
+    print import_initial_state(inits)
+
+    return created_rules, import_initial_state(inits)
 
 """
 Imports agent names to be substituted
