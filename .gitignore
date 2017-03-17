@@ -22,4 +22,5 @@ Core/State_space_generator/main.pyc
 Examples/outputs/
 Core/Implicit_reaction_network_generator/Conflict.pyc
 GUI/BCSgen_logo.png
-
+Core/Interpreter_of_BCSL/State.pyc
+Core/State_space_generator/Reaction.pyc

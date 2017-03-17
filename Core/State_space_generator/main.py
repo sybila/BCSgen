@@ -1,10 +1,19 @@
 import os
 import sys
-sys.path.append(os.path.abspath('../Core/'))
-import Implicit_reaction_network_generator as Implicit
 from Vector_network import *
+from Reaction import *
 import numpy as np
 import json
+import itertools
+
+def collectAgents(reactions):
+	return list(set(itertools.chain(*map(lambda reaction: reaction.getUniqueAgents(), reactions))))
+
+def createVectorModel(reactions):
+	orderedAgents = collectAgents(reactions)
+	numOfAgents = len(orderedAgents)
+	vectorReactions = map(lambda reaction: reaction.toVectors(orderedAgents, numOfAgents), reactions)
+	return orderedAgents, vectorReactions
 
 """
 Creates State from given vector and ordered unique agents
@@ -14,7 +23,7 @@ Creates State from given vector and ordered unique agents
 """
 def createState(state, orderedAgents):
 	multiset = sum(map(lambda i: [orderedAgents[i]] * state[i], range(len(orderedAgents))), [])
-	return Implicit.State(multiset, "".join(map(lambda item: str(item), state)))
+	return BCSL.State(multiset, "".join(map(lambda item: str(item), state)))
 
 """
 Prints state space to given output files
@@ -47,10 +56,10 @@ For given Network and state compute state space (with given bound)
 :param bound: maximal limit for individual agents
 :return: set of states, edges and list of all unique ordered agents
 """
-def generateStateSpace(myNet, state, bound):
-	orderedAgents, vectorReactions = myNet.createVectorModel()
+def generateStateSpace(reactions, state, bound):
+	orderedAgents, vectorReactions = createVectorModel(reactions)
 
-	VN = Vector_network(tuple(Implicit.solveSide(state, [0]*len(orderedAgents), orderedAgents)), vectorReactions, orderedAgents)
+	VN = Vector_network(tuple(solveSide(state, [0]*len(orderedAgents), orderedAgents)), vectorReactions, orderedAgents)
 
 	new_states = [VN.getState()]
 	states = set([VN.getState()])

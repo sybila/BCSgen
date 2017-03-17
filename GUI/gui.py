@@ -4,6 +4,8 @@ import os.path
 sys.path.append(os.path.abspath('../Core/'))
 import State_space_generator as Gen
 import Implicit_reaction_network_generator as Implicit
+#import Explicit_reaction_network_generator as Explicit
+import Import as Import
 
 from PyQt4 import QtGui, QtCore
 from PyQt4.QtGui import *
@@ -119,10 +121,16 @@ class StateSpaceWorker(QtCore.QObject):
         self.lenEdges = lenObj
 
     def compute_space(self):
-        myNet, state, networkStatus, message = Implicit.initializeNetwork(str(self.modelFile.toPlainText()))
-        myNet = Implicit.generateReactions(myNet)
-        bound = myNet.calculateBound()
-        states, edges, orderedAgents = Gen.generateStateSpace(myNet, state, bound)
+        rules, initialState = Import.import_rules(str(self.modelFile.toPlainText()))
+        #reactions = Explicit.generateReactions(rules)
+        reactions = ['KaiC(S{u})::cyt + KaiB::cyt => KaiC(S{u}).KaiB::cyt', 
+                    'KaiC(S{p})::cyt + KaiB::cyt => KaiC(S{p}).KaiB::cyt', 
+                    'KaiC(S{u}).KaiB::cyt => KaiC(S{u})::cyt + KaiB::cyt', 
+                    'KaiC(S{p}).KaiB::cyt => KaiC(S{p})::cyt + KaiB::cyt',
+                    'KaiC(S{u}).KaiB::cyt => KaiC(S{p}).KaiB::cyt']
+        reactions = map(Gen.Reaction, reactions)
+        bound = Gen.calculateBound(reactions)
+        states, edges, orderedAgents = Gen.generateStateSpace(reactions, initialState, bound)
         Gen.printStateSpace(states, edges, orderedAgents, self.stateSpaceFile)
         self.lenStates.setText('States: ' + str(len(states)))
         self.lenEdges.setText('Edges: ' + str(len(edges)))
@@ -322,7 +330,6 @@ class MainWindow(QtGui.QMainWindow):
             if self.reactionWorker.getReacionsFile():
                 self.compute_reactions_button.setDisabled(False)
                 self.cancel_rxns.setDisabled(False)
-                self.log.setDisabled(False)
 
     def save_stateSpace(self):
         file = QFileDialog.getSaveFileName(self, 'Choose output file', filter =".json (*.json)")

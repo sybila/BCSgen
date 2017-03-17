@@ -4,7 +4,6 @@ import re
 import os
 sys.path.append(os.path.abspath('../'))
 import Interpreter_of_BCSL as BCSL
-import Implicit_reaction_network_generator as Gen
 
 '''
 Functions for parsing common rules (human-readable)
@@ -362,4 +361,23 @@ def import_initial_state(inits):
         line = line.rstrip()
         for i in xrange(0, int(line.split(" ")[0])):
             agents.append(create_agent(line.split(" ")[1]))
-    return Gen.State(agents)
+    return BCSL.State(agents)
+
+def import_rules(input_file):
+    inits, created_rules = [], []
+
+    lines = filter(None, input_file.split("\n"))
+
+    lineNum = 0
+    for line in lines:
+        lineNum += 1
+        if line.startswith('#') and lineNum != 1:
+            for line in lines[lineNum:]:
+                inits.append(line)
+            break
+        elif not line.startswith('#'):
+            rule = remove_spaces(line)
+            rule = remove_steichiometry(rule)
+
+            created_rules.append(rule)
+    return created_rules, import_initial_state(inits)
