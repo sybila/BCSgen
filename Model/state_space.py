@@ -2,28 +2,23 @@ import os
 import sys
 sys.path.append(os.path.abspath('../Core/'))
 import State_space_generator as Gen
-import Implicit_reaction_network_generator as Implicit
+#import Explicit_reaction_network_generator as Explicit
+import Import as Import
 
 inputFile = sys.argv[-2]
 stateSpaceFile = sys.argv[-1]
 
-myNet, state, networkStatus, message = Implicit.initializeNetwork(inputFile)
+file = open(inputFile).read()
+rules, initialState = Import.import_rules(file)
+#reactions = Explicit.generateReactions(rules)
+reactions = ['KaiC(S{u})::cyt + KaiB::cyt => KaiC(S{u}).KaiB::cyt', 
+            'KaiC(S{p})::cyt + KaiB::cyt => KaiC(S{p}).KaiB::cyt', 
+            'KaiC(S{u}).KaiB::cyt => KaiC(S{u})::cyt + KaiB::cyt', 
+            'KaiC(S{p}).KaiB::cyt => KaiC(S{p})::cyt + KaiB::cyt',
+            'KaiC(S{u}).KaiB::cyt => KaiC(S{p}).KaiB::cyt']
 
-if not networkStatus:
-	message += ' (yes/no)'
-	print message
-	answer = raw_input('Enter your input:')
-	if answer == 'yes':
-		networkStatus = True
-	else:
-		f = open(os.path.basename(inputFile) + ".log",'w')
-		f.write(message[:-40])
-		f.close()
-else:
-	print message
+reactions = map(Gen.Reaction, reactions)
 
-if networkStatus:
-	myNet = Implicit.generateReactions(myNet)
-	bound = myNet.calculateBound()
-	states, edges, orderedAgents = Gen.generateStateSpace(myNet, state, bound)
-	Gen.printStateSpace(states, edges, orderedAgents, stateSpaceFile)
+bound = Gen.calculateBound(reactions)
+states, edges, orderedAgents = Gen.generateStateSpace(reactions, initialState, bound)
+Gen.printStateSpace(states, edges, orderedAgents, stateSpaceFile)
