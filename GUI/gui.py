@@ -9,6 +9,7 @@ import Import as Import
 
 from PyQt4 import QtGui, QtCore
 from PyQt4.QtGui import *
+from PyQt4.Qt import *
 
 class Help(QWidget):
     def __init__(self, parent= None):
@@ -156,6 +157,44 @@ def createAction(it, title, shortcut, tip, connectWith):
     action.triggered.connect(connectWith)
     return action
 
+class HighlightingRule():
+    def __init__(self, pattern, format):
+        self.pattern = QRegExp(pattern)
+        self.format = format
+
+class MyHighlighter(QSyntaxHighlighter):
+    def __init__(self, parent):
+        QSyntaxHighlighter.__init__(self, parent)
+        self.parent = parent
+        self.highlightingRules = []
+
+        comment = QTextCharFormat()
+        comment.setForeground(Qt.darkGreen)
+        rule = HighlightingRule("#(.*)$", comment)
+        self.highlightingRules.append(rule)
+
+        number = QTextCharFormat()
+        number.setForeground(Qt.magenta)
+        rule = HighlightingRule("[0-9]", number)    
+        self.highlightingRules.append(rule)
+
+        specialChars = QTextCharFormat()
+        specialChars.setForeground(Qt.red)
+        specialChars.setFontWeight(QFont.Bold)
+        rule = HighlightingRule("[=>+]", specialChars)
+        self.highlightingRules.append(rule)
+
+    def highlightBlock(self, text):
+        for rule in self.highlightingRules:
+            expression = rule.pattern
+            index = expression.indexIn( text )
+            while index >= 0:
+                length = expression.matchedLength()
+                self.setFormat( index, length, rule.format )
+                index = expression.indexIn(text, index + length)
+        self.setCurrentBlockState( 0 )
+
+
 class MainWindow(QtGui.QMainWindow):
     def __init__(self, parent=None):
         QtGui.QMainWindow.__init__(self, parent)
@@ -213,6 +252,8 @@ class MainWindow(QtGui.QMainWindow):
         #self.textBox.cursorPositionChanged.connect(self.textEdited)
         self.textBox.setLineWrapColumnOrWidth(590)
         self.textBox.setLineWrapMode(QtGui.QTextEdit.FixedColumnWidth)
+
+        self.highlighter = MyHighlighter( self.textBox )
 
         self.stateWorker = StateSpaceWorker(self.textBox)
         self.reactionWorker = ReactionWorker(self.textBox)
