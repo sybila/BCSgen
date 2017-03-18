@@ -12,3 +12,9 @@ class Reaction:
 
 		for item in react:
 			self.reactants.append(Reactant(item))
+
+	def __repr__(self):
+		return str(self)
+
+	def __str__(self):
+		return "Reaction - " + self.name + ": | " + ", ".join(map(str, self.reactants)) + " |"

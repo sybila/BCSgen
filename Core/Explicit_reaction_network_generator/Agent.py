@@ -13,5 +13,11 @@ class Agent:
 			tmp = part[1].split(",")
 			for i in range(len(tmp)):
 				self.states.append(State(tmp[i].replace(")", "")))
-		else:
-			self.states = None # asi netreba
+		#else:
+		#	self.states = None # asi netreba
+
+	def __repr__(self):
+		return str(self)
+
+	def __str__(self):
+		return "/ Agent - " + self.name + ": " + ", ".join(map(str, self.states)) + " /"

@@ -10,3 +10,12 @@ class State:
 				self.inn = part[1][:-1]
 		else:
 			self.inn = part[0]
+
+	def __repr__(self):
+		return str(self)
+
+	def __str__(self):
+		if self.name:
+			return self.name + "{ " + self.inn + " }"
+		else:
+			return "{ " + self.inn + " }"

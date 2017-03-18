@@ -19,3 +19,9 @@ class Reactant:
 
 	def __hash__(self):
 		return hash(self.name)
+
+	def __repr__(self):
+		return str(self)
+
+	def __str__(self):
+		return "* Reactant - " + self.name + ": " + ", ".join(map(str, self.agents)) + " *"
