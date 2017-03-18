@@ -4,7 +4,7 @@ from Network import *
 def initializeNetwork(inputFile):
 	# initialize the network and create it
 	myNet = Network()
-	state = myNet.createNetwork(file)
+	state = myNet.createNetwork(inputFile)
 
 	# apply static analysis
 	networkStatus, message = myNet.applyStaticAnalysis()

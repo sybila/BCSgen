@@ -7,7 +7,8 @@ from main import *
 inputFile = sys.argv[-2]
 outputFile = sys.argv[-1]
 
-myNet, state, networkStatus, message = initializeNetwork(inputFile)
+file = open(inputFile).read()
+myNet, state, networkStatus, message = initializeNetwork(file)
 
 if not networkStatus:
 	message += ' (yes/no)'

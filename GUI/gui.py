@@ -10,6 +10,19 @@ import Import as Import
 from PyQt4 import QtGui, QtCore
 from PyQt4.QtGui import *
 
+class Help(QWidget):
+    def __init__(self, parent= None):
+        super(Help, self).__init__()
+
+        self.setWindowTitle("Help")
+        self.setFixedHeight(475)
+        self.setFixedWidth(430)
+
+        self.titleText = QLabel(self)
+        self.titleText.move(10, 10)
+        text = "Biochemical Space language software tool \n\n This tool serves for interpreting basic functionality \n to maintain Biochemical Space language. It provides \n state space and reactions generating which can be used \n for analysis and visualisation. \n\n For futher information visit https://github.com/sybila/BCSgen"
+        self.titleText.setText(text)
+
 def createProgressBar(it, movex, movey):
     progressBar = QtGui.QProgressBar(it)
     progressBar.setRange(0,1)
@@ -150,14 +163,30 @@ class MainWindow(QtGui.QMainWindow):
         #########################################
 
         self.load = createAction(self, "&Load", "Ctrl+L", 'Load model from a file.', self.open_model)
-        self.exit = createAction(self, "&Exit", "Ctrl+E", 'Exit program.', self.close)
+        self.save = createAction(self, "&Save", "Ctrl+S", 'Save model a file.', self.save_model)
+        self.exit = createAction(self, "&Quit", "Ctrl+Q", 'Quit the program.', self.close)
 
         self.statusBar()
 
         mainMenu = self.menuBar()
         fileMenu = mainMenu.addMenu('&File')
         fileMenu.addAction(self.load)
+        fileMenu.addAction(self.save)
         fileMenu.addAction(self.exit)
+
+        self.clear = createAction(self, "&Clear", "Ctrl+R", 'Clear all the text.', self.clearText)
+        self.copy = createAction(self, "&Copy", "Ctrl+C", 'Copy selected text to clipboard.', self.copySelection)
+        self.paste = createAction(self, "&Paste", "Ctrl+V", 'Paste text from clipboard.', self.pasteText)
+
+        editMenu = mainMenu.addMenu('&Edit')
+        editMenu.addAction(self.clear)
+        editMenu.addAction(self.copy)
+        editMenu.addAction(self.paste)
+
+        self.help = createAction(self, "&About", "Ctrl+H", 'Show About.', self.showHelp)
+
+        helpMenu = mainMenu.addMenu('&Help')
+        helpMenu.addAction(self.help)
 
         # setup
 
@@ -287,17 +316,21 @@ class MainWindow(QtGui.QMainWindow):
 
     def progressbarStatesOnStart(self): 
         self.progress_bar_states.setRange(0,0)
+        self.cancel_state.setDisabled(False)
 
     def progressbarStatesOnFinished(self):
         self.progress_bar_states.setRange(0,1)
         self.progress_bar_states.setValue(1)
+        self.cancel_state.setDisabled(True)
 
     def progressbarReactionsOnStart(self): 
         self.progress_bar_reactions.setRange(0,0)
+        self.cancel_rxns.setDisabled(False)
 
     def progressbarReactionsOnFinished(self):
         self.progress_bar_reactions.setRange(0,1)
         self.progress_bar_reactions.setValue(1)
+        self.cancel_rxns.setDisabled(True)
 
         #self.reactionsTimer.stop()
 
@@ -326,13 +359,11 @@ class MainWindow(QtGui.QMainWindow):
             self.textBox.setPlainText(file.read())
             if self.stateWorker.getStateSpaceFile():
                 self.compute_space_button.setDisabled(False)
-                self.cancel_state.setDisabled(False)
             if self.reactionWorker.getReacionsFile():
                 self.compute_reactions_button.setDisabled(False)
-                self.cancel_rxns.setDisabled(False)
 
     def save_stateSpace(self):
-        file = QFileDialog.getSaveFileName(self, 'Choose output file', filter =".json (*.json)")
+        file = QFileDialog.getSaveFileName(self, 'Choose output file', filter =".json (*.json);;All types (*)")
         if file:
             self.stateWorker.setStateSpaceFile(file)
             self.stateWorker.setLenStates(self.num_of_states)
@@ -340,21 +371,18 @@ class MainWindow(QtGui.QMainWindow):
             self.stateSpace_text.setText(self.stateWorker.getStateSpaceFile())
             if self.stateWorker.getModelFile():
                 self.compute_space_button.setDisabled(False)
-                self.cancel_state.setDisabled(False)
 
     def save_reactions(self):
-        file = QFileDialog.getSaveFileName(self, 'Choose output file', filter =".txt (*.txt)")
+        file = QFileDialog.getSaveFileName(self, 'Choose output file', filter =".txt (*.txt);;All types (*)")
         if file:
             self.reactionWorker.setReactionsFile(file)
             self.reactions_text.setText(self.reactionWorker.getReacionsFile())
             self.reactionWorker.setLenReactions(self.num_of_reactions)
             if self.reactionWorker.getModelFile():
                 self.compute_reactions_button.setDisabled(False)
-                self.cancel_rxns.setDisabled(False)
-                self.log.setDisabled(False)
 
     def save_log(self):
-        file = QFileDialog.getSaveFileName(self, 'Choose log file', filter =".log (*.log)")
+        file = QFileDialog.getSaveFileName(self, 'Choose log file', filter =".log (*.log);;All types (*)")
         self.reactionWorker.setLogFile(file)
 
     def cancel_computation_states(self):
@@ -379,6 +407,25 @@ class MainWindow(QtGui.QMainWindow):
         self.reactionsTime = self.reactionsTime.addSecs(1)
         text = self.reactionsTime.toString('hh:mm:ss')
         #self.runningReactions.setText(text + " / " + self.reactionsEstimate)
+
+    def save_model(self):
+        file = QFileDialog.getSaveFileName(self, 'Choose model file', filter ="BCS (*.bcs);;All types (*)")
+        if file:
+            with open(file, 'w') as file:
+                file.write(self.textBox.toPlainText())
+
+    def copySelection(self):
+        self.textBox.copy()
+
+    def pasteText(self):
+        self.textBox.paste()
+
+    def clearText(self):
+        self.textBox.clear()
+
+    def showHelp(self):
+        self.help = Help()
+        self.help.show()
 
 app = QtGui.QApplication(sys.argv)
 
