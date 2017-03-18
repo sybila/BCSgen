@@ -4,7 +4,7 @@ import os.path
 sys.path.append(os.path.abspath('../Core/'))
 import State_space_generator as Gen
 import Implicit_reaction_network_generator as Implicit
-#import Explicit_reaction_network_generator as Explicit
+import Explicit_reaction_network_generator as Explicit
 import Import as Import
 
 from PyQt4 import QtGui, QtCore
@@ -136,7 +136,8 @@ class StateSpaceWorker(QtCore.QObject):
 
     def compute_space(self):
         rules, initialState = Import.import_rules(str(self.modelFile.toPlainText()))
-        #reactions = Explicit.generateReactions(rules)
+        #reactionGenerator = Explicit.Compute()
+        #reactions = reactionGenerator.computeReactions(rules)
         reactions = ['KaiC(S{u})::cyt + KaiB::cyt => KaiC(S{u}).KaiB::cyt', 
                     'KaiC(S{p})::cyt + KaiB::cyt => KaiC(S{p}).KaiB::cyt', 
                     'KaiC(S{u}).KaiB::cyt => KaiC(S{u})::cyt + KaiB::cyt', 
