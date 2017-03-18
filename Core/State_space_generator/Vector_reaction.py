@@ -31,4 +31,4 @@ class Vector_reaction:
 				return vec
 
 	def getDict(self):
-		return {'from' : "".join(map(str, self.From)), 'to' : "".join(map(str, self.To))}
+		return {'from' : "|".join(map(str, self.From)), 'to' : "|".join(map(str, self.To))}

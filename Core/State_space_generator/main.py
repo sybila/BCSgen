@@ -23,7 +23,7 @@ Creates State from given vector and ordered unique agents
 """
 def createState(state, orderedAgents):
 	multiset = sum(map(lambda i: [orderedAgents[i]] * state[i], range(len(orderedAgents))), [])
-	return BCSL.State(multiset, "".join(map(lambda item: str(item), state)))
+	return BCSL.State(multiset, "|".join(map(lambda item: str(item), state)))
 
 """
 Prints state space to given output files
