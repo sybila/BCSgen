@@ -365,6 +365,8 @@ class MainWindow(QtGui.QMainWindow):
     def save_stateSpace(self):
         file = QFileDialog.getSaveFileName(self, 'Choose output file', filter =".json (*.json);;All types (*)")
         if file:
+            if not os.path.splitext(str(file))[1]:
+                file = str(file) + ".json"
             self.stateWorker.setStateSpaceFile(file)
             self.stateWorker.setLenStates(self.num_of_states)
             self.stateWorker.setLenEdges(self.num_of_edges)
@@ -375,7 +377,9 @@ class MainWindow(QtGui.QMainWindow):
     def save_reactions(self):
         file = QFileDialog.getSaveFileName(self, 'Choose output file', filter =".txt (*.txt);;All types (*)")
         if file:
-            self.reactionWorker.setReactionsFile(file)
+            if not os.path.splitext(str(file))[1]:
+                file = str(file) + ".txt"
+            self.reactionWorker.setReactionsFile(QString)
             self.reactions_text.setText(self.reactionWorker.getReacionsFile())
             self.reactionWorker.setLenReactions(self.num_of_reactions)
             if self.reactionWorker.getModelFile():
@@ -383,7 +387,10 @@ class MainWindow(QtGui.QMainWindow):
 
     def save_log(self):
         file = QFileDialog.getSaveFileName(self, 'Choose log file', filter =".log (*.log);;All types (*)")
-        self.reactionWorker.setLogFile(file)
+        if file:
+            if not os.path.splitext(str(file))[1]:
+                file = str(file) + ".log"
+            self.reactionWorker.setLogFile(file)
 
     def cancel_computation_states(self):
         if not self.stateWorker.getTheWorker().wait(100):
