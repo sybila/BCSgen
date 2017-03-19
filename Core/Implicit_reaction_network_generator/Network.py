@@ -93,7 +93,7 @@ class Network:
 			reactions, newAgents, self.Memo = edge.applyEdge(self.Memo)
 			self.Reactions.update(reactions)
 			globallyNewAgents.update(newAgents)
-		return State(globallyNewAgents)
+		return BCSL.State(globallyNewAgents)
 
 	"""
 	Adds agents to all Nodes' buckets (if they fit)

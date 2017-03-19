@@ -1,5 +1,3 @@
-from State import *
-
 class Memo:
     def __init__(self, records = [], agents = []):
         self.records = dict(records)

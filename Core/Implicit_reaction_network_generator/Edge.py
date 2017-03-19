@@ -1,6 +1,10 @@
 import collections
-from Reaction import *
 import itertools
+import os
+import sys
+sys.path.append(os.path.abspath('../Core/'))
+import Interpreter_of_BCSL as BCSL
+from Reaction import *
 
 """
 Class Edge
@@ -62,7 +66,7 @@ class Edge:
 					memo.addRecord(reactants_rule_hash, results)
 
 				for result in memo.getRecord(reactants_rule_hash):
-					reactions.add(Reaction(State(reactants), State(result)))
+					reactions.add(Reaction(BCSL.State(reactants), BCSL.State(result)))
 					newAgents.update(result)
 
 		return reactions, newAgents, memo
