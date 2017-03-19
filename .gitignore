@@ -29,3 +29,4 @@ Core/Explicit_reaction_network_generator/Compute.pyc
 Core/Explicit_reaction_network_generator/Reactant.pyc
 Core/Explicit_reaction_network_generator/Reaction.pyc
 Core/Explicit_reaction_network_generator/State.pyc
+Core/Explicit_reaction_network_generator/__init__.pyc

@@ -11,8 +11,7 @@ file = open(inputFile).read()
 myNet, state, networkStatus, message = initializeNetwork(file)
 
 if not networkStatus:
-	message += ' (yes/no)'
-	print message
+	print message + "\n\nCompute despite the conflicts? (yes/no)"
 	answer = raw_input('Enter your input:')
 	if answer == 'yes':
 		networkStatus = True

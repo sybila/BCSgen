@@ -155,9 +155,10 @@ class Network:
 		conflicts = concurrent & dependent
 		if conflicts:
 			message = "The following pairs of rules have conflict:\n\n"
-			message += "\n\n".join(map(lambda conflict: "~ " + str(rules[conflict.getFrom()]) \
-					 + "\n~ " + str(rules[conflict.getTo()]), conflicts))
-			message += "\n\nCompute despite the conflicts?"
+			message += "\n-------------------------------------------------\
+						\n".join(map(lambda conflict: "* " + str(rules[conflict.getFrom()]) \
+					 + "\n* " + str(rules[conflict.getTo()]), conflicts)) + "\n\n" + \
+						"---------------------------------------------------"
 			return message, False
 		else:
 			return "Network is OK, \ncomputation proceeds...", True

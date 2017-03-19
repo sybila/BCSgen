@@ -6,6 +6,7 @@ import State_space_generator as Gen
 import Implicit_reaction_network_generator as Implicit
 import Explicit_reaction_network_generator as Explicit
 import Import as Import
+import markdown
 
 from PyQt4 import QtGui, QtCore
 from PyQt4.QtGui import *
@@ -50,22 +51,33 @@ def createButton(it, text, to_connect, movex, movey, disabled):
     button.setDisabled(disabled)
     return button
 
+def createChecker(it, movex, movey, text):
+    checker = QCheckBox(text, it)
+    checker.move(movex, movey)
+    checker.resize(150, 30)
+    return checker
+
 class ReactionWorker(QtCore.QObject):
     taskFinished = QtCore.pyqtSignal()
     def __init__(self, model, parent=None):
         QtCore.QObject.__init__(self, parent)
 
         self.modelFile = model
+        self.checked = False
         self.reactionsFile = None
-        self.logFile = None
         self.lenReactions = None
+        self.network = None
+        self.message = None
 
         self.TheWorker = QtCore.QThread()
         self.moveToThread(self.TheWorker)
         self.TheWorker.start()
 
-    def __del__(self):
-        return
+    def setChecked(self):
+        self.checked = not self.checked
+
+    def getMessage(self):
+        return self.message
 
     def getTheWorker(self):
         return self.TheWorker
@@ -79,25 +91,24 @@ class ReactionWorker(QtCore.QObject):
     def setReactionsFile(self, reactionsFile):
         self.reactionsFile = reactionsFile
 
-    def getReacionsFile(self):
+    def getReactionsFile(self):
         return self.reactionsFile
 
-    def setLogFile(self, logFile):
-        self.logFile = logFile
-
     def compute_reactions(self):
-        myNet, state, networkStatus, message = Implicit.initializeNetwork(str(self.modelFile.toPlainText()))
-        myNet = Implicit.generateReactions(myNet)
-        myNet.printReactions(self.reactionsFile)
-        self.lenReactions.setText('Reactions: ' + str(myNet.getNumOfReactions()))
-        if self.logFile and not networkStatus:
-            self.save_log(message)
-        self.taskFinished.emit() 
+        self.network, state, networkStatus, self.message = Implicit.initializeNetwork(str(self.modelFile.toPlainText()))
+        if not networkStatus and not self.checked:
+            self.emit(SIGNAL("conflicts"))
+        else:
+            self.finish_reactions()
 
-    def save_log(self, message):
-        f = open(self.logFile,'w')
-        f.write(message[:-30])
-        f.close()
+    def finish_reactions(self):
+        self.network = Implicit.generateReactions(self.network)
+        self.network.printReactions(self.reactionsFile)
+        self.lenReactions.setText('Reactions: ' + str(self.network.getNumOfReactions()))
+        self.emitTaskFinished()
+
+    def emitTaskFinished(self):
+        self.taskFinished.emit()
 
 class StateSpaceWorker(QtCore.QObject):
     taskFinished = QtCore.pyqtSignal()
@@ -195,6 +206,71 @@ class MyHighlighter(QSyntaxHighlighter):
                 index = expression.indexIn(text, index + length)
         self.setCurrentBlockState( 0 )
 
+class PopUp(QWidget):
+    def __init__(self, message):
+        super(PopUp, self).__init__()
+
+        self.message = message
+
+        vLayout = QVBoxLayout(self)
+
+        self.setFixedHeight(400)
+        self.setFixedWidth(400)
+
+        conflictBox = QLabel(self)
+        html = markdown.markdown(message, extensions=['markdown.extensions.fenced_code'])
+        conflictBox.setText(html)
+        
+        scroll = QScrollArea()
+        scroll.setWidget(conflictBox)
+
+        vLayout.addWidget(scroll)
+
+        question = QLabel(self)
+        question.setText("Compute despite the conflicts?")
+        vLayout.addWidget(question)
+
+        buttonYes = QtGui.QPushButton("Yes", self)
+        buttonYes.clicked.connect(self.emitFinishReactions)
+        buttonYes.clicked.connect(self.close)
+
+        buttonNo = QtGui.QPushButton("No", self)
+        buttonNo.clicked.connect(self.emitExit)
+        buttonNo.clicked.connect(self.close)
+
+        hbox = QHBoxLayout()
+
+        hbox.addWidget(buttonYes)
+        hbox.addWidget(buttonNo)
+
+        vLayout.addLayout(hbox)
+
+        buttonSave = QtGui.QPushButton("Save conflicts to file", self)
+        buttonSave.clicked.connect(self.save_log)
+        vLayout.addWidget(buttonSave)
+
+        self.setLayout(vLayout)
+
+    def emitExit(self):
+        self.emit(SIGNAL("exit"))
+
+    def emitFinishReactions(self):
+        self.emit(SIGNAL("finishReactions"))
+
+    def save_log(self):
+        file = QFileDialog.getSaveFileName(self, 'Choose log file', filter =".log (*.log);;All types (*)")
+        if file:
+            if not os.path.splitext(str(file))[1]:
+                file = str(file) + ".log"
+            f = open(file,'w')
+            f.write(self.message[:-30])
+            f.close()
+
+    def closeEvent(self, event):
+        self.emitExit()
+        event.accept()
+
+
 
 class MainWindow(QtGui.QMainWindow):
     def __init__(self, parent=None):
@@ -256,8 +332,13 @@ class MainWindow(QtGui.QMainWindow):
 
         self.highlighter = MyHighlighter( self.textBox )
 
+
+        #########################################
+
         self.stateWorker = StateSpaceWorker(self.textBox)
         self.reactionWorker = ReactionWorker(self.textBox)
+
+        self.connect(self.reactionWorker, SIGNAL("conflicts"), self.showConflicts)
 
         #########################################
 
@@ -304,28 +385,29 @@ class MainWindow(QtGui.QMainWindow):
 
         self.reactions_text = createTextBox(self, None, None, 760, 240, True)
 
+        # check button
+
+        self.checkIgnoreConflicts = createChecker(self, 610, 280, "Ignore conflicts")
+        self.checkIgnoreConflicts.stateChanged.connect(self.reactionWorker.setChecked)
+
         # Compute reactions button
 
-        self.compute_reactions_button = createButton(self, 'Compute', self.reactionWorker.compute_reactions, 760, 280, True)
+        self.compute_reactions_button = createButton(self, 'Compute', self.reactionWorker.compute_reactions, 760, 320, True)
         self.compute_reactions_button.clicked.connect(self.progressbarReactionsOnStart)
         #self.compute_reactions_button.clicked.connect(self.stateReactionsTimer)
 
-        self.cancel_rxns = createButton(self, 'Cancel', self.cancel_computation_reactions, 610, 280, True)
+        self.cancel_rxns = createButton(self, 'Cancel', self.cancel_computation_reactions, 610, 320, True)
         self.cancel_rxns.clicked.connect(self.progressbarReactionsOnFinished)
         self.cancel_rxns.clicked.connect(self.reactionsCanceled)
 
         # progres bar
 
-        self.progress_bar_reactions = createProgressBar(self, 610, 320)
+        self.progress_bar_reactions = createProgressBar(self, 610, 360)
         self.reactionWorker.taskFinished.connect(self.progressbarReactionsOnFinished)
 
         # result field
 
         self.num_of_reactions = createTextBox(self, 'Reactions: ', style, 610, 400, True)
-
-        # log file
-
-        #self.log = createButton(self, 'Save log', self.save_log, 760, 400, True)
 
         # time bar
 
@@ -334,6 +416,12 @@ class MainWindow(QtGui.QMainWindow):
         # self.runningReactions.move(775, 305)
 
         #########################################
+
+    def showConflicts(self):
+        self.conflicts = PopUp(self.reactionWorker.getMessage())
+        self.connect(self.conflicts, SIGNAL("finishReactions"), self.reactionWorker.finish_reactions)
+        self.connect(self.conflicts, SIGNAL("exit"), self.reactionWorker.emitTaskFinished)
+        self.conflicts.show()
 
     def startStateSpaceTimer(self):
         self.spaceTimer.start(1000)
@@ -401,7 +489,7 @@ class MainWindow(QtGui.QMainWindow):
             self.textBox.setPlainText(file.read())
             if self.stateWorker.getStateSpaceFile():
                 self.compute_space_button.setDisabled(False)
-            if self.reactionWorker.getReacionsFile():
+            if self.reactionWorker.getReactionsFile():
                 self.compute_reactions_button.setDisabled(False)
 
     def save_stateSpace(self):
@@ -421,18 +509,11 @@ class MainWindow(QtGui.QMainWindow):
         if file:
             if not os.path.splitext(str(file))[1]:
                 file = str(file) + ".txt"
-            self.reactionWorker.setReactionsFile(QString)
-            self.reactions_text.setText(self.reactionWorker.getReacionsFile())
+            self.reactionWorker.setReactionsFile(file)
+            self.reactions_text.setText(self.reactionWorker.getReactionsFile())
             self.reactionWorker.setLenReactions(self.num_of_reactions)
             if self.reactionWorker.getModelFile():
                 self.compute_reactions_button.setDisabled(False)
-
-    def save_log(self):
-        file = QFileDialog.getSaveFileName(self, 'Choose log file', filter =".log (*.log);;All types (*)")
-        if file:
-            if not os.path.splitext(str(file))[1]:
-                file = str(file) + ".log"
-            self.reactionWorker.setLogFile(file)
 
     def cancel_computation_states(self):
         if not self.stateWorker.getTheWorker().wait(100):
