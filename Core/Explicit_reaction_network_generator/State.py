@@ -1,6 +1,6 @@
 class State:
 	def __init__(self, item):
-		self.name = None # ""
+		self.name = ""
 		self.inn = None
 
 		part = item.split("{")

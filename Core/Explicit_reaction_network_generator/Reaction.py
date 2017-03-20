@@ -5,10 +5,10 @@ class Reaction:
 		self.name = line
 		self.reactants = []
 
-		self.left = len(line.split(" => ")[0].split(" + "))
+		self.left = len(line.split("=>")[0].split("+"))
 
-		sides = line.replace(" => ", " + ")
-		react = sides.split(" + ")
+		sides = line.replace("=>", "+")
+		react = sides.split("+")
 
 		for item in react:
 			self.reactants.append(Reactant(item))

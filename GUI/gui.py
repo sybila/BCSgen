@@ -147,15 +147,12 @@ class StateSpaceWorker(QtCore.QObject):
 
     def compute_space(self):
         rules, initialState = Import.import_rules(str(self.modelFile.toPlainText()))
-        #reactionGenerator = Explicit.Compute()
-        #reactions = reactionGenerator.computeReactions(rules)
-        reactions = ['KaiC(S{u})::cyt + KaiB::cyt => KaiC(S{u}).KaiB::cyt', 
-                    'KaiC(S{p})::cyt + KaiB::cyt => KaiC(S{p}).KaiB::cyt', 
-                    'KaiC(S{u}).KaiB::cyt => KaiC(S{u})::cyt + KaiB::cyt', 
-                    'KaiC(S{p}).KaiB::cyt => KaiC(S{p})::cyt + KaiB::cyt',
-                    'KaiC(S{u}).KaiB::cyt => KaiC(S{p}).KaiB::cyt']
+        reactionGenerator = Explicit.Compute()
+        reactions = reactionGenerator.computeReactions(rules)
+
         reactions = map(Gen.Reaction, reactions)
         bound = Gen.calculateBound(reactions)
+        print bound
         states, edges, orderedAgents = Gen.generateStateSpace(reactions, initialState, bound)
         Gen.printStateSpace(states, edges, orderedAgents, self.stateSpaceFile)
         self.lenStates.setText('States: ' + str(len(states)))

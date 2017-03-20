@@ -50,12 +50,12 @@ class Compute:
 	def AddKeyToList(self, agent, key, inn, inputList):
 		outputList = inputList
 		if not inn:
-			if key == self.agents[agent.name].keys()[-1]:
+			if key != self.agents[agent.name].keys()[-1]:
 				outputList.append(key + ",")
 			else:
 				outputList.append(key)
 		else:
-			if key == self.agents[agent.name].keys()[-1]:
+			if key != self.agents[agent.name].keys()[-1]:
 				outputList.append(key + "{" + inn + "},")
 			else:
 				outputList.append(key + "{" + inn + "}")
@@ -71,6 +71,7 @@ class Compute:
 		OutputReactions = []
 
 		for reaction in self.reactions:
+			self.usedStates = []
 			alphabet = []
 			a = 1
 			i = 0
@@ -98,7 +99,7 @@ class Compute:
 
 									tmplist = self.AddKeyToList(agent, key, inn, tmplist)
 									alphabet.append(tmplist)
-									self.usedStates.add(-1)
+									self.usedStates.append(-1)
 
 									if key == self.agents[agent.name].keys()[-1] and normalState:
 										alphabet = self.AddItemToList(")", alphabet)
@@ -131,6 +132,7 @@ class Compute:
 				alphabet.append(tmplist2)
 				self.usedStates.append(-1)
 
+			self.tmpResult = []
 			self.Combinations(len(alphabet), "", alphabet)
 			for result in self.tmpResult:
 				OutputReactions.append(result)
@@ -138,6 +140,8 @@ class Compute:
 		return OutputReactions
 
 	def Combinations(self, rest, res, alphabet):
+		#print alphabet
+		#print len(alphabet), rest
 		if rest > 0:
 			for letter in alphabet[len(alphabet) - rest]: # is this correct ? always just one element
 				steps = rest - 1
@@ -145,7 +149,7 @@ class Compute:
 					newAlphabet = []
 					j = 0
 					for i in range(len(alphabet)):
-						if i > self.middle and self.usedStates[i] > 0:
+						if i > self.middle and self.usedStates[i] > 0 and len(alphabet) - rest < self.middle:
 							j += 1
 							if j == self.usedStates[len(alphabet) - rest]:
 								tmpList = []
@@ -153,6 +157,8 @@ class Compute:
 								newAlphabet.append(tmpList)
 							else:
 								newAlphabet.append(alphabet[i])
+						else:
+							newAlphabet.append(alphabet[i])
 					self.Combinations(steps, res + letter, newAlphabet)
 				else:
 					self.Combinations(steps, res + letter, alphabet)

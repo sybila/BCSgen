@@ -1,6 +1,7 @@
 import os
 import sys
 import numpy as np
+import collections
 sys.path.append(os.path.abspath('../Core/'))
 import Import as Import
 import Interpreter_of_BCSL as BCSL
@@ -81,6 +82,13 @@ class Reaction:
 
     def getMinimalBound(self):
         if len(list(self.left_hand_side.getAgents().elements())) == 1:
-            return self.left_hand_side.getAgents().most_common(1)[0][1]
+            return self.getBound(list(self.left_hand_side.getAgents())[0]) #.most_common(1)[0][1]
         else:
-            return self.right_hand_side.getAgents().most_common(1)[0][1]
+            return self.getBound(list(self.right_hand_side.getAgents())[0]) #.most_common(1)[0][1]
+
+    def getBound(self, agent):
+        if isinstance(agent, BCSL.Complex_Agent):
+            return collections.Counter(map(lambda an: an.getName(), agent.getFullComposition())).most_common(1)[0][1]
+        return 1
+
+
