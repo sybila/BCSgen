@@ -57,22 +57,23 @@ For given Network and state compute state space (with given bound)
 :return: set of states, edges and list of all unique ordered agents
 """
 def generateStateSpace(reactions, state, bound):
+
 	orderedAgents, vectorReactions = createVectorModel(reactions)
 
 	VN = Vector_network(tuple(solveSide(state, [0]*len(orderedAgents), orderedAgents)), vectorReactions, orderedAgents)
 
-	new_states = [VN.getState()]
+	new_states = {VN.getState()}
 	states = set([VN.getState()])
 	edges = set()
 
 	while new_states:
-		results = []
+		results = set()
 		for state in new_states:
 			result_states = VN.applyVectors(state, bound)
 			edges |= set(map(lambda vec: Vector_reaction(np.array(state), np.array(vec)), result_states))
-			results += result_states
-		new_states = filter(lambda st: st not in states, results)
-		states |= set(new_states)
+			results |= set(result_states)
+		new_states = results - states
+		states |= new_states
 
 	return states, edges, orderedAgents
 
