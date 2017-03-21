@@ -56,10 +56,7 @@ For given Network and state compute state space (with given bound)
 :param bound: maximal limit for individual agents
 :return: set of states, edges and list of all unique ordered agents
 """
-def generateStateSpace(reactions, state, bound):
-
-	orderedAgents, vectorReactions = createVectorModel(reactions)
-
+def generateStateSpace(orderedAgents, vectorReactions, state, bound):
 	VN = Vector_network(tuple(solveSide(state, [0]*len(orderedAgents), orderedAgents)), vectorReactions, orderedAgents)
 
 	new_states = {VN.getState()}
@@ -75,7 +72,7 @@ def generateStateSpace(reactions, state, bound):
 		new_states = results - states
 		states |= new_states
 
-	return states, edges, orderedAgents
+	return states, edges
 
 """
 Estimates how long the computation should take.
@@ -85,5 +82,5 @@ It takes into account bound, number of agents and reactions.
 :param numOfReactions: number of reactions used in computation
 :return: estimated time
 """
-def estimateComputation(bound, numOfDistinctAgents, numOfReactions):
-	return ((bound ** numOfDistinctAgents) * numOfReactions)/100000
+def estimateNumberOfStates(bound, numOfDistinctAgents):
+	return (bound + 1) ** numOfDistinctAgents

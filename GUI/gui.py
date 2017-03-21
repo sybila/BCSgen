@@ -7,6 +7,7 @@ import Implicit_reaction_network_generator as Implicit
 import Explicit_reaction_network_generator as Explicit
 import Import as Import
 import markdown
+import numpy as np
 
 from PyQt4 import QtGui, QtCore
 from PyQt4.QtGui import *
@@ -112,6 +113,8 @@ class ReactionWorker(QtCore.QObject):
 
 class StateSpaceWorker(QtCore.QObject):
     taskFinished = QtCore.pyqtSignal()
+    showMostStates = QtCore.pyqtSignal()
+    NumOfStates = QtCore.pyqtSignal()
     def __init__(self, model, parent=None):
         QtCore.QObject.__init__(self, parent)
         
@@ -119,13 +122,18 @@ class StateSpaceWorker(QtCore.QObject):
         self.stateSpaceFile = None
         self.lenStates = None
         self.lenEdges = None
+        self.mostNumberOfStates = 0
+        self.numOfCurrentStates = 0
         
         self.TheWorker = QtCore.QThread()
         self.moveToThread(self.TheWorker)
         self.TheWorker.start()
 
-    def __del__(self):
-        return
+    def getCurrentNumberOfStates(self):
+        return self.numOfCurrentStates
+
+    def getMostNumberOfStates(self):
+        return self.mostNumberOfStates
 
     def getTheWorker(self):
         return self.TheWorker
@@ -149,15 +157,40 @@ class StateSpaceWorker(QtCore.QObject):
         rules, initialState = Import.import_rules(str(self.modelFile.toPlainText()))
         reactionGenerator = Explicit.Compute()
         reactions = reactionGenerator.computeReactions(rules)
-
         reactions = map(Gen.Reaction, reactions)
         bound = Gen.calculateBound(reactions)
-        print bound
-        states, edges, orderedAgents = Gen.generateStateSpace(reactions, initialState, bound)
+
+        orderedAgents, vectorReactions = Gen.createVectorModel(reactions)
+
+        self.mostNumberOfStates = Gen.estimateNumberOfStates(bound, len(orderedAgents))
+        self.showMostStates.emit()
+
+        states, edges = self.generateStateSpace(orderedAgents, vectorReactions, initialState, bound)
         Gen.printStateSpace(states, edges, orderedAgents, self.stateSpaceFile)
         self.lenStates.setText('States: ' + str(len(states)))
         self.lenEdges.setText('Edges: ' + str(len(edges)))
-        self.taskFinished.emit() 
+        self.taskFinished.emit()
+
+    def generateStateSpace(self, orderedAgents, vectorReactions, state, bound):
+        VN = Gen.Vector_network(tuple(Gen.solveSide(state, [0]*len(orderedAgents), orderedAgents)), vectorReactions, orderedAgents)
+
+        new_states = {VN.getState()}
+        states = set([VN.getState()])
+        edges = set()
+
+        while new_states:
+            results = set()
+            for state in new_states:
+                result_states = VN.applyVectors(state, bound)
+                edges |= set(map(lambda vec: Gen.Vector_reaction(np.array(state), np.array(vec)), result_states))
+                results |= set(result_states)
+            new_states = results - states
+            states |= new_states
+
+            self.numOfCurrentStates = len(states)
+            self.NumOfStates.emit()
+
+        return states, edges
 
 def createAction(it, title, shortcut, tip, connectWith):
     action = QtGui.QAction(title, it)
@@ -360,6 +393,18 @@ class MainWindow(QtGui.QMainWindow):
         self.progress_bar_states = createProgressBar(self, 610, 110)
 
         self.stateWorker.taskFinished.connect(self.progressbarStatesOnFinished)
+        self.stateWorker.showMostStates.connect(self.showNumberOfStates)
+        self.stateWorker.NumOfStates.connect(self.updateNumOfStates)
+
+        # num of states label
+
+        self.numOfStates = QtGui.QLabel(self)
+        self.numOfStates.move(720, 150)
+        self.numOfStates.resize(200, 30)
+
+        self.numCurrentOfStates = QtGui.QLabel(self)
+        self.numCurrentOfStates.move(610, 150)
+        self.numCurrentOfStates.resize(100, 30)
 
         # results fields
 
@@ -413,6 +458,12 @@ class MainWindow(QtGui.QMainWindow):
         # self.runningReactions.move(775, 305)
 
         #########################################
+
+    def updateNumOfStates(self):
+        self.numCurrentOfStates.setText(str(self.stateWorker.getCurrentNumberOfStates()))
+
+    def showNumberOfStates(self):
+        self.numOfStates.setText(" / " + str(self.stateWorker.getMostNumberOfStates()))
 
     def showConflicts(self):
         self.conflicts = PopUp(self.reactionWorker.getMessage())
