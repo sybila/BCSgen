@@ -460,10 +460,12 @@ class MainWindow(QtGui.QMainWindow):
         #########################################
 
     def updateNumOfStates(self):
-        self.numCurrentOfStates.setText(str(self.stateWorker.getCurrentNumberOfStates()))
+        return
+        #self.numCurrentOfStates.setText(str(self.stateWorker.getCurrentNumberOfStates()))
 
     def showNumberOfStates(self):
-        self.numOfStates.setText(" / " + str(self.stateWorker.getMostNumberOfStates()))
+        return
+        #self.numOfStates.setText(" / " + str(self.stateWorker.getMostNumberOfStates()))
 
     def showConflicts(self):
         self.conflicts = PopUp(self.reactionWorker.getMessage())

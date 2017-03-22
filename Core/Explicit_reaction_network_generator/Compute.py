@@ -94,7 +94,7 @@ class Compute:
 										normalState = False
 
 								if contains:
-									if normalState:
+									if normalState and key == self.agents[agent.name].keys()[0]:
 										alphabet = self.AddItemToList("(", alphabet)
 
 									tmplist = self.AddKeyToList(agent, key, inn, tmplist)
@@ -105,7 +105,7 @@ class Compute:
 										alphabet = self.AddItemToList(")", alphabet)
 									continue
 
-							if normalState and key != "":
+							if normalState and key != "" and key == self.agents[agent.name].keys()[0]:
 								alphabet = self.AddItemToList("(", alphabet)
 
 							for state in self.agents[agent.name][key]:

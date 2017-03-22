@@ -13,9 +13,14 @@ rules, initialState = Import.import_rules(file)
 reactionGenerator = Explicit.Compute()
 reactions = reactionGenerator.computeReactions(rules)
 
+for r in reactions:
+	print r
+
 reactions = map(Gen.Reaction, reactions)
 
 bound = Gen.calculateBound(reactions)
 
-states, edges, orderedAgents = Gen.generateStateSpace(reactions, initialState, bound)
+orderedAgents, vectorReactions = Gen.createVectorModel(reactions)
+
+states, edges = Gen.generateStateSpace(orderedAgents, vectorReactions, initialState, bound)
 Gen.printStateSpace(states, edges, orderedAgents, stateSpaceFile)
