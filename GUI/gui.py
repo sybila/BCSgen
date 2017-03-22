@@ -13,18 +13,25 @@ from PyQt4 import QtGui, QtCore
 from PyQt4.QtGui import *
 from PyQt4.Qt import *
 
+helpText = "<b>Biochemical Space language software tool</b> <br><br> This tool \
+serves for interpreting basic functionality to maintain <br> Biochemical \
+Space language. It provides state space and reactions <br> generating which \
+can be used for analysis and visualisation. <br><br> For futher information \
+visit <a href=\"https://github.com/sybila/BCSgen\">github.com/sybila/BCSgen</a>."
+
+
 class Help(QWidget):
     def __init__(self, parent= None):
         super(Help, self).__init__()
 
         self.setWindowTitle("Help")
-        self.setFixedHeight(475)
+        self.setFixedHeight(175)
         self.setFixedWidth(430)
 
         self.titleText = QLabel(self)
         self.titleText.move(10, 10)
-        text = "Biochemical Space language software tool \n\n This tool serves for interpreting basic functionality \n to maintain Biochemical Space language. It provides \n state space and reactions generating which can be used \n for analysis and visualisation. \n\n For futher information visit https://github.com/sybila/BCSgen"
-        self.titleText.setText(text)
+        self.titleText.setOpenExternalLinks(True)
+        self.titleText.setText(helpText)
 
 def createProgressBar(it, movex, movey):
     progressBar = QtGui.QProgressBar(it)
