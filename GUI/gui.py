@@ -334,6 +334,9 @@ class MainWindow(QtGui.QMainWindow):
         helpMenu = mainMenu.addMenu('&Help')
         helpMenu.addAction(self.help)
 
+        self.stateSpaceDirectory = "../Model/"
+        self.reactionsDirectory = "../Model/"
+
         # setup
 
         #self.stateSpaceTime = QtCore.QTime(0,0,0,0)
@@ -361,6 +364,8 @@ class MainWindow(QtGui.QMainWindow):
         self.textBox.setLineWrapMode(QtGui.QTextEdit.FixedColumnWidth)
 
         self.highlighter = MyHighlighter( self.textBox )
+
+        self.textBox.setText("# rules\n\n\n# initial state\n")
 
 
         #########################################
@@ -543,8 +548,9 @@ class MainWindow(QtGui.QMainWindow):
                 self.compute_reactions_button.setDisabled(False)
 
     def save_stateSpace(self):
-        file = QFileDialog.getSaveFileName(self, 'Choose output file', filter =".json (*.json);;All types (*)")
+        file = QFileDialog.getSaveFileName(self, 'Choose output file', directory = self.stateSpaceDirectory, filter =".json (*.json);;All types (*)")
         if file:
+            self.stateSpaceDirectory = os.path.dirname(str(file))
             if not os.path.splitext(str(file))[1]:
                 file = str(file) + ".json"
             self.stateWorker.setStateSpaceFile(file)
@@ -555,8 +561,9 @@ class MainWindow(QtGui.QMainWindow):
                 self.compute_space_button.setDisabled(False)
 
     def save_reactions(self):
-        file = QFileDialog.getSaveFileName(self, 'Choose output file', filter =".txt (*.txt);;All types (*)")
+        file = QFileDialog.getSaveFileName(self, 'Choose output file', directory = self.reactionsDirectory, filter =".txt (*.txt);;All types (*)")
         if file:
+            self.reactionsDirectory = os.path.dirname(str(file))
             if not os.path.splitext(str(file))[1]:
                 file = str(file) + ".txt"
             self.reactionWorker.setReactionsFile(file)
@@ -591,6 +598,8 @@ class MainWindow(QtGui.QMainWindow):
     def save_model(self):
         file = QFileDialog.getSaveFileName(self, 'Choose model file', filter ="BCS (*.bcs);;All types (*)")
         if file:
+            if not os.path.splitext(str(file))[1]:
+                file = str(file) + ".bcs"
             with open(file, 'w') as file:
                 file.write(self.textBox.toPlainText())
 

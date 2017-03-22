@@ -13,9 +13,6 @@ rules, initialState = Import.import_rules(file)
 reactionGenerator = Explicit.Compute()
 reactions = reactionGenerator.computeReactions(rules)
 
-for r in reactions:
-	print r
-
 reactions = map(Gen.Reaction, reactions)
 
 bound = Gen.calculateBound(reactions)
