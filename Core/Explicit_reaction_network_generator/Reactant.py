@@ -1,18 +1,16 @@
 from Agent import *
 
+def removeDuplicites(seq):
+	seen = set()
+	seen_add = seen.add
+	return [x for x in seq if not (x in seen or seen_add(x))]
+
 class Reactant:
 	def __init__(self, item):
 		self.name = item
-		self.agents = list()
-
 		part = item.split("::")
 		self.compartment = part[1]
-
-		agent = part[0].split('.')
-		for tmp in agent:
-			a = Agent(tmp)
-			if a not in self.agents:
-				self.agents.append(a)
+		self.agents = removeDuplicites(map(Agent, part[0].split('.')))
 
 	def __eq__(self, other):
 		return self.name == other.name

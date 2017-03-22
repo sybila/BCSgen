@@ -10,7 +10,6 @@ class Compute:
 		self.middle = 0
 
 	def computeReactions(self, reactions):
-		# maybe remove white spaces
 		self.parse(reactions)
 		return self.CreateReactions()
 
@@ -19,11 +18,9 @@ class Compute:
 			reaction = Reaction(reactionLine)
 			self.reactions.append(reaction)
 
-			for item in reaction.reactants:
-				if item not in self.reactants:
-					self.reactants.add(item)
+			self.reactants.update(set(reaction.reactants))
 
-			for item in self.reactants:
+			for item in reaction.reactants:
 				for agent in item.agents:
 					self.agentToDictionary(agent)
 

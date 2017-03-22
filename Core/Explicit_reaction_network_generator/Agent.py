@@ -7,14 +7,10 @@ class Agent:
 
 		part = item.split("(")
 		self.name = part[0]
-
 		self.states = []
+
 		if len(part) > 1:
-			tmp = part[1].split(",")
-			for i in range(len(tmp)):
-				self.states.append(State(tmp[i].replace(")", "")))
-		#else:
-		#	self.states = None # asi netreba
+			self.states = map(lambda tmp: State(tmp.replace(")", "")), part[1].split(","))
 
 	def __repr__(self):
 		return str(self)
