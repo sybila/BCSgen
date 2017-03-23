@@ -13,11 +13,21 @@ rules, initialState = Import.import_rules(file)
 reactionGenerator = Explicit.Compute()
 reactions = reactionGenerator.computeReactions(rules)
 
-reactions = map(Gen.Reaction, reactions)
+VN = Gen.createVectorNetwork(reactions, initialState)
 
-bound = Gen.calculateBound(reactions)
+bound = VN.getBound()
 
-orderedAgents, vectorReactions = Gen.createVectorModel(reactions)
+new_states = {VN.getState()}
+states = set([VN.getState()])
+edges = set()
 
-states, edges = Gen.generateStateSpace(orderedAgents, vectorReactions, initialState, bound)
+while new_states:
+	results = set()
+	for state in new_states:
+		result_states = VN.applyVectors(state, bound)
+		edges |= set(map(lambda vec: Gen.Vector_reaction(np.array(state), np.array(vec)), result_states))
+		results |= set(result_states)
+	new_states = results - states
+	states |= new_states
+
 Gen.printStateSpace(states, edges, orderedAgents, stateSpaceFile)

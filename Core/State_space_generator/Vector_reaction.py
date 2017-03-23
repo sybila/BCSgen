@@ -1,5 +1,4 @@
 import numpy as np
-from copy import deepcopy
 
 """
 Class Vector_reaction
@@ -32,3 +31,6 @@ class Vector_reaction:
 
 	def getDict(self):
 		return {'from' : "|".join(map(str, self.From)), 'to' : "|".join(map(str, self.To))}
+
+	def getBound(self):
+		return max((max(self.From), max(self.To)))

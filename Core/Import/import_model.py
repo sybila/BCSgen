@@ -360,8 +360,8 @@ def import_initial_state(inits):
     for line in inits:
         line = line.rstrip()
         for i in xrange(0, int(line.split(" ")[0])):
-            agents.append(create_agent(line.split(" ")[1]))
-    return BCSL.State(agents)
+            agents.append(line.split(" ")[1])
+    return agents
 
 def import_rules(input_file):
     inits, created_rules = [], []

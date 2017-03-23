@@ -10,7 +10,7 @@ Holds vector representation of reaction-based model
 class Vector_network:
 	def __init__(self, state, vectors, table):
 		self.State = state
-		self.Vectors = self.toVectorReactions(vectors)
+		self.Vectors = vectors
 		self.Translations = table
 
 	def __str__(self):
@@ -23,8 +23,8 @@ class Vector_network:
 	def getState(self):
 		return self.State
 
-	def toVectorReactions(self, vectors):
-		return map(lambda vector: Vector_reaction(*vector), vectors)
-
 	def applyVectors(self, state, bound):
 		return filter(lambda item: item is not None, map(lambda vector: vector.applyVector(state, bound), self.Vectors))
+
+	def getBound(self):
+		return max(map(getBound, self.Vectors))

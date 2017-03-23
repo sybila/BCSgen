@@ -5,15 +5,42 @@ from Reaction import *
 import numpy as np
 import json
 import itertools
+import collections
 
-def collectAgents(reactions):
-	return list(set(itertools.chain(*map(lambda reaction: reaction.getUniqueAgents(), reactions))))
+def toVector(orderedAgents, agents):
+	vector = [0] * len(orderedAgents)
+	for item in list(agents):
+		print orderedAgents.index(item)
+		print agents
+		vector[orderedAgents.index(item)] = agents[item]
+	return np.array(vector)
 
-def createVectorModel(reactions):
-	orderedAgents = collectAgents(reactions)
-	numOfAgents = len(orderedAgents)
-	vectorReactions = map(lambda reaction: reaction.toVectors(orderedAgents, numOfAgents), reactions)
-	return orderedAgents, vectorReactions
+def reactionToVector(orderedAgents, reaction):
+	print reaction
+	return Vector_reaction(toVector(orderedAgents, reaction[0]), toVector(orderedAgents, reaction[1]))
+
+def parseEquation(equation):
+	return map(lambda side: collections.Counter(side.split(" + ")), equation.split(" => "))
+
+def collectAgents(reaction):
+	return set(reaction[0]) | set(reaction[1])
+
+def createVectorNetwork(reactions, initialState):
+	orderedAgents = set()
+	parsedReactions = list()
+	for equation in reactions:
+		reaction = parseEquation(equation)
+		orderedAgents.update(collectAgents(reaction))
+		parsedReactions.append(reaction)
+
+	orderedAgents = list(orderedAgents)
+
+	state = toVector(orderedAgents, initialState)
+	vectors = map(reactionToVector, parsedReactions)
+
+	VN = Vector_network(state, vectors, orderedAgents)
+
+	return VN
 
 """
 Creates State from given vector and ordered unique agents
@@ -49,30 +76,6 @@ def printStateSpace(states, transitions, orderedAgents, stateSpaceFile):
 	with open(stateSpaceFile, 'w') as f:
 		json.dump(data, f, indent=4)
 
-"""
-For given Network and state compute state space (with given bound)
-:param myNet: given Network
-:param state: given State
-:param bound: maximal limit for individual agents
-:return: set of states, edges and list of all unique ordered agents
-"""
-def generateStateSpace(orderedAgents, vectorReactions, state, bound):
-	VN = Vector_network(tuple(solveSide(state, [0]*len(orderedAgents), orderedAgents)), vectorReactions, orderedAgents)
-
-	new_states = {VN.getState()}
-	states = set([VN.getState()])
-	edges = set()
-
-	while new_states:
-		results = set()
-		for state in new_states:
-			result_states = VN.applyVectors(state, bound)
-			edges |= set(map(lambda vec: Vector_reaction(np.array(state), np.array(vec)), result_states))
-			results |= set(result_states)
-		new_states = results - states
-		states |= new_states
-
-	return states, edges
 
 """
 Estimates how long the computation should take.
