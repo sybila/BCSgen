@@ -70,6 +70,12 @@ class Compute:
 			alphabet = []
 			a = 1
 			i = 0
+			tmplist2 = []
+			if i == reaction.left:
+				tmplist2.append(" => ")
+				self.middle = len(alphabet) + 1
+				alphabet.append(tmplist2)
+				self.usedStates.append(-1)
 			for reactant in reaction.reactants:
 				i += 1
 				for agent in reactant.agents:
