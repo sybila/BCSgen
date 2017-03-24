@@ -4,6 +4,7 @@ sys.path.append(os.path.abspath('../Core/'))
 import State_space_generator as Gen
 import Explicit_reaction_network_generator as Explicit
 import Import as Import
+import numpy as np
 
 inputFile = sys.argv[-2]
 stateSpaceFile = sys.argv[-1]
@@ -30,4 +31,4 @@ while new_states:
 	new_states = results - states
 	states |= new_states
 
-Gen.printStateSpace(states, edges, orderedAgents, stateSpaceFile)
+Gen.printStateSpace(states, edges, VN.getTranslations(), stateSpaceFile)

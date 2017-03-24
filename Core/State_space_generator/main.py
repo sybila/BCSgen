@@ -10,13 +10,10 @@ import collections
 def toVector(orderedAgents, agents):
 	vector = [0] * len(orderedAgents)
 	for item in list(agents):
-		print orderedAgents.index(item)
-		print agents
 		vector[orderedAgents.index(item)] = agents[item]
 	return np.array(vector)
 
-def reactionToVector(orderedAgents, reaction):
-	print reaction
+def reactionToVector(reaction, orderedAgents):
 	return Vector_reaction(toVector(orderedAgents, reaction[0]), toVector(orderedAgents, reaction[1]))
 
 def parseEquation(equation):
@@ -35,10 +32,10 @@ def createVectorNetwork(reactions, initialState):
 
 	orderedAgents = list(orderedAgents)
 
-	state = toVector(orderedAgents, initialState)
-	vectors = map(reactionToVector, parsedReactions)
+	state = toVector(orderedAgents, collections.Counter(initialState))
+	vectors = map(lambda reaction: reactionToVector(reaction, orderedAgents), parsedReactions)
 
-	VN = Vector_network(state, vectors, orderedAgents)
+	VN = Vector_network(tuple(state), vectors, orderedAgents)
 
 	return VN
 
