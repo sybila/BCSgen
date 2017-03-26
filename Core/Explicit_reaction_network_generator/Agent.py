@@ -10,7 +10,7 @@ class Agent:
 		self.states = []
 
 		if len(part) > 1:
-			self.states = sorted(map(lambda tmp: State(tmp.replace(")", "")), part[1].split(",")))
+			self.states = map(lambda tmp: State(tmp.replace(")", "")), part[1].split(","))
 
 	def __repr__(self):
 		return str(self)

@@ -10,7 +10,7 @@ class Reactant:
 		self.name = item
 		part = item.split("::")
 		self.compartment = part[1]
-		self.agents = sorted(removeDuplicites(map(Agent, part[0].split('.'))))
+		self.agents = removeDuplicites(map(Agent, part[0].split('.')))
 
 	def __eq__(self, other):
 		return self.name == other.name

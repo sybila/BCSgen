@@ -33,4 +33,6 @@ while new_states:
 	new_states = results - states
 	states |= new_states
 
+#print len(states), len(edges)
+
 Gen.printStateSpace(states, edges, VN.getTranslations(), stateSpaceFile)

@@ -11,4 +11,4 @@ class Reaction:
 		return str(self)
 
 	def __str__(self):
-		return "Reaction - " + self.name + ": | " + ", ".join(map(str, self.reactants)) + " |"
+		return " + ".join(map(str, self.reactants[:self.left])) + " => " + " + ".join(map(str, self.reactants[self.left:]))
