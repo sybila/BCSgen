@@ -16,6 +16,9 @@ class State:
 
 	def __str__(self):
 		if self.name:
-			return self.name + "{ " + self.inn + " }"
+			return self.name + "{" + self.inn + "}"
 		else:
-			return "{ " + self.inn + " }"
+			return "{" + self.inn + "}"
+
+	def __lt__(self, other):
+		return str(self) < str(other)

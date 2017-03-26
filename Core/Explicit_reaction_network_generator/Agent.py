@@ -10,10 +10,16 @@ class Agent:
 		self.states = []
 
 		if len(part) > 1:
-			self.states = map(lambda tmp: State(tmp.replace(")", "")), part[1].split(","))
+			self.states = sorted(map(lambda tmp: State(tmp.replace(")", "")), part[1].split(",")))
 
 	def __repr__(self):
 		return str(self)
 
 	def __str__(self):
-		return "/ Agent - " + self.name + ": " + ", ".join(map(str, self.states)) + " /"
+		if self.states:
+			return self.name + "(" + ",".join(map(str, self.states)) + ")"
+		else:
+			return self.name
+
+	def __lt__(self, other):
+		return str(self) < str(other)

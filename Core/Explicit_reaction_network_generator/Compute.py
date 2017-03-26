@@ -1,5 +1,8 @@
 from Reaction import *
 
+def sortInitialState(initialState):
+	return map(str, map(Reactant, initialState))
+
 class Compute:
 	def __init__(self):
 		self.reactants = set()
