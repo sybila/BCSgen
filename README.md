@@ -38,10 +38,10 @@ Alternatively, CLI can be used.
 
         python state_space.py <model> <stateSpaceFile>
         
-  where:
+   where:
     * model - given BCS model
     * stateSpaceFile - JSON file for storing generated state space
-    
+
 4. to obtain __reactions__, run script:
 
         python reaction_network.py <model> <reactionsFile>
