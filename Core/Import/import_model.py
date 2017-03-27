@@ -335,7 +335,7 @@ def import_model(input_file, sub_file = None):
 
             # here the rule has to be well-formed !
             created_rules.append(create_rule(rule))
-    return created_rules, import_initial_state(inits)
+    return created_rules, import_initial_state_as_State(inits)
 
 """
 Imports agent names to be substituted
@@ -362,6 +362,14 @@ def import_initial_state(inits):
         for i in xrange(0, int(line.split(" ")[0])):
             agents.append(line.split(" ")[1])
     return agents
+
+def import_initial_state_as_State(inits):
+    agents = []
+    for line in inits:
+        line = line.rstrip()
+        for i in xrange(0, int(line.split(" ")[0])):
+            agents.append(create_agent(line.split(" ")[1]))
+    return BCSL.State(agents)
 
 def import_rules(input_file):
     inits, created_rules = [], []
