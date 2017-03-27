@@ -11,21 +11,16 @@ This tool serves for interpreting basic functionality to maintain Biochemical Sp
 The most proper way is to run the binary file with __Graphical User Interface__ suitable for your platform.
 
 <div align="center">
-  <img src="http://i.imgur.com/yMW6T8k.png"><br><br>
+  <img src="http://i.imgur.com/Sg89JPA.png"><br><br>
 </div>
 
 To obtain __state space__:
-* fill required fileds
-  * Model - file containing a BCS model<sup>2</sup>
-  * State space file - JSON file for storing generated state space
-* press Compute button. The state space is consequently saved in the choosen file.
+* Choose State space file - JSON file for storing generated state space,
+* press Compute button.
 
 To obtain __reactions__:
-* fill required fileds
-  * Model - file containing a BCS model<sup>2</sup>
-  * Reactions file - text file for storing reactions
-  * Save log<sup>3</sup> (optional)
-* press Compute button. The reactions (and log) are consequently saved in the choosen file.
+* Choose Reactions file - text file for storing reactions,
+* press Compute button<sup>3</sup>.
   
 ---
 
@@ -44,7 +39,7 @@ Alternatively, CLI can be used.
         python state_space.py <model> <stateSpaceFile>
         
   where:
-    * model - given BCS model<sup>3</sup>
+    * model - given BCS model
     * stateSpaceFile - JSON file for storing generated state space
     
 4. to obtain __reactions__, run script:
@@ -62,6 +57,6 @@ Alternatively, CLI can be used.
 
 > <sup>2</sup> [BCS model](http://sybila.fi.muni.cz/tools/bcsgen#bcsl_model) is simple text file format containing initialized model, i.e. set of rules and initial state. Examples of such models are in Examples directory.
 
-> <sup>3</sup> During computation, static analysis is applied to the model in order to detect some conflicts in rules. These conflict might be saved in a log file.
+> <sup>3</sup> Additionally, some static analysis about conflicts in the model are computed. In GUI, you can disable this feature by checking `Ignore conflicts` checkbox.
 
 > <sup>4</sup> To do it, you need to have [PyQt](https://wiki.python.org/moin/PyQt) python library installed. For Windows, use [this](http://www.lfd.uci.edu/~gohlke/pythonlibs/#pyqt4) binary file, for Unix machines use [following](http://pythoncentral.io/install-pyside-pyqt-on-windows-mac-linux/) instructions.
