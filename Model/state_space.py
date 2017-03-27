@@ -14,8 +14,6 @@ rules, initialState = Import.import_rules(file)
 reactionGenerator = Explicit.Compute()
 reactions = reactionGenerator.computeReactions(rules)
 
-reactions = Explicit.sortReactions(reactions)
-
 initialState = Explicit.sortInitialState(initialState)
 
 VN = Gen.createVectorNetwork(reactions, initialState)

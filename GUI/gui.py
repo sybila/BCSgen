@@ -165,8 +165,6 @@ class StateSpaceWorker(QtCore.QObject):
         reactionGenerator = Explicit.Compute()
         reactions = reactionGenerator.computeReactions(rules)
 
-        reactions = Explicit.sortReactions(reactions)
-
         initialState = Explicit.sortInitialState(initialState)
 
         self.VN = Gen.createVectorNetwork(reactions, initialState)

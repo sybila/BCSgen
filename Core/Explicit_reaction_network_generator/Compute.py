@@ -1,8 +1,5 @@
 from Reaction import *
 
-def sortReactions(reactions):
-	return map(sortReaction, reactions)
-
 def sortReaction(reaction):
 	sides = reaction.split(" => ")
 	sides = map(lambda side: sortInitialState(side.split(" + ")), sides)
@@ -170,4 +167,4 @@ class Compute:
 				else:
 					self.Combinations(steps, result + letter, alphabet)
 		else:
-			self.tmpResult.append(result)
+			self.tmpResult.append(sortReaction(result))
