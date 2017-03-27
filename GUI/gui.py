@@ -164,31 +164,32 @@ class StateSpaceWorker(QtCore.QObject):
         rules, initialState = Import.import_rules(str(self.modelFile.toPlainText()))
         reactionGenerator = Explicit.Compute()
         reactions = reactionGenerator.computeReactions(rules)
-        reactions = map(Gen.Reaction, reactions)
-        bound = Gen.calculateBound(reactions)
 
-        orderedAgents, vectorReactions = Gen.createVectorModel(reactions)
+        initialState = Explicit.sortInitialState(initialState)
 
-        self.mostNumberOfStates = Gen.estimateNumberOfStates(bound, len(orderedAgents))
+        self.VN = Gen.createVectorNetwork(reactions, initialState)
+
+        bound = self.VN.getBound()
+
+        self.mostNumberOfStates = Gen.estimateNumberOfStates(bound, len(self.VN.getTranslations()))
         self.showMostStates.emit()
 
-        states, edges = self.generateStateSpace(orderedAgents, vectorReactions, initialState, bound)
-        Gen.printStateSpace(states, edges, orderedAgents, self.stateSpaceFile)
+        states, edges = self.generateStateSpace(bound)
+
+        Gen.printStateSpace(states, edges, self.VN.getTranslations(), self.stateSpaceFile)
         self.lenStates.setText('States: ' + str(len(states)))
         self.lenEdges.setText('Edges: ' + str(len(edges)))
         self.taskFinished.emit()
 
-    def generateStateSpace(self, orderedAgents, vectorReactions, state, bound):
-        VN = Gen.Vector_network(tuple(Gen.solveSide(state, [0]*len(orderedAgents), orderedAgents)), vectorReactions, orderedAgents)
-
-        new_states = {VN.getState()}
-        states = set([VN.getState()])
+    def generateStateSpace(self, bound):
+        new_states = {self.VN.getState()}
+        states = set([self.VN.getState()])
         edges = set()
 
         while new_states:
             results = set()
             for state in new_states:
-                result_states = VN.applyVectors(state, bound)
+                result_states = self.VN.applyVectors(state, bound)
                 edges |= set(map(lambda vec: Gen.Vector_reaction(np.array(state), np.array(vec)), result_states))
                 results |= set(result_states)
             new_states = results - states

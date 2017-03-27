@@ -143,6 +143,7 @@ class Compute:
 		return OutputReactions
 
 	def Combinations(self, rest, result, alphabet):
+		#print alphabet
 		if rest > 0:
 			for letter in alphabet[len(alphabet) - rest]:
 				steps = rest - 1
