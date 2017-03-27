@@ -1,7 +1,7 @@
 from State import *
 
 class Agent:
-	def __init__(self, item):
+	def __init__(self, item, sortStates = False):
 		if "{" in item and not "(" in item:
 			item = item.replace("{", "(").replace("}", ")")
 
@@ -11,6 +11,9 @@ class Agent:
 
 		if len(part) > 1:
 			self.states = map(lambda tmp: State(tmp.replace(")", "")), part[1].split(","))
+
+		if sortStates:
+			self.states.sort()
 
 	def __repr__(self):
 		return str(self)

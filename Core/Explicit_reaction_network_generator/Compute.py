@@ -1,7 +1,15 @@
 from Reaction import *
 
+def sortReactions(reactions):
+	return map(sortReaction, reactions)
+
+def sortReaction(reaction):
+	sides = reaction.split(" => ")
+	sides = map(lambda side: sortInitialState(side.split(" + ")), sides)
+	return " + ".join(sides[0]) + " => " + " + ".join(sides[1])
+
 def sortInitialState(initialState):
-	return map(str, map(Reactant, initialState))
+	return map(str, map(lambda item: Reactant(item, True), initialState))
 
 class Compute:
 	def __init__(self):
@@ -143,7 +151,6 @@ class Compute:
 		return OutputReactions
 
 	def Combinations(self, rest, result, alphabet):
-		#print alphabet
 		if rest > 0:
 			for letter in alphabet[len(alphabet) - rest]:
 				steps = rest - 1

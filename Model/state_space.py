@@ -14,6 +14,8 @@ rules, initialState = Import.import_rules(file)
 reactionGenerator = Explicit.Compute()
 reactions = reactionGenerator.computeReactions(rules)
 
+reactions = Explicit.sortReactions(reactions)
+
 initialState = Explicit.sortInitialState(initialState)
 
 VN = Gen.createVectorNetwork(reactions, initialState)
@@ -32,7 +34,5 @@ while new_states:
 		results |= set(result_states)
 	new_states = results - states
 	states |= new_states
-
-#print len(states), len(edges)
 
 Gen.printStateSpace(states, edges, VN.getTranslations(), stateSpaceFile)

@@ -30,4 +30,4 @@ class Vector_network:
 		return filter(lambda item: item is not None, map(lambda vector: vector.applyVector(state, bound), self.Vectors))
 
 	def getBound(self):
-		return max(map(lambda vector: vector.getBound(), self.Vectors))
+		return max(max(self.State), max(map(lambda vector: vector.getBound(), self.Vectors)))
