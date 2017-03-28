@@ -1,4 +1,4 @@
-# BCSgen <img src="https://raw.githubusercontent.com/sybila/BCSgen/master/GUI/icons/128x128.png" width="64">  
+# BCSgen <img src="https://gitlab.fi.muni.cz/xtrojak/BCSgen/raw/f86b612af8a8d1f53eefad9ed680b1666398aa5c/GUI/icons/128x128.png" width="64">  
 
 Biochemical Space language software tool
 
@@ -32,23 +32,21 @@ If binary file is not working, build __Graphical User Interface__<sup>4</sup> (i
 
 Alternatively, CLI can be used.
 
-1. enter Model directory (serves as user's workspace),
-2. write your model as rules and initial conditions (into model.bcs),
-3. to obtain __state space__, run script:
+* enter Model directory (serves as user's workspace),
+* write your model as rules and initial conditions (into model.bcs),
+* to obtain __state space__, run script:
 
         python state_space.py <model> <stateSpaceFile>
         
-   where:
     * model - given BCS model
     * stateSpaceFile - JSON file for storing generated state space
 
-4. to obtain __reactions__, run script:
+* to obtain __reactions__, run script:
 
         python reaction_network.py <model> <reactionsFile>
         
-   where:
-     * model - given BCS model<sup>3</sup>
-     * reactionsFile - text file for storing reactions
+    * model - given BCS model<sup>3</sup>
+    * reactionsFile - text file for storing reactions
 
 > in Examples directory, there are several models, to run them just use 'python example.py'
 
