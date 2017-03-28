@@ -10,6 +10,9 @@ class Vector_reaction:
 	def __init__(self, From, To):
 		self.From = From
 		self.To = To
+		self.difference = self.To - self.From
+
+		print self.difference
 
 	def __eq__(self, other):
 		return (self.From == other.From).all() and (self.To == other.To).all()
@@ -24,10 +27,12 @@ class Vector_reaction:
 		return hash(str(self.From) + str(self.To))
 
 	def applyVector(self, state, bound):
-		if (state >= self.From).all():
-			vec = tuple(np.array(state) - self.From + self.To)
-			if max(vec) <= bound:
-				return vec
+		# if (state >= self.From).all():
+		# 	vec = tuple(np.array(state) - self.From + self.To)
+		# 	if max(vec) <= bound:
+		vec = np.array(state) + self.difference
+		if (vec >= 0).all() and max(vec) <= bound:
+			return tuple(vec)
 
 	def getDict(self):
 		return {'from' : "|".join(map(str, self.From)), 'to' : "|".join(map(str, self.To))}
