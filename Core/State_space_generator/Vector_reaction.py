@@ -12,8 +12,6 @@ class Vector_reaction:
 		self.To = To
 		self.difference = self.To - self.From
 
-		print self.difference
-
 	def __eq__(self, other):
 		return (self.From == other.From).all() and (self.To == other.To).all()
 
@@ -27,9 +25,6 @@ class Vector_reaction:
 		return hash(str(self.From) + str(self.To))
 
 	def applyVector(self, state, bound):
-		# if (state >= self.From).all():
-		# 	vec = tuple(np.array(state) - self.From + self.To)
-		# 	if max(vec) <= bound:
 		vec = np.array(state) + self.difference
 		if (vec >= 0).all() and max(vec) <= bound:
 			return tuple(vec)
