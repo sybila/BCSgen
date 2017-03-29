@@ -546,7 +546,7 @@ class MainWindow(QtGui.QMainWindow):
         qp.drawPixmap(825,410,QPixmap("icons/logo.png"))
 
     def open_model(self):
-        file = QFileDialog.getOpenFileName(self, 'Choose model', directory = '../Examples/inputs/', filter ="BCS (*.bcs);;All types (*)")
+        file = QFileDialog.getOpenFileName(self, 'Choose model', directory = '../Examples/', filter ="BCS (*.bcs);;All types (*)")
         if file:
             file = open(file, "r")
             self.textBox.setPlainText(file.read())
