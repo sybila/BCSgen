@@ -8,7 +8,7 @@ This tool serves for interpreting basic functionality to maintain Biochemical Sp
 
 ## Graphical User Interface
 
-The most proper way is to run the binary file with __Graphical User Interface__ suitable for your platform.
+The most proper way is to run the [binary file](https://gitlab.fi.muni.cz/xtrojak/BCSgen/tags/v2.0) with __Graphical User Interface__ suitable for your platform.
 
 <div align="center">
   <img src="http://i.imgur.com/Sg89JPA.png"><br><br>
@@ -57,4 +57,6 @@ Alternatively, CLI can be used.
 
 > <sup>3</sup> Additionally, some static analysis about conflicts in the model are computed. In GUI, you can disable this feature by checking `Ignore conflicts` checkbox.
 
-> <sup>4</sup> To do it, you need to have [PyQt](https://wiki.python.org/moin/PyQt) python library installed. For Windows, use [this](http://www.lfd.uci.edu/~gohlke/pythonlibs/#pyqt4) binary file, for Unix machines use [following](http://pythoncentral.io/install-pyside-pyqt-on-windows-mac-linux/) instructions.
+> <sup>4</sup> To do it, you need to have [PyQt](https://wiki.python.org/moin/PyQt) python library installed. 
+For Windows, use [this](http://www.lfd.uci.edu/~gohlke/pythonlibs/#pyqt4) binary file, for Unix machines use [following](http://pythoncentral.io/install-pyside-pyqt-on-windows-mac-linux/) instructions.
+Moreover, additional python packages are required (markdown, numpy) and might be installed using `pip`.
