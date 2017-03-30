@@ -33,36 +33,28 @@ class Help(QWidget):
         self.titleText.setOpenExternalLinks(True)
         self.titleText.setText(helpText)
 
-def createProgressBar(it, movex, movey):
+def createProgressBar(it):
     progressBar = QtGui.QProgressBar(it)
     progressBar.setRange(0,1)
-    progressBar.resize(300,30)
-    progressBar.move(movex, movey)
     return progressBar
 
-def createTextBox(it, text, style, movex, movey, readonly):
+def createTextBox(it, text, style, readonly):
     box = QLineEdit(it)
     if text:
         box.setText(text)
     if style:
         box.setStyleSheet(style)
-    box.resize(150,30)
-    box.move(movex, movey)
     box.setReadOnly(readonly)
     return box
 
-def createButton(it, text, to_connect, movex, movey, disabled):
+def createButton(it, text, to_connect, disabled):
     button = QtGui.QPushButton(text, it)
     button.clicked.connect(to_connect)
-    button.resize(150, 30)
-    button.move(movex, movey)
     button.setDisabled(disabled)
     return button
 
-def createChecker(it, movex, movey, text):
+def createChecker(it, text):
     checker = QCheckBox(text, it)
-    checker.move(movex, movey)
-    checker.resize(150, 30)
     return checker
 
 class ReactionWorker(QtCore.QObject):
@@ -73,7 +65,6 @@ class ReactionWorker(QtCore.QObject):
         self.modelFile = model
         self.checked = False
         self.reactionsFile = None
-        self.lenReactions = None
         self.network = None
         self.message = None
 
@@ -93,9 +84,6 @@ class ReactionWorker(QtCore.QObject):
     def getModelFile(self):
         return self.modelFile
 
-    def setLenReactions(self, lenReactions):
-        self.lenReactions = lenReactions
-
     def setReactionsFile(self, reactionsFile):
         self.reactionsFile = reactionsFile
 
@@ -112,7 +100,6 @@ class ReactionWorker(QtCore.QObject):
     def finish_reactions(self):
         self.network = Implicit.generateReactions(self.network)
         self.network.printReactions(self.reactionsFile)
-        self.lenReactions.setText('Reactions: ' + str(self.network.getNumOfReactions()))
         self.emitTaskFinished()
 
     def emitTaskFinished(self):
@@ -129,12 +116,16 @@ class StateSpaceWorker(QtCore.QObject):
         self.stateSpaceFile = None
         self.lenStates = None
         self.lenEdges = None
+        self.lenReactions = None
         self.mostNumberOfStates = 0
         self.numOfCurrentStates = 0
         
         self.TheWorker = QtCore.QThread()
         self.moveToThread(self.TheWorker)
         self.TheWorker.start()
+
+    def getReactions(self):
+        return self.reactions
 
     def getCurrentNumberOfStates(self):
         return self.numOfCurrentStates
@@ -160,14 +151,17 @@ class StateSpaceWorker(QtCore.QObject):
     def setLenEdges(self, lenObj):
         self.lenEdges = lenObj
 
+    def setLenReactions(self, lenReactions):
+        self.lenReactions = lenReactions
+
     def compute_space(self):
         rules, initialState = Import.import_rules(str(self.modelFile.toPlainText()))
         reactionGenerator = Explicit.Compute()
-        reactions = reactionGenerator.computeReactions(rules)
+        self.reactions = reactionGenerator.computeReactions(rules)
 
         initialState = Explicit.sortInitialState(initialState)
 
-        self.VN = Gen.createVectorNetwork(reactions, initialState)
+        self.VN = Gen.createVectorNetwork(self.reactions, initialState)
 
         bound = self.VN.getBound()
 
@@ -177,8 +171,9 @@ class StateSpaceWorker(QtCore.QObject):
         states, edges = self.generateStateSpace(bound)
 
         Gen.printStateSpace(states, edges, self.VN.getTranslations(), self.stateSpaceFile)
-        self.lenStates.setText('States: ' + str(len(states)))
-        self.lenEdges.setText('Edges: ' + str(len(edges)))
+        self.lenStates.setText('- No. of States:           ' + str(len(states)))
+        self.lenEdges.setText('- No. of Edges:           ' + str(len(edges)))
+        self.lenReactions.setText('- No. of Reactions:    ' + str(len(self.reactions)))
         self.taskFinished.emit()
 
     def generateStateSpace(self, bound):
@@ -308,8 +303,6 @@ class PopUp(QWidget):
         self.emitExit()
         event.accept()
 
-
-
 class MainWindow(QtGui.QMainWindow):
     def __init__(self, parent=None):
         QtGui.QMainWindow.__init__(self, parent)
@@ -359,6 +352,17 @@ class MainWindow(QtGui.QMainWindow):
         #self.stateSpaceEstimate = 0
         #self.reactionsEstimate = 0
 
+        vLayout = QVBoxLayout()
+
+        self.tabs = QTabWidget(self)
+        self.tabs.move(605, 30)
+        self.tabs.resize(320, 400)
+
+        self.tab1 = QWidget()
+        self.tab2 = QWidget()
+
+        self.tabs.addTab(self.tab1, "State space")
+        self.tabs.addTab(self.tab2, "Model analysis")
 
         #########################################
 
@@ -387,23 +391,43 @@ class MainWindow(QtGui.QMainWindow):
 
         # state space file button
 
-        self.stateSpace = createButton(self, 'State space file', self.save_stateSpace, 610, 30, False)
+        StatesHbox = QHBoxLayout()
 
-        self.stateSpace_text = createTextBox(self, None, None, 760, 30, True)
+        self.stateSpace = createButton(self, 'State space output file', self.save_stateSpace, False)
+
+        StatesHbox.addWidget(self.stateSpace)
+
+        self.stateSpace_text = createTextBox(self, None, None, True)
+
+        StatesHbox.addWidget(self.stateSpace_text)
+
+        vLayout.addLayout(StatesHbox)
 
         # Compute states button
 
-        self.compute_space_button = createButton(self, 'Compute', self.stateWorker.compute_space, 760, 70, True)
+        StatesHbox = QHBoxLayout()
+
+        self.compute_space_button = createButton(self, 'Compute', self.stateWorker.compute_space, True)
         self.compute_space_button.clicked.connect(self.progressbarStatesOnStart)
         #self.compute_space_button.clicked.connect(self.startStateSpaceTimer)
 
-        self.cancel_state = createButton(self, 'Cancel', self.cancel_computation_states, 610, 70, True)
+        self.cancel_state = createButton(self, 'Cancel', self.cancel_computation_states, True)
         self.cancel_state.clicked.connect(self.progressbarStatesOnFinished)
         self.cancel_state.clicked.connect(self.stateSpaceCanceled)
 
+        StatesHbox.addWidget(self.cancel_state)
+        StatesHbox.addWidget(self.compute_space_button)
+
+        vLayout.addLayout(StatesHbox)
+
         # progres bar
 
-        self.progress_bar_states = createProgressBar(self, 610, 110)
+        StatesHbox = QHBoxLayout()
+
+        self.progress_bar_states = createProgressBar(self)
+
+        StatesHbox.addWidget(self.progress_bar_states)
+        vLayout.addLayout(StatesHbox)
 
         self.stateWorker.taskFinished.connect(self.progressbarStatesOnFinished)
         self.stateWorker.showMostStates.connect(self.showNumberOfStates)
@@ -411,20 +435,55 @@ class MainWindow(QtGui.QMainWindow):
 
         # num of states label
 
-        self.numOfStates = QtGui.QLabel(self)
-        self.numOfStates.move(720, 150)
-        self.numOfStates.resize(200, 30)
+        StatesHbox = QHBoxLayout()
 
-        self.numCurrentOfStates = QtGui.QLabel(self)
-        self.numCurrentOfStates.move(610, 150)
-        self.numCurrentOfStates.resize(100, 30)
+        self.emptySpaceHack = QtGui.QLabel(self)
+
+        StatesHbox.addWidget(self.emptySpaceHack)
+        vLayout.addLayout(StatesHbox)
+
+        # save reactions
+
+        StatesHbox = QHBoxLayout()
+
+        self.save_reactions_button = createButton(self, 'Save reactions to file', self.save_reactions, True)
+
+        StatesHbox.addWidget(self.save_reactions_button)
+        vLayout.addLayout(StatesHbox)
 
         # results fields
 
-        style = '''QLineEdit {background-color: rgb(214, 214, 214); border: none ; }'''
-        self.num_of_states = createTextBox(self, 'States: ', style, 610, 190, True)
+        StatesHbox = QHBoxLayout()
 
-        self.num_of_edges = createTextBox(self, 'Edges: ', style, 760, 190, True)
+        style = '''QLineEdit {background-color: rgb(214, 214, 214); border: none ; }'''
+
+        self.statistics = createTextBox(self, 'Statistics of the model', '''QLineEdit {border: none ; }''', True)
+
+        StatesHbox.addWidget(self.statistics)
+        vLayout.addLayout(StatesHbox)
+
+        StatesHbox = QHBoxLayout()
+
+        self.num_of_states = createTextBox(self, '- No. of States:           ', style, True)
+
+        StatesHbox.addWidget(self.num_of_states)
+        vLayout.addLayout(StatesHbox)
+
+        StatesHbox = QHBoxLayout()
+
+        self.num_of_edges = createTextBox(self, '- No. of Edges:           ', style, True)
+
+        StatesHbox.addWidget(self.num_of_edges)
+        vLayout.addLayout(StatesHbox)
+
+        StatesHbox = QHBoxLayout()
+
+        self.num_of_reactions = createTextBox(self, '- No. of Reactions:    ', style, True)
+
+        StatesHbox.addWidget(self.num_of_reactions)
+        vLayout.addLayout(StatesHbox)
+
+        self.tab1.setLayout(vLayout)
 
         # time bar
 
@@ -432,37 +491,50 @@ class MainWindow(QtGui.QMainWindow):
         #self.runningStates.setText(" Na:Na:Na /  Na:Na:Na")
         #self.runningStates.move(775, 155)
 
+        vLayout = QVBoxLayout()
+
         #########################################
-
-        # reactions file button
-
-        self.reactions = createButton(self, 'Reactions file', self.save_reactions, 610, 240, False)
-
-        self.reactions_text = createTextBox(self, None, None, 760, 240, True)
 
         # check button
 
-        self.checkIgnoreConflicts = createChecker(self, 610, 280, "Ignore conflicts")
+        StatesHbox = QHBoxLayout()
+
+        self.checkIgnoreConflicts = createChecker(self, "Ignore conflicts")
         self.checkIgnoreConflicts.stateChanged.connect(self.reactionWorker.setChecked)
+
+        StatesHbox.addWidget(self.checkIgnoreConflicts)
+        vLayout.addLayout(StatesHbox)
 
         # Compute reactions button
 
-        self.compute_reactions_button = createButton(self, 'Compute', self.reactionWorker.compute_reactions, 760, 320, True)
+        StatesHbox = QHBoxLayout()
+
+        self.compute_reactions_button = createButton(self, 'Compute', self.reactionWorker.compute_reactions, True)
         self.compute_reactions_button.clicked.connect(self.progressbarReactionsOnStart)
         #self.compute_reactions_button.clicked.connect(self.stateReactionsTimer)
 
-        self.cancel_rxns = createButton(self, 'Cancel', self.cancel_computation_reactions, 610, 320, True)
+        StatesHbox.addWidget(self.compute_reactions_button)
+
+        self.cancel_rxns = createButton(self, 'Cancel', self.cancel_computation_reactions, True)
         self.cancel_rxns.clicked.connect(self.progressbarReactionsOnFinished)
         self.cancel_rxns.clicked.connect(self.reactionsCanceled)
 
+        StatesHbox.addWidget(self.cancel_rxns)
+        vLayout.addLayout(StatesHbox)
+
         # progres bar
 
-        self.progress_bar_reactions = createProgressBar(self, 610, 360)
+        StatesHbox = QHBoxLayout()
+
+        self.progress_bar_reactions = createProgressBar(self,)
         self.reactionWorker.taskFinished.connect(self.progressbarReactionsOnFinished)
+
+        StatesHbox.addWidget(self.progress_bar_reactions)
+        vLayout.addLayout(StatesHbox)
 
         # result field
 
-        self.num_of_reactions = createTextBox(self, 'Reactions: ', style, 610, 400, True)
+        self.tab2.setLayout(vLayout)
 
         # time bar
 
@@ -495,14 +567,14 @@ class MainWindow(QtGui.QMainWindow):
         self.reactionsEstimate = time.strftime("%H:%M:%S", time.gmtime(Implicit.estimateComputation(10)))
 
     def stateSpaceCanceled(self):
-        self.num_of_states.setText('States: n\\a' )
-        self.num_of_edges.setText('Edges: n\\a' )
+        self.num_of_states.setText('- No. of States:           n\\a' )
+        self.num_of_edges.setText('- No. of Edges:           n\\a' )
         self.progress_bar_states.setValue(0)
 
         #self.spaceTimer.stop()
 
     def reactionsCanceled(self):
-        self.num_of_reactions.setText('Reactions: n\\a')
+        self.num_of_reactions.setText('- No. of Reactions:    n\\a')
         self.progress_bar_reactions.setValue(0)
 
         #self.reactionsTimer.stop()
@@ -515,6 +587,7 @@ class MainWindow(QtGui.QMainWindow):
         self.progress_bar_states.setRange(0,1)
         self.progress_bar_states.setValue(1)
         self.cancel_state.setDisabled(True)
+        self.save_reactions_button.setDisabled(False)
 
     def progressbarReactionsOnStart(self): 
         self.progress_bar_reactions.setRange(0,0)
@@ -540,10 +613,7 @@ class MainWindow(QtGui.QMainWindow):
         qp.setPen(pen)
         qp.drawLine(610, 225, 910, 225)
 
-        qp.drawLine(815, 400, 910, 400)
-        qp.drawLine(815, 400, 815, 445)
-
-        qp.drawPixmap(825,410,QPixmap("icons/logo.png"))
+        qp.drawPixmap(825,30,QPixmap("icons/logo.png"))
 
     def open_model(self):
         file = QFileDialog.getOpenFileName(self, 'Choose model', directory = '../Examples/', filter ="BCS (*.bcs);;All types (*)")
@@ -564,21 +634,20 @@ class MainWindow(QtGui.QMainWindow):
             self.stateWorker.setStateSpaceFile(file)
             self.stateWorker.setLenStates(self.num_of_states)
             self.stateWorker.setLenEdges(self.num_of_edges)
+            self.stateWorker.setLenReactions(self.num_of_reactions)
             self.stateSpace_text.setText(self.stateWorker.getStateSpaceFile())
             if self.stateWorker.getModelFile():
                 self.compute_space_button.setDisabled(False)
 
     def save_reactions(self):
-        file = QFileDialog.getSaveFileName(self, 'Choose output file', directory = self.reactionsDirectory, filter =".txt (*.txt);;All types (*)")
+        file = QFileDialog.getSaveFileName(self, 'Choose log file', directory = self.reactionsDirectory, filter =".txt (*.txt);;All types (*)")
         if file:
             self.reactionsDirectory = os.path.dirname(str(file))
             if not os.path.splitext(str(file))[1]:
                 file = str(file) + ".txt"
-            self.reactionWorker.setReactionsFile(file)
-            self.reactions_text.setText(self.reactionWorker.getReactionsFile())
-            self.reactionWorker.setLenReactions(self.num_of_reactions)
-            if self.reactionWorker.getModelFile():
-                self.compute_reactions_button.setDisabled(False)
+            f = open(file,'w')
+            f.write("\n".join(self.stateWorker.getReactions()))
+            f.close()
 
     def cancel_computation_states(self):
         if not self.stateWorker.getTheWorker().wait(100):
@@ -635,7 +704,7 @@ app_icon.addFile('icons/128x128.png', QtCore.QSize(128,128))
 app.setWindowIcon(app_icon)
 
 main = MainWindow()
-main.setFixedSize(920, 455)
+main.setFixedSize(925, 455)
 main.setWindowTitle('BCSgen')
 main.show()
 sys.exit(app.exec_())
