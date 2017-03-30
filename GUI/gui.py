@@ -57,23 +57,17 @@ def createChecker(it, text):
     checker = QCheckBox(text, it)
     return checker
 
-class ReactionWorker(QtCore.QObject):
-    taskFinished = QtCore.pyqtSignal()
+class AnalysisWorker(QtCore.QObject):
+    noConflicts = QtCore.pyqtSignal()
+    conflicts = QtCore.pyqtSignal()
     def __init__(self, model, parent=None):
         QtCore.QObject.__init__(self, parent)
 
         self.modelFile = model
-        self.checked = False
-        self.reactionsFile = None
-        self.network = None
-        self.message = None
 
         self.TheWorker = QtCore.QThread()
         self.moveToThread(self.TheWorker)
         self.TheWorker.start()
-
-    def setChecked(self):
-        self.checked = not self.checked
 
     def getMessage(self):
         return self.message
@@ -84,26 +78,15 @@ class ReactionWorker(QtCore.QObject):
     def getModelFile(self):
         return self.modelFile
 
-    def setReactionsFile(self, reactionsFile):
-        self.reactionsFile = reactionsFile
-
-    def getReactionsFile(self):
-        return self.reactionsFile
-
-    def compute_reactions(self):
-        self.network, state, networkStatus, self.message = Implicit.initializeNetwork(str(self.modelFile.toPlainText()))
-        if not networkStatus and not self.checked:
-            self.emit(SIGNAL("conflicts"))
+    def compute_conflicts(self):
+        self.network, state, networkStatusOK, self.message = Implicit.initializeNetwork(str(self.modelFile.toPlainText()))
+        if networkStatusOK:
+            self.conflicts.emit()
         else:
-            self.finish_reactions()
+            self.noConflicts.emit()
 
-    def finish_reactions(self):
-        self.network = Implicit.generateReactions(self.network)
-        self.network.printReactions(self.reactionsFile)
-        self.emitTaskFinished()
-
-    def emitTaskFinished(self):
-        self.taskFinished.emit()
+    def compute_reach(self):
+        return
 
 class StateSpaceWorker(QtCore.QObject):
     taskFinished = QtCore.pyqtSignal()
@@ -259,25 +242,6 @@ class PopUp(QWidget):
 
         vLayout.addWidget(scroll)
 
-        question = QLabel(self)
-        question.setText("Compute despite the conflicts?")
-        vLayout.addWidget(question)
-
-        buttonYes = QtGui.QPushButton("Yes", self)
-        buttonYes.clicked.connect(self.emitFinishReactions)
-        buttonYes.clicked.connect(self.close)
-
-        buttonNo = QtGui.QPushButton("No", self)
-        buttonNo.clicked.connect(self.emitExit)
-        buttonNo.clicked.connect(self.close)
-
-        hbox = QHBoxLayout()
-
-        hbox.addWidget(buttonYes)
-        hbox.addWidget(buttonNo)
-
-        vLayout.addLayout(hbox)
-
         buttonSave = QtGui.QPushButton("Save conflicts to file", self)
         buttonSave.clicked.connect(self.save_log)
         vLayout.addWidget(buttonSave)
@@ -383,9 +347,7 @@ class MainWindow(QtGui.QMainWindow):
         #########################################
 
         self.stateWorker = StateSpaceWorker(self.textBox)
-        self.reactionWorker = ReactionWorker(self.textBox)
-
-        self.connect(self.reactionWorker, SIGNAL("conflicts"), self.showConflicts)
+        self.analysisWorker = AnalysisWorker(self.textBox)
 
         #########################################
 
@@ -491,45 +453,71 @@ class MainWindow(QtGui.QMainWindow):
         #self.runningStates.setText(" Na:Na:Na /  Na:Na:Na")
         #self.runningStates.move(775, 155)
 
+        #####################################################################################
+
+        # dynamic analysis
+
         vLayout = QVBoxLayout()
-
-        #########################################
-
-        # check button
 
         StatesHbox = QHBoxLayout()
 
-        self.checkIgnoreConflicts = createChecker(self, "Ignore conflicts")
-        self.checkIgnoreConflicts.stateChanged.connect(self.reactionWorker.setChecked)
+        style = '''QLineEdit {background-color: rgb(214, 214, 214); border: none ; }'''
 
-        StatesHbox.addWidget(self.checkIgnoreConflicts)
+        self.reach_text = createTextBox(self, 'Reachability', '''QLineEdit {border: none ; }''', True)
+
+        StatesHbox.addWidget(self.reach_text)
         vLayout.addLayout(StatesHbox)
 
         # Compute reactions button
 
         StatesHbox = QHBoxLayout()
 
-        self.compute_reactions_button = createButton(self, 'Compute', self.reactionWorker.compute_reactions, True)
-        self.compute_reactions_button.clicked.connect(self.progressbarReactionsOnStart)
-        #self.compute_reactions_button.clicked.connect(self.stateReactionsTimer)
+        self.compute_reachability_button = createButton(self, 'Compute', self.analysisWorker.compute_reach, True)
 
-        StatesHbox.addWidget(self.compute_reactions_button)
+        StatesHbox.addWidget(self.compute_reachability_button)
 
-        self.cancel_rxns = createButton(self, 'Cancel', self.cancel_computation_reactions, True)
-        self.cancel_rxns.clicked.connect(self.progressbarReactionsOnFinished)
-        self.cancel_rxns.clicked.connect(self.reactionsCanceled)
-
-        StatesHbox.addWidget(self.cancel_rxns)
         vLayout.addLayout(StatesHbox)
 
         # progres bar
 
         StatesHbox = QHBoxLayout()
 
-        self.progress_bar_reactions = createProgressBar(self,)
-        self.reactionWorker.taskFinished.connect(self.progressbarReactionsOnFinished)
+        self.progress_bar_reactions = createProgressBar(self)
 
         StatesHbox.addWidget(self.progress_bar_reactions)
+        vLayout.addLayout(StatesHbox)
+
+        #########################################
+
+        # static analysis
+
+        StatesHbox = QHBoxLayout()
+
+        style = '''QLineEdit {background-color: rgb(214, 214, 214); border: none ; }'''
+
+        self.reach_text = createTextBox(self, 'Static analysis', '''QLineEdit {border: none ; }''', True)
+
+        StatesHbox.addWidget(self.reach_text)
+        vLayout.addLayout(StatesHbox)
+
+
+        StatesHbox = QHBoxLayout()
+
+        self.compute_conflicts = createButton(self, 'Compute conflicts', self.analysisWorker.compute_conflicts, True)
+
+        StatesHbox.addWidget(self.compute_conflicts)
+
+        vLayout.addLayout(StatesHbox)
+
+        self.analysisWorker.noConflicts.connect(self.showConflicts)
+        self.analysisWorker.conflicts.connect(self.showNoConflicts)
+
+
+        StatesHbox = QHBoxLayout()
+
+        self.noConflictsMessage = QtGui.QLabel(self)
+
+        StatesHbox.addWidget(self.noConflictsMessage)
         vLayout.addLayout(StatesHbox)
 
         # result field
@@ -544,6 +532,14 @@ class MainWindow(QtGui.QMainWindow):
 
         #########################################
 
+    def showConflicts(self):
+        self.noConflictsMessage.setText("")
+        self.window = PopUp(self.analysisWorker.getMessage()[:-22])
+        self.window.show()
+
+    def showNoConflicts(self):
+        self.noConflictsMessage.setText("No conflicts !")
+
     def updateNumOfStates(self):
         return
         #self.numCurrentOfStates.setText(str(self.stateWorker.getCurrentNumberOfStates()))
@@ -551,12 +547,6 @@ class MainWindow(QtGui.QMainWindow):
     def showNumberOfStates(self):
         return
         #self.numOfStates.setText(" / " + str(self.stateWorker.getMostNumberOfStates()))
-
-    def showConflicts(self):
-        self.conflicts = PopUp(self.reactionWorker.getMessage())
-        self.connect(self.conflicts, SIGNAL("finishReactions"), self.reactionWorker.finish_reactions)
-        self.connect(self.conflicts, SIGNAL("exit"), self.reactionWorker.emitTaskFinished)
-        self.conflicts.show()
 
     def startStateSpaceTimer(self):
         self.spaceTimer.start(1000)
@@ -620,10 +610,9 @@ class MainWindow(QtGui.QMainWindow):
         if file:
             file = open(file, "r")
             self.textBox.setPlainText(file.read())
+            self.compute_conflicts.setDisabled(False)
             if self.stateWorker.getStateSpaceFile():
                 self.compute_space_button.setDisabled(False)
-            if self.reactionWorker.getReactionsFile():
-                self.compute_reactions_button.setDisabled(False)
 
     def save_stateSpace(self):
         file = QFileDialog.getSaveFileName(self, 'Choose output file', directory = self.stateSpaceDirectory, filter =".json (*.json);;All types (*)")
@@ -655,12 +644,6 @@ class MainWindow(QtGui.QMainWindow):
             self.compute_space_button.setDisabled(True)
             self.cancel_state.setDisabled(True)
             self.stateSpace.setDisabled(True)
-
-    def cancel_computation_reactions(self):
-        if not self.reactionWorker.getTheWorker().wait(100):
-            self.reactionWorker.getTheWorker().terminate()
-            self.compute_reactions_button.setDisabled(True)
-            self.cancel_rxns.setDisabled(True)
 
     def showStateProgress(self):
         self.stateSpaceTime = self.stateSpaceTime.addSecs(1)
