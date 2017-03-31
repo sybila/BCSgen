@@ -267,9 +267,28 @@ class PopUp(QWidget):
         self.emitExit()
         event.accept()
 
+class FillAgentToBeFound(QtGui.QWidget):
+  def __init__( self, parent=None):
+        super(QtGui.QWidget, self).__init__(parent)
+        StatesHbox = QHBoxLayout()
+
+        agent = QLineEdit()
+        stochio = QLineEdit()
+        stochio.setMaximumWidth(30)
+        delete = QtGui.QPushButton()
+        delete.setMaximumWidth(25)
+        delete.setText("x")
+        delete.clicked.connect(self.deleteLater)
+
+        StatesHbox.addWidget(agent,3)
+        StatesHbox.addWidget(stochio,1)
+        StatesHbox.addWidget(delete,1)
+
+        self.setLayout(StatesHbox)
+
 class MainWindow(QtGui.QMainWindow):
     def __init__(self, parent=None):
-        QtGui.QMainWindow.__init__(self, parent)
+        super(MainWindow, self).__init__(parent)
 
         #########################################
 
@@ -468,6 +487,29 @@ class MainWindow(QtGui.QMainWindow):
         StatesHbox.addWidget(self.reach_text)
         vLayout.addLayout(StatesHbox)
 
+        # dynamical widgets for filling stuff
+
+        self.scrollLayout = QtGui.QFormLayout()
+        self.scrollLayout.setVerticalSpacing(0)
+        #self.scrollLayout.setMargin(0)
+
+        self.scrollWidget = QtGui.QWidget()
+        self.scrollWidget.setLayout(self.scrollLayout)
+
+        self.scrollArea = QtGui.QScrollArea()
+        self.scrollArea.setWidgetResizable(True)
+        self.scrollArea.setWidget(self.scrollWidget)
+
+        vLayout.addWidget(self.scrollArea)
+
+        self.addButton = QtGui.QPushButton('+')
+        self.addButton.setMaximumWidth(25)
+        self.addButton.clicked.connect(self.addDynamicWidget)
+
+        self.scrollLayout.addRow(self.addButton)
+
+        #vLayout.addWidget(self.addButton)
+
         # Compute reactions button
 
         StatesHbox = QHBoxLayout()
@@ -531,6 +573,21 @@ class MainWindow(QtGui.QMainWindow):
         # self.runningReactions.move(775, 305)
 
         #########################################
+
+    def addDynamicWidget(self):
+        self.addButton.deleteLater()
+        self.scrollLayout.addRow(FillAgentToBeFound())
+
+        self.addButton = QtGui.QPushButton('+')
+        self.addButton.setMaximumWidth(25)
+        self.addButton.clicked.connect(self.addDynamicWidget)
+
+        self.scrollLayout.addRow(self.addButton)
+
+        # no idea why it is working like this:
+        self.scrollArea.verticalScrollBar().setMaximum(self.scrollArea.verticalScrollBar().maximum() + 45)
+        self.scrollArea.verticalScrollBar().setValue(self.scrollArea.verticalScrollBar().maximum())
+        # but its working tho..
 
     def showConflicts(self):
         self.noConflictsMessage.setText("")
@@ -687,7 +744,7 @@ app_icon.addFile('icons/128x128.png', QtCore.QSize(128,128))
 app.setWindowIcon(app_icon)
 
 main = MainWindow()
-main.setFixedSize(925, 455)
+main.setFixedSize(930, 455)
 main.setWindowTitle('BCSgen')
 main.show()
 sys.exit(app.exec_())
