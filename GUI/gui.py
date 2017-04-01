@@ -60,14 +60,24 @@ def createChecker(it, text):
 class AnalysisWorker(QtCore.QObject):
 	noConflicts = QtCore.pyqtSignal()
 	conflicts = QtCore.pyqtSignal()
-	def __init__(self, model, parent=None):
+	reachFinished = QtCore.pyqtSignal()
+	def __init__(self, model, stateWorker, parent=None):
 		QtCore.QObject.__init__(self, parent)
 
 		self.modelFile = model
+		self.stateWorker = stateWorker
+		self.toBeReached = None
+		self.reachablityResult = ""
 
 		self.TheWorker = QtCore.QThread()
 		self.moveToThread(self.TheWorker)
 		self.TheWorker.start()
+
+	def getReachabilityResult(self):
+		return self.reachablityResult
+
+	def setToBeReached(self, state):
+		self.toBeReached = state
 
 	def getMessage(self):
 		return self.message
@@ -86,7 +96,12 @@ class AnalysisWorker(QtCore.QObject):
 			self.noConflicts.emit()
 
 	def compute_reach(self):
-		return
+		satisfyingStates = filter(lambda state: (self.toBeReached <= state).all(), self.stateWorker.states)
+		if satisfyingStates:
+			self.reachablityResult = "Reachable !"
+		else:
+			self.reachablityResult = "Not reachable !"
+		self.reachFinished.emit()
 
 class StateSpaceWorker(QtCore.QObject):
 	taskFinished = QtCore.pyqtSignal()
@@ -102,10 +117,16 @@ class StateSpaceWorker(QtCore.QObject):
 		self.lenReactions = None
 		self.mostNumberOfStates = 0
 		self.numOfCurrentStates = 0
+		self.uniqueAgents = None
+		self.states = None
+		self.edges = None
 		
 		self.TheWorker = QtCore.QThread()
 		self.moveToThread(self.TheWorker)
 		self.TheWorker.start()
+
+	def getUniqueAgents(self):
+		return self.uniqueAgents
 
 	def getReactions(self):
 		return self.reactions
@@ -151,12 +172,15 @@ class StateSpaceWorker(QtCore.QObject):
 		self.mostNumberOfStates = Gen.estimateNumberOfStates(bound, len(self.VN.getTranslations()))
 		self.showMostStates.emit()
 
-		states, edges = self.generateStateSpace(bound)
+		self.states, self.edges = self.generateStateSpace(bound)
 
-		Gen.printStateSpace(states, edges, self.VN.getTranslations(), self.stateSpaceFile)
-		self.lenStates.setText('- No. of States:           ' + str(len(states)))
-		self.lenEdges.setText('- No. of Edges:           ' + str(len(edges)))
+		Gen.printStateSpace(self.states, self.edges, self.VN.getTranslations(), self.stateSpaceFile)
+		self.lenStates.setText('- No. of States:           ' + str(len(self.states)))
+		self.lenEdges.setText('- No. of Edges:           ' + str(len(self.edges)))
 		self.lenReactions.setText('- No. of Reactions:    ' + str(len(self.reactions)))
+
+		self.uniqueAgents = self.VN.getTranslations()
+
 		self.taskFinished.emit()
 
 	def generateStateSpace(self, bound):
@@ -268,22 +292,32 @@ class PopUp(QWidget):
 		event.accept()
 
 class FillAgentToBeFound(QtGui.QWidget):
-	def __init__( self, parent=None):
+	def __init__(self, data, parent=None):
 		self.parent = parent
 		super(QtGui.QWidget, self).__init__(parent)
 		StatesHbox = QHBoxLayout()
 
-		agent = QLineEdit()
-		stochio = QLineEdit()
-		stochio.setMaximumWidth(30)
+		self.agent = QLineEdit()
+
+		completer = QCompleter()
+		completer.setCaseSensitivity(Qt.CaseInsensitive)
+		completer.setModelSorting(QCompleter.CaseInsensitivelySortedModel)
+		
+		self.agent.setCompleter(completer)
+		model = QStringListModel()
+		completer.setModel(model)
+		model.setStringList(data)
+
+		self.stochio = QLineEdit()
+		self.stochio.setMaximumWidth(30)
 		delete = QtGui.QPushButton()
 		delete.setMaximumWidth(25)
 		delete.setText("x")
 		delete.clicked.connect(self.timeToDelete)
 
-		StatesHbox.addWidget(agent,3)
-		StatesHbox.addWidget(stochio,1)
-		StatesHbox.addWidget(delete,1)
+		StatesHbox.addWidget(self.agent, 3)
+		StatesHbox.addWidget(self.stochio, 1)
+		StatesHbox.addWidget(delete, 1)
 
 		self.setLayout(StatesHbox)
 
@@ -347,7 +381,7 @@ class MainWindow(QtGui.QMainWindow):
 
 		self.tabs = QTabWidget(self)
 		self.tabs.move(605, 30)
-		self.tabs.resize(320, 400)
+		self.tabs.resize(320, 430)
 
 		self.tab1 = QWidget()
 		self.tab2 = QWidget()
@@ -360,7 +394,7 @@ class MainWindow(QtGui.QMainWindow):
 		# text area
 
 		self.textBox = QTextEdit(self)
-		self.textBox.resize(590, 400)
+		self.textBox.resize(590, 430)
 		self.textBox.move(10, 30)
 		#self.textBox.cursorPositionChanged.connect(self.textEdited)
 		self.textBox.setLineWrapColumnOrWidth(590)
@@ -374,7 +408,7 @@ class MainWindow(QtGui.QMainWindow):
 		#########################################
 
 		self.stateWorker = StateSpaceWorker(self.textBox)
-		self.analysisWorker = AnalysisWorker(self.textBox)
+		self.analysisWorker = AnalysisWorker(self.textBox, self.stateWorker)
 
 		#########################################
 
@@ -515,19 +549,7 @@ class MainWindow(QtGui.QMainWindow):
 		self.addButton.clicked.connect(self.addDynamicWidget)
 
 		self.scrollLayout.addRow(self.addButton)
-		#self.addButton.setDisabled(True)
-
-		#vLayout.addWidget(self.addButton)
-
-		# Compute reactions button
-
-		StatesHbox = QHBoxLayout()
-
-		self.compute_reachability_button = createButton(self, 'Compute', self.analysisWorker.compute_reach, True)
-
-		StatesHbox.addWidget(self.compute_reachability_button)
-
-		vLayout.addLayout(StatesHbox)
+		self.addButton.setDisabled(True)
 
 		# progres bar
 
@@ -537,6 +559,28 @@ class MainWindow(QtGui.QMainWindow):
 
 		StatesHbox.addWidget(self.progress_bar_reactions)
 		vLayout.addLayout(StatesHbox)
+
+		# show result - message
+
+		StatesHbox = QHBoxLayout()
+
+		self.reachabilityResult = QtGui.QLabel(self)
+
+		StatesHbox.addWidget(self.reachabilityResult)
+		vLayout.addLayout(StatesHbox)
+
+		# Compute reactions button
+
+		StatesHbox = QHBoxLayout()
+
+		self.compute_reachability_button = createButton(self, 'Check reachability', self.startReachability, True)
+
+		StatesHbox.addWidget(self.compute_reachability_button)
+
+		vLayout.addLayout(StatesHbox)
+
+		self.analysisWorker.reachFinished.connect(self.writeReachResult)
+
 
 		#########################################
 
@@ -583,6 +627,26 @@ class MainWindow(QtGui.QMainWindow):
 
 		#########################################
 
+	def writeReachResult(self):
+		self.reachabilityResult.setText(self.analysisWorker.getReachabilityResult())
+
+	def startReachability(self):
+		checkWheterReachable = True
+		orderedAgents = self.stateWorker.getUniqueAgents()
+		vector = [0] * len(orderedAgents)
+		for i in range(self.scrollLayout.count() - 1):
+			widget = self.scrollLayout.itemAt(i).widget()
+			agent = widget.agent.text()
+			stochio = widget.stochio.text()
+			if agent not in orderedAgents:
+				self.reachabilityResult.setText("Not reachable !")
+				checkWheterReachable = False
+				break
+			vector[orderedAgents.index(agent)] = int(stochio)
+		if checkWheterReachable:
+			self.analysisWorker.setToBeReached(np.array(vector))
+			self.analysisWorker.compute_reach()
+
 	def checkScrollArea(self):
 		if self.getRowDeleted():
 			if self.scrollLayout.count() < 3:
@@ -597,7 +661,7 @@ class MainWindow(QtGui.QMainWindow):
 
 	def addDynamicWidget(self):
 		self.addButton.deleteLater()
-		self.scrollLayout.addRow(FillAgentToBeFound(self))
+		self.scrollLayout.addRow(FillAgentToBeFound(self.stateWorker.getUniqueAgents(), self))
 
 		self.addButton = QtGui.QPushButton('+')
 		self.addButton.setMaximumWidth(25)
@@ -658,7 +722,7 @@ class MainWindow(QtGui.QMainWindow):
 		self.progress_bar_states.setValue(1)
 		self.cancel_state.setDisabled(True)
 		self.save_reactions_button.setDisabled(False)
-		#self.addButton.setDisabled(False)
+		self.addButton.setDisabled(False)
 
 	def progressbarReactionsOnStart(self): 
 		self.progress_bar_reactions.setRange(0,0)
@@ -680,9 +744,6 @@ class MainWindow(QtGui.QMainWindow):
 	def drawLines(self, qp):
 	  
 		pen = QtGui.QPen(QtCore.Qt.gray, 4, QtCore.Qt.SolidLine)
-
-		qp.setPen(pen)
-		qp.drawLine(610, 225, 910, 225)
 
 		qp.drawPixmap(825,30,QPixmap("icons/logo.png"))
 
@@ -768,7 +829,7 @@ app_icon.addFile('icons/128x128.png', QtCore.QSize(128,128))
 app.setWindowIcon(app_icon)
 
 main = MainWindow()
-main.setFixedSize(930, 455)
+main.setFixedSize(930, 485)
 main.setWindowTitle('BCSgen')
 main.show()
 sys.exit(app.exec_())
