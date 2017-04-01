@@ -21,717 +21,741 @@ visit <a href=\"https://github.com/sybila/BCSgen\">github.com/sybila/BCSgen</a>.
 
 
 class Help(QWidget):
-    def __init__(self, parent= None):
-        super(Help, self).__init__()
+	def __init__(self, parent= None):
+		super(Help, self).__init__()
 
-        self.setWindowTitle("Help")
-        self.setFixedHeight(175)
-        self.setFixedWidth(430)
+		self.setWindowTitle("Help")
+		self.setFixedHeight(175)
+		self.setFixedWidth(430)
 
-        self.titleText = QLabel(self)
-        self.titleText.move(10, 10)
-        self.titleText.setOpenExternalLinks(True)
-        self.titleText.setText(helpText)
+		self.titleText = QLabel(self)
+		self.titleText.move(10, 10)
+		self.titleText.setOpenExternalLinks(True)
+		self.titleText.setText(helpText)
 
 def createProgressBar(it):
-    progressBar = QtGui.QProgressBar(it)
-    progressBar.setRange(0,1)
-    return progressBar
+	progressBar = QtGui.QProgressBar(it)
+	progressBar.setRange(0,1)
+	return progressBar
 
 def createTextBox(it, text, style, readonly):
-    box = QLineEdit(it)
-    if text:
-        box.setText(text)
-    if style:
-        box.setStyleSheet(style)
-    box.setReadOnly(readonly)
-    return box
+	box = QLineEdit(it)
+	if text:
+		box.setText(text)
+	if style:
+		box.setStyleSheet(style)
+	box.setReadOnly(readonly)
+	return box
 
 def createButton(it, text, to_connect, disabled):
-    button = QtGui.QPushButton(text, it)
-    button.clicked.connect(to_connect)
-    button.setDisabled(disabled)
-    return button
+	button = QtGui.QPushButton(text, it)
+	button.clicked.connect(to_connect)
+	button.setDisabled(disabled)
+	return button
 
 def createChecker(it, text):
-    checker = QCheckBox(text, it)
-    return checker
+	checker = QCheckBox(text, it)
+	return checker
 
 class AnalysisWorker(QtCore.QObject):
-    noConflicts = QtCore.pyqtSignal()
-    conflicts = QtCore.pyqtSignal()
-    def __init__(self, model, parent=None):
-        QtCore.QObject.__init__(self, parent)
+	noConflicts = QtCore.pyqtSignal()
+	conflicts = QtCore.pyqtSignal()
+	def __init__(self, model, parent=None):
+		QtCore.QObject.__init__(self, parent)
 
-        self.modelFile = model
+		self.modelFile = model
 
-        self.TheWorker = QtCore.QThread()
-        self.moveToThread(self.TheWorker)
-        self.TheWorker.start()
+		self.TheWorker = QtCore.QThread()
+		self.moveToThread(self.TheWorker)
+		self.TheWorker.start()
 
-    def getMessage(self):
-        return self.message
+	def getMessage(self):
+		return self.message
 
-    def getTheWorker(self):
-        return self.TheWorker
+	def getTheWorker(self):
+		return self.TheWorker
 
-    def getModelFile(self):
-        return self.modelFile
+	def getModelFile(self):
+		return self.modelFile
 
-    def compute_conflicts(self):
-        self.network, state, networkStatusOK, self.message = Implicit.initializeNetwork(str(self.modelFile.toPlainText()))
-        if networkStatusOK:
-            self.conflicts.emit()
-        else:
-            self.noConflicts.emit()
+	def compute_conflicts(self):
+		self.network, state, networkStatusOK, self.message = Implicit.initializeNetwork(str(self.modelFile.toPlainText()))
+		if networkStatusOK:
+			self.conflicts.emit()
+		else:
+			self.noConflicts.emit()
 
-    def compute_reach(self):
-        return
+	def compute_reach(self):
+		return
 
 class StateSpaceWorker(QtCore.QObject):
-    taskFinished = QtCore.pyqtSignal()
-    showMostStates = QtCore.pyqtSignal()
-    NumOfStates = QtCore.pyqtSignal()
-    def __init__(self, model, parent=None):
-        QtCore.QObject.__init__(self, parent)
-        
-        self.modelFile = model
-        self.stateSpaceFile = None
-        self.lenStates = None
-        self.lenEdges = None
-        self.lenReactions = None
-        self.mostNumberOfStates = 0
-        self.numOfCurrentStates = 0
-        
-        self.TheWorker = QtCore.QThread()
-        self.moveToThread(self.TheWorker)
-        self.TheWorker.start()
+	taskFinished = QtCore.pyqtSignal()
+	showMostStates = QtCore.pyqtSignal()
+	NumOfStates = QtCore.pyqtSignal()
+	def __init__(self, model, parent=None):
+		QtCore.QObject.__init__(self, parent)
+		
+		self.modelFile = model
+		self.stateSpaceFile = None
+		self.lenStates = None
+		self.lenEdges = None
+		self.lenReactions = None
+		self.mostNumberOfStates = 0
+		self.numOfCurrentStates = 0
+		
+		self.TheWorker = QtCore.QThread()
+		self.moveToThread(self.TheWorker)
+		self.TheWorker.start()
 
-    def getReactions(self):
-        return self.reactions
+	def getReactions(self):
+		return self.reactions
 
-    def getCurrentNumberOfStates(self):
-        return self.numOfCurrentStates
+	def getCurrentNumberOfStates(self):
+		return self.numOfCurrentStates
 
-    def getMostNumberOfStates(self):
-        return self.mostNumberOfStates
+	def getMostNumberOfStates(self):
+		return self.mostNumberOfStates
 
-    def getTheWorker(self):
-        return self.TheWorker
+	def getTheWorker(self):
+		return self.TheWorker
 
-    def getModelFile(self):
-        return self.modelFile
+	def getModelFile(self):
+		return self.modelFile
 
-    def setStateSpaceFile(self, stateSpaceFile):
-        self.stateSpaceFile = stateSpaceFile
+	def setStateSpaceFile(self, stateSpaceFile):
+		self.stateSpaceFile = stateSpaceFile
 
-    def getStateSpaceFile(self):
-        return self.stateSpaceFile
+	def getStateSpaceFile(self):
+		return self.stateSpaceFile
 
-    def setLenStates(self, lenObj):
-        self.lenStates = lenObj
+	def setLenStates(self, lenObj):
+		self.lenStates = lenObj
 
-    def setLenEdges(self, lenObj):
-        self.lenEdges = lenObj
+	def setLenEdges(self, lenObj):
+		self.lenEdges = lenObj
 
-    def setLenReactions(self, lenReactions):
-        self.lenReactions = lenReactions
+	def setLenReactions(self, lenReactions):
+		self.lenReactions = lenReactions
 
-    def compute_space(self):
-        rules, initialState = Import.import_rules(str(self.modelFile.toPlainText()))
-        reactionGenerator = Explicit.Compute()
-        self.reactions = reactionGenerator.computeReactions(rules)
+	def compute_space(self):
+		rules, initialState = Import.import_rules(str(self.modelFile.toPlainText()))
+		reactionGenerator = Explicit.Compute()
+		self.reactions = reactionGenerator.computeReactions(rules)
 
-        initialState = Explicit.sortInitialState(initialState)
+		initialState = Explicit.sortInitialState(initialState)
 
-        self.VN = Gen.createVectorNetwork(self.reactions, initialState)
+		self.VN = Gen.createVectorNetwork(self.reactions, initialState)
 
-        bound = self.VN.getBound()
+		bound = self.VN.getBound()
 
-        self.mostNumberOfStates = Gen.estimateNumberOfStates(bound, len(self.VN.getTranslations()))
-        self.showMostStates.emit()
+		self.mostNumberOfStates = Gen.estimateNumberOfStates(bound, len(self.VN.getTranslations()))
+		self.showMostStates.emit()
 
-        states, edges = self.generateStateSpace(bound)
+		states, edges = self.generateStateSpace(bound)
 
-        Gen.printStateSpace(states, edges, self.VN.getTranslations(), self.stateSpaceFile)
-        self.lenStates.setText('- No. of States:           ' + str(len(states)))
-        self.lenEdges.setText('- No. of Edges:           ' + str(len(edges)))
-        self.lenReactions.setText('- No. of Reactions:    ' + str(len(self.reactions)))
-        self.taskFinished.emit()
+		Gen.printStateSpace(states, edges, self.VN.getTranslations(), self.stateSpaceFile)
+		self.lenStates.setText('- No. of States:           ' + str(len(states)))
+		self.lenEdges.setText('- No. of Edges:           ' + str(len(edges)))
+		self.lenReactions.setText('- No. of Reactions:    ' + str(len(self.reactions)))
+		self.taskFinished.emit()
 
-    def generateStateSpace(self, bound):
-        new_states = {self.VN.getState()}
-        states = set([self.VN.getState()])
-        edges = set()
+	def generateStateSpace(self, bound):
+		new_states = {self.VN.getState()}
+		states = set([self.VN.getState()])
+		edges = set()
 
-        while new_states:
-            results = set()
-            for state in new_states:
-                result_states = self.VN.applyVectors(state, bound)
-                edges |= set(map(lambda vec: Gen.Vector_reaction(np.array(state), np.array(vec)), result_states))
-                results |= set(result_states)
-            new_states = results - states
-            states |= new_states
+		while new_states:
+			results = set()
+			for state in new_states:
+				result_states = self.VN.applyVectors(state, bound)
+				edges |= set(map(lambda vec: Gen.Vector_reaction(np.array(state), np.array(vec)), result_states))
+				results |= set(result_states)
+			new_states = results - states
+			states |= new_states
 
-            self.numOfCurrentStates = len(states)
-            self.NumOfStates.emit()
+			self.numOfCurrentStates = len(states)
+			self.NumOfStates.emit()
 
-        return states, edges
+		return states, edges
 
 def createAction(it, title, shortcut, tip, connectWith):
-    action = QtGui.QAction(title, it)
-    action.setShortcut(shortcut)
-    action.setStatusTip(tip)
-    action.triggered.connect(connectWith)
-    return action
+	action = QtGui.QAction(title, it)
+	action.setShortcut(shortcut)
+	action.setStatusTip(tip)
+	action.triggered.connect(connectWith)
+	return action
 
 class HighlightingRule():
-    def __init__(self, pattern, format):
-        self.pattern = QRegExp(pattern)
-        self.format = format
+	def __init__(self, pattern, format):
+		self.pattern = QRegExp(pattern)
+		self.format = format
 
 class MyHighlighter(QSyntaxHighlighter):
-    def __init__(self, parent):
-        QSyntaxHighlighter.__init__(self, parent)
-        self.parent = parent
-        self.highlightingRules = []
+	def __init__(self, parent):
+		QSyntaxHighlighter.__init__(self, parent)
+		self.parent = parent
+		self.highlightingRules = []
 
-        comment = QTextCharFormat()
-        comment.setForeground(Qt.darkGreen)
-        rule = HighlightingRule("#(.*)$", comment)
-        self.highlightingRules.append(rule)
+		comment = QTextCharFormat()
+		comment.setForeground(Qt.darkGreen)
+		rule = HighlightingRule("#(.*)$", comment)
+		self.highlightingRules.append(rule)
 
-        number = QTextCharFormat()
-        number.setForeground(Qt.magenta)
-        rule = HighlightingRule("[0-9]", number)    
-        self.highlightingRules.append(rule)
+		number = QTextCharFormat()
+		number.setForeground(Qt.magenta)
+		rule = HighlightingRule("[0-9]", number)    
+		self.highlightingRules.append(rule)
 
-        specialChars = QTextCharFormat()
-        specialChars.setForeground(Qt.red)
-        specialChars.setFontWeight(QFont.Bold)
-        rule = HighlightingRule("[=>+]", specialChars)
-        self.highlightingRules.append(rule)
+		specialChars = QTextCharFormat()
+		specialChars.setForeground(Qt.red)
+		specialChars.setFontWeight(QFont.Bold)
+		rule = HighlightingRule("[=>+]", specialChars)
+		self.highlightingRules.append(rule)
 
-    def highlightBlock(self, text):
-        for rule in self.highlightingRules:
-            expression = rule.pattern
-            index = expression.indexIn( text )
-            while index >= 0:
-                length = expression.matchedLength()
-                self.setFormat( index, length, rule.format )
-                index = expression.indexIn(text, index + length)
-        self.setCurrentBlockState( 0 )
+	def highlightBlock(self, text):
+		for rule in self.highlightingRules:
+			expression = rule.pattern
+			index = expression.indexIn( text )
+			while index >= 0:
+				length = expression.matchedLength()
+				self.setFormat( index, length, rule.format )
+				index = expression.indexIn(text, index + length)
+		self.setCurrentBlockState( 0 )
 
 class PopUp(QWidget):
-    def __init__(self, message):
-        super(PopUp, self).__init__()
+	def __init__(self, message):
+		super(PopUp, self).__init__()
 
-        self.message = message
+		self.message = message
 
-        vLayout = QVBoxLayout(self)
+		vLayout = QVBoxLayout(self)
 
-        self.setFixedHeight(400)
-        self.setFixedWidth(400)
+		self.setFixedHeight(400)
+		self.setFixedWidth(400)
 
-        conflictBox = QLabel(self)
-        html = markdown.markdown(message, extensions=['markdown.extensions.fenced_code'])
-        conflictBox.setText(html)
-        
-        scroll = QScrollArea()
-        scroll.setWidget(conflictBox)
+		conflictBox = QLabel(self)
+		html = markdown.markdown(message, extensions=['markdown.extensions.fenced_code'])
+		conflictBox.setText(html)
+		
+		scroll = QScrollArea()
+		scroll.setWidget(conflictBox)
 
-        vLayout.addWidget(scroll)
+		vLayout.addWidget(scroll)
 
-        buttonSave = QtGui.QPushButton("Save conflicts to file", self)
-        buttonSave.clicked.connect(self.save_log)
-        vLayout.addWidget(buttonSave)
+		buttonSave = QtGui.QPushButton("Save conflicts to file", self)
+		buttonSave.clicked.connect(self.save_log)
+		vLayout.addWidget(buttonSave)
 
-        self.setLayout(vLayout)
+		self.setLayout(vLayout)
 
-    def emitExit(self):
-        self.emit(SIGNAL("exit"))
+	def emitExit(self):
+		self.emit(SIGNAL("exit"))
 
-    def emitFinishReactions(self):
-        self.emit(SIGNAL("finishReactions"))
+	def emitFinishReactions(self):
+		self.emit(SIGNAL("finishReactions"))
 
-    def save_log(self):
-        file = QFileDialog.getSaveFileName(self, 'Choose log file', filter =".log (*.log);;All types (*)")
-        if file:
-            if not os.path.splitext(str(file))[1]:
-                file = str(file) + ".log"
-            f = open(file,'w')
-            f.write(self.message[:-30])
-            f.close()
+	def save_log(self):
+		file = QFileDialog.getSaveFileName(self, 'Choose log file', filter =".log (*.log);;All types (*)")
+		if file:
+			if not os.path.splitext(str(file))[1]:
+				file = str(file) + ".log"
+			f = open(file,'w')
+			f.write(self.message[:-30])
+			f.close()
 
-    def closeEvent(self, event):
-        self.emitExit()
-        event.accept()
+	def closeEvent(self, event):
+		self.emitExit()
+		event.accept()
 
 class FillAgentToBeFound(QtGui.QWidget):
-  def __init__( self, parent=None):
-        super(QtGui.QWidget, self).__init__(parent)
-        StatesHbox = QHBoxLayout()
+	def __init__( self, parent=None):
+		self.parent = parent
+		super(QtGui.QWidget, self).__init__(parent)
+		StatesHbox = QHBoxLayout()
 
-        agent = QLineEdit()
-        stochio = QLineEdit()
-        stochio.setMaximumWidth(30)
-        delete = QtGui.QPushButton()
-        delete.setMaximumWidth(25)
-        delete.setText("x")
-        delete.clicked.connect(self.deleteLater)
+		agent = QLineEdit()
+		stochio = QLineEdit()
+		stochio.setMaximumWidth(30)
+		delete = QtGui.QPushButton()
+		delete.setMaximumWidth(25)
+		delete.setText("x")
+		delete.clicked.connect(self.timeToDelete)
 
-        StatesHbox.addWidget(agent,3)
-        StatesHbox.addWidget(stochio,1)
-        StatesHbox.addWidget(delete,1)
+		StatesHbox.addWidget(agent,3)
+		StatesHbox.addWidget(stochio,1)
+		StatesHbox.addWidget(delete,1)
 
-        self.setLayout(StatesHbox)
+		self.setLayout(StatesHbox)
+
+	def timeToDelete(self):
+		self.parent.setRowDeleted("1")
+		self.deleteLater()
 
 class MainWindow(QtGui.QMainWindow):
-    def __init__(self, parent=None):
-        super(MainWindow, self).__init__(parent)
+	def __init__(self, parent=None):
+		super(MainWindow, self).__init__(parent)
 
-        #########################################
+		self.rowDeleted = QLineEdit("0")
+		self.rowDeleted.textChanged.connect(self.checkScrollArea)
 
-        self.load = createAction(self, "&Load", "Ctrl+L", 'Load model from a file.', self.open_model)
-        self.save = createAction(self, "&Save", "Ctrl+S", 'Save model a file.', self.save_model)
-        self.exit = createAction(self, "&Quit", "Ctrl+Q", 'Quit the program.', self.close)
+		#########################################
 
-        self.statusBar()
+		self.load = createAction(self, "&Load", "Ctrl+L", 'Load model from a file.', self.open_model)
+		self.save = createAction(self, "&Save", "Ctrl+S", 'Save model a file.', self.save_model)
+		self.exit = createAction(self, "&Quit", "Ctrl+Q", 'Quit the program.', self.close)
 
-        mainMenu = self.menuBar()
-        fileMenu = mainMenu.addMenu('&File')
-        fileMenu.addAction(self.load)
-        fileMenu.addAction(self.save)
-        fileMenu.addAction(self.exit)
+		self.statusBar()
 
-        self.clear = createAction(self, "&Clear", "Ctrl+R", 'Clear all the text.', self.clearText)
-        self.copy = createAction(self, "&Copy", "Ctrl+C", 'Copy selected text to clipboard.', self.copySelection)
-        self.paste = createAction(self, "&Paste", "Ctrl+V", 'Paste text from clipboard.', self.pasteText)
+		mainMenu = self.menuBar()
+		fileMenu = mainMenu.addMenu('&File')
+		fileMenu.addAction(self.load)
+		fileMenu.addAction(self.save)
+		fileMenu.addAction(self.exit)
 
-        editMenu = mainMenu.addMenu('&Edit')
-        editMenu.addAction(self.clear)
-        editMenu.addAction(self.copy)
-        editMenu.addAction(self.paste)
+		self.clear = createAction(self, "&Clear", "Ctrl+R", 'Clear all the text.', self.clearText)
+		self.copy = createAction(self, "&Copy", "Ctrl+C", 'Copy selected text to clipboard.', self.copySelection)
+		self.paste = createAction(self, "&Paste", "Ctrl+V", 'Paste text from clipboard.', self.pasteText)
 
-        self.help = createAction(self, "&About", "Ctrl+H", 'Show About.', self.showHelp)
+		editMenu = mainMenu.addMenu('&Edit')
+		editMenu.addAction(self.clear)
+		editMenu.addAction(self.copy)
+		editMenu.addAction(self.paste)
 
-        helpMenu = mainMenu.addMenu('&Help')
-        helpMenu.addAction(self.help)
+		self.help = createAction(self, "&About", "Ctrl+H", 'Show About.', self.showHelp)
 
-        self.stateSpaceDirectory = "../Model/"
-        self.reactionsDirectory = "../Model/"
+		helpMenu = mainMenu.addMenu('&Help')
+		helpMenu.addAction(self.help)
 
-        # setup
+		self.stateSpaceDirectory = "../Model/"
+		self.reactionsDirectory = "../Model/"
 
-        #self.stateSpaceTime = QtCore.QTime(0,0,0,0)
-        #self.reactionsTime = QtCore.QTime(0,0,0,0)
+		# setup
 
-        #self.spaceTimer = QtCore.QTimer(self)
-        #self.spaceTimer.timeout.connect(self.showStateProgress)
+		#self.stateSpaceTime = QtCore.QTime(0,0,0,0)
+		#self.reactionsTime = QtCore.QTime(0,0,0,0)
 
-        #self.reactionsTimer = QtCore.QTimer(self)
-        #self.reactionsTimer.timeout.connect(self.showReactionProgress)
+		#self.spaceTimer = QtCore.QTimer(self)
+		#self.spaceTimer.timeout.connect(self.showStateProgress)
 
-        #self.stateSpaceEstimate = 0
-        #self.reactionsEstimate = 0
+		#self.reactionsTimer = QtCore.QTimer(self)
+		#self.reactionsTimer.timeout.connect(self.showReactionProgress)
 
-        vLayout = QVBoxLayout()
+		#self.stateSpaceEstimate = 0
+		#self.reactionsEstimate = 0
 
-        self.tabs = QTabWidget(self)
-        self.tabs.move(605, 30)
-        self.tabs.resize(320, 400)
+		vLayout = QVBoxLayout()
 
-        self.tab1 = QWidget()
-        self.tab2 = QWidget()
+		self.tabs = QTabWidget(self)
+		self.tabs.move(605, 30)
+		self.tabs.resize(320, 400)
 
-        self.tabs.addTab(self.tab1, "State space")
-        self.tabs.addTab(self.tab2, "Model analysis")
+		self.tab1 = QWidget()
+		self.tab2 = QWidget()
 
-        #########################################
+		self.tabs.addTab(self.tab1, "State space")
+		self.tabs.addTab(self.tab2, "Model analysis")
 
-        # text area
+		#########################################
 
-        self.textBox = QTextEdit(self)
-        self.textBox.resize(590, 400)
-        self.textBox.move(10, 30)
-        #self.textBox.cursorPositionChanged.connect(self.textEdited)
-        self.textBox.setLineWrapColumnOrWidth(590)
-        self.textBox.setLineWrapMode(QtGui.QTextEdit.FixedColumnWidth)
+		# text area
 
-        self.highlighter = MyHighlighter( self.textBox )
+		self.textBox = QTextEdit(self)
+		self.textBox.resize(590, 400)
+		self.textBox.move(10, 30)
+		#self.textBox.cursorPositionChanged.connect(self.textEdited)
+		self.textBox.setLineWrapColumnOrWidth(590)
+		self.textBox.setLineWrapMode(QtGui.QTextEdit.FixedColumnWidth)
 
-        self.textBox.setText("# rules\n\n\n# initial state\n")
+		self.highlighter = MyHighlighter( self.textBox )
 
+		self.textBox.setText("# rules\n\n\n# initial state\n")
 
-        #########################################
 
-        self.stateWorker = StateSpaceWorker(self.textBox)
-        self.analysisWorker = AnalysisWorker(self.textBox)
+		#########################################
 
-        #########################################
+		self.stateWorker = StateSpaceWorker(self.textBox)
+		self.analysisWorker = AnalysisWorker(self.textBox)
 
-        # state space file button
+		#########################################
 
-        StatesHbox = QHBoxLayout()
+		# state space file button
 
-        self.stateSpace = createButton(self, 'State space output file', self.save_stateSpace, False)
+		StatesHbox = QHBoxLayout()
 
-        StatesHbox.addWidget(self.stateSpace)
+		self.stateSpace = createButton(self, 'State space output file', self.save_stateSpace, False)
 
-        self.stateSpace_text = createTextBox(self, None, None, True)
+		StatesHbox.addWidget(self.stateSpace)
 
-        StatesHbox.addWidget(self.stateSpace_text)
+		self.stateSpace_text = createTextBox(self, None, None, True)
 
-        vLayout.addLayout(StatesHbox)
+		StatesHbox.addWidget(self.stateSpace_text)
 
-        # Compute states button
+		vLayout.addLayout(StatesHbox)
 
-        StatesHbox = QHBoxLayout()
+		# Compute states button
 
-        self.compute_space_button = createButton(self, 'Compute', self.stateWorker.compute_space, True)
-        self.compute_space_button.clicked.connect(self.progressbarStatesOnStart)
-        #self.compute_space_button.clicked.connect(self.startStateSpaceTimer)
+		StatesHbox = QHBoxLayout()
 
-        self.cancel_state = createButton(self, 'Cancel', self.cancel_computation_states, True)
-        self.cancel_state.clicked.connect(self.progressbarStatesOnFinished)
-        self.cancel_state.clicked.connect(self.stateSpaceCanceled)
+		self.compute_space_button = createButton(self, 'Compute', self.stateWorker.compute_space, True)
+		self.compute_space_button.clicked.connect(self.progressbarStatesOnStart)
+		#self.compute_space_button.clicked.connect(self.startStateSpaceTimer)
 
-        StatesHbox.addWidget(self.cancel_state)
-        StatesHbox.addWidget(self.compute_space_button)
+		self.cancel_state = createButton(self, 'Cancel', self.cancel_computation_states, True)
+		self.cancel_state.clicked.connect(self.progressbarStatesOnFinished)
+		self.cancel_state.clicked.connect(self.stateSpaceCanceled)
 
-        vLayout.addLayout(StatesHbox)
+		StatesHbox.addWidget(self.cancel_state)
+		StatesHbox.addWidget(self.compute_space_button)
 
-        # progres bar
+		vLayout.addLayout(StatesHbox)
 
-        StatesHbox = QHBoxLayout()
+		# progres bar
 
-        self.progress_bar_states = createProgressBar(self)
+		StatesHbox = QHBoxLayout()
 
-        StatesHbox.addWidget(self.progress_bar_states)
-        vLayout.addLayout(StatesHbox)
+		self.progress_bar_states = createProgressBar(self)
 
-        self.stateWorker.taskFinished.connect(self.progressbarStatesOnFinished)
-        self.stateWorker.showMostStates.connect(self.showNumberOfStates)
-        self.stateWorker.NumOfStates.connect(self.updateNumOfStates)
+		StatesHbox.addWidget(self.progress_bar_states)
+		vLayout.addLayout(StatesHbox)
 
-        # num of states label
+		self.stateWorker.taskFinished.connect(self.progressbarStatesOnFinished)
+		self.stateWorker.showMostStates.connect(self.showNumberOfStates)
+		self.stateWorker.NumOfStates.connect(self.updateNumOfStates)
 
-        StatesHbox = QHBoxLayout()
+		# num of states label
 
-        self.emptySpaceHack = QtGui.QLabel(self)
+		StatesHbox = QHBoxLayout()
 
-        StatesHbox.addWidget(self.emptySpaceHack)
-        vLayout.addLayout(StatesHbox)
+		self.emptySpaceHack = QtGui.QLabel(self)
 
-        # save reactions
+		StatesHbox.addWidget(self.emptySpaceHack)
+		vLayout.addLayout(StatesHbox)
 
-        StatesHbox = QHBoxLayout()
+		# save reactions
 
-        self.save_reactions_button = createButton(self, 'Save reactions to file', self.save_reactions, True)
+		StatesHbox = QHBoxLayout()
 
-        StatesHbox.addWidget(self.save_reactions_button)
-        vLayout.addLayout(StatesHbox)
+		self.save_reactions_button = createButton(self, 'Save reactions to file', self.save_reactions, True)
 
-        # results fields
+		StatesHbox.addWidget(self.save_reactions_button)
+		vLayout.addLayout(StatesHbox)
 
-        StatesHbox = QHBoxLayout()
+		# results fields
 
-        style = '''QLineEdit {background-color: rgb(214, 214, 214); border: none ; }'''
+		StatesHbox = QHBoxLayout()
 
-        self.statistics = createTextBox(self, 'Statistics of the model', '''QLineEdit {border: none ; }''', True)
+		style = '''QLineEdit {background-color: rgb(214, 214, 214); border: none ; }'''
 
-        StatesHbox.addWidget(self.statistics)
-        vLayout.addLayout(StatesHbox)
+		self.statistics = createTextBox(self, 'Statistics of the model', '''QLineEdit {border: none ; }''', True)
 
-        StatesHbox = QHBoxLayout()
+		StatesHbox.addWidget(self.statistics)
+		vLayout.addLayout(StatesHbox)
 
-        self.num_of_states = createTextBox(self, '- No. of States:           ', style, True)
+		StatesHbox = QHBoxLayout()
 
-        StatesHbox.addWidget(self.num_of_states)
-        vLayout.addLayout(StatesHbox)
+		self.num_of_states = createTextBox(self, '- No. of States:           ', style, True)
 
-        StatesHbox = QHBoxLayout()
+		StatesHbox.addWidget(self.num_of_states)
+		vLayout.addLayout(StatesHbox)
 
-        self.num_of_edges = createTextBox(self, '- No. of Edges:           ', style, True)
+		StatesHbox = QHBoxLayout()
 
-        StatesHbox.addWidget(self.num_of_edges)
-        vLayout.addLayout(StatesHbox)
+		self.num_of_edges = createTextBox(self, '- No. of Edges:           ', style, True)
 
-        StatesHbox = QHBoxLayout()
+		StatesHbox.addWidget(self.num_of_edges)
+		vLayout.addLayout(StatesHbox)
 
-        self.num_of_reactions = createTextBox(self, '- No. of Reactions:    ', style, True)
+		StatesHbox = QHBoxLayout()
 
-        StatesHbox.addWidget(self.num_of_reactions)
-        vLayout.addLayout(StatesHbox)
+		self.num_of_reactions = createTextBox(self, '- No. of Reactions:    ', style, True)
 
-        self.tab1.setLayout(vLayout)
+		StatesHbox.addWidget(self.num_of_reactions)
+		vLayout.addLayout(StatesHbox)
 
-        # time bar
+		self.tab1.setLayout(vLayout)
 
-        #self.runningStates = QtGui.QLabel(self)
-        #self.runningStates.setText(" Na:Na:Na /  Na:Na:Na")
-        #self.runningStates.move(775, 155)
+		# time bar
 
-        #####################################################################################
+		#self.runningStates = QtGui.QLabel(self)
+		#self.runningStates.setText(" Na:Na:Na /  Na:Na:Na")
+		#self.runningStates.move(775, 155)
 
-        # dynamic analysis
+		#####################################################################################
 
-        vLayout = QVBoxLayout()
+		# dynamic analysis
 
-        StatesHbox = QHBoxLayout()
+		vLayout = QVBoxLayout()
 
-        style = '''QLineEdit {background-color: rgb(214, 214, 214); border: none ; }'''
+		StatesHbox = QHBoxLayout()
 
-        self.reach_text = createTextBox(self, 'Reachability', '''QLineEdit {border: none ; }''', True)
+		style = '''QLineEdit {background-color: rgb(214, 214, 214); border: none ; }'''
 
-        StatesHbox.addWidget(self.reach_text)
-        vLayout.addLayout(StatesHbox)
+		self.reach_text = createTextBox(self, 'Reachability', '''QLineEdit {border: none ; }''', True)
 
-        # dynamical widgets for filling stuff
+		StatesHbox.addWidget(self.reach_text)
+		vLayout.addLayout(StatesHbox)
 
-        self.scrollLayout = QtGui.QFormLayout()
-        self.scrollLayout.setVerticalSpacing(0)
-        #self.scrollLayout.setMargin(0)
+		# dynamical widgets for filling stuff
 
-        self.scrollWidget = QtGui.QWidget()
-        self.scrollWidget.setLayout(self.scrollLayout)
+		self.scrollLayout = QtGui.QFormLayout()
+		self.scrollLayout.setVerticalSpacing(0)
+		#self.scrollLayout.setMargin(0)
 
-        self.scrollArea = QtGui.QScrollArea()
-        self.scrollArea.setWidgetResizable(True)
-        self.scrollArea.setWidget(self.scrollWidget)
+		self.scrollWidget = QtGui.QWidget()
+		self.scrollWidget.setLayout(self.scrollLayout)
 
-        vLayout.addWidget(self.scrollArea)
+		self.scrollArea = QtGui.QScrollArea()
+		self.scrollArea.setWidgetResizable(True)
+		self.scrollArea.setWidget(self.scrollWidget)
 
-        self.addButton = QtGui.QPushButton('+')
-        self.addButton.setMaximumWidth(25)
-        self.addButton.clicked.connect(self.addDynamicWidget)
+		vLayout.addWidget(self.scrollArea)
 
-        self.scrollLayout.addRow(self.addButton)
+		self.addButton = QtGui.QPushButton('+')
+		self.addButton.setMaximumWidth(25)
+		self.addButton.clicked.connect(self.addDynamicWidget)
 
-        #vLayout.addWidget(self.addButton)
+		self.scrollLayout.addRow(self.addButton)
+		#self.addButton.setDisabled(True)
 
-        # Compute reactions button
+		#vLayout.addWidget(self.addButton)
 
-        StatesHbox = QHBoxLayout()
+		# Compute reactions button
 
-        self.compute_reachability_button = createButton(self, 'Compute', self.analysisWorker.compute_reach, True)
+		StatesHbox = QHBoxLayout()
 
-        StatesHbox.addWidget(self.compute_reachability_button)
+		self.compute_reachability_button = createButton(self, 'Compute', self.analysisWorker.compute_reach, True)
 
-        vLayout.addLayout(StatesHbox)
+		StatesHbox.addWidget(self.compute_reachability_button)
 
-        # progres bar
+		vLayout.addLayout(StatesHbox)
 
-        StatesHbox = QHBoxLayout()
+		# progres bar
 
-        self.progress_bar_reactions = createProgressBar(self)
+		StatesHbox = QHBoxLayout()
 
-        StatesHbox.addWidget(self.progress_bar_reactions)
-        vLayout.addLayout(StatesHbox)
+		self.progress_bar_reactions = createProgressBar(self)
 
-        #########################################
+		StatesHbox.addWidget(self.progress_bar_reactions)
+		vLayout.addLayout(StatesHbox)
 
-        # static analysis
+		#########################################
 
-        StatesHbox = QHBoxLayout()
+		# static analysis
 
-        style = '''QLineEdit {background-color: rgb(214, 214, 214); border: none ; }'''
+		StatesHbox = QHBoxLayout()
 
-        self.reach_text = createTextBox(self, 'Static analysis', '''QLineEdit {border: none ; }''', True)
+		style = '''QLineEdit {background-color: rgb(214, 214, 214); border: none ; }'''
 
-        StatesHbox.addWidget(self.reach_text)
-        vLayout.addLayout(StatesHbox)
+		self.reach_text = createTextBox(self, 'Static analysis', '''QLineEdit {border: none ; }''', True)
 
+		StatesHbox.addWidget(self.reach_text)
+		vLayout.addLayout(StatesHbox)
 
-        StatesHbox = QHBoxLayout()
 
-        self.compute_conflicts = createButton(self, 'Compute conflicts', self.analysisWorker.compute_conflicts, True)
+		StatesHbox = QHBoxLayout()
 
-        StatesHbox.addWidget(self.compute_conflicts)
+		self.compute_conflicts = createButton(self, 'Compute conflicts', self.analysisWorker.compute_conflicts, True)
 
-        vLayout.addLayout(StatesHbox)
+		StatesHbox.addWidget(self.compute_conflicts)
 
-        self.analysisWorker.noConflicts.connect(self.showConflicts)
-        self.analysisWorker.conflicts.connect(self.showNoConflicts)
+		vLayout.addLayout(StatesHbox)
 
+		self.analysisWorker.noConflicts.connect(self.showConflicts)
+		self.analysisWorker.conflicts.connect(self.showNoConflicts)
 
-        StatesHbox = QHBoxLayout()
 
-        self.noConflictsMessage = QtGui.QLabel(self)
+		StatesHbox = QHBoxLayout()
 
-        StatesHbox.addWidget(self.noConflictsMessage)
-        vLayout.addLayout(StatesHbox)
+		self.noConflictsMessage = QtGui.QLabel(self)
 
-        # result field
+		StatesHbox.addWidget(self.noConflictsMessage)
+		vLayout.addLayout(StatesHbox)
 
-        self.tab2.setLayout(vLayout)
+		# result field
 
-        # time bar
+		self.tab2.setLayout(vLayout)
 
-        # self.runningReactions = QtGui.QLabel(self)
-        # self.runningReactions.setText(" Na:Na:Na /  Na:Na:Na")
-        # self.runningReactions.move(775, 305)
+		# time bar
 
-        #########################################
+		# self.runningReactions = QtGui.QLabel(self)
+		# self.runningReactions.setText(" Na:Na:Na /  Na:Na:Na")
+		# self.runningReactions.move(775, 305)
 
-    def addDynamicWidget(self):
-        self.addButton.deleteLater()
-        self.scrollLayout.addRow(FillAgentToBeFound())
+		#########################################
 
-        self.addButton = QtGui.QPushButton('+')
-        self.addButton.setMaximumWidth(25)
-        self.addButton.clicked.connect(self.addDynamicWidget)
+	def checkScrollArea(self):
+		if self.getRowDeleted():
+			if self.scrollLayout.count() < 3:
+				self.compute_reachability_button.setDisabled(True)
+			self.setRowDeleted("0")
 
-        self.scrollLayout.addRow(self.addButton)
+	def setRowDeleted(self, value):
+		self.rowDeleted.setText(value)
 
-        # no idea why it is working like this:
-        self.scrollArea.verticalScrollBar().setMaximum(self.scrollArea.verticalScrollBar().maximum() + 45)
-        self.scrollArea.verticalScrollBar().setValue(self.scrollArea.verticalScrollBar().maximum())
-        # but its working tho..
+	def getRowDeleted(self):
+		return bool(int(str(self.rowDeleted.text())))
 
-    def showConflicts(self):
-        self.noConflictsMessage.setText("")
-        self.window = PopUp(self.analysisWorker.getMessage()[:-22])
-        self.window.show()
+	def addDynamicWidget(self):
+		self.addButton.deleteLater()
+		self.scrollLayout.addRow(FillAgentToBeFound(self))
 
-    def showNoConflicts(self):
-        self.noConflictsMessage.setText("No conflicts !")
+		self.addButton = QtGui.QPushButton('+')
+		self.addButton.setMaximumWidth(25)
+		self.addButton.clicked.connect(self.addDynamicWidget)
 
-    def updateNumOfStates(self):
-        return
-        #self.numCurrentOfStates.setText(str(self.stateWorker.getCurrentNumberOfStates()))
+		self.scrollLayout.addRow(self.addButton)
 
-    def showNumberOfStates(self):
-        return
-        #self.numOfStates.setText(" / " + str(self.stateWorker.getMostNumberOfStates()))
+		# no idea why it is working like this:
+		self.scrollArea.verticalScrollBar().setMaximum(self.scrollArea.verticalScrollBar().maximum() + 45)
+		self.scrollArea.verticalScrollBar().setValue(self.scrollArea.verticalScrollBar().maximum())
+		# but its working tho..
 
-    def startStateSpaceTimer(self):
-        self.spaceTimer.start(1000)
-        self.stateSpaceEstimate = time.strftime("%H:%M:%S", time.gmtime(Gen.estimateComputation(3, 10, 10)))
+		self.compute_reachability_button.setDisabled(False)
 
-    def stateReactionsTimer(self):
-        self.reactionsTimer.start(1000)
-        self.reactionsEstimate = time.strftime("%H:%M:%S", time.gmtime(Implicit.estimateComputation(10)))
+	def showConflicts(self):
+		self.noConflictsMessage.setText("")
+		self.window = PopUp(self.analysisWorker.getMessage()[:-22])
+		self.window.show()
 
-    def stateSpaceCanceled(self):
-        self.num_of_states.setText('- No. of States:           n\\a' )
-        self.num_of_edges.setText('- No. of Edges:           n\\a' )
-        self.progress_bar_states.setValue(0)
+	def showNoConflicts(self):
+		self.noConflictsMessage.setText("No conflicts !")
 
-        #self.spaceTimer.stop()
+	def updateNumOfStates(self):
+		return
+		#self.numCurrentOfStates.setText(str(self.stateWorker.getCurrentNumberOfStates()))
 
-    def reactionsCanceled(self):
-        self.num_of_reactions.setText('- No. of Reactions:    n\\a')
-        self.progress_bar_reactions.setValue(0)
+	def showNumberOfStates(self):
+		return
+		#self.numOfStates.setText(" / " + str(self.stateWorker.getMostNumberOfStates()))
 
-        #self.reactionsTimer.stop()
+	def startStateSpaceTimer(self):
+		self.spaceTimer.start(1000)
+		self.stateSpaceEstimate = time.strftime("%H:%M:%S", time.gmtime(Gen.estimateComputation(3, 10, 10)))
 
-    def progressbarStatesOnStart(self): 
-        self.progress_bar_states.setRange(0,0)
-        self.cancel_state.setDisabled(False)
+	def stateReactionsTimer(self):
+		self.reactionsTimer.start(1000)
+		self.reactionsEstimate = time.strftime("%H:%M:%S", time.gmtime(Implicit.estimateComputation(10)))
 
-    def progressbarStatesOnFinished(self):
-        self.progress_bar_states.setRange(0,1)
-        self.progress_bar_states.setValue(1)
-        self.cancel_state.setDisabled(True)
-        self.save_reactions_button.setDisabled(False)
+	def stateSpaceCanceled(self):
+		self.num_of_states.setText('- No. of States:           n\\a' )
+		self.num_of_edges.setText('- No. of Edges:           n\\a' )
+		self.progress_bar_states.setValue(0)
 
-    def progressbarReactionsOnStart(self): 
-        self.progress_bar_reactions.setRange(0,0)
-        self.cancel_rxns.setDisabled(False)
+		#self.spaceTimer.stop()
 
-    def progressbarReactionsOnFinished(self):
-        self.progress_bar_reactions.setRange(0,1)
-        self.progress_bar_reactions.setValue(1)
-        self.cancel_rxns.setDisabled(True)
+	def reactionsCanceled(self):
+		self.num_of_reactions.setText('- No. of Reactions:    n\\a')
+		self.progress_bar_reactions.setValue(0)
 
-        #self.reactionsTimer.stop()
+		#self.reactionsTimer.stop()
 
-    def paintEvent(self, event):
-        qp = QtGui.QPainter()
-        qp.begin(self)
-        self.drawLines(qp)
-        qp.end()
+	def progressbarStatesOnStart(self): 
+		self.progress_bar_states.setRange(0,0)
+		self.cancel_state.setDisabled(False)
 
-    def drawLines(self, qp):
-      
-        pen = QtGui.QPen(QtCore.Qt.gray, 4, QtCore.Qt.SolidLine)
+	def progressbarStatesOnFinished(self):
+		self.progress_bar_states.setRange(0,1)
+		self.progress_bar_states.setValue(1)
+		self.cancel_state.setDisabled(True)
+		self.save_reactions_button.setDisabled(False)
+		#self.addButton.setDisabled(False)
 
-        qp.setPen(pen)
-        qp.drawLine(610, 225, 910, 225)
+	def progressbarReactionsOnStart(self): 
+		self.progress_bar_reactions.setRange(0,0)
+		self.cancel_rxns.setDisabled(False)
 
-        qp.drawPixmap(825,30,QPixmap("icons/logo.png"))
+	def progressbarReactionsOnFinished(self):
+		self.progress_bar_reactions.setRange(0,1)
+		self.progress_bar_reactions.setValue(1)
+		self.cancel_rxns.setDisabled(True)
 
-    def open_model(self):
-        file = QFileDialog.getOpenFileName(self, 'Choose model', directory = '../Examples/', filter ="BCS (*.bcs);;All types (*)")
-        if file:
-            file = open(file, "r")
-            self.textBox.setPlainText(file.read())
-            self.compute_conflicts.setDisabled(False)
-            if self.stateWorker.getStateSpaceFile():
-                self.compute_space_button.setDisabled(False)
+		#self.reactionsTimer.stop()
 
-    def save_stateSpace(self):
-        file = QFileDialog.getSaveFileName(self, 'Choose output file', directory = self.stateSpaceDirectory, filter =".json (*.json);;All types (*)")
-        if file:
-            self.stateSpaceDirectory = os.path.dirname(str(file))
-            if not os.path.splitext(str(file))[1]:
-                file = str(file) + ".json"
-            self.stateWorker.setStateSpaceFile(file)
-            self.stateWorker.setLenStates(self.num_of_states)
-            self.stateWorker.setLenEdges(self.num_of_edges)
-            self.stateWorker.setLenReactions(self.num_of_reactions)
-            self.stateSpace_text.setText(self.stateWorker.getStateSpaceFile())
-            if self.stateWorker.getModelFile():
-                self.compute_space_button.setDisabled(False)
+	def paintEvent(self, event):
+		qp = QtGui.QPainter()
+		qp.begin(self)
+		self.drawLines(qp)
+		qp.end()
 
-    def save_reactions(self):
-        file = QFileDialog.getSaveFileName(self, 'Choose log file', directory = self.reactionsDirectory, filter =".txt (*.txt);;All types (*)")
-        if file:
-            self.reactionsDirectory = os.path.dirname(str(file))
-            if not os.path.splitext(str(file))[1]:
-                file = str(file) + ".txt"
-            f = open(file,'w')
-            f.write("\n".join(self.stateWorker.getReactions()))
-            f.close()
+	def drawLines(self, qp):
+	  
+		pen = QtGui.QPen(QtCore.Qt.gray, 4, QtCore.Qt.SolidLine)
 
-    def cancel_computation_states(self):
-        if not self.stateWorker.getTheWorker().wait(100):
-            self.stateWorker.getTheWorker().terminate()
-            self.compute_space_button.setDisabled(True)
-            self.cancel_state.setDisabled(True)
-            self.stateSpace.setDisabled(True)
+		qp.setPen(pen)
+		qp.drawLine(610, 225, 910, 225)
 
-    def showStateProgress(self):
-        self.stateSpaceTime = self.stateSpaceTime.addSecs(1)
-        text = self.stateSpaceTime.toString('hh:mm:ss')
-        #self.runningStates.setText(text + " / " + self.stateSpaceEstimate)
-        
-    def showReactionProgress(self):
-        self.reactionsTime = self.reactionsTime.addSecs(1)
-        text = self.reactionsTime.toString('hh:mm:ss')
-        #self.runningReactions.setText(text + " / " + self.reactionsEstimate)
+		qp.drawPixmap(825,30,QPixmap("icons/logo.png"))
 
-    def save_model(self):
-        file = QFileDialog.getSaveFileName(self, 'Choose model file', filter ="BCS (*.bcs);;All types (*)")
-        if file:
-            if not os.path.splitext(str(file))[1]:
-                file = str(file) + ".bcs"
-            with open(file, 'w') as file:
-                file.write(self.textBox.toPlainText())
+	def open_model(self):
+		file = QFileDialog.getOpenFileName(self, 'Choose model', directory = '../Examples/', filter ="BCS (*.bcs);;All types (*)")
+		if file:
+			file = open(file, "r")
+			self.textBox.setPlainText(file.read())
+			self.compute_conflicts.setDisabled(False)
+			if self.stateWorker.getStateSpaceFile():
+				self.compute_space_button.setDisabled(False)
 
-    def copySelection(self):
-        self.textBox.copy()
+	def save_stateSpace(self):
+		file = QFileDialog.getSaveFileName(self, 'Choose output file', directory = self.stateSpaceDirectory, filter =".json (*.json);;All types (*)")
+		if file:
+			self.stateSpaceDirectory = os.path.dirname(str(file))
+			if not os.path.splitext(str(file))[1]:
+				file = str(file) + ".json"
+			self.stateWorker.setStateSpaceFile(file)
+			self.stateWorker.setLenStates(self.num_of_states)
+			self.stateWorker.setLenEdges(self.num_of_edges)
+			self.stateWorker.setLenReactions(self.num_of_reactions)
+			self.stateSpace_text.setText(self.stateWorker.getStateSpaceFile())
+			if self.stateWorker.getModelFile():
+				self.compute_space_button.setDisabled(False)
 
-    def pasteText(self):
-        self.textBox.paste()
+	def save_reactions(self):
+		file = QFileDialog.getSaveFileName(self, 'Choose log file', directory = self.reactionsDirectory, filter =".txt (*.txt);;All types (*)")
+		if file:
+			self.reactionsDirectory = os.path.dirname(str(file))
+			if not os.path.splitext(str(file))[1]:
+				file = str(file) + ".txt"
+			f = open(file,'w')
+			f.write("\n".join(self.stateWorker.getReactions()))
+			f.close()
 
-    def clearText(self):
-        self.textBox.clear()
+	def cancel_computation_states(self):
+		if not self.stateWorker.getTheWorker().wait(100):
+			self.stateWorker.getTheWorker().terminate()
+			self.compute_space_button.setDisabled(True)
+			self.cancel_state.setDisabled(True)
+			self.stateSpace.setDisabled(True)
 
-    def showHelp(self):
-        self.help = Help()
-        self.help.show()
+	def showStateProgress(self):
+		self.stateSpaceTime = self.stateSpaceTime.addSecs(1)
+		text = self.stateSpaceTime.toString('hh:mm:ss')
+		#self.runningStates.setText(text + " / " + self.stateSpaceEstimate)
+		
+	def showReactionProgress(self):
+		self.reactionsTime = self.reactionsTime.addSecs(1)
+		text = self.reactionsTime.toString('hh:mm:ss')
+		#self.runningReactions.setText(text + " / " + self.reactionsEstimate)
+
+	def save_model(self):
+		file = QFileDialog.getSaveFileName(self, 'Choose model file', filter ="BCS (*.bcs);;All types (*)")
+		if file:
+			if not os.path.splitext(str(file))[1]:
+				file = str(file) + ".bcs"
+			with open(file, 'w') as file:
+				file.write(self.textBox.toPlainText())
+
+	def copySelection(self):
+		self.textBox.copy()
+
+	def pasteText(self):
+		self.textBox.paste()
+
+	def clearText(self):
+		self.textBox.clear()
+
+	def showHelp(self):
+		self.help = Help()
+		self.help.show()
 
 app = QtGui.QApplication(sys.argv)
 

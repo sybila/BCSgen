@@ -1,7 +1,7 @@
 import os
 import sys
 from Vector_network import *
-from Reaction import *
+import Interpreter_of_BCSL as BCSL
 import numpy as np
 import json
 import itertools
