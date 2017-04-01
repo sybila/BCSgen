@@ -98,9 +98,9 @@ class AnalysisWorker(QtCore.QObject):
 	def compute_reach(self):
 		satisfyingStates = filter(lambda state: (self.toBeReached <= state).all(), self.stateWorker.states)
 		if satisfyingStates:
-			self.reachablityResult = "Reachable !"
+			self.reachablityResult = True
 		else:
-			self.reachablityResult = "Not reachable !"
+			self.reachablityResult = False
 		self.reachFinished.emit()
 
 class StateSpaceWorker(QtCore.QObject):
@@ -301,8 +301,7 @@ class FillAgentToBeFound(QtGui.QWidget):
 
 		completer = QCompleter()
 		completer.setCaseSensitivity(Qt.CaseInsensitive)
-		completer.setModelSorting(QCompleter.CaseInsensitivelySortedModel)
-		
+
 		self.agent.setCompleter(completer)
 		model = QStringListModel()
 		completer.setModel(model)
@@ -310,6 +309,9 @@ class FillAgentToBeFound(QtGui.QWidget):
 
 		self.stochio = QLineEdit()
 		self.stochio.setMaximumWidth(30)
+
+		self.stochio.textEdited.connect(self.resetColor)
+
 		delete = QtGui.QPushButton()
 		delete.setMaximumWidth(25)
 		delete.setText("x")
@@ -320,6 +322,9 @@ class FillAgentToBeFound(QtGui.QWidget):
 		StatesHbox.addWidget(delete, 1)
 
 		self.setLayout(StatesHbox)
+
+	def resetColor(self):
+		self.stochio.setStyleSheet("color: rgb(0, 0, 0);")
 
 	def timeToDelete(self):
 		self.parent.setRowDeleted("1")
@@ -628,7 +633,11 @@ class MainWindow(QtGui.QMainWindow):
 		#########################################
 
 	def writeReachResult(self):
-		self.reachabilityResult.setText(self.analysisWorker.getReachabilityResult())
+		if self.analysisWorker.getReachabilityResult():
+			self.reachabilityResult.setText("Reachable !")
+		else:
+			self.reachabilityResult.setText("Not reachable !")
+		self.reachabilityResult.setStyleSheet("color: rgb(0, 155, 0);")
 
 	def startReachability(self):
 		checkWheterReachable = True
@@ -636,10 +645,22 @@ class MainWindow(QtGui.QMainWindow):
 		vector = [0] * len(orderedAgents)
 		for i in range(self.scrollLayout.count() - 1):
 			widget = self.scrollLayout.itemAt(i).widget()
-			agent = widget.agent.text()
-			stochio = widget.stochio.text()
+			agent = str(widget.agent.text())
+			stochio = str(widget.stochio.text())
+			if not agent:
+				self.reachabilityResult.setText("No agent given !")
+				self.reachabilityResult.setStyleSheet("color: rgb(255, 0, 0);")
+				checkWheterReachable = False
+				break
+			if not stochio.isdigit():
+				self.reachabilityResult.setText("Wrong stochiometry !")
+				self.reachabilityResult.setStyleSheet("color: rgb(255, 0, 0);")
+				widget.stochio.setStyleSheet("color: rgb(255, 0, 0);")
+				checkWheterReachable = False
+				break
 			if agent not in orderedAgents:
 				self.reachabilityResult.setText("Not reachable !")
+				self.reachabilityResult.setStyleSheet("color: rgb(0, 155, 0);")
 				checkWheterReachable = False
 				break
 			vector[orderedAgents.index(agent)] = int(stochio)
