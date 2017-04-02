@@ -192,9 +192,9 @@ class StateSpaceWorker(QtCore.QObject):
 		self.states, self.edges = self.generateStateSpace(bound)
 
 		Gen.printStateSpace(self.states, self.edges, self.VN.getTranslations(), self.stateSpaceFile)
-		self.lenStates.setText('- No. of States:           ' + str(len(self.states)))
-		self.lenEdges.setText('- No. of Edges:           ' + str(len(self.edges)))
-		self.lenReactions.setText('- No. of Reactions:    ' + str(len(self.reactions)))
+		self.lenStates.setText('No. of States:'.ljust(30) + str(len(self.states)))
+		self.lenEdges.setText('No. of Edges:'.ljust(30) + str(len(self.edges)))
+		self.lenReactions.setText('No. of Reactions:'.ljust(30) + str(len(self.reactions)))
 
 		self.uniqueAgents = self.VN.getTranslations()
 		self.taskFinished.emit()
@@ -518,21 +518,21 @@ class MainWindow(QtGui.QMainWindow):
 
 		StatesHbox = QHBoxLayout()
 
-		self.num_of_states = createTextBox(self, '- No. of States:           ', style, True)
+		self.num_of_states = createTextBox(self, 'No. of States:'.ljust(30), style, True)
 
 		StatesHbox.addWidget(self.num_of_states)
 		vLayout.addLayout(StatesHbox)
 
 		StatesHbox = QHBoxLayout()
 
-		self.num_of_edges = createTextBox(self, '- No. of Edges:           ', style, True)
+		self.num_of_edges = createTextBox(self, 'No. of Edges:'.ljust(30), style, True)
 
 		StatesHbox.addWidget(self.num_of_edges)
 		vLayout.addLayout(StatesHbox)
 
 		StatesHbox = QHBoxLayout()
 
-		self.num_of_reactions = createTextBox(self, '- No. of Reactions:    ', style, True)
+		self.num_of_reactions = createTextBox(self, 'No. of Reactions:'.ljust(30), style, True)
 
 		StatesHbox.addWidget(self.num_of_reactions)
 		vLayout.addLayout(StatesHbox)
@@ -555,7 +555,7 @@ class MainWindow(QtGui.QMainWindow):
 
 		style = '''QLineEdit {background-color: rgb(214, 214, 214); border: none ; }'''
 
-		self.reach_text = createTextBox(self, 'Reachability', '''QLineEdit {border: none ; }''', True)
+		self.reach_text = createTextBox(self, 'Reachability', '''QLineEdit {border: none ; font-weight: bold }''', True)
 
 		StatesHbox.addWidget(self.reach_text)
 		vLayout.addLayout(StatesHbox)
@@ -598,6 +598,11 @@ class MainWindow(QtGui.QMainWindow):
 		self.reachabilityResult = QtGui.QLabel(self)
 
 		StatesHbox.addWidget(self.reachabilityResult)
+
+		self.reachable_states_button = createButton(self, "Show results", self.showReachableStates, True)
+
+		StatesHbox.addWidget(self.reachable_states_button)
+
 		vLayout.addLayout(StatesHbox)
 
 		# Compute reactions button
@@ -621,7 +626,7 @@ class MainWindow(QtGui.QMainWindow):
 
 		style = '''QLineEdit {background-color: rgb(214, 214, 214); border: none ; }'''
 
-		self.reach_text = createTextBox(self, 'Static analysis', '''QLineEdit {border: none ; }''', True)
+		self.reach_text = createTextBox(self, 'Static analysis', '''QLineEdit {border: none ; font-weight: bold }''', True)
 
 		StatesHbox.addWidget(self.reach_text)
 		vLayout.addLayout(StatesHbox)
@@ -657,6 +662,10 @@ class MainWindow(QtGui.QMainWindow):
 		# self.runningReactions.move(775, 305)
 
 		#########################################
+
+	def showReachableStates(self):
+		# TBA 
+		return
 
 	def writeReachResult(self):
 		self.progress_bar_reachability.setRange(0,1)
@@ -695,6 +704,7 @@ class MainWindow(QtGui.QMainWindow):
 				
 			vector[orderedAgents.index(agent)] = int(stochio)
 		if checkWheterReachable:
+			self.reachable_states_button.setDisabled(False)
 			self.analysisWorker.setToBeReached(np.array(vector))
 			self.analysisWorker.compute_reach()
 
@@ -752,8 +762,9 @@ class MainWindow(QtGui.QMainWindow):
 		self.reactionsEstimate = time.strftime("%H:%M:%S", time.gmtime(Implicit.estimateComputation(10)))
 
 	def stateSpaceCanceled(self):
-		self.num_of_states.setText('- No. of States:           n\\a' )
-		self.num_of_edges.setText('- No. of Edges:           n\\a' )
+		self.num_of_states.setText('No. of States:'.ljust(30) + 'n\\a' )
+		self.num_of_edges.setText('No. of Edges:'.ljust(30) + 'n\\a' )
+		self.num_of_reactions.setText('No. of Reactions:'.ljust(30) + 'n\\a' )
 		self.progress_bar_states.setValue(0)
 
 		#self.spaceTimer.stop()
