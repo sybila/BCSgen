@@ -13,25 +13,7 @@ from PyQt4 import QtGui, QtCore
 from PyQt4.QtGui import *
 from PyQt4.Qt import *
 
-helpText = "<b>Biochemical Space language software tool</b> <br><br> This tool \
-serves for interpreting basic functionality to maintain <br> Biochemical \
-Space language. It provides state space and reactions <br> generating which \
-can be used for analysis and visualisation. <br><br> For futher information \
-visit <a href=\"https://github.com/sybila/BCSgen\">github.com/sybila/BCSgen</a>."
-
-
-class Help(QWidget):
-	def __init__(self, parent= None):
-		super(Help, self).__init__()
-
-		self.setWindowTitle("Help")
-		self.setFixedHeight(175)
-		self.setFixedWidth(430)
-
-		self.titleText = QLabel(self)
-		self.titleText.move(10, 10)
-		self.titleText.setOpenExternalLinks(True)
-		self.titleText.setText(helpText)
+# global methods for creating PyQt objects
 
 def createProgressBar(it):
 	progressBar = QtGui.QProgressBar(it)
@@ -53,10 +35,42 @@ def createButton(it, text, to_connect, disabled):
 	button.setDisabled(disabled)
 	return button
 
-def createChecker(it, text):
-	checker = QCheckBox(text, it)
-	return checker
+def createAction(it, title, shortcut, tip, connectWith):
+	action = QtGui.QAction(title, it)
+	action.setShortcut(shortcut)
+	action.setStatusTip(tip)
+	action.triggered.connect(connectWith)
+	return action
 
+helpText = "<b>Biochemical Space language software tool</b> <br><br> This tool \
+serves for interpreting basic functionality to maintain <br> Biochemical \
+Space language. It provides state space and reactions <br> generating which \
+can be used for analysis and visualisation. <br><br> For futher information \
+visit <a href=\"https://github.com/sybila/BCSgen\">github.com/sybila/BCSgen</a>."
+
+"""
+Class Help
+- for displaying help
+"""
+class Help(QWidget):
+	def __init__(self, parent= None):
+		super(Help, self).__init__()
+
+		self.setWindowTitle("Help")
+		self.setFixedHeight(175)
+		self.setFixedWidth(430)
+
+		self.titleText = QLabel(self)
+		self.titleText.move(10, 10)
+		self.titleText.setOpenExternalLinks(True)
+		self.titleText.setText(helpText)
+
+"""
+Class AnalysisWorker
+- computes all analysis available in BCSgen:
+	- static analysis (conflicts check)
+	- dynamic analysis (reachability)
+"""
 class AnalysisWorker(QtCore.QObject):
 	noConflicts = QtCore.pyqtSignal()
 	conflicts = QtCore.pyqtSignal()
@@ -103,6 +117,11 @@ class AnalysisWorker(QtCore.QObject):
 			self.reachablityResult = False
 		self.reachFinished.emit()
 
+"""
+Class StateSpaceWorker
+- computes state space for given model
+- due to iterative algorithm, it able to emit signal about current number of computed states
+"""
 class StateSpaceWorker(QtCore.QObject):
 	taskFinished = QtCore.pyqtSignal()
 	showMostStates = QtCore.pyqtSignal()
@@ -164,9 +183,7 @@ class StateSpaceWorker(QtCore.QObject):
 		self.reactions = reactionGenerator.computeReactions(rules)
 
 		initialState = Explicit.sortInitialState(initialState)
-
 		self.VN = Gen.createVectorNetwork(self.reactions, initialState)
-
 		bound = self.VN.getBound()
 
 		self.mostNumberOfStates = Gen.estimateNumberOfStates(bound, len(self.VN.getTranslations()))
@@ -180,7 +197,6 @@ class StateSpaceWorker(QtCore.QObject):
 		self.lenReactions.setText('- No. of Reactions:    ' + str(len(self.reactions)))
 
 		self.uniqueAgents = self.VN.getTranslations()
-
 		self.taskFinished.emit()
 
 	def generateStateSpace(self, bound):
@@ -202,18 +218,19 @@ class StateSpaceWorker(QtCore.QObject):
 
 		return states, edges
 
-def createAction(it, title, shortcut, tip, connectWith):
-	action = QtGui.QAction(title, it)
-	action.setShortcut(shortcut)
-	action.setStatusTip(tip)
-	action.triggered.connect(connectWith)
-	return action
-
+"""
+Class HighlightingRule
+- just simple class to hold information about highlighting format
+"""
 class HighlightingRule():
 	def __init__(self, pattern, format):
 		self.pattern = QRegExp(pattern)
 		self.format = format
 
+"""
+Class MyHighlighter
+- highlights basic syntax in editor of models
+"""
 class MyHighlighter(QSyntaxHighlighter):
 	def __init__(self, parent):
 		QSyntaxHighlighter.__init__(self, parent)
@@ -246,12 +263,15 @@ class MyHighlighter(QSyntaxHighlighter):
 				index = expression.indexIn(text, index + length)
 		self.setCurrentBlockState( 0 )
 
-class PopUp(QWidget):
+"""
+Class DisplayConflicts
+- shows found conflicts with markdown formatting
+- allows them to save to a file
+"""
+class DisplayConflicts(QWidget):
 	def __init__(self, message):
-		super(PopUp, self).__init__()
-
+		super(DisplayConflicts, self).__init__()
 		self.message = message
-
 		vLayout = QVBoxLayout(self)
 
 		self.setFixedHeight(400)
@@ -263,7 +283,6 @@ class PopUp(QWidget):
 		
 		scroll = QScrollArea()
 		scroll.setWidget(conflictBox)
-
 		vLayout.addWidget(scroll)
 
 		buttonSave = QtGui.QPushButton("Save conflicts to file", self)
@@ -291,6 +310,10 @@ class PopUp(QWidget):
 		self.emitExit()
 		event.accept()
 
+"""
+Class FillAgentToBeFound
+- holds information about agents which are going to be checked on reachability
+"""
 class FillAgentToBeFound(QtGui.QWidget):
 	def __init__(self, data, parent=None):
 		self.parent = parent
@@ -309,7 +332,6 @@ class FillAgentToBeFound(QtGui.QWidget):
 
 		self.stochio = QLineEdit()
 		self.stochio.setMaximumWidth(30)
-
 		self.stochio.textEdited.connect(self.resetColor)
 
 		delete = QtGui.QPushButton()
@@ -330,6 +352,10 @@ class FillAgentToBeFound(QtGui.QWidget):
 		self.parent.setRowDeleted("1")
 		self.deleteLater()
 
+"""
+Class MainWindow
+- the main window which holds all the widgets (how the app looks like)
+"""
 class MainWindow(QtGui.QMainWindow):
 	def __init__(self, parent=None):
 		super(MainWindow, self).__init__(parent)
@@ -560,9 +586,9 @@ class MainWindow(QtGui.QMainWindow):
 
 		StatesHbox = QHBoxLayout()
 
-		self.progress_bar_reactions = createProgressBar(self)
+		self.progress_bar_reachability = createProgressBar(self)
 
-		StatesHbox.addWidget(self.progress_bar_reactions)
+		StatesHbox.addWidget(self.progress_bar_reachability)
 		vLayout.addLayout(StatesHbox)
 
 		# show result - message
@@ -633,6 +659,8 @@ class MainWindow(QtGui.QMainWindow):
 		#########################################
 
 	def writeReachResult(self):
+		self.progress_bar_reachability.setRange(0,1)
+		self.progress_bar_reachability.setValue(1)
 		if self.analysisWorker.getReachabilityResult():
 			self.reachabilityResult.setText("Reachable !")
 		else:
@@ -640,6 +668,7 @@ class MainWindow(QtGui.QMainWindow):
 		self.reachabilityResult.setStyleSheet("color: rgb(0, 155, 0);")
 
 	def startReachability(self):
+		self.progress_bar_reachability.setRange(0,0)
 		checkWheterReachable = True
 		orderedAgents = self.stateWorker.getUniqueAgents()
 		vector = [0] * len(orderedAgents)
@@ -647,22 +676,23 @@ class MainWindow(QtGui.QMainWindow):
 			widget = self.scrollLayout.itemAt(i).widget()
 			agent = str(widget.agent.text())
 			stochio = str(widget.stochio.text())
-			if not agent:
-				self.reachabilityResult.setText("No agent given !")
-				self.reachabilityResult.setStyleSheet("color: rgb(255, 0, 0);")
+			if not agent or not stochio.isdigit() or agent not in orderedAgents:
+				if not agent:
+					self.reachabilityResult.setText("No agent given !")
+					self.reachabilityResult.setStyleSheet("color: rgb(255, 0, 0);")
+				elif not stochio.isdigit():
+					self.reachabilityResult.setText("Wrong stochiometry !")
+					self.reachabilityResult.setStyleSheet("color: rgb(255, 0, 0);")
+					widget.stochio.setStyleSheet("color: rgb(255, 0, 0);")
+				elif agent not in orderedAgents:
+					self.reachabilityResult.setText("Not reachable !")
+					self.reachabilityResult.setStyleSheet("color: rgb(0, 155, 0);")
+
 				checkWheterReachable = False
+				self.progress_bar_reachability.setRange(0,1)
+				self.progress_bar_reachability.setValue(1)
 				break
-			if not stochio.isdigit():
-				self.reachabilityResult.setText("Wrong stochiometry !")
-				self.reachabilityResult.setStyleSheet("color: rgb(255, 0, 0);")
-				widget.stochio.setStyleSheet("color: rgb(255, 0, 0);")
-				checkWheterReachable = False
-				break
-			if agent not in orderedAgents:
-				self.reachabilityResult.setText("Not reachable !")
-				self.reachabilityResult.setStyleSheet("color: rgb(0, 155, 0);")
-				checkWheterReachable = False
-				break
+				
 			vector[orderedAgents.index(agent)] = int(stochio)
 		if checkWheterReachable:
 			self.analysisWorker.setToBeReached(np.array(vector))
@@ -699,7 +729,7 @@ class MainWindow(QtGui.QMainWindow):
 
 	def showConflicts(self):
 		self.noConflictsMessage.setText("")
-		self.window = PopUp(self.analysisWorker.getMessage()[:-22])
+		self.window = DisplayConflicts(self.analysisWorker.getMessage()[:-22])
 		self.window.show()
 
 	def showNoConflicts(self):
@@ -728,12 +758,6 @@ class MainWindow(QtGui.QMainWindow):
 
 		#self.spaceTimer.stop()
 
-	def reactionsCanceled(self):
-		self.num_of_reactions.setText('- No. of Reactions:    n\\a')
-		self.progress_bar_reactions.setValue(0)
-
-		#self.reactionsTimer.stop()
-
 	def progressbarStatesOnStart(self): 
 		self.progress_bar_states.setRange(0,0)
 		self.cancel_state.setDisabled(False)
@@ -745,17 +769,6 @@ class MainWindow(QtGui.QMainWindow):
 		self.save_reactions_button.setDisabled(False)
 		self.addButton.setDisabled(False)
 
-	def progressbarReactionsOnStart(self): 
-		self.progress_bar_reactions.setRange(0,0)
-		self.cancel_rxns.setDisabled(False)
-
-	def progressbarReactionsOnFinished(self):
-		self.progress_bar_reactions.setRange(0,1)
-		self.progress_bar_reactions.setValue(1)
-		self.cancel_rxns.setDisabled(True)
-
-		#self.reactionsTimer.stop()
-
 	def paintEvent(self, event):
 		qp = QtGui.QPainter()
 		qp.begin(self)
@@ -763,9 +776,7 @@ class MainWindow(QtGui.QMainWindow):
 		qp.end()
 
 	def drawLines(self, qp):
-	  
 		pen = QtGui.QPen(QtCore.Qt.gray, 4, QtCore.Qt.SolidLine)
-
 		qp.drawPixmap(825,30,QPixmap("icons/logo.png"))
 
 	def open_model(self):
@@ -813,11 +824,6 @@ class MainWindow(QtGui.QMainWindow):
 		text = self.stateSpaceTime.toString('hh:mm:ss')
 		#self.runningStates.setText(text + " / " + self.stateSpaceEstimate)
 		
-	def showReactionProgress(self):
-		self.reactionsTime = self.reactionsTime.addSecs(1)
-		text = self.reactionsTime.toString('hh:mm:ss')
-		#self.runningReactions.setText(text + " / " + self.reactionsEstimate)
-
 	def save_model(self):
 		file = QFileDialog.getSaveFileName(self, 'Choose model file', filter ="BCS (*.bcs);;All types (*)")
 		if file:
