@@ -321,6 +321,7 @@ class FillAgentToBeFound(QtGui.QWidget):
 		StatesHbox = QHBoxLayout()
 
 		self.agent = QLineEdit()
+		self.agent.textEdited.connect(self.textEdited)
 
 		completer = QCompleter()
 		completer.setCaseSensitivity(Qt.CaseInsensitive)
@@ -333,6 +334,7 @@ class FillAgentToBeFound(QtGui.QWidget):
 		self.stochio = QLineEdit()
 		self.stochio.setMaximumWidth(30)
 		self.stochio.textEdited.connect(self.resetColor)
+		self.stochio.textEdited.connect(self.textEdited)
 
 		delete = QtGui.QPushButton()
 		delete.setMaximumWidth(25)
@@ -351,6 +353,9 @@ class FillAgentToBeFound(QtGui.QWidget):
 	def timeToDelete(self):
 		self.parent.setRowDeleted("1")
 		self.deleteLater()
+
+	def textEdited(self):
+		self.parent.resetReachIndicators()
 
 """
 Class MainWindow
@@ -667,6 +672,11 @@ class MainWindow(QtGui.QMainWindow):
 		# TBA 
 		return
 
+	def resetReachIndicators(self):
+		self.progress_bar_reachability.reset()
+		self.reachabilityResult.setText("")
+		self.reachable_states_button.setDisabled(True)
+
 	def writeReachResult(self):
 		self.progress_bar_reachability.setRange(0,1)
 		self.progress_bar_reachability.setValue(1)
@@ -721,6 +731,7 @@ class MainWindow(QtGui.QMainWindow):
 		return bool(int(str(self.rowDeleted.text())))
 
 	def addDynamicWidget(self):
+		self.resetReachIndicators()
 		self.addButton.deleteLater()
 		self.scrollLayout.addRow(FillAgentToBeFound(self.stateWorker.getUniqueAgents(), self))
 
