@@ -9,7 +9,7 @@ import Import as Import
 import markdown
 import numpy as np
 
-from PyQt4 import QtGui, QtCore
+from PyQt4 import QtGui, QtCore, QtWebKit
 from PyQt4.QtGui import *
 from PyQt4.Qt import *
 
@@ -41,6 +41,20 @@ def createAction(it, title, shortcut, tip, connectWith):
 	action.setStatusTip(tip)
 	action.triggered.connect(connectWith)
 	return action
+
+class GraphVisual(QtWebKit.QWebView):
+	def __init__(self, parent= None):
+		super(GraphVisual, self).__init__()
+
+		self.setWindowModality(QtCore.Qt.ApplicationModal)
+
+		# here HTML visualisation should be created and put it to url
+
+		self.url = "/home/matho/Desktop/test.html"
+
+		self.resize(850,600)
+		self.load(QtCore.QUrl(self.url))
+		self.show()
 
 helpText = "<b>Biochemical Space language software tool</b> <br><br> This tool \
 serves for interpreting basic functionality to maintain <br> Biochemical \
@@ -615,7 +629,7 @@ class MainWindow(QtGui.QMainWindow):
 
 		StatesHbox.addWidget(self.reachabilityResult)
 
-		self.reachable_states_button = createButton(self, "Show results", self.showReachableStates, True)
+		self.reachable_states_button = createButton(self, "Show results", self.showReachableStates, False)
 
 		StatesHbox.addWidget(self.reachable_states_button)
 
@@ -680,9 +694,7 @@ class MainWindow(QtGui.QMainWindow):
 		#########################################
 
 	def showReachableStates(self):
-		# TBA 
-		# self.setWindowModality(QtCore.Qt.ApplicationModal)
-		return
+		self.graph = GraphVisual()
 
 	def resetReachIndicators(self):
 		self.progress_bar_reachability.reset()
