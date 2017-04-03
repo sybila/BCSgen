@@ -60,10 +60,20 @@ class Help(QWidget):
 		self.setFixedHeight(175)
 		self.setFixedWidth(430)
 
+		vLayout = QVBoxLayout()
+
 		self.titleText = QLabel(self)
-		self.titleText.move(10, 10)
 		self.titleText.setOpenExternalLinks(True)
 		self.titleText.setText(helpText)
+
+		vLayout.addWidget(self.titleText)
+
+		self.OKbutton = createButton(self, "OK", self.close, False)
+
+		vLayout.addWidget(self.OKbutton)
+		self.setLayout(vLayout)
+		self.setWindowModality(QtCore.Qt.ApplicationModal)
+		self.show()
 
 """
 Class AnalysisWorker
@@ -290,6 +300,7 @@ class DisplayConflicts(QWidget):
 		vLayout.addWidget(buttonSave)
 
 		self.setLayout(vLayout)
+		self.setWindowModality(QtCore.Qt.ApplicationModal)
 
 	def emitExit(self):
 		self.emit(SIGNAL("exit"))
@@ -670,6 +681,7 @@ class MainWindow(QtGui.QMainWindow):
 
 	def showReachableStates(self):
 		# TBA 
+		# self.setWindowModality(QtCore.Qt.ApplicationModal)
 		return
 
 	def resetReachIndicators(self):
@@ -865,7 +877,6 @@ class MainWindow(QtGui.QMainWindow):
 
 	def showHelp(self):
 		self.help = Help()
-		self.help.show()
 
 app = QtGui.QApplication(sys.argv)
 
