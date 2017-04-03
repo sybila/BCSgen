@@ -11,7 +11,7 @@ This tool serves for interpreting basic functionality to maintain Biochemical Sp
 The most proper way is to run the [binary file](https://gitlab.fi.muni.cz/xtrojak/BCSgen/tags/v2.0) with __Graphical User Interface__ suitable for your platform.
 
 <div align="center">
-  <img src="http://i.imgur.com/Sg89JPA.png"><br><br>
+  <img src="http://i.imgur.com/qLJlAHu.png"><br><br>
 </div>
 
 To obtain __state space__:
