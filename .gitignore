@@ -30,3 +30,5 @@ Core/Explicit_reaction_network_generator/Reactant.pyc
 Core/Explicit_reaction_network_generator/Reaction.pyc
 Core/Explicit_reaction_network_generator/State.pyc
 Core/Explicit_reaction_network_generator/__init__.pyc
+Core/Visualisation/__init__.pyc
+Core/Visualisation/create_graph.pyc

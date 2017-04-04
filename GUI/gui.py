@@ -6,6 +6,7 @@ import State_space_generator as Gen
 import Implicit_reaction_network_generator as Implicit
 import Explicit_reaction_network_generator as Explicit
 import Import as Import
+import Visualisation as Visual
 import markdown
 import numpy as np
 
@@ -43,16 +44,17 @@ def createAction(it, title, shortcut, tip, connectWith):
 	return action
 
 class GraphVisual(QtWebKit.QWebView):
-	def __init__(self, parent= None):
+	def __init__(self, jsonSpace, parent= None):
 		super(GraphVisual, self).__init__()
+
+		self.url = "graph.html"
+		Visual.createGraph(jsonSpace, self.url)
 
 		self.setWindowModality(QtCore.Qt.ApplicationModal)
 
 		# here HTML visualisation should be created and put it to url
 
-		self.url = "/home/matho/Desktop/test.html"
-
-		self.resize(850,600)
+		self.resize(820,600)
 		self.load(QtCore.QUrl(self.url))
 		self.show()
 
@@ -517,6 +519,16 @@ class MainWindow(QtGui.QMainWindow):
 		self.stateWorker.showMostStates.connect(self.showNumberOfStates)
 		self.stateWorker.NumOfStates.connect(self.updateNumOfStates)
 
+		# show graph
+
+		StatesHbox = QHBoxLayout()
+
+		self.display_graph_button = createButton(self, "Show graph", self.showGraph, True)
+
+		StatesHbox.addWidget(self.display_graph_button)
+
+		vLayout.addLayout(StatesHbox)
+
 		# num of states label
 
 		StatesHbox = QHBoxLayout()
@@ -629,7 +641,7 @@ class MainWindow(QtGui.QMainWindow):
 
 		StatesHbox.addWidget(self.reachabilityResult)
 
-		self.reachable_states_button = createButton(self, "Show results", self.showReachableStates, False)
+		self.reachable_states_button = createButton(self, "Show results", self.showReachableStates, True)
 
 		StatesHbox.addWidget(self.reachable_states_button)
 
@@ -693,13 +705,16 @@ class MainWindow(QtGui.QMainWindow):
 
 		#########################################
 
+	def showGraph(self):
+		self.graph = GraphVisual(self.stateWorker.getStateSpaceFile())
+
 	def showReachableStates(self):
 		self.graph = GraphVisual()
 
 	def resetReachIndicators(self):
 		self.progress_bar_reachability.reset()
 		self.reachabilityResult.setText("")
-		self.reachable_states_button.setDisabled(True)
+		#self.reachable_states_button.setDisabled(True)
 
 	def writeReachResult(self):
 		self.progress_bar_reachability.setRange(0,1)
@@ -738,7 +753,7 @@ class MainWindow(QtGui.QMainWindow):
 				
 			vector[orderedAgents.index(agent)] = int(stochio)
 		if checkWheterReachable:
-			self.reachable_states_button.setDisabled(False)
+			#self.reachable_states_button.setDisabled(False)
 			self.analysisWorker.setToBeReached(np.array(vector))
 			self.analysisWorker.compute_reach()
 
@@ -814,6 +829,7 @@ class MainWindow(QtGui.QMainWindow):
 		self.cancel_state.setDisabled(True)
 		self.save_reactions_button.setDisabled(False)
 		self.addButton.setDisabled(False)
+		self.display_graph_button.setDisabled(False)
 
 	def paintEvent(self, event):
 		qp = QtGui.QPainter()
@@ -904,4 +920,11 @@ main = MainWindow()
 main.setFixedSize(930, 485)
 main.setWindowTitle('BCSgen')
 main.show()
-sys.exit(app.exec_())
+
+app.exec_()
+try:
+    os.remove("graph.html")
+except OSError:
+    pass
+
+sys.exit()
