@@ -52,7 +52,7 @@ class GraphVisual(QtWebKit.QWebView):
 
 		self.setWindowModality(QtCore.Qt.ApplicationModal)
 
-		self.resize(820,600)
+		self.setFixedSize(820,600)
 		self.load(QtCore.QUrl(self.url))
 		self.show()
 
@@ -381,6 +381,8 @@ class FillAgentToBeFound(QtGui.QWidget):
 
 	def textEdited(self):
 		self.parent.resetReachIndicators()
+		self.agent.setStyleSheet("background-color : rgb(255, 255, 255);")
+
 
 """
 Class MainWindow
@@ -715,8 +717,6 @@ class MainWindow(QtGui.QMainWindow):
 		#self.reachable_states_button.setDisabled(True)
 
 	def writeReachResult(self):
-		self.progress_bar_reachability.setRange(0,1)
-		self.progress_bar_reachability.setValue(1)
 		if self.analysisWorker.getReachabilityResult():
 			self.reachabilityResult.setText("Reachable !")
 		else:
@@ -728,32 +728,52 @@ class MainWindow(QtGui.QMainWindow):
 		checkWheterReachable = True
 		orderedAgents = self.stateWorker.getUniqueAgents()
 		vector = [0] * len(orderedAgents)
+
+		if self.checkAgentFields():
+			if self.checkStochiometryFields():
+				if self.checkExistanceOfAgents(orderedAgents):
+					for i in range(self.scrollLayout.count() - 1):
+						widget = self.scrollLayout.itemAt(i).widget()
+						agent = str(widget.agent.text())
+						stochio = str(widget.stochio.text())
+						vector[orderedAgents.index(agent)] = int(stochio)
+					self.analysisWorker.setToBeReached(np.array(vector))
+					self.analysisWorker.compute_reach()
+
+		self.progress_bar_reachability.setRange(0,1)
+		self.progress_bar_reachability.setValue(1)
+
+	def checkAgentFields(self):
 		for i in range(self.scrollLayout.count() - 1):
 			widget = self.scrollLayout.itemAt(i).widget()
 			agent = str(widget.agent.text())
-			stochio = str(widget.stochio.text())
-			if not agent or not stochio.isdigit() or agent not in orderedAgents:
-				if not agent:
-					self.reachabilityResult.setText("No agent given !")
-					self.reachabilityResult.setStyleSheet("color: rgb(255, 0, 0);")
-				elif not stochio.isdigit():
-					self.reachabilityResult.setText("Wrong stochiometry !")
-					self.reachabilityResult.setStyleSheet("color: rgb(255, 0, 0);")
-					widget.stochio.setStyleSheet("color: rgb(255, 0, 0);")
-				elif agent not in orderedAgents:
-					self.reachabilityResult.setText("Not reachable !")
-					self.reachabilityResult.setStyleSheet("color: rgb(0, 155, 0);")
+			if not agent:
+				self.reachabilityResult.setText("No agent given !")
+				self.reachabilityResult.setStyleSheet("color: rgb(255, 0, 0);")
+				widget.agent.setStyleSheet("background-color : rgb(255, 0, 0);")
+				return False
+		return True
 
-				checkWheterReachable = False
-				self.progress_bar_reachability.setRange(0,1)
-				self.progress_bar_reachability.setValue(1)
-				break
-				
-			vector[orderedAgents.index(agent)] = int(stochio)
-		if checkWheterReachable:
-			#self.reachable_states_button.setDisabled(False)
-			self.analysisWorker.setToBeReached(np.array(vector))
-			self.analysisWorker.compute_reach()
+	def checkStochiometryFields(self):
+		for i in range(self.scrollLayout.count() - 1):
+			widget = self.scrollLayout.itemAt(i).widget()
+			stochio = str(widget.stochio.text())
+			if not stochio.isdigit():
+				self.reachabilityResult.setText("Wrong stochiometry !")
+				self.reachabilityResult.setStyleSheet("color: rgb(255, 0, 0);")
+				widget.stochio.setStyleSheet("color: rgb(255, 0, 0);")
+				return False
+		return True
+
+	def checkExistanceOfAgents(self, orderedAgents):
+		for i in range(self.scrollLayout.count() - 1):
+			widget = self.scrollLayout.itemAt(i).widget()
+			agent = str(widget.agent.text())
+			if agent not in orderedAgents:
+				self.reachabilityResult.setText("Not reachable !")
+				self.reachabilityResult.setStyleSheet("color: rgb(0, 155, 0);")
+				return False
+		return True
 
 	def checkScrollArea(self):
 		if self.getRowDeleted():
