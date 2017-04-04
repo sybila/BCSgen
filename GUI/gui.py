@@ -52,8 +52,6 @@ class GraphVisual(QtWebKit.QWebView):
 
 		self.setWindowModality(QtCore.Qt.ApplicationModal)
 
-		# here HTML visualisation should be created and put it to url
-
 		self.resize(820,600)
 		self.load(QtCore.QUrl(self.url))
 		self.show()
@@ -816,6 +814,8 @@ class MainWindow(QtGui.QMainWindow):
 		self.num_of_edges.setText('No. of Edges:'.ljust(30) + 'n\\a' )
 		self.num_of_reactions.setText('No. of Reactions:'.ljust(30) + 'n\\a' )
 		self.progress_bar_states.setValue(0)
+		self.addButton.setDisabled(True)
+		self.display_graph_button.setDisabled(True)
 
 		#self.spaceTimer.stop()
 
