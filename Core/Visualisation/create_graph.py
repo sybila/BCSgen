@@ -25,19 +25,9 @@ Both are statically included at the end of this file.
 :param end: string determining end of the part
 :param mode: append or write
 """
-def write_part(me, output_file, start, end, mode):
-    f = open(output_file, mode)
-    fp = open(me)
-    allowed_to_read = False
-    for i, line in enumerate(fp):
-        line = line.rstrip()
-        if start == line:
-            allowed_to_read = True
-        elif end == line:
-            allowed_to_read = False
-        elif allowed_to_read:
-            f.write(line + '\n')
-    f.close()
+def write_part(part, output_file, mode):
+    with open(output_file, mode) as file:
+        file.write(part)
 
 """
 Creates collection from given side
@@ -92,11 +82,9 @@ def write_reaction(edge_id, left_index, right_index, From, To, output_file):
                  ", arrows:'to', text: '" + From.__str__() + " => " + To.__str__() + "'},\n")
     output.close()
 
-def createGraph(state_space_file, output_file):
-    me = "../Core/Visualisation/create_graph.py"
-    path = os.path.dirname(os.path.abspath(me))
+def createGraph(state_space_file, output_file, path):
 
-    write_part(me, output_file, "FIRST PART START", "FIRST PART END", "w")
+    write_part(firstpart, output_file, "w")
 
     with open(state_space_file, 'r') as f:
     	data = json.load(f)
@@ -119,19 +107,18 @@ def createGraph(state_space_file, output_file):
     	From, To = create_reaction(data['nodes'][value['from']], data['nodes'][value['to']])
     	write_reaction(edge_id, IDs[value['from']], IDs[value['to']], From, To, output_file)
     		
-    write_part(me, output_file, "SECOND PART START", "SECOND PART END", "a")
+    write_part(secondpart, output_file, "a")
 
     fixPath(output_file, path)
 
-'''
-FIRST PART START
+firstpart = '''
 <!doctype html>
 <html>
 <head>
     <title>Network | Interaction events</title>
 
-    <script type="text/javascript" src="**FULLPATH**/vis/vis.js"></script>
-    <link href="**FULLPATH**/vis/vis.css" rel="stylesheet" type="text/css"/>
+    <script type="text/javascript" src="**FULLPATH**/.vis/vis.js"></script>
+    <link href="**FULLPATH**/.vis/vis.css" rel="stylesheet" type="text/css"/>
 
     <style type="text/css">
        #mynetwork {
@@ -154,11 +141,9 @@ FIRST PART START
 <script type="text/javascript">
     // create an array with nodes
         var nodes = new vis.DataSet([
-FIRST PART END
 '''
 
-'''
-SECOND PART START
+secondpart = '''
 	]);
 
     // create a network
@@ -246,5 +231,4 @@ SECOND PART START
 <script src="../../googleAnalytics.js"></script>
 </body>
 </html>
-SECOND PART END
 '''

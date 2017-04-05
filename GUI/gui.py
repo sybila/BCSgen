@@ -12,7 +12,6 @@ import numpy as np
 
 from PyQt4 import QtGui, QtCore, QtWebKit
 from PyQt4.QtGui import *
-from PyQt4.Qt import *
 
 # global methods for creating PyQt objects
 
@@ -47,8 +46,10 @@ class GraphVisual(QtWebKit.QWebView):
 	def __init__(self, jsonSpace, parent= None):
 		super(GraphVisual, self).__init__()
 
+		path = os.path.dirname(os.path.abspath(__file__))
+
 		self.url = "graph.html"
-		Visual.createGraph(jsonSpace, self.url)
+		Visual.createGraph(jsonSpace, self.url, path)
 
 		self.setWindowModality(QtCore.Qt.ApplicationModal)
 
@@ -248,7 +249,7 @@ Class HighlightingRule
 """
 class HighlightingRule():
 	def __init__(self, pattern, format):
-		self.pattern = QRegExp(pattern)
+		self.pattern = QtCore.QRegExp(pattern)
 		self.format = format
 
 """
@@ -262,17 +263,17 @@ class MyHighlighter(QSyntaxHighlighter):
 		self.highlightingRules = []
 
 		comment = QTextCharFormat()
-		comment.setForeground(Qt.darkGreen)
+		comment.setForeground( QtGui.QColor(0,153,0) ) #Qt.darkGreen)
 		rule = HighlightingRule("#(.*)$", comment)
 		self.highlightingRules.append(rule)
 
 		number = QTextCharFormat()
-		number.setForeground(Qt.magenta)
+		number.setForeground( QtGui.QColor(255,0,255) ) #Qt.magenta)
 		rule = HighlightingRule("[0-9]", number)    
 		self.highlightingRules.append(rule)
 
 		specialChars = QTextCharFormat()
-		specialChars.setForeground(Qt.red)
+		specialChars.setForeground( QtGui.QColor(255,50,50) ) #Qt.red)
 		specialChars.setFontWeight(QFont.Bold)
 		rule = HighlightingRule("[=>+]", specialChars)
 		self.highlightingRules.append(rule)
@@ -316,12 +317,6 @@ class DisplayConflicts(QWidget):
 		self.setLayout(vLayout)
 		self.setWindowModality(QtCore.Qt.ApplicationModal)
 
-	def emitExit(self):
-		self.emit(SIGNAL("exit"))
-
-	def emitFinishReactions(self):
-		self.emit(SIGNAL("finishReactions"))
-
 	def save_log(self):
 		file = QFileDialog.getSaveFileName(self, 'Choose log file', filter =".log (*.log);;All types (*)")
 		if file:
@@ -332,7 +327,6 @@ class DisplayConflicts(QWidget):
 			f.close()
 
 	def closeEvent(self, event):
-		self.emitExit()
 		event.accept()
 
 """
@@ -349,7 +343,7 @@ class FillAgentToBeFound(QtGui.QWidget):
 		self.agent.textEdited.connect(self.textEdited)
 
 		completer = QCompleter()
-		completer.setCaseSensitivity(Qt.CaseInsensitive)
+		completer.setCaseSensitivity(QtCore.Qt.CaseInsensitive)
 
 		self.agent.setCompleter(completer)
 		model = QStringListModel()
@@ -943,8 +937,8 @@ main.show()
 
 app.exec_()
 try:
-    os.remove("graph.html")
+	os.remove("graph.html")
 except OSError:
-    pass
+	pass
 
 sys.exit()
