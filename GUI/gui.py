@@ -392,7 +392,7 @@ class MainWindow(QtGui.QMainWindow):
 		#########################################
 
 		self.load = createAction(self, "&Load", "Ctrl+L", 'Load model from a file.', self.open_model)
-		self.save = createAction(self, "&Save", "Ctrl+S", 'Save model a file.', self.save_model)
+		self.save = createAction(self, "&Save", "Ctrl+S", 'Save model to a file.', self.save_model)
 		self.exit = createAction(self, "&Quit", "Ctrl+Q", 'Quit the program.', self.close)
 
 		self.statusBar()
@@ -438,7 +438,7 @@ class MainWindow(QtGui.QMainWindow):
 
 		self.tabs = QTabWidget(self)
 		self.tabs.move(605, 30)
-		self.tabs.resize(320, 430)
+		self.tabs.setMinimumSize(320, 430)
 
 		self.tab1 = QWidget()
 		self.tab2 = QWidget()
@@ -451,7 +451,7 @@ class MainWindow(QtGui.QMainWindow):
 		# text area
 
 		self.textBox = QTextEdit(self)
-		self.textBox.resize(590, 430)
+		self.textBox.setMinimumSize(590, 430)
 		self.textBox.move(10, 30)
 		#self.textBox.cursorPositionChanged.connect(self.textEdited)
 		self.textBox.setLineWrapColumnOrWidth(590)
@@ -853,7 +853,8 @@ class MainWindow(QtGui.QMainWindow):
 
 	def drawLines(self, qp):
 		pen = QtGui.QPen(QtCore.Qt.gray, 4, QtCore.Qt.SolidLine)
-		qp.drawPixmap(825,30,QPixmap("icons/logo.png"))
+		width = self.width() - 105
+		qp.drawPixmap(width,30,QPixmap("icons/logo.png"))
 
 	def open_model(self):
 		file = QFileDialog.getOpenFileName(self, 'Choose model', directory = '../Examples/', filter ="BCS (*.bcs);;All types (*)")
@@ -920,6 +921,13 @@ class MainWindow(QtGui.QMainWindow):
 	def showHelp(self):
 		self.help = Help()
 
+	def resizeEvent(self, event):
+		widthShrint = self.width() - appWidth
+		heightShrink = self.height() - appHeight 
+		self.textBox.resize(590 + widthShrint, 430 + heightShrink)
+		self.tabs.move(605 + widthShrint, 30)
+		self.tabs.resize(320, 430 + heightShrink)
+
 app = QtGui.QApplication(sys.argv)
 
 app_icon = QtGui.QIcon()
@@ -930,8 +938,11 @@ app_icon.addFile('icons/48x48.png', QtCore.QSize(48,48))
 app_icon.addFile('icons/128x128.png', QtCore.QSize(128,128))
 app.setWindowIcon(app_icon)
 
+appWidth = 930
+appHeight = 485
+
 main = MainWindow()
-main.setFixedSize(930, 485)
+main.setMinimumSize(appWidth, appHeight)
 main.setWindowTitle('BCSgen')
 main.show()
 
