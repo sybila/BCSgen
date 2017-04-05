@@ -12,7 +12,6 @@ import numpy as np
 
 from PyQt4 import QtGui, QtCore, QtWebKit
 from PyQt4.QtGui import *
-from PyQt4.Qt import *
 
 # global methods for creating PyQt objects
 
@@ -248,7 +247,7 @@ Class HighlightingRule
 """
 class HighlightingRule():
 	def __init__(self, pattern, format):
-		self.pattern = QRegExp(pattern)
+		self.pattern = QtCore.QRegExp(pattern)
 		self.format = format
 
 """
@@ -262,17 +261,17 @@ class MyHighlighter(QSyntaxHighlighter):
 		self.highlightingRules = []
 
 		comment = QTextCharFormat()
-		comment.setForeground(Qt.darkGreen)
+		comment.setForeground( QtGui.QColor(0,153,0) ) #Qt.darkGreen)
 		rule = HighlightingRule("#(.*)$", comment)
 		self.highlightingRules.append(rule)
 
 		number = QTextCharFormat()
-		number.setForeground(Qt.magenta)
+		number.setForeground( QtGui.QColor(255,0,255) ) #Qt.magenta)
 		rule = HighlightingRule("[0-9]", number)    
 		self.highlightingRules.append(rule)
 
 		specialChars = QTextCharFormat()
-		specialChars.setForeground(Qt.red)
+		specialChars.setForeground( QtGui.QColor(255,50,50) ) #Qt.red)
 		specialChars.setFontWeight(QFont.Bold)
 		rule = HighlightingRule("[=>+]", specialChars)
 		self.highlightingRules.append(rule)
@@ -349,7 +348,7 @@ class FillAgentToBeFound(QtGui.QWidget):
 		self.agent.textEdited.connect(self.textEdited)
 
 		completer = QCompleter()
-		completer.setCaseSensitivity(Qt.CaseInsensitive)
+		completer.setCaseSensitivity(QtCore.Qt.CaseInsensitive)
 
 		self.agent.setCompleter(completer)
 		model = QStringListModel()
