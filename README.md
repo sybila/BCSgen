@@ -58,5 +58,5 @@ Alternatively, CLI can be used.
 > <sup>3</sup> Additionally, some static analysis about conflicts in the model are computed. In GUI, you can disable this feature by checking `Ignore conflicts` checkbox.
 
 > <sup>4</sup> To do it, you need to have [PyQt](https://wiki.python.org/moin/PyQt) python library installed. 
-For Windows, use [this](http://www.lfd.uci.edu/~gohlke/pythonlibs/#pyqt4) binary file, for Unix machines use [following](http://pythoncentral.io/install-pyside-pyqt-on-windows-mac-linux/) instructions.
+For Windows, use [this](http://www.lfd.uci.edu/~gohlke/pythonlibs/#pyqt4) binary file, for Linux use [following](http://pythoncentral.io/install-pyside-pyqt-on-windows-mac-linux/) instructions, and for Mac OS use [this](https://sourceforge.net/projects/pyqtx/) installer (with all requirements).  
 Moreover, additional python packages are required (markdown, numpy) and might be installed using `pip`.
