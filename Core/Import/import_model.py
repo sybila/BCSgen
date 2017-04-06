@@ -389,3 +389,7 @@ def import_rules(input_file):
 
             created_rules.append(rule)
     return created_rules, import_initial_state(inits)
+
+def importStateSpace(file):
+    with open(file, 'r') as f:
+        data = json.load(f)

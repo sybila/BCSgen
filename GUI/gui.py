@@ -391,15 +391,14 @@ class MainWindow(QtGui.QMainWindow):
 
 		#########################################
 
-		self.load = createAction(self, "&Load", "Ctrl+L", 'Load model from a file.', self.open_model)
-		self.save = createAction(self, "&Save", "Ctrl+S", 'Save model to a file.', self.save_model)
+		self.save = createAction(self, "&Save model", "Ctrl+S", 'Save model to a file.', self.save_model)
 		self.exit = createAction(self, "&Quit", "Ctrl+Q", 'Quit the program.', self.close)
 
 		self.statusBar()
 
 		mainMenu = self.menuBar()
 		fileMenu = mainMenu.addMenu('&File')
-		fileMenu.addAction(self.load)
+
 		fileMenu.addAction(self.save)
 		fileMenu.addAction(self.exit)
 
@@ -411,6 +410,13 @@ class MainWindow(QtGui.QMainWindow):
 		editMenu.addAction(self.clear)
 		editMenu.addAction(self.copy)
 		editMenu.addAction(self.paste)
+
+		self.importSpace = createAction(self, "&Import state space", "Ctrl+J", 'Import state space from a JSON file.', self.importStateSpace)
+		self.loadModel = createAction(self, "&Import model", "Ctrl+L", 'Import model from a file.', self.open_model)
+
+		importMenu = mainMenu.addMenu('&Import')
+		importMenu.addAction(self.loadModel)
+		importMenu.addAction(self.importSpace)
 
 		self.help = createAction(self, "&About", "Ctrl+H", 'Show About.', self.showHelp)
 
@@ -865,6 +871,13 @@ class MainWindow(QtGui.QMainWindow):
 			if self.stateWorker.getStateSpaceFile():
 				self.compute_space_button.setDisabled(False)
 
+	def load_state_space(self):
+		file = QFileDialog.getOpenFileName(self, 'Choose file', filter ="JSON (*.json);;All types (*)")
+		if file:
+			self.stateWorker.setStateSpaceFile(file)
+			self.stateSpace_text.setText(self.stateWorker.getStateSpaceFile())
+			self.display_graph_button.setDisabled(False)
+
 	def save_stateSpace(self):
 		file = QFileDialog.getSaveFileName(self, 'Choose output file', directory = self.stateSpaceDirectory, filter =".json (*.json);;All types (*)")
 		if file:
@@ -920,6 +933,10 @@ class MainWindow(QtGui.QMainWindow):
 
 	def showHelp(self):
 		self.help = Help()
+
+	def importStateSpace(self):
+		self.load_state_space()
+		self.stateWorker.states, self.stateWorker.edges, self.stateWorker.uniqueAgents = Import.importStateSpace(self.stateWorker.getStateSpaceFile())
 
 	def resizeEvent(self, event):
 		widthShrint = self.width() - appWidth
