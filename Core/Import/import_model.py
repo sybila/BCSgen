@@ -6,6 +6,7 @@ sys.path.append(os.path.abspath('../'))
 import Interpreter_of_BCSL as BCSL
 import State_space_generator as Gen
 import json
+import numpy as np
 
 '''
 Functions for parsing common rules (human-readable)
@@ -394,23 +395,6 @@ def import_rules(input_file):
 
 # import of json
 
-def analyseState(vector, agents):
-	reference = [set() for _ in range(len(vector))]
-	for name in agents:
-		for i in range(len(vector)):
-			if int(agents[name]) == vector[i]:
-				reference[i].add(str(name))
-	print reference
-	return reference
-
-def mergeOrderedAgents(vector1, vector2):
-	for i in range(len(vector2)):
-		if vector1[i] and vector2[i]:
-			vector1[i] = vector1[i] & vector2[i]
-		else:
-			vector1[i] = vector1[i] | vector2[i]
-	return vector1
-
 def parseState(state):
 	return tuple(map(int, state.split("|")))
 
@@ -420,18 +404,12 @@ def importStateSpace(file):
 	with open(file, 'r') as f:
 		data = json.load(f)
 
-	orderedAgents = [set() for _ in range(len(parseState(list(data['nodes'])[0])))]
-
 	for state, agents in data['nodes'].iteritems():
-		vector = parseState(state)
-		states.add(vector)
-		vector = analyseState(vector, agents)
-		orderedAgents = mergeOrderedAgents(orderedAgents, vector)
+		states.add(parseState(state))
 
-	print orderedAgents
+	uniqueAgents = list(map(str, data['unique']))
 
 	for edge_id, value in data['edges'].iteritems():
-		print edge_id
-		print value
-		
-	return None, None, None
+		edges.add(Gen.Vector_reaction(np.array(parseState(value['from'])), np.array(parseState(value['to']))))
+
+	return states, edges, uniqueAgents

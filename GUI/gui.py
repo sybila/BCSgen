@@ -737,6 +737,10 @@ class MainWindow(QtGui.QMainWindow):
 		# self.runningReactions.setText(" Na:Na:Na /  Na:Na:Na")
 		# self.runningReactions.move(775, 305)
 
+		self.stateWorker.setLenStates(self.num_of_states)
+		self.stateWorker.setLenEdges(self.num_of_edges)
+		self.stateWorker.setLenReactions(self.num_of_reactions)
+
 		#########################################
 
 	def showGraph(self):
@@ -919,9 +923,6 @@ class MainWindow(QtGui.QMainWindow):
 			if not os.path.splitext(str(file))[1]:
 				file = str(file) + ".json"
 			self.stateWorker.setStateSpaceFile(file)
-			self.stateWorker.setLenStates(self.num_of_states)
-			self.stateWorker.setLenEdges(self.num_of_edges)
-			self.stateWorker.setLenReactions(self.num_of_reactions)
 			self.stateSpace_text.setText(self.stateWorker.getStateSpaceFile())
 			if self.stateWorker.getModelFile():
 				self.compute_space_button.setDisabled(False)
@@ -983,6 +984,7 @@ class MainWindow(QtGui.QMainWindow):
 	def importStateSpace(self):
 		self.load_state_space()
 		self.stateWorker.states, self.stateWorker.edges, self.stateWorker.uniqueAgents = Import.importStateSpace(self.stateWorker.getStateSpaceFile())
+		self.addButton.setDisabled(False)
 
 	def resizeEvent(self, event):
 		widthShrint = self.width() - appWidth

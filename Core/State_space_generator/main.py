@@ -68,7 +68,7 @@ def printStateSpace(states, transitions, orderedAgents, stateSpaceFile):
 	for i in range(len(transitions)):
 		edges[i+1] = transitions[i].getDict()
 
-	data = {'nodes' : nodes, 'edges' : edges}
+	data = {'nodes' : nodes, 'edges' : edges, 'unique' : orderedAgents}
 
 	with open(stateSpaceFile, 'w') as f:
 		json.dump(data, f, indent=4)
