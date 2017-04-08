@@ -35,8 +35,8 @@ def createButton(it, text, to_connect, disabled):
 	button.setDisabled(disabled)
 	return button
 
-def createAction(it, title, shortcut, tip, connectWith):
-	action = QtGui.QAction(title, it)
+def createAction(it, title, shortcut, tip, connectWith, icon):
+	action = QtGui.QAction(icon, title, it)
 	action.setShortcut(shortcut)
 	action.setStatusTip(tip)
 	action.triggered.connect(connectWith)
@@ -391,34 +391,68 @@ class MainWindow(QtGui.QMainWindow):
 
 		#########################################
 
-		self.save = createAction(self, "&Save model", "Ctrl+S", 'Save model to a file.', self.save_model)
-		self.exit = createAction(self, "&Quit", "Ctrl+Q", 'Quit the program.', self.close)
-
 		self.statusBar()
+
+		icon = QtGui.QIcon.fromTheme("document-save")
+
+		self.save = createAction(self, "&Save model", "Ctrl+S", 'Save model to a file.', self.save_model, icon)
+
+		icon = QtGui.QIcon.fromTheme("application-exit")
+
+		self.exit = createAction(self, "&Quit", "Ctrl+Q", 'Quit the program.', self.close, icon)
+
+		icon = QtGui.QIcon.fromTheme("document-open")
+
+		self.importSpace = createAction(self, "&Import state space", "Ctrl+J", 'Import state space from a JSON file.', self.importStateSpace, icon)
+		self.loadModel = createAction(self, "&Import model", "Ctrl+L", 'Import model from a file.', self.open_model, icon)
 
 		mainMenu = self.menuBar()
 		fileMenu = mainMenu.addMenu('&File')
 
 		fileMenu.addAction(self.save)
+		fileMenu.addSeparator()
+		fileMenu.addAction(self.loadModel)
+		fileMenu.addAction(self.importSpace)
+		fileMenu.addSeparator()
 		fileMenu.addAction(self.exit)
 
-		self.clear = createAction(self, "&Clear", "Ctrl+R", 'Clear all the text.', self.clearText)
-		self.copy = createAction(self, "&Copy", "Ctrl+C", 'Copy selected text to clipboard.', self.copySelection)
-		self.paste = createAction(self, "&Paste", "Ctrl+V", 'Paste text from clipboard.', self.pasteText)
+		icon = QtGui.QIcon.fromTheme("edit-undo")
+
+		self.undo = createAction(self, "&Undo", "Ctrl+Z", 'Undo last action.', self.undoText, icon)
+
+		icon = QtGui.QIcon.fromTheme("edit-redo")
+
+		self.redo = createAction(self, "&Redo", "Ctrl+Y", 'Redo last action.', self.redoText, icon)
+
+		icon = QtGui.QIcon.fromTheme("edit-clear")
+
+		self.clear = createAction(self, "&Clear", "Ctrl+R", 'Clear all the text.', self.clearText, icon)
+
+		icon = QtGui.QIcon.fromTheme("edit-copy")
+
+		self.copy = createAction(self, "&Copy", "Ctrl+C", 'Copy selected text to clipboard.', self.copySelection, icon)
+
+		icon = QtGui.QIcon.fromTheme("edit-paste")
+
+		self.paste = createAction(self, "&Paste", "Ctrl+V", 'Paste text from clipboard.', self.pasteText, icon)
+
+		icon = QtGui.QIcon.fromTheme("edit-find")
+
+		self.find = createAction(self, "&Find", "Ctrl+F", 'Find text.', self.findTextDialog, icon)
 
 		editMenu = mainMenu.addMenu('&Edit')
-		editMenu.addAction(self.clear)
+		editMenu.addAction(self.undo)
+		editMenu.addAction(self.redo)
+		editMenu.addSeparator()
 		editMenu.addAction(self.copy)
 		editMenu.addAction(self.paste)
+		editMenu.addAction(self.clear)
+		editMenu.addSeparator()
+		editMenu.addAction(self.find)
 
-		self.importSpace = createAction(self, "&Import state space", "Ctrl+J", 'Import state space from a JSON file.', self.importStateSpace)
-		self.loadModel = createAction(self, "&Import model", "Ctrl+L", 'Import model from a file.', self.open_model)
+		icon = QtGui.QIcon.fromTheme("help-about")
 
-		importMenu = mainMenu.addMenu('&Import')
-		importMenu.addAction(self.loadModel)
-		importMenu.addAction(self.importSpace)
-
-		self.help = createAction(self, "&About", "Ctrl+H", 'Show About.', self.showHelp)
+		self.help = createAction(self, "&About", "Ctrl+H", 'Show About.', self.showHelp, icon)
 
 		helpMenu = mainMenu.addMenu('&Help')
 		helpMenu.addAction(self.help)
@@ -931,6 +965,18 @@ class MainWindow(QtGui.QMainWindow):
 	def clearText(self):
 		self.textBox.clear()
 
+	def undoText(self):
+		self.textBox.undo()
+
+	def redoText(self):
+		self.textBox.redo()
+
+	def findTextDialog(self):
+		self.findDialog = Find(self)
+
+	def findTheText(self, text):
+		self.textBox.find(text)
+
 	def showHelp(self):
 		self.help = Help()
 
@@ -944,6 +990,25 @@ class MainWindow(QtGui.QMainWindow):
 		self.textBox.resize(590 + widthShrint, 430 + heightShrink)
 		self.tabs.move(605 + widthShrint, 30)
 		self.tabs.resize(320, 430 + heightShrink)
+
+class Find(QtGui.QDialog):
+	def __init__(self, parent = None):
+		QtGui.QDialog.__init__(self, parent)
+		self.parent = parent
+
+		StatesHbox = QHBoxLayout()
+
+		self.textLine = QLineEdit()
+		StatesHbox.addWidget(self.textLine)
+		self.findButton = createButton(self, "Find", self.sendInfo, False)
+		StatesHbox.addWidget(self.findButton)
+
+		self.setLayout(StatesHbox)
+
+		self.show()
+
+	def sendInfo(self):
+		self.parent.findTheText(self.textLine.text())
 
 app = QtGui.QApplication(sys.argv)
 
