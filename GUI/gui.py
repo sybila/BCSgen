@@ -36,8 +36,12 @@ def createButton(it, text, to_connect, disabled):
 	return button
 
 def createAction(it, title, shortcut, tip, connectWith, icon):
-	action = QtGui.QAction(icon, title, it)
-	action.setShortcut(shortcut)
+	if icon:
+		action = QtGui.QAction(icon, title, it)
+	else:
+		action = QtGui.QAction(title, it)
+	if shortcut:
+		action.setShortcut(shortcut)
 	action.setStatusTip(tip)
 	action.triggered.connect(connectWith)
 	return action
@@ -450,6 +454,24 @@ class MainWindow(QtGui.QMainWindow):
 		editMenu.addSeparator()
 		editMenu.addAction(self.find)
 
+		viewMenu = mainMenu.addMenu('&View')
+		textSizeMenu = QtGui.QMenu('Font size', self)
+		viewMenu.addMenu(textSizeMenu)
+
+		self.size20 = createAction(self, "&Huge", None, 'Change font size to 20px.', self.changeSizeTo20, None)
+		self.size16 = createAction(self, "&Large", None, 'Change font size to 16px.', self.changeSizeTo16, None)
+		self.size12 = createAction(self, "&Big", None, 'Change font size to 12px.', self.changeSizeTo12, None)
+		self.size9 = createAction(self, "&Normal", None, 'Change font size to 9px.', self.changeSizeTo9, None)
+
+		self.customFontSize = createAction(self, "&Custom", None, 'Choose custom font size.', self.setCustomFontSize, None)
+
+		textSizeMenu.addAction(self.size9)
+		textSizeMenu.addAction(self.size12)
+		textSizeMenu.addAction(self.size16)
+		textSizeMenu.addAction(self.size20)
+		textSizeMenu.addSeparator()
+		textSizeMenu.addAction(self.customFontSize)
+
 		icon = QtGui.QIcon.fromTheme("help-about")
 
 		self.help = createAction(self, "&About", "Ctrl+H", 'Show About.', self.showHelp, icon)
@@ -500,7 +522,6 @@ class MainWindow(QtGui.QMainWindow):
 		self.highlighter = MyHighlighter( self.textBox )
 
 		self.textBox.setText("# rules\n\n\n# initial state\n")
-
 
 		#########################################
 
@@ -743,6 +764,28 @@ class MainWindow(QtGui.QMainWindow):
 
 		#########################################
 
+	def setCustomFontSize(self):
+		self.fontSize = FontSize(self)
+		self.fontSize.show()
+
+	def changeSizeTo9(self):
+		self.changeFontSize(9)
+
+	def changeSizeTo12(self):
+		self.changeFontSize(12)
+
+	def changeSizeTo16(self):
+		self.changeFontSize(16)
+
+	def changeSizeTo20(self):
+		self.changeFontSize(20)
+
+	def changeFontSize(self, size):
+		cursor = self.textBox.textCursor()
+		self.textBox.selectAll()
+		self.textBox.setFontPointSize(size)
+		self.textBox.setTextCursor(cursor)
+
 	def showGraph(self):
 		self.graph = GraphVisual(self.stateWorker.getStateSpaceFile())
 
@@ -973,7 +1016,8 @@ class MainWindow(QtGui.QMainWindow):
 		self.textBox.redo()
 
 	def findTextDialog(self):
-		self.findDialog = Find(self)
+		findDialog = Find(self)
+		findDialog.show()
 
 	def findTheText(self, text):
 		self.textBox.find(text)
@@ -1000,17 +1044,35 @@ class Find(QtGui.QDialog):
 
 		StatesHbox = QHBoxLayout()
 
-		self.textLine = QLineEdit()
+		self.textLine = QLineEdit(self)
+		self.textLine.setMinimumWidth(200)
 		StatesHbox.addWidget(self.textLine)
 		self.findButton = createButton(self, "Find", self.sendInfo, False)
 		StatesHbox.addWidget(self.findButton)
 
 		self.setLayout(StatesHbox)
 
-		self.show()
-
 	def sendInfo(self):
 		self.parent.findTheText(self.textLine.text())
+
+class FontSize(QtGui.QDialog):
+	def __init__(self, parent = None):
+		QtGui.QDialog.__init__(self, parent)
+		self.parent = parent
+
+		StatesHbox = QHBoxLayout()
+
+		self.textLine = QLineEdit(self)
+		self.textLine.setMinimumWidth(20)
+		StatesHbox.addWidget(self.textLine)
+		self.setButton = createButton(self, "Set font", self.sendInfo, False)
+		StatesHbox.addWidget(self.setButton)
+
+		self.setLayout(StatesHbox)
+
+	def sendInfo(self):
+		self.parent.changeFontSize(int(self.textLine.text()))
+		self.close()
 
 app = QtGui.QApplication(sys.argv)
 
