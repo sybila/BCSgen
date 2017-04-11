@@ -1016,11 +1016,15 @@ class MainWindow(QtGui.QMainWindow):
 		self.textBox.redo()
 
 	def findTextDialog(self):
+		self.textBox.moveCursor(QTextCursor.Start)
 		findDialog = Find(self)
 		findDialog.show()
 
 	def findTheText(self, text):
-		self.textBox.find(text)
+		wasFound = self.textBox.find(text)
+		if not wasFound:
+			self.textBox.moveCursor(QTextCursor.Start)
+			self.textBox.find(text)
 
 	def showHelp(self):
 		self.help = Help()
