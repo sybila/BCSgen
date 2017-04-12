@@ -1046,6 +1046,8 @@ class Find(QtGui.QDialog):
 		QtGui.QDialog.__init__(self, parent)
 		self.parent = parent
 
+		self.setWindowModality(QtCore.Qt.ApplicationModal)
+
 		StatesHbox = QHBoxLayout()
 
 		self.textLine = QLineEdit(self)
@@ -1064,12 +1066,14 @@ class FontSize(QtGui.QDialog):
 		QtGui.QDialog.__init__(self, parent)
 		self.parent = parent
 
+		self.setWindowModality(QtCore.Qt.ApplicationModal)
+
 		StatesHbox = QHBoxLayout()
 
 		self.textLine = QLineEdit(self)
 		self.textLine.setMinimumWidth(20)
 		StatesHbox.addWidget(self.textLine)
-		self.setButton = createButton(self, "Set font", self.sendInfo, False)
+		self.setButton = createButton(self, "Set font size", self.sendInfo, False)
 		StatesHbox.addWidget(self.setButton)
 
 		self.setLayout(StatesHbox)
