@@ -399,19 +399,19 @@ class MainWindow(QtGui.QMainWindow):
 
 		icon = QtGui.QIcon.fromTheme("document-save")
 
-		self.save = createAction(self, "&Save model", "Ctrl+S", 'Save model to a file.', self.save_model, icon)
+		self.save = createAction(self, "Save model", "Ctrl+S", 'Save model to a file.', self.save_model, icon)
 
 		icon = QtGui.QIcon.fromTheme("application-exit")
 
-		self.exit = createAction(self, "&Quit", "Ctrl+Q", 'Quit the program.', self.close, icon)
+		self.exit = createAction(self, "Quit", "Ctrl+Q", 'Quit the program.', self.close, icon)
 
 		icon = QtGui.QIcon.fromTheme("document-open")
 
-		self.importSpace = createAction(self, "&Import state space", "Ctrl+J", 'Import state space from a JSON file.', self.importStateSpace, icon)
-		self.loadModel = createAction(self, "&Import model", "Ctrl+L", 'Import model from a file.', self.open_model, icon)
+		self.importSpace = createAction(self, "Import state space", "Ctrl+J", 'Import state space from a JSON file.', self.importStateSpace, icon)
+		self.loadModel = createAction(self, "Import model", "Ctrl+L", 'Import model from a file.', self.open_model, icon)
 
 		mainMenu = self.menuBar()
-		fileMenu = mainMenu.addMenu('&File')
+		fileMenu = mainMenu.addMenu('File')
 
 		fileMenu.addAction(self.save)
 		fileMenu.addSeparator()
@@ -422,29 +422,29 @@ class MainWindow(QtGui.QMainWindow):
 
 		icon = QtGui.QIcon.fromTheme("edit-undo")
 
-		self.undo = createAction(self, "&Undo", "Ctrl+Z", 'Undo last action.', self.undoText, icon)
+		self.undo = createAction(self, "Undo", "Ctrl+Z", 'Undo last action.', self.undoText, icon)
 
 		icon = QtGui.QIcon.fromTheme("edit-redo")
 
-		self.redo = createAction(self, "&Redo", "Ctrl+Y", 'Redo last action.', self.redoText, icon)
+		self.redo = createAction(self, "Redo", "Ctrl+Y", 'Redo last action.', self.redoText, icon)
 
 		icon = QtGui.QIcon.fromTheme("edit-clear")
 
-		self.clear = createAction(self, "&Clear", "Ctrl+R", 'Clear all the text.', self.clearText, icon)
+		self.clear = createAction(self, "Clear", "Ctrl+R", 'Clear all the text.', self.clearText, icon)
 
 		icon = QtGui.QIcon.fromTheme("edit-copy")
 
-		self.copy = createAction(self, "&Copy", "Ctrl+C", 'Copy selected text to clipboard.', self.copySelection, icon)
+		self.copy = createAction(self, "Copy", "Ctrl+C", 'Copy selected text to clipboard.', self.copySelection, icon)
 
 		icon = QtGui.QIcon.fromTheme("edit-paste")
 
-		self.paste = createAction(self, "&Paste", "Ctrl+V", 'Paste text from clipboard.', self.pasteText, icon)
+		self.paste = createAction(self, "Paste", "Ctrl+V", 'Paste text from clipboard.', self.pasteText, icon)
 
 		icon = QtGui.QIcon.fromTheme("edit-find")
 
-		self.find = createAction(self, "&Find", "Ctrl+F", 'Find text.', self.findTextDialog, icon)
+		self.find = createAction(self, "Find", "Ctrl+F", 'Find text.', self.findTextDialog, icon)
 
-		editMenu = mainMenu.addMenu('&Edit')
+		editMenu = mainMenu.addMenu('Edit')
 		editMenu.addAction(self.undo)
 		editMenu.addAction(self.redo)
 		editMenu.addSeparator()
@@ -454,16 +454,16 @@ class MainWindow(QtGui.QMainWindow):
 		editMenu.addSeparator()
 		editMenu.addAction(self.find)
 
-		viewMenu = mainMenu.addMenu('&View')
+		viewMenu = mainMenu.addMenu('View')
 		textSizeMenu = QtGui.QMenu('Font size', self)
 		viewMenu.addMenu(textSizeMenu)
 
-		self.size20 = createAction(self, "&Huge", None, 'Change font size to 20px.', self.changeSizeTo20, None)
-		self.size16 = createAction(self, "&Large", None, 'Change font size to 16px.', self.changeSizeTo16, None)
-		self.size12 = createAction(self, "&Big", None, 'Change font size to 12px.', self.changeSizeTo12, None)
-		self.size9 = createAction(self, "&Normal", None, 'Change font size to 9px.', self.changeSizeTo9, None)
+		self.size20 = createAction(self, "Huge", None, 'Change font size to 20px.', self.changeSizeTo20, None)
+		self.size16 = createAction(self, "Large", None, 'Change font size to 16px.', self.changeSizeTo16, None)
+		self.size12 = createAction(self, "Big", None, 'Change font size to 12px.', self.changeSizeTo12, None)
+		self.size9 = createAction(self, "Normal", None, 'Change font size to 9px.', self.changeSizeTo9, None)
 
-		self.customFontSize = createAction(self, "&Custom", None, 'Choose custom font size.', self.setCustomFontSize, None)
+		self.customFontSize = createAction(self, "Custom", None, 'Choose custom font size.', self.setCustomFontSize, None)
 
 		textSizeMenu.addAction(self.size9)
 		textSizeMenu.addAction(self.size12)
@@ -474,9 +474,9 @@ class MainWindow(QtGui.QMainWindow):
 
 		icon = QtGui.QIcon.fromTheme("help-about")
 
-		self.help = createAction(self, "&About", "Ctrl+H", 'Show About.', self.showHelp, icon)
+		self.help = createAction(self, "About", "Ctrl+H", 'Show About.', self.showHelp, icon)
 
-		helpMenu = mainMenu.addMenu('&Help')
+		helpMenu = mainMenu.addMenu('Help')
 		helpMenu.addAction(self.help)
 
 		self.stateSpaceDirectory = "../Model/"
@@ -535,6 +535,7 @@ class MainWindow(QtGui.QMainWindow):
 		StatesHbox = QHBoxLayout()
 
 		self.stateSpace = createButton(self, 'State space output file', self.save_stateSpace, False)
+		self.stateSpace.setStatusTip("Choose file for storing state space.")
 
 		StatesHbox.addWidget(self.stateSpace)
 
@@ -550,9 +551,11 @@ class MainWindow(QtGui.QMainWindow):
 
 		self.compute_space_button = createButton(self, 'Compute', self.stateWorker.compute_space, True)
 		self.compute_space_button.clicked.connect(self.progressbarStatesOnStart)
+		self.compute_space_button.setStatusTip("Compute state space of given model.")
 		#self.compute_space_button.clicked.connect(self.startStateSpaceTimer)
 
 		self.cancel_state = createButton(self, 'Cancel', self.cancel_computation_states, True)
+		self.cancel_state.setStatusTip("Cancel current computations.")
 		self.cancel_state.clicked.connect(self.progressbarStatesOnFinished)
 		self.cancel_state.clicked.connect(self.stateSpaceCanceled)
 
@@ -579,6 +582,7 @@ class MainWindow(QtGui.QMainWindow):
 		StatesHbox = QHBoxLayout()
 
 		self.display_graph_button = createButton(self, "Show graph", self.showGraph, True)
+		self.display_graph_button.setStatusTip("Show interactive graph of current state space.")
 
 		StatesHbox.addWidget(self.display_graph_button)
 
@@ -598,6 +602,7 @@ class MainWindow(QtGui.QMainWindow):
 		StatesHbox = QHBoxLayout()
 
 		self.save_reactions_button = createButton(self, 'Save reactions to file', self.save_reactions, True)
+		self.save_reactions_button.setStatusTip("Save reactions generated from model to a file.")
 
 		StatesHbox.addWidget(self.save_reactions_button)
 		vLayout.addLayout(StatesHbox)
@@ -673,6 +678,7 @@ class MainWindow(QtGui.QMainWindow):
 		vLayout.addWidget(self.scrollArea)
 
 		self.addButton = QtGui.QPushButton('+')
+		self.addButton.setStatusTip("Add another agent to be checked.")
 		self.addButton.setMaximumWidth(25)
 		self.addButton.clicked.connect(self.addDynamicWidget)
 
@@ -707,6 +713,7 @@ class MainWindow(QtGui.QMainWindow):
 		StatesHbox = QHBoxLayout()
 
 		self.compute_reachability_button = createButton(self, 'Check reachability', self.startReachability, True)
+		self.compute_reachability_button.setStatusTip("Check whether chosen agents are reachable.")
 
 		StatesHbox.addWidget(self.compute_reachability_button)
 
@@ -732,6 +739,7 @@ class MainWindow(QtGui.QMainWindow):
 		StatesHbox = QHBoxLayout()
 
 		self.compute_conflicts = createButton(self, 'Compute conflicts', self.analysisWorker.compute_conflicts, True)
+		self.compute_conflicts.setStatusTip("Apply static analysis for checking conflicts in given model.")
 
 		StatesHbox.addWidget(self.compute_conflicts)
 
