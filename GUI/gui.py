@@ -1024,11 +1024,15 @@ class MainWindow(QtGui.QMainWindow):
 		self.textBox.redo()
 
 	def findTextDialog(self):
+		self.textBox.moveCursor(QTextCursor.Start)
 		findDialog = Find(self)
 		findDialog.show()
 
 	def findTheText(self, text):
-		self.textBox.find(text)
+		wasFound = self.textBox.find(text)
+		if not wasFound:
+			self.textBox.moveCursor(QTextCursor.Start)
+			self.textBox.find(text)
 
 	def showHelp(self):
 		self.help = Help()
@@ -1050,6 +1054,8 @@ class Find(QtGui.QDialog):
 		QtGui.QDialog.__init__(self, parent)
 		self.parent = parent
 
+		self.setWindowModality(QtCore.Qt.ApplicationModal)
+
 		StatesHbox = QHBoxLayout()
 
 		self.textLine = QLineEdit(self)
@@ -1068,12 +1074,14 @@ class FontSize(QtGui.QDialog):
 		QtGui.QDialog.__init__(self, parent)
 		self.parent = parent
 
+		self.setWindowModality(QtCore.Qt.ApplicationModal)
+
 		StatesHbox = QHBoxLayout()
 
 		self.textLine = QLineEdit(self)
 		self.textLine.setMinimumWidth(20)
 		StatesHbox.addWidget(self.textLine)
-		self.setButton = createButton(self, "Set font", self.sendInfo, False)
+		self.setButton = createButton(self, "Set font size", self.sendInfo, False)
 		StatesHbox.addWidget(self.setButton)
 
 		self.setLayout(StatesHbox)
