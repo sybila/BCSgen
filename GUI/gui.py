@@ -1,17 +1,18 @@
 import time
 import sys
 import os.path
+import markdown
+import numpy as np
+from PyQt4 import QtGui, QtCore, QtWebKit
+from PyQt4.QtGui import *
+
 sys.path.append(os.path.abspath('../Core/'))
+
 import State_space_generator as Gen
 import Implicit_reaction_network_generator as Implicit
 import Explicit_reaction_network_generator as Explicit
 import Import as Import
 import Visualisation as Visual
-import markdown
-import numpy as np
-
-from PyQt4 import QtGui, QtCore, QtWebKit
-from PyQt4.QtGui import *
 
 # global methods for creating PyQt objects
 
@@ -46,6 +47,11 @@ def createAction(it, title, shortcut, tip, connectWith, icon):
 	action.triggered.connect(connectWith)
 	return action
 
+"""
+class GraphVisual
+- creates html file with graphical representation of given state space (json)
+- then, this html is displayed in separate window
+"""
 class GraphVisual(QtWebKit.QWebView):
 	def __init__(self, jsonSpace, parent= None):
 		super(GraphVisual, self).__init__()
@@ -69,7 +75,7 @@ visit <a href=\"https://github.com/sybila/BCSgen\">github.com/sybila/BCSgen</a>.
 
 """
 Class Help
-- for displaying help
+- for displaying help in separate window
 """
 class Help(QWidget):
 	def __init__(self, parent= None):
@@ -206,7 +212,7 @@ class StateSpaceWorker(QtCore.QObject):
 	def setLenReactions(self, lenReactions):
 		self.lenReactions = lenReactions
 
-	def compute_space(self):
+	def computeStateSpace(self):
 		rules, initialState = Import.import_rules(str(self.modelFile.toPlainText()))
 		reactionGenerator = Explicit.Compute()
 		self.reactions = reactionGenerator.computeReactions(rules)
@@ -549,10 +555,10 @@ class MainWindow(QtGui.QMainWindow):
 
 		StatesHbox = QHBoxLayout()
 
-		self.compute_space_button = createButton(self, 'Compute', self.stateWorker.compute_space, True)
-		self.compute_space_button.clicked.connect(self.progressbarStatesOnStart)
-		self.compute_space_button.setStatusTip("Compute state space of given model.")
-		#self.compute_space_button.clicked.connect(self.startStateSpaceTimer)
+		self.computeStateSpace_button = createButton(self, 'Compute', self.stateWorker.computeStateSpace, True)
+		self.computeStateSpace_button.clicked.connect(self.progressbarStatesOnStart)
+		self.computeStateSpace_button.setStatusTip("Compute state space of given model.")
+		#self.computeStateSpace_button.clicked.connect(self.startStateSpaceTimer)
 
 		self.cancel_state = createButton(self, 'Cancel', self.cancel_computation_states, True)
 		self.cancel_state.setStatusTip("Cancel current computations.")
@@ -560,7 +566,7 @@ class MainWindow(QtGui.QMainWindow):
 		self.cancel_state.clicked.connect(self.stateSpaceCanceled)
 
 		StatesHbox.addWidget(self.cancel_state)
-		StatesHbox.addWidget(self.compute_space_button)
+		StatesHbox.addWidget(self.computeStateSpace_button)
 
 		vLayout.addLayout(StatesHbox)
 
@@ -958,7 +964,7 @@ class MainWindow(QtGui.QMainWindow):
 			self.textBox.setPlainText(file.read())
 			self.compute_conflicts.setDisabled(False)
 			if self.stateWorker.getStateSpaceFile():
-				self.compute_space_button.setDisabled(False)
+				self.computeStateSpace_button.setDisabled(False)
 
 	def load_state_space(self):
 		file = QFileDialog.getOpenFileName(self, 'Choose file', filter ="JSON (*.json);;All types (*)")
@@ -976,7 +982,7 @@ class MainWindow(QtGui.QMainWindow):
 			self.stateWorker.setStateSpaceFile(file)
 			self.stateSpace_text.setText(self.stateWorker.getStateSpaceFile())
 			if self.stateWorker.getModelFile():
-				self.compute_space_button.setDisabled(False)
+				self.computeStateSpace_button.setDisabled(False)
 
 	def save_reactions(self):
 		file = QFileDialog.getSaveFileName(self, 'Choose log file', directory = self.reactionsDirectory, filter =".txt (*.txt);;All types (*)")
@@ -991,7 +997,7 @@ class MainWindow(QtGui.QMainWindow):
 	def cancel_computation_states(self):
 		if not self.stateWorker.getTheWorker().wait(100):
 			self.stateWorker.getTheWorker().terminate()
-			self.compute_space_button.setDisabled(True)
+			self.computeStateSpace_button.setDisabled(True)
 			self.cancel_state.setDisabled(True)
 			self.stateSpace.setDisabled(True)
 
