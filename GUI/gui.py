@@ -1055,6 +1055,12 @@ class MainWindow(QtGui.QMainWindow):
 		self.tabs.move(605 + widthShrint, 30)
 		self.tabs.resize(320, 430 + heightShrink)
 
+	def quitThreads(self):
+		self.analysisWorker.TheWorker.quit()
+		self.analysisWorker.TheWorker.wait()
+		self.stateWorker.TheWorker.quit()
+		self.stateWorker.TheWorker.wait()
+
 class Find(QtGui.QDialog):
 	def __init__(self, parent = None):
 		QtGui.QDialog.__init__(self, parent)
@@ -1096,6 +1102,8 @@ class FontSize(QtGui.QDialog):
 		self.parent.changeFontSize(int(self.textLine.text()))
 		self.close()
 
+
+
 app = QtGui.QApplication(sys.argv)
 
 app_icon = QtGui.QIcon()
@@ -1119,5 +1127,7 @@ try:
 	os.remove("graph.html")
 except OSError:
 	pass
+
+main.quitThreads()
 
 sys.exit()
