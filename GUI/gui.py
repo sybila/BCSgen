@@ -53,13 +53,12 @@ class GraphVisual
 - then, this html is displayed in separate window
 """
 class GraphVisual(QtWebKit.QWebView):
-	def __init__(self, jsonSpace, parent= None):
+	def __init__(self, jsonSpace, html, parent= None):
 		super(GraphVisual, self).__init__()
 
 		path = os.path.dirname(os.path.abspath(__file__))
 
-		self.url = "graph.html"
-		Visual.createGraph(jsonSpace, self.url, path)
+		self.url = Visual.newGraph(jsonSpace, path, html)
 
 		self.setWindowModality(QtCore.Qt.ApplicationModal)
 
@@ -801,7 +800,10 @@ class MainWindow(QtGui.QMainWindow):
 		self.textBox.setTextCursor(cursor)
 
 	def showGraph(self):
-		self.graph = GraphVisual(self.stateWorker.getStateSpaceFile())
+		useHTMLvisual = True
+		if len(self.stateWorker.states) > 100:
+			useHTMLvisual = False
+		self.graph = GraphVisual(self.stateWorker.getStateSpaceFile(), useHTMLvisual)
 
 	def showReachableStates(self):
 		self.graph = GraphVisual()
@@ -1125,6 +1127,7 @@ main.show()
 app.exec_()
 try:
 	os.remove("graph.html")
+	os.remove("graph.svg")
 except OSError:
 	pass
 

@@ -82,7 +82,7 @@ def write_reaction(edge_id, left_index, right_index, From, To, output_file):
                  ", arrows:'to', text: '" + From.__str__() + " => " + To.__str__() + "'},\n")
     output.close()
 
-def createGraph(state_space_file, output_file, path):
+def createHTMLGraph(state_space_file, output_file, path):
 
     write_part(firstpart, output_file, "w")
 
@@ -110,6 +110,33 @@ def createGraph(state_space_file, output_file, path):
     write_part(secondpart, output_file, "a")
 
     fixPath(output_file, path)
+
+    return output_file
+
+def createSVGGraph(state_space_file, output_file, path):
+    return output_file
+
+def add_nodes(graph, nodes):
+    for n in nodes:
+        if isinstance(n, tuple):
+            graph.node(n[0], **n[1])
+        else:
+            graph.node(n)
+    return graph
+
+def add_edges(graph, edges):
+    for e in edges:
+        if isinstance(e[0], tuple):
+            graph.edge(*e[0], **e[1])
+        else:
+            graph.edge(*e)
+    return graph
+
+def newGraph(state_space_file, path, type):
+    if type:
+        return createHTMLGraph(state_space_file, "graph.html", path)
+    else:
+        return createSVGGraph(state_space_file, "graph.svg", path)
 
 firstpart = '''
 <!doctype html>
