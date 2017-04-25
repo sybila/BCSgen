@@ -416,15 +416,24 @@ class MainWindow(QtGui.QMainWindow):
 		editMenu.addAction(self.find)
 
 		viewMenu = mainMenu.addMenu('View')
+
+		icon = QtGui.QIcon.fromTheme("preferences-desktop-font")
 		textSizeMenu = QtGui.QMenu('Font size', self)
+		textSizeMenu.setIcon(icon)
 		viewMenu.addMenu(textSizeMenu)
 
 		self.size20 = createAction(self, "Huge", None, 'Change font size to 20px.', self.changeSizeTo20, None)
 		self.size16 = createAction(self, "Large", None, 'Change font size to 16px.', self.changeSizeTo16, None)
 		self.size12 = createAction(self, "Big", None, 'Change font size to 12px.', self.changeSizeTo12, None)
 		self.size9 = createAction(self, "Normal", None, 'Change font size to 9px.', self.changeSizeTo9, None)
+		self.size20.setCheckable(True)
+		self.size16.setCheckable(True)
+		self.size12.setCheckable(True)
+		self.size9.setCheckable(True)
+		self.size9.setChecked(True)
 
 		self.customFontSize = createAction(self, "Custom", None, 'Choose custom font size.', self.setCustomFontSize, None)
+		self.customFontSize.setCheckable(True)
 
 		textSizeMenu.addAction(self.size9)
 		textSizeMenu.addAction(self.size12)
@@ -734,20 +743,41 @@ class MainWindow(QtGui.QMainWindow):
 		#########################################
 
 	def setCustomFontSize(self):
+		self.customFontSize.setChecked(True)
 		self.fontSize = FontSize(self)
 		self.fontSize.show()
 
 	def changeSizeTo9(self):
+		self.size9.setChecked(True)
 		self.changeFontSize(9)
+		self.size12.setChecked(False)
+		self.size16.setChecked(False)
+		self.size20.setChecked(False)
+		self.customFontSize.setChecked(False)
 
 	def changeSizeTo12(self):
+		self.size12.setChecked(True)
 		self.changeFontSize(12)
+		self.size9.setChecked(False)
+		self.size16.setChecked(False)
+		self.size20.setChecked(False)
+		self.customFontSize.setChecked(False)
 
 	def changeSizeTo16(self):
+		self.size16.setChecked(True)
 		self.changeFontSize(16)
+		self.size12.setChecked(False)
+		self.size9.setChecked(False)
+		self.size20.setChecked(False)
+		self.customFontSize.setChecked(False)
 
 	def changeSizeTo20(self):
+		self.size20.setChecked(True)
 		self.changeFontSize(20)
+		self.size12.setChecked(False)
+		self.size16.setChecked(False)
+		self.size9.setChecked(False)
+		self.customFontSize.setChecked(False)
 
 	def changeFontSize(self, size):
 		cursor = self.textBox.textCursor()
@@ -1057,6 +1087,10 @@ class FontSize(QtGui.QDialog):
 		self.setLayout(StatesHbox)
 
 	def sendInfo(self):
+		self.parent.size9.setChecked(False)
+		self.parent.size12.setChecked(False)
+		self.parent.size16.setChecked(False)
+		self.parent.size20.setChecked(False)
 		self.parent.changeFontSize(int(self.textLine.text()))
 		self.close()
 
