@@ -109,6 +109,7 @@ class AnalysisWorker(QtCore.QObject):
 	noConflicts = QtCore.pyqtSignal()
 	conflicts = QtCore.pyqtSignal()
 	reachFinished = QtCore.pyqtSignal()
+
 	def __init__(self, model, stateWorker, parent=None):
 		QtCore.QObject.__init__(self, parent)
 
@@ -120,21 +121,6 @@ class AnalysisWorker(QtCore.QObject):
 		self.TheWorker = QtCore.QThread()
 		self.moveToThread(self.TheWorker)
 		self.TheWorker.start()
-
-	def getReachabilityResult(self):
-		return self.reachablityResult
-
-	def setToBeReached(self, state):
-		self.toBeReached = state
-
-	def getMessage(self):
-		return self.message
-
-	def getTheWorker(self):
-		return self.TheWorker
-
-	def getModelFile(self):
-		return self.modelFile
 
 	def compute_conflicts(self):
 		self.network, state, networkStatusOK, self.message = Implicit.initializeNetwork(str(self.modelFile.toPlainText()))
@@ -160,6 +146,7 @@ class StateSpaceWorker(QtCore.QObject):
 	taskFinished = QtCore.pyqtSignal()
 	showMostStates = QtCore.pyqtSignal()
 	NumOfStates = QtCore.pyqtSignal()
+
 	def __init__(self, model, parent=None):
 		QtCore.QObject.__init__(self, parent)
 		
@@ -177,39 +164,6 @@ class StateSpaceWorker(QtCore.QObject):
 		self.TheWorker = QtCore.QThread()
 		self.moveToThread(self.TheWorker)
 		self.TheWorker.start()
-
-	def getUniqueAgents(self):
-		return self.uniqueAgents
-
-	def getReactions(self):
-		return self.reactions
-
-	def getCurrentNumberOfStates(self):
-		return self.numOfCurrentStates
-
-	def getMostNumberOfStates(self):
-		return self.mostNumberOfStates
-
-	def getTheWorker(self):
-		return self.TheWorker
-
-	def getModelFile(self):
-		return self.modelFile
-
-	def setStateSpaceFile(self, stateSpaceFile):
-		self.stateSpaceFile = stateSpaceFile
-
-	def getStateSpaceFile(self):
-		return self.stateSpaceFile
-
-	def setLenStates(self, lenObj):
-		self.lenStates = lenObj
-
-	def setLenEdges(self, lenObj):
-		self.lenEdges = lenObj
-
-	def setLenReactions(self, lenReactions):
-		self.lenReactions = lenReactions
 
 	def computeStateSpace(self):
 		rules, initialState = Import.import_rules(str(self.modelFile.toPlainText()))
@@ -385,7 +339,6 @@ class FillAgentToBeFound(QtGui.QWidget):
 	def textEdited(self):
 		self.parent.resetReachIndicators()
 		self.agent.setStyleSheet("background-color : rgb(255, 255, 255);")
-
 
 """
 Class MainWindow
@@ -774,9 +727,9 @@ class MainWindow(QtGui.QMainWindow):
 		# self.runningReactions.setText(" Na:Na:Na /  Na:Na:Na")
 		# self.runningReactions.move(775, 305)
 
-		self.stateWorker.setLenStates(self.num_of_states)
-		self.stateWorker.setLenEdges(self.num_of_edges)
-		self.stateWorker.setLenReactions(self.num_of_reactions)
+		self.stateWorker.lenStates = self.num_of_states
+		self.stateWorker.lenEdges = self.num_of_edges
+		self.stateWorker.lenReactions = self.num_of_reactions
 
 		#########################################
 
@@ -806,7 +759,7 @@ class MainWindow(QtGui.QMainWindow):
 		useHTMLvisual = True
 		#if len(self.stateWorker.states) > 100:
 		#	useHTMLvisual = False
-		self.graph = GraphVisual(self.stateWorker.getStateSpaceFile(), self.screenWidth - 100, self.screenHeight - 100, useHTMLvisual)
+		self.graph = GraphVisual(self.stateWorker.stateSpaceFile, self.screenWidth - 100, self.screenHeight - 100, useHTMLvisual)
 
 	def showReachableStates(self):
 		self.graph = GraphVisual()
@@ -817,7 +770,7 @@ class MainWindow(QtGui.QMainWindow):
 		#self.reachable_states_button.setDisabled(True)
 
 	def writeReachResult(self):
-		if self.analysisWorker.getReachabilityResult():
+		if self.analysisWorker.reachablityResult:
 			self.reachabilityResult.setText("Reachable !")
 		else:
 			self.reachabilityResult.setText("Not reachable !")
@@ -826,7 +779,7 @@ class MainWindow(QtGui.QMainWindow):
 	def startReachability(self):
 		self.progress_bar_reachability.setRange(0,0)
 		checkWheterReachable = True
-		orderedAgents = self.stateWorker.getUniqueAgents()
+		orderedAgents = self.stateWorker.uniqueAgents
 		vector = [0] * len(orderedAgents)
 
 		if self.checkAgentFields():
@@ -837,7 +790,7 @@ class MainWindow(QtGui.QMainWindow):
 						agent = str(widget.agent.text())
 						stochio = str(widget.stochio.text())
 						vector[orderedAgents.index(agent)] = int(stochio)
-					self.analysisWorker.setToBeReached(np.array(vector))
+					self.analysisWorker.toBeReached = np.array(vector)
 					self.analysisWorker.compute_reach()
 
 		self.progress_bar_reachability.setRange(0,1)
@@ -890,7 +843,7 @@ class MainWindow(QtGui.QMainWindow):
 	def addDynamicWidget(self):
 		self.resetReachIndicators()
 		self.addButton.deleteLater()
-		self.scrollLayout.addRow(FillAgentToBeFound(self.stateWorker.getUniqueAgents(), self))
+		self.scrollLayout.addRow(FillAgentToBeFound(self.stateWorker.uniqueAgents, self))
 
 		self.addButton = QtGui.QPushButton('+')
 		self.addButton.setMaximumWidth(25)
@@ -907,7 +860,7 @@ class MainWindow(QtGui.QMainWindow):
 
 	def showConflicts(self):
 		self.noConflictsMessage.setText("")
-		self.window = DisplayConflicts(self.analysisWorker.getMessage()[:-22])
+		self.window = DisplayConflicts(self.analysisWorker.message[:-22])
 		self.window.show()
 
 	def showNoConflicts(self):
@@ -915,11 +868,11 @@ class MainWindow(QtGui.QMainWindow):
 
 	def updateNumOfStates(self):
 		return
-		#self.numCurrentOfStates.setText(str(self.stateWorker.getCurrentNumberOfStates()))
+		#self.numCurrentOfStates.setText(str(self.stateWorker.numOfCurrentStates))
 
 	def showNumberOfStates(self):
 		return
-		#self.numOfStates.setText(" / " + str(self.stateWorker.getMostNumberOfStates()))
+		#self.numOfStates.setText(" / " + str(self.stateWorker.mostNumberOfStates))
 
 	def startStateSpaceTimer(self):
 		self.spaceTimer.start(1000)
@@ -968,14 +921,14 @@ class MainWindow(QtGui.QMainWindow):
 			file = open(file, "r")
 			self.textBox.setPlainText(file.read())
 			self.compute_conflicts.setDisabled(False)
-			if self.stateWorker.getStateSpaceFile():
+			if self.stateWorker.stateSpaceFile:
 				self.computeStateSpace_button.setDisabled(False)
 
 	def load_state_space(self):
 		file = QFileDialog.getOpenFileName(self, 'Choose file', filter ="JSON (*.json);;All types (*)")
 		if file:
-			self.stateWorker.setStateSpaceFile(file)
-			self.stateSpace_text.setText(self.stateWorker.getStateSpaceFile())
+			self.stateWorker.stateSpaceFile = file
+			self.stateSpace_text.setText(self.stateWorker.stateSpaceFile)
 			self.display_graph_button.setDisabled(False)
 
 	def save_stateSpace(self):
@@ -984,9 +937,9 @@ class MainWindow(QtGui.QMainWindow):
 			self.stateSpaceDirectory = os.path.dirname(str(file))
 			if not os.path.splitext(str(file))[1]:
 				file = str(file) + ".json"
-			self.stateWorker.setStateSpaceFile(file)
-			self.stateSpace_text.setText(self.stateWorker.getStateSpaceFile())
-			if self.stateWorker.getModelFile():
+			self.stateWorker.stateSpaceFile = file
+			self.stateSpace_text.setText(self.stateWorker.stateSpaceFile)
+			if self.stateWorker.modelFile:
 				self.computeStateSpace_button.setDisabled(False)
 
 	def save_reactions(self):
@@ -996,12 +949,12 @@ class MainWindow(QtGui.QMainWindow):
 			if not os.path.splitext(str(file))[1]:
 				file = str(file) + ".txt"
 			f = open(file,'w')
-			f.write("\n".join(self.stateWorker.getReactions()))
+			f.write("\n".join(self.stateWorker.reactions))
 			f.close()
 
 	def cancel_computation_states(self):
-		if not self.stateWorker.getTheWorker().wait(100):
-			self.stateWorker.getTheWorker().terminate()
+		if not self.stateWorker.TheWorker.wait(100):
+			self.stateWorker.TheWorker.terminate()
 			self.computeStateSpace_button.setDisabled(True)
 			self.cancel_state.setDisabled(True)
 			self.stateSpace.setDisabled(True)
@@ -1050,7 +1003,7 @@ class MainWindow(QtGui.QMainWindow):
 
 	def importStateSpace(self):
 		self.load_state_space()
-		self.stateWorker.states, self.stateWorker.edges, self.stateWorker.uniqueAgents = Import.importStateSpace(self.stateWorker.getStateSpaceFile())
+		self.stateWorker.states, self.stateWorker.edges, self.stateWorker.uniqueAgents = Import.importStateSpace(self.stateWorker.stateSpaceFile)
 		self.addButton.setDisabled(False)
 
 	def resizeEvent(self, event):
