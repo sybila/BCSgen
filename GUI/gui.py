@@ -146,6 +146,7 @@ class StateSpaceWorker(QtCore.QObject):
 	taskFinished = QtCore.pyqtSignal()
 	showMostStates = QtCore.pyqtSignal()
 	NumOfStates = QtCore.pyqtSignal()
+	reactionsDone = QtCore.pyqtSignal()
 
 	def __init__(self, model, parent=None):
 		QtCore.QObject.__init__(self, parent)
@@ -169,6 +170,7 @@ class StateSpaceWorker(QtCore.QObject):
 		rules, initialState = Import.import_rules(str(self.modelFile.toPlainText()))
 		reactionGenerator = Explicit.Compute()
 		self.reactions = reactionGenerator.computeReactions(rules)
+		self.reactionsDone.emit()
 
 		initialState = Explicit.sortInitialState(initialState)
 		self.VN = Gen.createVectorNetwork(self.reactions, initialState)
@@ -546,6 +548,7 @@ class MainWindow(QtGui.QMainWindow):
 		self.stateWorker.taskFinished.connect(self.progressbarStatesOnFinished)
 		self.stateWorker.showMostStates.connect(self.showNumberOfStates)
 		self.stateWorker.NumOfStates.connect(self.updateNumOfStates)
+		self.stateWorker.reactionsDone.connect(self.enableSaveReactions)
 
 		# show graph
 
@@ -922,6 +925,9 @@ class MainWindow(QtGui.QMainWindow):
 
 		#self.spaceTimer.stop()
 
+	def enableSaveReactions(self):
+		self.save_reactions_button.setDisabled(False)
+
 	def progressbarStatesOnStart(self): 
 		self.progress_bar_states.setRange(0,0)
 		self.cancel_state.setDisabled(False)
@@ -930,7 +936,6 @@ class MainWindow(QtGui.QMainWindow):
 		self.progress_bar_states.setRange(0,1)
 		self.progress_bar_states.setValue(1)
 		self.cancel_state.setDisabled(True)
-		self.save_reactions_button.setDisabled(False)
 		self.addButton.setDisabled(False)
 		self.display_graph_button.setDisabled(False)
 
