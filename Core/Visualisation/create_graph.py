@@ -82,9 +82,18 @@ def write_reaction(edge_id, left_index, right_index, From, To, output_file):
                  ", arrows:'to', text: '" + From.__str__() + " => " + To.__str__() + "'},\n")
     output.close()
 
-def createHTMLGraph(state_space_file, output_file, path):
+def write_size(screenWidth, screenHeight, output_file):
+    with open(output_file, "a") as file:
+        file.write("            width: " + str(screenWidth-50) + "px;\n")
+        file.write("            height: " + str(screenHeight-100) + "px;")
 
-    write_part(firstpart, output_file, "w")
+def createHTMLGraph(state_space_file, output_file, path, screenWidth, screenHeight):
+
+    write_part(firstpart_1, output_file, "w")
+    write_size(screenWidth, screenHeight, output_file)
+    write_part(firstpart_2, output_file, "a")
+    write_part(str(screenWidth - 50), output_file, "a")
+    write_part(firstpart_3, output_file, "a")
 
     with open(state_space_file, 'r') as f:
     	data = json.load(f)
@@ -107,7 +116,9 @@ def createHTMLGraph(state_space_file, output_file, path):
     	From, To = create_reaction(data['nodes'][value['from']], data['nodes'][value['to']])
     	write_reaction(edge_id, IDs[value['from']], IDs[value['to']], From, To, output_file)
     		
-    write_part(secondpart, output_file, "a")
+    write_part(secondpart_1, output_file, "a")
+    write_part(str(screenWidth - 50), output_file, "a")
+    write_part(secondpart_2, output_file, "a")
 
     fixPath(output_file, path)
 
@@ -132,14 +143,14 @@ def add_edges(graph, edges):
             graph.edge(*e)
     return graph
 
-def newGraph(state_space_file, path, type):
+def newGraph(state_space_file, path, type, screenWidth, screenHeight):
     if type:
-        return createHTMLGraph(state_space_file, "graph.html", path)
+        return createHTMLGraph(state_space_file, "graph.html", path, screenWidth, screenHeight)
     else:
         return createSVGGraph(state_space_file, "graph.svg", path)
 
-firstpart = '''
-<!doctype html>
+firstpart_1 = \
+'''<!doctype html>
 <html>
 <head>
     <title>Network | Interaction events</title>
@@ -149,8 +160,9 @@ firstpart = '''
 
     <style type="text/css">
        #mynetwork {
-            width: 800px;
-            height: 500px;
+'''
+
+firstpart_2 = '''
             border: 1px solid lightgray;
         }
 	    #rectangle {
@@ -163,14 +175,16 @@ firstpart = '''
 <body>
 
 <div id="mynetwork"></div>
-<div id="rectangle"style="width:800px;height:100%;border:1px solid #000;"> </div>
+<div id="rectangle"style="width:'''
+
+firstpart_3 = '''px;height:100%;border:1px solid #000;"> </div>
 
 <script type="text/javascript">
     // create an array with nodes
         var nodes = new vis.DataSet([
 '''
 
-secondpart = '''
+secondpart_1 = '''
 	]);
 
     // create a network
@@ -238,7 +252,9 @@ secondpart = '''
 			};
 		};
 
-		document.getElementById('rectangle').innerHTML = '<div style="width:800px;height:100%;text-align:center;border:0px solid #000;">' + tmp + '</div>';
+		document.getElementById('rectangle').innerHTML = '<div style="width:'''
+
+secondpart_2 = '''px;height:100%;text-align:center;border:0px solid #000;">' + tmp + '</div>';
     });
 
 	network.on("stabilized", function (params) {

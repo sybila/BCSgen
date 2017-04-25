@@ -53,16 +53,16 @@ class GraphVisual
 - then, this html is displayed in separate window
 """
 class GraphVisual(QtWebKit.QWebView):
-	def __init__(self, jsonSpace, html, parent= None):
+	def __init__(self, jsonSpace, screenWidth, screenHeight, html, parent= None):
 		super(GraphVisual, self).__init__()
 
 		path = os.path.dirname(os.path.abspath(__file__))
 
-		self.url = Visual.newGraph(jsonSpace, path, html)
+		self.url = Visual.newGraph(jsonSpace, path, html, screenWidth, screenHeight)
 
 		self.setWindowModality(QtCore.Qt.ApplicationModal)
 
-		self.setFixedSize(820,600)
+		self.setFixedSize(screenWidth,screenHeight)
 		self.load(QtCore.QUrl(self.url))
 		self.show()
 
@@ -392,8 +392,11 @@ Class MainWindow
 - the main window which holds all the widgets (how the app looks like)
 """
 class MainWindow(QtGui.QMainWindow):
-	def __init__(self, parent=None):
+	def __init__(self, screenWidth, screenHeight, parent=None):
 		super(MainWindow, self).__init__(parent)
+
+		self.screenWidth = screenWidth
+		self.screenHeight = screenHeight
 
 		self.rowDeleted = QLineEdit("0")
 		self.rowDeleted.textChanged.connect(self.checkScrollArea)
@@ -801,9 +804,9 @@ class MainWindow(QtGui.QMainWindow):
 
 	def showGraph(self):
 		useHTMLvisual = True
-		if len(self.stateWorker.states) > 100:
-			useHTMLvisual = False
-		self.graph = GraphVisual(self.stateWorker.getStateSpaceFile(), useHTMLvisual)
+		#if len(self.stateWorker.states) > 100:
+		#	useHTMLvisual = False
+		self.graph = GraphVisual(self.stateWorker.getStateSpaceFile(), self.screenWidth - 100, self.screenHeight - 100, useHTMLvisual)
 
 	def showReachableStates(self):
 		self.graph = GraphVisual()
@@ -1116,10 +1119,13 @@ app_icon.addFile('icons/48x48.png', QtCore.QSize(48,48))
 app_icon.addFile('icons/128x128.png', QtCore.QSize(128,128))
 app.setWindowIcon(app_icon)
 
+screen_rect = app.desktop().screenGeometry()
+screenWidth, screenHeight = screen_rect.width(), screen_rect.height()
+
 appWidth = 930
 appHeight = 485
 
-main = MainWindow()
+main = MainWindow(screenWidth, screenHeight)
 main.setMinimumSize(appWidth, appHeight)
 main.setWindowTitle('BCSgen')
 main.show()
