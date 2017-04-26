@@ -350,6 +350,8 @@ class MainWindow(QtGui.QMainWindow):
 	def __init__(self, screenWidth, screenHeight, parent=None):
 		super(MainWindow, self).__init__(parent)
 
+		self.rulesAreCorrect = False
+
 		self.screenWidth = screenWidth
 		self.screenHeight = screenHeight
 
@@ -494,6 +496,10 @@ class MainWindow(QtGui.QMainWindow):
 		self.highlighter = MyHighlighter( self.textBox )
 
 		self.textBox.setText("# rules\n\n\n# initial state\n")
+
+		self.oldPlainText = self.textBox.toPlainText()
+
+		self.textBox.textChanged.connect(self.checkRules)
 
 		#########################################
 
@@ -745,6 +751,26 @@ class MainWindow(QtGui.QMainWindow):
 
 		#########################################
 
+	def checkRules(self):
+		if self.oldPlainText != self.textBox.toPlainText():
+			self.oldPlainText = self.textBox.toPlainText()
+			self.statusBar().clearMessage()
+			self.rulesAreCorrect, error = Import.analyseRules(self.textBox.toPlainText())
+			if not self.rulesAreCorrect:
+				errorFormat = QtGui.QTextCharFormat()
+				errorFormat.setUnderlineStyle(QtGui.QTextCharFormat.WaveUnderline)
+				errorFormat.setUnderlineColor(QtGui.QColor("red"))
+
+				self.cursor = self.textBox.textCursor()
+				self.cursor.setPosition(error[0])
+				for i in range(error[0], error[1]):
+					self.cursor.movePosition(QtGui.QTextCursor.NextCharacter, 1)
+				self.cursor.mergeCharFormat(errorFormat)
+
+				self.statusBar().showMessage(self.tr(error[2]))
+				self.computeStateSpace_button.setDisabled(True)
+			elif self.stateWorker.stateSpaceFile:
+				self.computeStateSpace_button.setDisabled(False)
 	def setCustomFontSize(self):
 		self.customFontSize.setChecked(True)
 		self.fontSize = FontSize(self)
@@ -956,7 +982,7 @@ class MainWindow(QtGui.QMainWindow):
 			file = open(file, "r")
 			self.textBox.setPlainText(file.read())
 			self.compute_conflicts.setDisabled(False)
-			if self.stateWorker.stateSpaceFile:
+			if self.stateWorker.stateSpaceFile and self.rulesAreCorrect:
 				self.computeStateSpace_button.setDisabled(False)
 
 	def load_state_space(self):
@@ -974,7 +1000,7 @@ class MainWindow(QtGui.QMainWindow):
 				file = str(file) + ".json"
 			self.stateWorker.stateSpaceFile = file
 			self.stateSpace_text.setText(self.stateWorker.stateSpaceFile)
-			if self.stateWorker.modelFile:
+			if self.stateWorker.modelFile and self.rulesAreCorrect:
 				self.computeStateSpace_button.setDisabled(False)
 
 	def save_reactions(self):

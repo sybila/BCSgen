@@ -7,6 +7,72 @@ import Interpreter_of_BCSL as BCSL
 import State_space_generator as Gen
 import json
 import numpy as np
+import subprocess
+import threading
+
+class Rule():
+	def __init__(self, index, text):
+		self.index = index
+		self.text = text
+		self.length = len(self.text)
+
+def getPositionOfRule(index, rules):
+	return sum(map(lambda rule: rule.length, rules[:index])) + 7
+
+def createMessage(unexpected, expected):
+	if unexpected:
+		if len(expected) > 1:
+			return "Syntax error: unexpected token '" + unexpected + "' where one of '" + ", ".join(expected) + "' is expected."
+		else:
+			return "Syntax error: unexpected token '" + unexpected + "' where '" + expected[0] + "' is expected."
+	else:
+		return "Syntax error: unexpected end of line."
+
+def verifyResults(results, rules):
+	for i in range(len(results)):
+		result = json.loads(results[i])
+		if "error" in result:
+			start = int(result["start"]) + getPositionOfRule(i, rules)
+			if result["unexpected"] == "end of input":
+				unexpected = None
+				end = start
+			else:
+				unexpected = result["unexpected"]
+				end = start + len(result["unexpected"])
+			message = createMessage(unexpected, result["expected"])
+			return False, [start, end, message]
+	return True, []
+
+def commandLineJob(rules, proc):
+	for rule in rules:
+		proc.stdin.write('%s\n' % rule.text)
+	proc.stdin.close()
+
+def analyseRules(rules):
+	proc = subprocess.Popen(['../Core/Import/rule_parser', 'json', 'stream', 'stream'], stdin=subprocess.PIPE, stdout=subprocess.PIPE)
+	results = []
+
+	rules = str(rules).split("\n")
+
+	cleanRules = []
+	for rule in rules[1:]:
+		if rule.startswith('# initial state'):
+			break
+		else:
+			cleanRules.append(rule)
+
+	rules = []
+	for i in range(len(cleanRules)):
+		rules.append(Rule(i, cleanRules[i]))
+
+	thread = threading.Thread(target=commandLineJob(rules, proc))
+	thread.start()
+	for line in proc.stdout:
+		results.append(line)
+	thread.join()
+	proc.wait()
+
+	return verifyResults(results, rules)
 
 '''
 Functions for parsing common rules (human-readable)
