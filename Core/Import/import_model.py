@@ -18,7 +18,7 @@ class Rule():
 		self.length = len(self.text)
 
 def getPositionOfRule(index, rules):
-	return sum(map(lambda rule: rule.length, rules[:index])) + 7
+	return sum(map(lambda rule: rule.length + 1, rules[:index])) + 8
 
 def createMessage(unexpected, expected):
 	if unexpected:
