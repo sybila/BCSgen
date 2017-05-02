@@ -752,16 +752,23 @@ class MainWindow(QtGui.QMainWindow):
 		#########################################
 
 	def checkRules(self):
+		noErroFormat = QtGui.QTextCharFormat()
+		noErroFormat.setUnderlineStyle(QTextCharFormat.NoUnderline)
+
 		if self.oldPlainText != self.textBox.toPlainText():
 			self.oldPlainText = self.textBox.toPlainText()
 			self.statusBar().clearMessage()
 			self.rulesAreCorrect, error = Import.analyseRules(self.textBox.toPlainText())
+			self.cursor = self.textBox.textCursor()
+			self.cursor.setPosition(QTextCursor.Start)
+			self.cursor.movePosition(QTextCursor.End, 1)
+			self.cursor.mergeCharFormat(noErroFormat)
+
 			if not self.rulesAreCorrect:
 				errorFormat = QtGui.QTextCharFormat()
 				errorFormat.setUnderlineStyle(QtGui.QTextCharFormat.WaveUnderline)
 				errorFormat.setUnderlineColor(QtGui.QColor("red"))
 
-				self.cursor = self.textBox.textCursor()
 				self.cursor.setPosition(error[0])
 				for i in range(error[0], error[1]):
 					self.cursor.movePosition(QtGui.QTextCursor.NextCharacter, 1)
@@ -771,6 +778,7 @@ class MainWindow(QtGui.QMainWindow):
 				self.computeStateSpace_button.setDisabled(True)
 			elif self.stateWorker.stateSpaceFile:
 				self.computeStateSpace_button.setDisabled(False)
+
 	def setCustomFontSize(self):
 		self.customFontSize.setChecked(True)
 		self.fontSize = FontSize(self)

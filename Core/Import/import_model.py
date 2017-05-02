@@ -9,6 +9,7 @@ import json
 import numpy as np
 import subprocess
 import threading
+from RuleParser import *
 
 class Rule():
 	def __init__(self, index, text):
@@ -23,8 +24,10 @@ def createMessage(unexpected, expected):
 	if unexpected:
 		if len(expected) > 1:
 			return "Syntax error: unexpected token '" + unexpected + "' where one of '" + ", ".join(expected) + "' is expected."
-		else:
+		elif len(expected) == 1:
 			return "Syntax error: unexpected token '" + unexpected + "' where '" + expected[0] + "' is expected."
+		else:
+			return "Syntax error: unexpected token '" + unexpected + "'."
 	else:
 		return "Syntax error: unexpected end of line."
 
@@ -43,36 +46,21 @@ def verifyResults(results, rules):
 			return False, [start, end, message]
 	return True, []
 
-def commandLineJob(rules, proc):
-	for rule in rules:
-		proc.stdin.write('%s\n' % rule.text)
-	proc.stdin.close()
-
 def analyseRules(rules):
-	proc = subprocess.Popen(['../Core/Import/rule_parser', 'json', 'stream', 'stream'], stdin=subprocess.PIPE, stdout=subprocess.PIPE)
-	results = []
-
 	rules = str(rules).split("\n")
 
 	cleanRules = []
-	for rule in rules[1:]:
-		if rule.startswith('# initial state'):
+	for i in range(len(rules) - 1):
+		if rules[i + 1].startswith('# initial state'):
 			break
-		else:
-			cleanRules.append(rule)
+		elif rules[i + 1]:
+			cleanRules.append(Rule(i + 1, rules[i + 1]))
 
-	rules = []
-	for i in range(len(cleanRules)):
-		rules.append(Rule(i, cleanRules[i]))
+	results = []
+	for rule in cleanRules:
+		results.append(parseEquations(rule.text))
 
-	thread = threading.Thread(target=commandLineJob(rules, proc))
-	thread.start()
-	for line in proc.stdout:
-		results.append(line)
-	thread.join()
-	proc.wait()
-
-	return verifyResults(results, rules)
+	return verifyResults(results, cleanRules)
 
 '''
 Functions for parsing common rules (human-readable)

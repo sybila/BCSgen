@@ -32,3 +32,4 @@ Core/Explicit_reaction_network_generator/State.pyc
 Core/Explicit_reaction_network_generator/__init__.pyc
 Core/Visualisation/__init__.pyc
 Core/Visualisation/create_graph.pyc
+Core/Import/RuleParser.pyc
