@@ -194,19 +194,24 @@ secondpart_1 = '''
         edges: edges
     };
     var options = {
-		layout:{randomSeed:2},
-		physics: {
-			stabilization: false,
-			barnesHut: {
-				gravitationalConstant: -10000,
-				centralGravity: 0.75,
-				springConstant: 0.08,
-				springLength: 150
-			},
-			maxVelocity: 146,
+		layout: {improvedLayout: true},
+        physics: {
+            enabled: true,
+            barnesHut: {
+                gravitationalConstant: -25000,
+                centralGravity: 0.5,
+                springConstant: 0.5,
+                springLength: 200,
+                damping: 0.15
+            },
+            maxVelocity: 50,
+            minVelocity: 7.5,
             solver: 'barnesHut',
-            timestep: 0.50,
-            stabilization: {iterations: 150}
+            timestep: 0.5,
+            stabilization: {
+                        enabled:true,
+                        iterations:5000,
+                    },
         },
 		nodes: {
             size: 15,

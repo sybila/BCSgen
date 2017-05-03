@@ -9,6 +9,9 @@ import json
 import numpy as np
 import subprocess
 import threading
+
+parserPath = sys.argv[-1]
+sys.path.append(os.path.abspath(parserPath))
 from RuleParser import *
 
 class Rule():
