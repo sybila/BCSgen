@@ -167,7 +167,7 @@ class StateSpaceWorker(QtCore.QObject):
 		self.TheWorker.start()
 
 	def computeStateSpace(self):
-		rules, initialState = Import.import_rules(str(self.modelFile.toPlainText()))
+		rules, initialState, rates = Import.import_rules(str(self.modelFile.toPlainText()))
 		reactionGenerator = Explicit.Compute()
 		self.reactions = reactionGenerator.computeReactions(rules)
 		self.reactionsDone.emit()
@@ -999,6 +999,8 @@ class MainWindow(QtGui.QMainWindow):
 			self.stateWorker.stateSpaceFile = file
 			self.stateSpace_text.setText(self.stateWorker.stateSpaceFile)
 			self.display_graph_button.setDisabled(False)
+			return True
+		return False
 
 	def save_stateSpace(self):
 		file = QFileDialog.getSaveFileName(self, 'Choose output file', directory = self.stateSpaceDirectory, filter =".json (*.json);;All types (*)")
@@ -1071,9 +1073,9 @@ class MainWindow(QtGui.QMainWindow):
 		self.help = Help()
 
 	def importStateSpace(self):
-		self.load_state_space()
-		self.stateWorker.states, self.stateWorker.edges, self.stateWorker.uniqueAgents = Import.importStateSpace(self.stateWorker.stateSpaceFile)
-		self.addButton.setDisabled(False)
+		if self.load_state_space():
+			self.stateWorker.states, self.stateWorker.edges, self.stateWorker.uniqueAgents = Import.importStateSpace(self.stateWorker.stateSpaceFile)
+			self.addButton.setDisabled(False)
 
 	def resizeEvent(self, event):
 		widthShrint = self.width() - appWidth

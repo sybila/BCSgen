@@ -10,7 +10,7 @@ inputFile = sys.argv[-2]
 stateSpaceFile = sys.argv[-1]
 
 file = open(inputFile).read()
-rules, initialState = Import.import_rules(file)
+rules, initialState, rates = Import.import_rules(file)
 reactionGenerator = Explicit.Compute()
 reactions = reactionGenerator.computeReactions(rules)
 

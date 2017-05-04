@@ -17,8 +17,10 @@ from RuleParser import *
 class Rule():
 	def __init__(self, index, text):
 		self.index = index
-		self.text = text
-		self.length = len(self.text)
+		self.text = text.split("@")[0]
+		if len(text.split("@")) > 1:
+			self.rate = text.split("@")[1]
+		self.length = len(text)
 
 def getPositionOfRule(index, rules):
 	return sum(map(lambda rule: rule.length + 1, rules[:index])) + 8
@@ -326,6 +328,9 @@ def remove_spaces(rule):
 	splitted_rule = filter(None, splitted_rule)
 	return " ".join(splitted_rule)
 
+def remove_rate(rule):
+	return rule.split("@")
+
 """
 If first given string is a number, return (number - 1) multiplied second string joined by sign "+"
 :param s1: first string
@@ -372,7 +377,7 @@ def create_rule(rule):
 
 """
 Imports rules from file
-:param rules_file: name of file with rules
+:param input_file: name of file with model
 """
 def import_model(input_file, sub_file = None):
 	inits, created_rules = [], []
@@ -432,7 +437,7 @@ def import_initial_state_as_State(inits):
 	return BCSL.State(agents)
 
 def import_rules(input_file):
-	inits, created_rules = [], []
+	inits, created_rules, rates = [], [], []
 
 	lines = filter(None, input_file.split("\n"))
 
@@ -444,11 +449,14 @@ def import_rules(input_file):
 				inits.append(line)
 			break
 		elif not line.startswith('#'):
-			rule = remove_spaces(line)
+			rule = remove_rate(line)
+			if len(rule) > 1:
+				rates.append(rule[1])
+			rule = rule[0]
+			rule = remove_spaces(rule)
 			rule = remove_steichiometry(rule)
-
 			created_rules.append(rule)
-	return created_rules, import_initial_state(inits)
+	return created_rules, import_initial_state(inits), rates
 
 # import of json
 
