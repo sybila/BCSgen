@@ -99,6 +99,26 @@ class Help(QWidget):
 		self.setWindowModality(QtCore.Qt.ApplicationModal)
 		self.show()
 
+class SimulationWorker(QtCore.QObject):
+	reachFinished = QtCore.pyqtSignal()
+
+	def __init__(self, model, parent=None):
+		QtCore.QObject.__init__(self, parent)
+
+		self.modelFile = model
+		self.reachablityResult = ""
+
+		self.TheWorker = QtCore.QThread()
+		self.moveToThread(self.TheWorker)
+		self.TheWorker.start()
+
+	def simulate(self):
+		rules, initialState, rates = Import.import_rules(str(self.modelFile.toPlainText()))
+		reactionGenerator = Explicit.Compute()
+		self.reactions = reactionGenerator.computeReactions(rules)
+
+		self.VN = Gen.createVectorNetwork(self.reactions, initialState)
+
 """
 Class AnalysisWorker
 - computes all analysis available in BCSgen:
