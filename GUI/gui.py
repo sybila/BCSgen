@@ -5,6 +5,7 @@ import markdown
 import numpy as np
 from PyQt4 import QtGui, QtCore, QtWebKit
 from PyQt4.QtGui import *
+import signal
 
 sys.path.append(os.path.abspath('../Core/'))
 
@@ -1155,7 +1156,14 @@ class FontSize(QtGui.QDialog):
 		self.parent.changeFontSize(int(self.textLine.text()))
 		self.close()
 
+def handleIntSignal(signum, frame):
+	"""Handler for the SIGINT signal.
+	sends Exit Code Number 130 'Script terminated by Control-C' 
+	Control-C is fatal error signal 2, (130 = 128 + signal 'n') """
+	main.quitThreads()
+	sys.exit()
 
+signal.signal(signal.SIGINT, handleIntSignal)
 
 app = QtGui.QApplication(sys.argv)
 
