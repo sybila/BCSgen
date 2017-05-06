@@ -4,7 +4,8 @@ import sympy
 import numpy as np
 
 def simulateGillespieAlgorithm(reactions, solution, translations, rates, max_time):
-	time_series = []
+	data = []
+	times = []
 	rates = vectorizeRates(translations, rates)
 	time = 0
 
@@ -16,11 +17,12 @@ def simulateGillespieAlgorithm(reactions, solution, translations, rates, max_tim
 		rand_number = enumerated_rates_sum*random.random()
 		chosen_reaction = pickReaction(rand_number, props)
 
-		solution = applyReaction(chosen_reaction, solution)
-		time_series.append((solution, time))
+		solution = applyReaction(reactions[chosen_reaction], solution)
+		data.append(solution)
 		time += ((-1/enumerated_rates_sum)*math.log(random.random()))
+		times.append(time)
 
-	return time_series
+	return data, times
 
 def applyReaction(reaction, solution):
 	vec = np.array(solution) + reaction
