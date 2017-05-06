@@ -1,26 +1,33 @@
 import random 
 import math
 import sympy
+import numpy as np
 
-def simulateGillespieAlgorithm(reactions, init_solution, translations, rates, max_time):
+def simulateGillespieAlgorithm(reactions, solution, translations, rates, max_time):
+	time_series = []
 	rates = vectorizeRates(translations, rates)
+	time = 0
 
-	# while time < max_time:
+	while time < max_time:
+		enumerated_rates = map(lambda rate: enumerateRate(prepareSolution(solution), rate), rates)
+		enumerated_rates_sum = sum(enumerated_rates)
+		props = enumeratedRatesToTuples(enumerated_rates, enumerated_rates_sum)
 
-	# 	enumerated_rates_sum = 0 
+		rand_number = enumerated_rates_sum*random.random()
+		chosen_reaction = pickReaction(rand_number, props)
 
-	# 	time += ((-1/enumerated_rates_sum)*math.log(random.random()))
+		solution = applyReaction(chosen_reaction, solution)
+		time_series.append((solution, time))
+		time += ((-1/enumerated_rates_sum)*math.log(random.random()))
 
-
-	return #time_series
-
+	return time_series
 
 def applyReaction(reaction, solution):
 	vec = np.array(solution) + reaction
 	if (vec >= 0).all():
 		return tuple(vec)
 	else:
-		return None
+		return solution
 
 def vectorizeRates(translations, rates):
 	new_rates = []
@@ -28,11 +35,25 @@ def vectorizeRates(translations, rates):
 		new_rate = rate
 		for i in range(len(translations)):
 			new_rate = new_rate.replace(translations[i], "x_" + str(i))
-		new_rates.append(new_rate)
+		new_rates.append(sympy.sympify(new_rate))
 	return new_rates
 
-def enumerateRates(solution, rates):
-	return
+def enumerateRate(solution, rate):
+	return rate.subs(solution)
 
 def pickReaction(random_number, enumerated_rates):
-	return
+	for q in range(len(enumerated_rates)):
+		if random_number <= enumerated_rates[q][0]:
+			return enumerated_rates[q][1]
+		else: 
+			return enumerated_rates[-1][1]
+
+def normalise(props, p_sum):
+	for p in range(len(props)):
+		n_props.append([(props[p][0]/p_sum),props[p][1]])
+
+def prepareSolution(solution):
+	return [('x_' + str(i), solution[i]) for i in range(len(solution))]
+
+def enumeratedRatesToTuples(enumerated_rates, p_sum):
+	return sorted([(enumerated_rates[i]/p_sum, i) for i in range(len(enumerated_rates))])
