@@ -202,7 +202,7 @@ class StateSpaceWorker(QtCore.QObject):
 
 		self.states, self.edges = self.generateStateSpace(bound)
 
-		Gen.printStateSpace(self.states, self.edges, self.VN.getTranslations(), self.stateSpaceFile)
+		Gen.printStateSpace(self.states, self.edges, self.VN.getTranslations(), self.stateSpaceFile, self.VN.getState())
 		self.lenStates.setText('No. of States:'.ljust(30) + str(len(self.states)))
 		self.lenEdges.setText('No. of Edges:'.ljust(30) + str(len(self.edges)))
 		self.lenReactions.setText('No. of Reactions:'.ljust(30) + str(len(self.reactions)))

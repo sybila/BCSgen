@@ -57,7 +57,7 @@ Prints state space to given output files
 :param statesFile: output file for states
 :param edgesFile: output file for edges
 """
-def printStateSpace(states, transitions, orderedAgents, stateSpaceFile):
+def printStateSpace(states, transitions, orderedAgents, stateSpaceFile, initialState):
 	nodes = dict()
 	edges = dict()
 	for state in map(lambda s: createState(s, orderedAgents), states):
@@ -68,7 +68,7 @@ def printStateSpace(states, transitions, orderedAgents, stateSpaceFile):
 	for i in range(len(transitions)):
 		edges[i+1] = transitions[i].getDict()
 
-	data = {'nodes' : nodes, 'edges' : edges, 'unique' : orderedAgents}
+	data = {'nodes' : nodes, 'edges' : edges, 'unique' : orderedAgents, 'initial' : "|".join(map(str, initialState))}
 
 	with open(stateSpaceFile, 'w') as f:
 		json.dump(data, f, indent=4)
