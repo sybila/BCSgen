@@ -5,6 +5,7 @@ import markdown
 import numpy as np
 from PyQt4 import QtGui, QtCore, QtWebKit
 from PyQt4.QtGui import *
+import pyqtgraph as pg
 import signal
 import sympy
 import random 
@@ -50,6 +51,31 @@ def createAction(it, title, shortcut, tip, connectWith, icon):
 	action.setStatusTip(tip)
 	action.triggered.connect(connectWith)
 	return action
+
+class SimulationPlot(pg.GraphicsWindow):
+	def __init__(self, data, times, translations, parent = None):
+		super(SimulationPlot, self).__init__()
+
+		self.resize(1000,600)
+		self.setWindowTitle('Simulation results')
+
+		# Enable antialiasing for prettier plots
+		pg.setConfigOptions(antialias=True)
+
+		times = [int(time*(10**12)) for time in times]
+
+		myPlot = self.addPlot(title="Multiple curves")
+		myPlot.addLegend()
+
+		size = len(data[0])
+		ratio = 100/size
+		for i in range(size):
+			myPlot.plot(x = times, y = self.column(data, i), pen=((i+1)*ratio,100), name = translations[i])
+
+		self.show()
+
+	def column(self, matrix, i):
+		return [row[i] for row in matrix]
 
 """
 class GraphVisual
@@ -123,9 +149,10 @@ class SimulationWorker(QtCore.QObject):
 
 		self.modelFile = model
 
-		self.max_time = 10
+		self.max_time = 2
 		self.data = []
 		self.times = []
+		self.translations = []
 
 		self.TheWorker = QtCore.QThread()
 		self.moveToThread(self.TheWorker)
@@ -137,10 +164,11 @@ class SimulationWorker(QtCore.QObject):
 		reactions, rates = reactionGenerator.computeReactions(rules, rates)
 		VN = Gen.createVectorNetwork(reactions, initialState)
 
-		self.simulateGillespieAlgorithm(map(lambda r: r.difference, VN.Vectors), np.array(VN.State), VN.Translations, rates, self.max_time)
+		self.translations = VN.Translations
+		self.simulateGillespieAlgorithm(map(lambda r: r.difference, VN.Vectors), np.array(VN.State), rates, self.max_time)
 
-	def simulateGillespieAlgorithm(self, reactions, solution, translations, rates, max_time):
-		rates = self.vectorizeRates(translations, rates)
+	def simulateGillespieAlgorithm(self, reactions, solution, rates, max_time):
+		rates = self.vectorizeRates(self.translations, rates)
 		names = self.prepareSolution(solution)
 		time = 0
 		sendInfoStep = 1
@@ -856,11 +884,43 @@ class MainWindow(QtGui.QMainWindow):
 
 		StatesHbox = QHBoxLayout()
 
-		self.compute_simulation = createButton(self, 'Simulation', self.simulationWorker.simulate, True)
+		self.maxTimeLabel = QtGui.QLabel(self)
+		self.maxTimeLabel.setText("Maximum time:")
+		StatesHbox.addWidget(self.maxTimeLabel)
 
-		StatesHbox.addWidget(self.compute_simulation)
+		self.maxTimeEdit = QtGui.QLineEdit(self)
+		StatesHbox.addWidget(self.maxTimeEdit)
+		self.maxTimeEdit.textEdited.connect(self.updateSimulationMaxTime)
+
+		self.unitInfo = QtGui.QLabel(self)
+		self.unitInfo.setText("(in seconds)")
+		StatesHbox.addWidget(self.unitInfo)
+
+		self.step = 1
+
 		vLayout.addLayout(StatesHbox)
 
+		self.progress_bar_simulation = QProgressBar(self)
+		self.progress_bar_simulation.setRange(0,100)
+
+		vLayout.addWidget(self.progress_bar_simulation)
+
+		StatesHbox = QHBoxLayout()
+
+		self.cancel_simulation_button = createButton(self, 'Cancel', self.cancel_compute_simulation, True)
+		self.cancel_simulation_button.setStatusTip("Cancel current computation of simulation.")
+
+		StatesHbox.addWidget(self.cancel_simulation_button)
+
+		self.compute_simulation_button = createButton(self, 'Simulate', self.simulationWorker.simulate, True)
+		self.compute_simulation_button.setStatusTip("Simulate current model.")
+		self.compute_simulation_button.clicked.connect(self.simulationStarted)
+
+		StatesHbox.addWidget(self.compute_simulation_button)
+
+		vLayout.addLayout(StatesHbox)
+
+		vLayout.setAlignment(QtCore.Qt.AlignTop)  # might cause problems !
 		self.tab3.setLayout(vLayout)
 
 		#########################################
@@ -869,17 +929,39 @@ class MainWindow(QtGui.QMainWindow):
 		self.simulationWorker.nextSecondCalculated.connect(self.updateSimulationProgress)
 
 	def showPlot(self):
-		for (d, t) in zip(self.simulationWorker.data, self.simulationWorker.times):
-			print d, t
+		self.cancel_simulation_button.setDisabled(True)
+		self.progress_bar_simulation.setValue(100)
+		self.plot = SimulationPlot(self.simulationWorker.data, self.simulationWorker.times, self.simulationWorker.translations)
 
 	def updateSimulationProgress(self):
-		print 'next second'
+		self.progress_bar_simulation.setValue(self.progress_bar_simulation.value() + self.step)
 
 	def checkRates(self):
 		if Import.checkRates(str(self.textBox.toPlainText())):
-			self.compute_simulation.setDisabled(False)
+			if self.maxTimeEdit.text():
+				self.compute_simulation_button.setDisabled(False)
 		else:
-			self.compute_simulation.setDisabled(True)
+			self.compute_simulation_button.setDisabled(True)
+
+	def simulationStarted(self):
+		self.cancel_simulation_button.setDisabled(False)
+
+	def updateSimulationMaxTime(self):
+		if str(self.maxTimeEdit.text()).isdigit():
+			maxTime = int(self.maxTimeEdit.text())
+			if maxTime != 1:
+				self.step = 100/(maxTime - 1)
+			self.simulationWorker.max_time = maxTime
+			self.compute_simulation_button.setDisabled(False)
+		else:
+			self.compute_simulation_button.setDisabled(True)
+
+	def cancel_compute_simulation(self):
+		if not self.simulationWorker.TheWorker.wait(100):
+			self.simulationWorker.TheWorker.terminate()
+			self.compute_simulation_button.setDisabled(True)
+			self.cancel_simulation_button.setDisabled(True)
+			self.progress_bar_simulation.reset()
 
 	def checkRules(self):
 		noErroFormat = QtGui.QTextCharFormat()
