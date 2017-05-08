@@ -17,9 +17,9 @@ class Compute:
 		self.tmpResult = list()
 		self.middle = 0
 
-	def computeReactions(self, reactions):
+	def computeReactions(self, reactions, rates = None):
 		self.parse(reactions)
-		return self.CreateReactions()
+		return self.CreateReactions(rates)
 
 	def parse(self, reactionList):
 		for reactionLine in reactionList:
@@ -70,8 +70,10 @@ class Compute:
 		self.usedStates.append(-1)
 		return [item]
 
-	def CreateReactions(self):
+	def CreateReactions(self, rates):
 		OutputReactions = []
+		self.outputRates = []
+		currentReactionIndex = 0
 
 		for reaction in self.reactions:
 			self.usedStates = []
@@ -142,12 +144,17 @@ class Compute:
 				self.usedStates.append(-1)
 
 			self.tmpResult = []
-			self.Combinations(len(alphabet), "", alphabet)
+			reactionRate = None
+			if rates:
+				reactionRate = rates[currentReactionIndex]
+			self.Combinations(len(alphabet), "", alphabet, reactionRate)
 			OutputReactions += self.tmpResult
 
-		return OutputReactions
+			currentReactionIndex += 1
 
-	def Combinations(self, rest, result, alphabet):
+		return OutputReactions, self.outputRates
+
+	def Combinations(self, rest, result, alphabet, reactionRate):
 		if rest > 0:
 			for letter in alphabet[len(alphabet) - rest]:
 				steps = rest - 1
@@ -163,8 +170,10 @@ class Compute:
 								newAlphabet.append(alphabet[i])
 						else:
 							newAlphabet.append(alphabet[i])
-					self.Combinations(steps, result + letter, newAlphabet)
+					self.Combinations(steps, result + letter, newAlphabet, reactionRate)
 				else:
-					self.Combinations(steps, result + letter, alphabet)
+					self.Combinations(steps, result + letter, alphabet, reactionRate)
 		else:
 			self.tmpResult.append(sortReaction(result))
+			if reactionRate:
+				self.outputRates.append(reactionRate)

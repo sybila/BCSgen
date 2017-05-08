@@ -6,6 +6,9 @@ import numpy as np
 from PyQt4 import QtGui, QtCore, QtWebKit
 from PyQt4.QtGui import *
 import signal
+import sympy
+import random 
+import math
 
 sys.path.append(os.path.abspath('../Core/'))
 
@@ -101,13 +104,17 @@ class Help(QWidget):
 		self.show()
 
 class SimulationWorker(QtCore.QObject):
-	reachFinished = QtCore.pyqtSignal()
+	simulationFinished = QtCore.pyqtSignal()   # emited when simulations is finished	
+	nextSecondCalculated = QtCore.pyqtSignal() # emited when another second of simulation time is processed
 
 	def __init__(self, model, parent=None):
 		QtCore.QObject.__init__(self, parent)
 
 		self.modelFile = model
-		self.reachablityResult = ""
+
+		self.max_time = 10
+		self.data = []
+		self.times = []
 
 		self.TheWorker = QtCore.QThread()
 		self.moveToThread(self.TheWorker)
@@ -116,9 +123,67 @@ class SimulationWorker(QtCore.QObject):
 	def simulate(self):
 		rules, initialState, rates = Import.import_rules(str(self.modelFile.toPlainText()))
 		reactionGenerator = Explicit.Compute()
-		self.reactions = reactionGenerator.computeReactions(rules)
+		reactions, rates = reactionGenerator.computeReactions(rules, rates)
+		VN = Gen.createVectorNetwork(reactions, initialState)
 
-		self.VN = Gen.createVectorNetwork(self.reactions, initialState)
+		self.simulateGillespieAlgorithm(map(lambda r: r.difference, VN.Vectors), np.array(VN.State), VN.Translations, rates, self.max_time)
+
+	def simulateGillespieAlgorithm(self, reactions, solution, translations, rates, max_time):
+		rates = self.vectorizeRates(translations, rates)
+		names = self.prepareSolution(solution)
+		time = 0
+		sendInfoStep = 1
+
+		while time < max_time:
+			if time > sendInfoStep:
+				sendInfoStep += 1
+				self.nextSecondCalculated.emit()
+
+			enumerated_rates = map(lambda rate: self.enumerateRate(names, solution, rate), rates)
+			enumerated_rates_sum = sum(enumerated_rates)
+			props = self.enumeratedRatesToTuples(enumerated_rates)
+
+			rand_number = enumerated_rates_sum*random.random()
+			chosen_reaction = self.pickReaction(rand_number, props)
+
+			solution = self.applyReaction(reactions[chosen_reaction], solution)
+			self.data.append(solution)
+			time += ((-1/enumerated_rates_sum)*math.log(random.random()))
+			self.times.append(time)
+
+		self.simulationFinished.emit()
+
+	def applyReaction(self, reaction, solution):
+		vec = solution + reaction
+		if (vec >= 0).all():
+			return vec
+		else:
+			return solution
+
+	def vectorizeRates(self, translations, rates):
+		translations = map(lambda trans: "'" + trans + "'", translations)
+		new_rates = []
+		for rate in rates:
+			new_rate = rate
+			for i in range(len(translations)):
+				new_rate = new_rate.replace(translations[i], "x_" + str(i))
+			new_rates.append(sympy.sympify(new_rate))
+		return new_rates
+
+	def enumerateRate(self, names, solution, rate):
+		return rate.subs(zip(names, solution))
+
+	def pickReaction(self, random_number, enumerated_rates):
+		for q in range(len(enumerated_rates)):
+			if random_number <= enumerated_rates[q][0]:
+				return enumerated_rates[q][1]
+		return enumerated_rates[-1][1]
+
+	def prepareSolution(self, solution):
+		return ['x_' + str(i) for i in range(len(solution))]
+
+	def enumeratedRatesToTuples(self, enumerated_rates):
+		return sorted([(enumerated_rates[i], i) for i in range(len(enumerated_rates))])
 
 """
 Class AnalysisWorker
@@ -190,7 +255,7 @@ class StateSpaceWorker(QtCore.QObject):
 	def computeStateSpace(self):
 		rules, initialState, rates = Import.import_rules(str(self.modelFile.toPlainText()))
 		reactionGenerator = Explicit.Compute()
-		self.reactions = reactionGenerator.computeReactions(rules)
+		self.reactions, rates = reactionGenerator.computeReactions(rules)
 		self.reactionsDone.emit()
 
 		initialState = Explicit.sortInitialState(initialState)
@@ -491,17 +556,17 @@ class MainWindow(QtGui.QMainWindow):
 		#self.stateSpaceEstimate = 0
 		#self.reactionsEstimate = 0
 
-		vLayout = QVBoxLayout()
-
 		self.tabs = QTabWidget(self)
 		self.tabs.move(605, 30)
 		self.tabs.setMinimumSize(320, 430)
 
 		self.tab1 = QWidget()
 		self.tab2 = QWidget()
+		self.tab3 = QWidget()
 
 		self.tabs.addTab(self.tab1, "State space")
 		self.tabs.addTab(self.tab2, "Model analysis")
+		self.tabs.addTab(self.tab3, "Simulation")
 
 		#########################################
 
@@ -526,8 +591,11 @@ class MainWindow(QtGui.QMainWindow):
 
 		self.stateWorker = StateSpaceWorker(self.textBox)
 		self.analysisWorker = AnalysisWorker(self.textBox, self.stateWorker)
+		self.simulationWorker = SimulationWorker(self.textBox)
 
 		#########################################
+
+		vLayout = QVBoxLayout()
 
 		# state space file button
 
@@ -772,6 +840,29 @@ class MainWindow(QtGui.QMainWindow):
 
 		#########################################
 
+		vLayout = QVBoxLayout()
+
+		StatesHbox = QHBoxLayout()
+
+		self.compute_simulation = createButton(self, 'Simulation', self.simulationWorker.simulate, False)
+
+		StatesHbox.addWidget(self.compute_simulation)
+		vLayout.addLayout(StatesHbox)
+
+		self.tab3.setLayout(vLayout)
+
+		#########################################
+
+		self.simulationWorker.simulationFinished.connect(self.showPlot)
+		self.simulationWorker.nextSecondCalculated.connect(self.updateSimulationProgress)
+
+	def showPlot(self):
+		for (d, t) in zip(self.simulationWorker.data, self.simulationWorker.times):
+			print d, t
+
+	def updateSimulationProgress(self):
+		print 'next second'
+
 	def checkRules(self):
 		noErroFormat = QtGui.QTextCharFormat()
 		noErroFormat.setUnderlineStyle(QTextCharFormat.NoUnderline)
@@ -994,16 +1085,16 @@ class MainWindow(QtGui.QMainWindow):
 		self.addButton.setDisabled(False)
 		self.display_graph_button.setDisabled(False)
 
-	def paintEvent(self, event):
-		qp = QtGui.QPainter()
-		qp.begin(self)
-		self.drawLines(qp)
-		qp.end()
+	# def paintEvent(self, event):
+	# 	qp = QtGui.QPainter()
+	# 	qp.begin(self)
+	# 	self.drawLines(qp)
+	# 	qp.end()
 
-	def drawLines(self, qp):
-		pen = QtGui.QPen(QtCore.Qt.gray, 4, QtCore.Qt.SolidLine)
-		width = self.width() - 105
-		qp.drawPixmap(width,30,QPixmap("icons/logo.png"))
+	# def drawLines(self, qp):
+	# 	pen = QtGui.QPen(QtCore.Qt.gray, 4, QtCore.Qt.SolidLine)
+	# 	width = self.width() - 105
+	# 	qp.drawPixmap(width,30,QPixmap("icons/logo.png"))
 
 	def open_model(self):
 		file = QFileDialog.getOpenFileName(self, 'Choose model', directory = '../Examples/', filter ="BCS (*.bcs);;All types (*)")
@@ -1110,6 +1201,8 @@ class MainWindow(QtGui.QMainWindow):
 		self.analysisWorker.TheWorker.wait()
 		self.stateWorker.TheWorker.quit()
 		self.stateWorker.TheWorker.wait()
+		self.simulationWorker.TheWorker.quit()
+		self.simulationWorker.TheWorker.wait()
 
 class Find(QtGui.QDialog):
 	def __init__(self, parent = None):
