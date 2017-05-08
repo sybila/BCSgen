@@ -458,7 +458,21 @@ def import_rules(input_file):
 			created_rules.append(rule)
 	return created_rules, import_initial_state(inits), rates
 
-# import of json
+def checkRates(input):
+	enoughRates = True
+	lines = filter(None, input.split("\n"))
+	lineNum = 0
+	for line in lines:
+		lineNum += 1
+		if line.startswith('#') and lineNum != 1:
+			break
+		elif not line.startswith('#'):
+			rule = line.split("@")
+			if len(rule) == 1:
+				enoughRates = False
+			elif not rule[1] or rule[1].isspace():
+				enoughRates = False
+	return enoughRates
 
 def parseState(state):
 	return tuple(map(int, state.split("|")))

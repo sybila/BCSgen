@@ -103,6 +103,17 @@ class Help(QWidget):
 		self.setWindowModality(QtCore.Qt.ApplicationModal)
 		self.show()
 
+	def paintEvent(self, event):
+		qp = QtGui.QPainter()
+		qp.begin(self)
+		self.drawLines(qp)
+		qp.end()
+
+	def drawLines(self, qp):
+		pen = QtGui.QPen(QtCore.Qt.gray, 4, QtCore.Qt.SolidLine)
+		width = self.width() - 105
+		qp.drawPixmap(width, 10, QPixmap("icons/logo.png"))
+
 class SimulationWorker(QtCore.QObject):
 	simulationFinished = QtCore.pyqtSignal()   # emited when simulations is finished	
 	nextSecondCalculated = QtCore.pyqtSignal() # emited when another second of simulation time is processed
@@ -586,6 +597,7 @@ class MainWindow(QtGui.QMainWindow):
 		self.oldPlainText = self.textBox.toPlainText()
 
 		self.textBox.textChanged.connect(self.checkRules)
+		self.textBox.textChanged.connect(self.checkRates)
 
 		#########################################
 
@@ -844,7 +856,7 @@ class MainWindow(QtGui.QMainWindow):
 
 		StatesHbox = QHBoxLayout()
 
-		self.compute_simulation = createButton(self, 'Simulation', self.simulationWorker.simulate, False)
+		self.compute_simulation = createButton(self, 'Simulation', self.simulationWorker.simulate, True)
 
 		StatesHbox.addWidget(self.compute_simulation)
 		vLayout.addLayout(StatesHbox)
@@ -862,6 +874,12 @@ class MainWindow(QtGui.QMainWindow):
 
 	def updateSimulationProgress(self):
 		print 'next second'
+
+	def checkRates(self):
+		if Import.checkRates(str(self.textBox.toPlainText())):
+			self.compute_simulation.setDisabled(False)
+		else:
+			self.compute_simulation.setDisabled(True)
 
 	def checkRules(self):
 		noErroFormat = QtGui.QTextCharFormat()
@@ -1084,17 +1102,6 @@ class MainWindow(QtGui.QMainWindow):
 		self.cancel_state.setDisabled(True)
 		self.addButton.setDisabled(False)
 		self.display_graph_button.setDisabled(False)
-
-	# def paintEvent(self, event):
-	# 	qp = QtGui.QPainter()
-	# 	qp.begin(self)
-	# 	self.drawLines(qp)
-	# 	qp.end()
-
-	# def drawLines(self, qp):
-	# 	pen = QtGui.QPen(QtCore.Qt.gray, 4, QtCore.Qt.SolidLine)
-	# 	width = self.width() - 105
-	# 	qp.drawPixmap(width,30,QPixmap("icons/logo.png"))
 
 	def open_model(self):
 		file = QFileDialog.getOpenFileName(self, 'Choose model', directory = '../Examples/', filter ="BCS (*.bcs);;All types (*)")
