@@ -57,15 +57,17 @@ class SimulationPlot(pg.GraphicsWindow):
 		super(SimulationPlot, self).__init__()
 
 		self.resize(1000,600)
-		self.setWindowTitle('Simulation results')
+		self.setWindowTitle('BCSgen - model simulation')
 
 		# Enable antialiasing for prettier plots
 		pg.setConfigOptions(antialias=True)
 
 		times = [int(time*(10**12)) for time in times]
 
-		myPlot = self.addPlot(title="Multiple curves")
+		myPlot = self.addPlot(title="Simulation results")
 		myPlot.addLegend()
+		myPlot.setLabel('bottom', 'Time')
+		myPlot.setLabel('left', 'Ammount')
 
 		size = len(data[0])
 		ratio = 100/size
