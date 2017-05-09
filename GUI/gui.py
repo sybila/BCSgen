@@ -67,7 +67,7 @@ class SimulationPlot(pg.GraphicsWindow):
 		myPlot = self.addPlot(title="Simulation results")
 		myPlot.addLegend()
 		myPlot.setLabel('bottom', 'Time')
-		myPlot.setLabel('left', 'Ammount')
+		myPlot.setLabel('left', 'Quantity')
 
 		size = len(data[0])
 		ratio = 100/size
@@ -189,7 +189,7 @@ class SimulationWorker(QtCore.QObject):
 
 			solution = self.applyReaction(reactions[chosen_reaction], solution)
 			self.data.append(solution)
-			time += ((-1/enumerated_rates_sum)*math.log(random.random()))
+			time += random.expovariate(enumerated_rates_sum) # chooses random number from exponentional distribution with lambda = sum
 			self.times.append(time)
 
 		self.simulationFinished.emit()
