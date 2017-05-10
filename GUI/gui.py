@@ -53,17 +53,14 @@ def createAction(it, title, shortcut, tip, connectWith, icon):
 	return action
 
 class SimulationPlot(QWidget):
-	def __init__(self, data, times, translations, parent= None):
+	def __init__(self, data, times, translations, screenWidth, screenHeight, parent= None):
 		super(SimulationPlot, self).__init__()
 
-		fig_size = plt.rcParams["figure.figsize"]
-		fig_size[0] = 9
-		fig_size[1] = 6
-		plt.rcParams["figure.figsize"] = fig_size
+		self.setWindowModality(QtCore.Qt.ApplicationModal)
+		plt.rcParams["figure.figsize"] = (int(math.floor(screenWidth/80.)) - 2, int(math.floor(screenHeight/80.)) - 2)
 
-		fig, self.ax = plt.subplots()
-
-		fig.canvas.set_window_title('Simulation results')
+		self.fig, self.ax = plt.subplots()
+		self.fig.canvas.set_window_title('Simulation results')
 
 		size = len(data[0])
 
@@ -72,8 +69,9 @@ class SimulationPlot(QWidget):
 
 		self.ax.legend(loc='upper center', bbox_to_anchor=(0.5,-0.1), ncol=4)
 
-		numOfLines = round(len(translations)/4.0)
-		fig.subplots_adjust(bottom=0.15*numOfLines) # need to be changed to slower function
+		numOfLines = int(len(translations)/4.0)/2 + 1
+
+		self.fig.subplots_adjust(bottom=0.15*numOfLines)
 		self.ax.grid('on')
 
 		self.interactive_legend().show()
@@ -97,6 +95,8 @@ class InteractiveLegend(object):
 		self.lookup_artist, self.lookup_handle = self._build_lookups(legend)
 		self._setup_connections()
 
+		self.onpick_count = 0
+
 		self.update()
 
 	def _setup_connections(self):
@@ -105,6 +105,7 @@ class InteractiveLegend(object):
 
 		self.fig.canvas.mpl_connect('pick_event', self.on_pick)
 		self.fig.canvas.mpl_connect('button_press_event', self.on_click)
+		self.fig.canvas.mpl_connect('close_event', self.handle_close)
 
 	def _build_lookups(self, legend):
 		labels = [t.get_text() for t in legend.texts]
@@ -127,11 +128,13 @@ class InteractiveLegend(object):
 		return lookup_artist, lookup_handle
 
 	def on_pick(self, event):
-		handle = event.artist
-		if handle in self.lookup_artist:
-			artist = self.lookup_artist[handle]
-			artist.set_visible(not artist.get_visible())
-			self.update()
+		if self.onpick_count % 2 == 0:  # this is problem !
+			handle = event.artist
+			if handle in self.lookup_artist:
+				artist = self.lookup_artist[handle]
+				artist.set_visible(not artist.get_visible())
+				self.update()
+		self.onpick_count += 1
 
 	def on_click(self, event):
 		if event.button == 3:
@@ -157,32 +160,10 @@ class InteractiveLegend(object):
 	def show(self):
 		plt.show()
 
-# class SimulationPlot(pg.GraphicsWindow):
-# 	def __init__(self, data, times, translations, parent = None):
-# 		super(SimulationPlot, self).__init__()
-
-# 		self.resize(1000,600)
-# 		self.setWindowTitle('BCSgen - model simulation')
-
-# 		# Enable antialiasing for prettier plots
-# 		pg.setConfigOptions(antialias=True)
-
-# 		times = [int(time*(10**12)) for time in times]
-
-# 		myPlot = self.addPlot(title="Simulation results")
-# 		myPlot.addLegend()
-# 		myPlot.setLabel('bottom', 'Time')
-# 		myPlot.setLabel('left', 'Quantity')
-
-# 		size = len(data[0])
-# 		ratio = 100/size
-# 		for i in range(size):
-# 			myPlot.plot(x = times, y = self.column(data, i), pen=((i+1)*ratio,100), name = translations[i])
-
-# 		self.show()
-
-# 	def column(self, matrix, i):
-# 		return [row[i] for row in matrix]
+	def handle_close(self, event):
+		self.clf()
+		self.cla()
+		self.close()
 
 """
 class GraphVisual
@@ -1038,7 +1019,7 @@ class MainWindow(QtGui.QMainWindow):
 	def showPlot(self):
 		self.cancel_simulation_button.setDisabled(True)
 		self.progress_bar_simulation.setValue(100)
-		self.plot = SimulationPlot(self.simulationWorker.data, self.simulationWorker.times, self.simulationWorker.translations)
+		self.plot = SimulationPlot(self.simulationWorker.data, self.simulationWorker.times, self.simulationWorker.translations, self.screenWidth, self.screenHeight)
 
 	def updateSimulationProgress(self):
 		self.progress_bar_simulation.setValue(self.progress_bar_simulation.value() + self.step)
