@@ -105,7 +105,6 @@ class InteractiveLegend(object):
 
 		self.fig.canvas.mpl_connect('pick_event', self.on_pick)
 		self.fig.canvas.mpl_connect('button_press_event', self.on_click)
-		self.fig.canvas.mpl_connect('close_event', self.handle_close)
 
 	def _build_lookups(self, legend):
 		labels = [t.get_text() for t in legend.texts]
@@ -159,11 +158,6 @@ class InteractiveLegend(object):
 
 	def show(self):
 		plt.show()
-
-	def handle_close(self, event):
-		self.clf()
-		self.cla()
-		self.close()
 
 """
 class GraphVisual
@@ -988,10 +982,30 @@ class MainWindow(QtGui.QMainWindow):
 
 		vLayout.addLayout(StatesHbox)
 
+		# -------------
+
+		# StatesHbox = QHBoxLayout()
+
+		# self.numberOfRunsLabel = QtGui.QLabel(self)
+		# self.numberOfRunsLabel.setText("Number of total runs:")
+		# StatesHbox.addWidget(self.numberOfRunsLabel)
+
+		# self.number_of_runs = QSpinBox()
+		# StatesHbox.addWidget(self.number_of_runs)
+		# self.number_of_runs.setRange(1, 20)
+		# self.number_of_runs.setValue(1)
+		# self.number_of_runs.valueChanged.connect(self.updateNumberOfRuns)
+
+		# vLayout.addLayout(StatesHbox)
+
+		# -------------
+
 		self.progress_bar_simulation = QProgressBar(self)
 		self.progress_bar_simulation.setRange(0,100)
 
 		vLayout.addWidget(self.progress_bar_simulation)
+
+		# -------------
 
 		StatesHbox = QHBoxLayout()
 
@@ -1016,7 +1030,12 @@ class MainWindow(QtGui.QMainWindow):
 		self.simulationWorker.simulationFinished.connect(self.showPlot)
 		self.simulationWorker.nextSecondCalculated.connect(self.updateSimulationProgress)
 
+	# def updateNumberOfRuns(self):
+	# 	self.simulationWorker.numberOfRuns = int(self.number_of_runs.value())
+
 	def showPlot(self):
+		self.maxTimeEdit.setReadOnly(False)
+		self.compute_simulation_button.setDisabled(False)
 		self.cancel_simulation_button.setDisabled(True)
 		self.progress_bar_simulation.setValue(100)
 		self.plot = SimulationPlot(self.simulationWorker.data, self.simulationWorker.times, self.simulationWorker.translations, self.screenWidth, self.screenHeight)
@@ -1033,8 +1052,11 @@ class MainWindow(QtGui.QMainWindow):
 
 	def simulationStarted(self):
 		self.cancel_simulation_button.setDisabled(False)
+		self.maxTimeEdit.setReadOnly(True)
+		self.compute_simulation_button.setDisabled(True)
 
 	def updateSimulationMaxTime(self):
+		self.progress_bar_simulation.reset()
 		if str(self.maxTimeEdit.text()).isdigit():
 			maxTime = int(self.maxTimeEdit.text())
 			if maxTime != 1:
