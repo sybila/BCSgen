@@ -250,6 +250,8 @@ class SimulationWorker(QtCore.QObject):
 		self.simulateGillespieAlgorithm(map(lambda r: r.difference, VN.Vectors), np.array(VN.State), rates, self.max_time)
 
 	def simulateGillespieAlgorithm(self, reactions, solution, rates, max_time):
+		self.data = []
+		self.times = []
 		rates = self.vectorizeRates(self.translations, rates)
 		names = self.prepareSolution(solution)
 		time = 0
