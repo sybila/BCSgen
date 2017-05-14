@@ -23,6 +23,7 @@ class AnalysisWorker(QtCore.QObject):
 		self.stateWorker = stateWorker
 		self.toBeReached = None
 		self.reachablityResult = ""
+		self.satisfyingStates = []
 
 		self.TheWorker = QtCore.QThread()
 		self.moveToThread(self.TheWorker)
@@ -36,8 +37,8 @@ class AnalysisWorker(QtCore.QObject):
 			self.noConflicts.emit()
 
 	def compute_reach(self):
-		satisfyingStates = filter(lambda state: (self.toBeReached <= state).all(), self.stateWorker.states)
-		if satisfyingStates:
+		self.satisfyingStates = filter(lambda state: (self.toBeReached <= state).all(), self.stateWorker.states)
+		if self.satisfyingStates:
 			self.reachablityResult = True
 		else:
 			self.reachablityResult = False

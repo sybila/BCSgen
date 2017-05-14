@@ -648,7 +648,7 @@ class MainWindow(QtGui.QMainWindow):
 		self.graph = GraphVisual(self.stateWorker.stateSpaceFile, self.screenWidth - 100, self.screenHeight - 100, useHTMLvisual)
 
 	def showReachableStates(self):
-		self.graph = GraphVisual()
+		self.graphReach = ReachableGraphVisual(self.stateWorker.stateSpaceFile, self.screenWidth - 100, self.screenHeight - 100, self.analysisWorker.satisfyingStates)
 
 	def resetReachIndicators(self):
 		self.progress_bar_reachability.reset()
@@ -658,6 +658,7 @@ class MainWindow(QtGui.QMainWindow):
 	def writeReachResult(self):
 		if self.analysisWorker.reachablityResult:
 			self.reachabilityResult.setText("Reachable !")
+			self.reachable_states_button.setDisabled(False)
 		else:
 			self.reachabilityResult.setText("Not reachable !")
 		self.reachabilityResult.setStyleSheet("color: rgb(0, 155, 0);")
@@ -715,6 +716,7 @@ class MainWindow(QtGui.QMainWindow):
 		return True
 
 	def checkScrollArea(self):
+		self.reachable_states_button.setDisabled(True)
 		if self.getRowDeleted():
 			if self.scrollLayout.count() < 3:
 				self.compute_reachability_button.setDisabled(True)
@@ -932,6 +934,7 @@ main.show()
 
 app.exec_()
 try:
+	os.remove("graphReach.html")
 	os.remove("graph.html")
 	os.remove("graph.svg")
 except OSError:
