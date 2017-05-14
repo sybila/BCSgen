@@ -295,11 +295,12 @@ secondpart_2 = '''	var paths = [];
 					
 					var clickedEdge = edges.get(j);
 					clickedEdge.color = {
-						color: 'green',
-						hover: 'green',
-						highlight: 'green'
+						color: 'LightGreen',
+						hover: 'LightGreen',
+						highlight: 'LightGreen'
 					}	
 				edges.update(clickedEdge);
+				break;
 				}
 			}
 		}
@@ -309,11 +310,12 @@ secondpart_2 = '''	var paths = [];
 				if ((edges.get(j).from == highlightNodes[i]) && (edges.get(j).to == highlightNodes[i-1])) {
 					var clickedEdge = edges.get(j);
 					clickedEdge.color = {
-						color: 'green',
-						hover: 'green',
-						highlight: 'green'
+						color: 'LightGreen',
+						hover: 'LightGreen',
+						highlight: 'LightGreen'
 					}	
 				edges.update(clickedEdge);
+				break;
 				};
 			};
 		};
@@ -323,11 +325,11 @@ secondpart_2 = '''	var paths = [];
 				var clickedNode = nodes.get(highlightNodes[i]);
 				if(!toNode.includes(clickedNode[0]) && fromNode != clickedNode[0]){
 					clickedNode.color = {
-					border: 'green',
-					background: 'green',
+					border: 'LightGreen',
+					background: 'LightGreen',
 					highlight: {
-						border: 'green',
-						background: 'green'
+						border: 'LightGreen',
+						background: 'LightGreen'
 						}
 					}
 					nodes.update(clickedNode);
@@ -341,6 +343,7 @@ secondpart_2 = '''	var paths = [];
 		for (var i = 1; i <= nodes.length; i++) {
         	if (nodes.get(i).id == params.nodes) {
 				tmp = nodes.get(i).text;
+				break;
 			};
     	};
 
@@ -348,6 +351,7 @@ secondpart_2 = '''	var paths = [];
 			for (var i = 1; i <= edges.length; i++) {
 				if (edges.get(i).id == params.edges) {
 					tmp = edges.get(i).text;
+					break;
 				};
 			};
 		};
@@ -440,11 +444,12 @@ secondpart_3 = '''px;height:100%;text-align:center;border:0px solid #000;">' + t
 					
 					var clickedEdge = edges.get(j);
 					clickedEdge.color = {
-						color: 'green',
-						hover: 'green',
-						highlight: 'green'
+						color: 'LightGreen',
+						hover: 'LightGreen',
+						highlight: 'LightGreen'
 					}	
 				edges.update(clickedEdge);
+				break;
 				}
 			}
 		}
@@ -454,11 +459,12 @@ secondpart_3 = '''px;height:100%;text-align:center;border:0px solid #000;">' + t
 				if ((edges.get(j).from == highlightNodes[i]) && (edges.get(j).to == highlightNodes[i-1])) {
 					var clickedEdge = edges.get(j);
 					clickedEdge.color = {
-						color: 'green',
-						hover: 'green',
-						highlight: 'green'
+						color: 'LightGreen',
+						hover: 'LightGreen',
+						highlight: 'LightGreen'
 					}	
 				edges.update(clickedEdge);
+				break;
 				};
 			};
 		};
@@ -468,11 +474,11 @@ secondpart_3 = '''px;height:100%;text-align:center;border:0px solid #000;">' + t
 				var clickedNode = nodes.get(highlightNodes[i]);
 				if(!toNode.includes(clickedNode[0]) && fromNode != clickedNode[0]){
 					clickedNode.color = {
-						border: 'green',
-						background: 'green',
+						border: 'LightGreen',
+						background: 'LightGreen',
 						highlight: {
-							border: 'green',
-							background: 'green'
+							border: 'LightGreen',
+							background: 'LightGreen'
 						}
 					}
 					nodes.update(clickedNode);
