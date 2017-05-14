@@ -50,6 +50,6 @@ Alternatively, CLI can be used.
 
 > <sup>2</sup> To do it, you need to have [PyQt](https://wiki.python.org/moin/PyQt) python library installed. 
 For Windows, use [this](http://www.lfd.uci.edu/~gohlke/pythonlibs/#pyqt4) binary file, for Linux use [following](http://pythoncentral.io/install-pyside-pyqt-on-windows-mac-linux/) instructions, and for Mac OS use [this](https://sourceforge.net/projects/pyqtx/) installer (with all requirements). Next, [PyQtGraph](http://www.pyqtgraph.org/) is required for plotting simulation results.
-Moreover, additional python packages are required (markdown, numpy, sympy) and might be installed using `pip`.
+Moreover, additional python packages are required (markdown, numpy, sympy, matplotlib) and might be installed using `pip`.
 
 > <sup>3</sup> [RuleParser](https://gitlab.fi.muni.cz/grp-sybila/rule-parser) improves writing and allows validation of BCSL models inside BCSgen. Therefore path to directory with `RuleParser.py` and `_RuleParser.so` must be specified (alternatively, both files might be placed in Core/Import/ directory).
