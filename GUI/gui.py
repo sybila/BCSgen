@@ -55,6 +55,7 @@ class MainWindow(QtGui.QMainWindow):
 		super(MainWindow, self).__init__(parent)
 
 		self.rulesAreCorrect = False
+		self.useInterpolation = False
 
 		self.screenWidth = screenWidth
 		self.screenHeight = screenHeight
@@ -461,6 +462,10 @@ class MainWindow(QtGui.QMainWindow):
 
 		vLayout = QVBoxLayout()
 
+		self.simulationSettingsLabel = createTextBox(self, 'Simulation settings', '''QLineEdit {border: none ; font-weight: bold }''', True)
+
+		vLayout.addWidget(self.simulationSettingsLabel)
+
 		StatesHbox = QHBoxLayout()
 
 		self.maxTimeLabel = QtGui.QLabel(self)
@@ -497,6 +502,13 @@ class MainWindow(QtGui.QMainWindow):
 
 		# -------------
 
+		self.interpolationBox = QCheckBox("Interpolation")
+		self.interpolationBox.stateChanged.connect(self.setInterpolationState)
+
+		vLayout.addWidget(self.interpolationBox)
+
+		# -------------
+
 		self.progress_bar_simulation = QProgressBar(self)
 		self.progress_bar_simulation.setRange(0,100)
 
@@ -527,18 +539,25 @@ class MainWindow(QtGui.QMainWindow):
 		self.simulationWorker.simulationFinished.connect(self.showPlot)
 		self.simulationWorker.nextSecondCalculated.connect(self.updateSimulationProgress)
 
+	def setInterpolationState(self):
+		if self.interpolationBox.checkState():
+			self.useInterpolation = True
+		else:
+			self.useInterpolation = False
+
 	def updateNumberOfRuns(self):
 		self.simulationWorker.numberOfRuns = int(self.number_of_runs.value())
-		maxTime = int(self.maxTimeEdit.text())
-		if maxTime != 1:
-			self.step = (100/(maxTime - 1))/self.simulationWorker.numberOfRuns
+		if str(self.maxTimeEdit.text()).isdigit():
+			maxTime = int(self.maxTimeEdit.text())
+			if maxTime != 1:
+				self.step = (100/(maxTime - 1))/self.simulationWorker.numberOfRuns
 
 	def showPlot(self):
 		self.maxTimeEdit.setReadOnly(False)
 		self.compute_simulation_button.setDisabled(False)
 		self.cancel_simulation_button.setDisabled(True)
 		self.progress_bar_simulation.setValue(100)
-		self.plot = SimulationPlot(self.simulationWorker.data, self.simulationWorker.times, self.simulationWorker.translations, self.screenWidth, self.screenHeight)
+		self.plot = SimulationPlot(self.simulationWorker.data, self.simulationWorker.times, self.simulationWorker.translations, self.screenWidth, self.screenHeight, self.useInterpolation)
 
 	def updateSimulationProgress(self):
 		self.progress_bar_simulation.setValue(self.progress_bar_simulation.value() + self.step)
@@ -906,12 +925,18 @@ class MainWindow(QtGui.QMainWindow):
 		self.simulationWorker.TheWorker.quit()
 		self.simulationWorker.TheWorker.wait()
 
+	def tearDown(self):
+		self.app.deleteLater()
+
 def handleIntSignal(signum, frame):
 	"""Handler for the SIGINT signal.
 	sends Exit Code Number 130 'Script terminated by Control-C' 
 	Control-C is fatal error signal 2, (130 = 128 + signal 'n') """
 	main.quitThreads()
 	sys.exit()
+
+def handler(msg_type, msg_log_context):
+	pass
 
 signal.signal(signal.SIGINT, handleIntSignal)
 
@@ -930,6 +955,8 @@ screenWidth, screenHeight = screen_rect.width(), screen_rect.height()
 
 appWidth = 930
 appHeight = 485
+
+QtCore.qInstallMsgHandler(handler)
 
 main = MainWindow(screenWidth, screenHeight)
 main.setMinimumSize(appWidth, appHeight)
