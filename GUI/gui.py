@@ -481,19 +481,19 @@ class MainWindow(QtGui.QMainWindow):
 
 		# -------------
 
-		# StatesHbox = QHBoxLayout()
+		StatesHbox = QHBoxLayout()
 
-		# self.numberOfRunsLabel = QtGui.QLabel(self)
-		# self.numberOfRunsLabel.setText("Number of total runs:")
-		# StatesHbox.addWidget(self.numberOfRunsLabel)
+		self.numberOfRunsLabel = QtGui.QLabel(self)
+		self.numberOfRunsLabel.setText("Number of total runs:")
+		StatesHbox.addWidget(self.numberOfRunsLabel)
 
-		# self.number_of_runs = QSpinBox()
-		# StatesHbox.addWidget(self.number_of_runs)
-		# self.number_of_runs.setRange(1, 20)
-		# self.number_of_runs.setValue(1)
-		# self.number_of_runs.valueChanged.connect(self.updateNumberOfRuns)
+		self.number_of_runs = QSpinBox()
+		StatesHbox.addWidget(self.number_of_runs)
+		self.number_of_runs.setRange(1, 20)
+		self.number_of_runs.setValue(1)
+		self.number_of_runs.valueChanged.connect(self.updateNumberOfRuns)
 
-		# vLayout.addLayout(StatesHbox)
+		vLayout.addLayout(StatesHbox)
 
 		# -------------
 
@@ -527,8 +527,11 @@ class MainWindow(QtGui.QMainWindow):
 		self.simulationWorker.simulationFinished.connect(self.showPlot)
 		self.simulationWorker.nextSecondCalculated.connect(self.updateSimulationProgress)
 
-	# def updateNumberOfRuns(self):
-	# 	self.simulationWorker.numberOfRuns = int(self.number_of_runs.value())
+	def updateNumberOfRuns(self):
+		self.simulationWorker.numberOfRuns = int(self.number_of_runs.value())
+		maxTime = int(self.maxTimeEdit.text())
+		if maxTime != 1:
+			self.step = (100/(maxTime - 1))/self.simulationWorker.numberOfRuns
 
 	def showPlot(self):
 		self.maxTimeEdit.setReadOnly(False)
@@ -548,6 +551,7 @@ class MainWindow(QtGui.QMainWindow):
 			self.compute_simulation_button.setDisabled(True)
 
 	def simulationStarted(self):
+		self.progress_bar_simulation.reset()
 		self.cancel_simulation_button.setDisabled(False)
 		self.maxTimeEdit.setReadOnly(True)
 		self.compute_simulation_button.setDisabled(True)
@@ -557,7 +561,7 @@ class MainWindow(QtGui.QMainWindow):
 		if str(self.maxTimeEdit.text()).isdigit():
 			maxTime = int(self.maxTimeEdit.text())
 			if maxTime != 1:
-				self.step = 100/(maxTime - 1)
+				self.step = (100/(maxTime - 1))/self.simulationWorker.numberOfRuns
 			self.simulationWorker.max_time = maxTime
 			self.compute_simulation_button.setDisabled(False)
 		else:

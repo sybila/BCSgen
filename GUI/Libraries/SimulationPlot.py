@@ -1,6 +1,8 @@
 from PyQt4 import QtGui, QtCore
 import math
 import matplotlib.pyplot as plt
+from scipy import interpolate
+import numpy as np
 
 class SimulationPlot(QtGui.QWidget):
 	def __init__(self, data, times, translations, screenWidth, screenHeight, parent= None):
@@ -15,6 +17,11 @@ class SimulationPlot(QtGui.QWidget):
 		size = len(data[0])
 
 		for i in range(size):
+			# interpolation tests
+			# tck = interpolate.splrep(times, self.column(data, i), s=0)
+			# newTimes = np.array(np.arange(times[0], times[-1], 0.001), dtype='float64')
+			# newData = interpolate.splev(newTimes, tck, der=1)
+			# self.ax.plot(newTimes, newData, label=translations[i])
 			self.ax.plot(times, self.column(data, i), label=translations[i])
 
 		self.ax.legend(loc='upper center', bbox_to_anchor=(0.5,-0.1), ncol=4)

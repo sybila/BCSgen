@@ -20,10 +20,11 @@ class SimulationWorker(QtCore.QObject):
 
 		self.modelFile = model
 
-		self.max_time = 2
+		self.max_time = 0
 		self.data = []
 		self.times = []
 		self.translations = []
+		self.numberOfRuns = 1
 
 		self.TheWorker = QtCore.QThread()
 		self.moveToThread(self.TheWorker)
@@ -38,30 +39,38 @@ class SimulationWorker(QtCore.QObject):
 		self.translations = VN.Translations
 		self.simulateGillespieAlgorithm(map(lambda r: r.difference, VN.Vectors), np.array(VN.State), rates, self.max_time)
 
-	def simulateGillespieAlgorithm(self, reactions, solution, rates, max_time):
-		self.data = []
-		self.times = []
+	def simulateGillespieAlgorithm(self, reactions, initial_solution, rates, max_time):
 		rates = self.vectorizeRates(self.translations, rates)
-		names = self.prepareSolution(solution)
-		time = 0
-		sendInfoStep = 1
+		names = self.prepareSolution(initial_solution)
 
-		while time < max_time:
-			if time > sendInfoStep:
-				sendInfoStep += 1
-				self.nextSecondCalculated.emit()
+		for runNumber in range(self.numberOfRuns):
+			solution = initial_solution
+			self.data = []
+			self.times = []
+			time = 0
+			sendInfoStep = 1
 
-			enumerated_rates = map(lambda rate: self.enumerateRate(names, solution, rate), rates)
-			enumerated_rates_sum = sum(enumerated_rates)
-			props = self.enumeratedRatesToTuples(enumerated_rates)
+			while time < max_time:
+				if time > sendInfoStep:
+					sendInfoStep += 1
+					self.nextSecondCalculated.emit()
 
-			rand_number = enumerated_rates_sum*random.random()
-			chosen_reaction = self.pickReaction(rand_number, props)
+				enumerated_rates = map(lambda rate: self.enumerateRate(names, solution, rate), rates)
+				enumerated_rates_sum = sum(enumerated_rates)
+				props = self.enumeratedRatesToTuples(enumerated_rates)
 
-			solution = self.applyReaction(reactions[chosen_reaction], solution)
-			self.data.append(solution)
-			time += random.expovariate(enumerated_rates_sum) # chooses random number from exponentional distribution with lambda = sum
-			self.times.append(time)
+				rand_number = enumerated_rates_sum*random.random()
+				chosen_reaction = self.pickReaction(rand_number, props)
+
+				solution = self.applyReaction(reactions[chosen_reaction], solution)
+				self.data.append(solution)
+				time += random.expovariate(enumerated_rates_sum) # chooses random number from exponentional distribution with lambda = sum
+				self.times.append(time)
+
+			if runNumber != 0:
+				self.data, self.times = self.calculateAverageData(self.data, self.times, oldData, oldTimes)
+			oldData = self.data
+			oldTimes = self.times
 
 		self.simulationFinished.emit()
 
@@ -96,3 +105,12 @@ class SimulationWorker(QtCore.QObject):
 
 	def enumeratedRatesToTuples(self, enumerated_rates):
 		return sorted([(enumerated_rates[i], i) for i in range(len(enumerated_rates))])
+
+	def calculateAverageData(self, newData, newTimes, oldData, oldTimes):
+		lengthOfCut = min([len(newData), len(newTimes), len(oldData), len(oldTimes)])
+		averageData = []
+		averageTimes = []
+		for i in range(lengthOfCut):
+			averageData.append(list(np.mean((newData[i], oldData[i]), axis=0)))
+			averageTimes.append(np.mean([newTimes[i], oldTimes[i]]))
+		return averageData, averageTimes
