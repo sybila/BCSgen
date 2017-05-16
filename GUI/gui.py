@@ -402,6 +402,7 @@ class MainWindow(QtGui.QMainWindow):
 		StatesHbox.addWidget(self.reachabilityResult)
 
 		self.reachable_states_button = createButton(self, "Show results", self.showReachableStates, True)
+		self.reachable_states_button.setStatusTip("Opens graph with reachable states in default browser.")
 
 		StatesHbox.addWidget(self.reachable_states_button)
 
@@ -475,6 +476,7 @@ class MainWindow(QtGui.QMainWindow):
 		self.maxTimeEdit = QtGui.QLineEdit(self)
 		StatesHbox.addWidget(self.maxTimeEdit)
 		self.maxTimeEdit.textEdited.connect(self.updateSimulationMaxTime)
+		self.maxTimeEdit.setStatusTip("Maximum simulation time.")
 
 		self.unitInfo = QtGui.QLabel(self)
 		self.unitInfo.setText("(in seconds)")
@@ -497,6 +499,7 @@ class MainWindow(QtGui.QMainWindow):
 		self.number_of_runs.setRange(1, 20)
 		self.number_of_runs.setValue(1)
 		self.number_of_runs.valueChanged.connect(self.updateNumberOfRuns)
+		self.number_of_runs.setStatusTip("Specify number of runs for simulation (obtain average results).")
 
 		vLayout.addLayout(StatesHbox)
 
@@ -504,6 +507,7 @@ class MainWindow(QtGui.QMainWindow):
 
 		self.interpolationBox = QCheckBox("Interpolation")
 		self.interpolationBox.stateChanged.connect(self.setInterpolationState)
+		self.interpolationBox.setStatusTip("Check for apply interpolation on simulation plot.")
 
 		vLayout.addWidget(self.interpolationBox)
 

@@ -25,9 +25,11 @@ class Vector_reaction:
 		return hash(str(self.From) + str(self.To))
 
 	def applyVector(self, state, bound):
-		vec = np.array(state) + self.difference
-		if (vec >= 0).all() and max(vec) <= bound:
-			return tuple(vec)
+		vec = np.array(state) - self.From
+		if (vec >= 0).all():
+			vec += self.To
+		 	if max(vec) <= bound:
+				return tuple(vec)
 
 	def getDict(self):
 		return {'from' : "|".join(map(str, self.From)), 'to' : "|".join(map(str, self.To))}
