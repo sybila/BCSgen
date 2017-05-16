@@ -24,9 +24,15 @@ class FontSize(QtGui.QDialog):
 		self.setLayout(StatesHbox)
 
 	def sendInfo(self):
-		self.parent.size9.setChecked(False)
-		self.parent.size12.setChecked(False)
-		self.parent.size16.setChecked(False)
-		self.parent.size20.setChecked(False)
-		self.parent.changeFontSize(int(self.textLine.text()))
+		if self.textLine.text():
+			print self.textLine.text()
+			self.parent.size9.setChecked(False)
+			self.parent.size12.setChecked(False)
+			self.parent.size16.setChecked(False)
+			self.parent.size20.setChecked(False)
+			self.parent.customFontSize.setChecked(True)
+			self.parent.changeFontSize(int(self.textLine.text()))
 		self.close()
+
+	def close(self, event):
+		print 'yes'

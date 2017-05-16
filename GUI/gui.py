@@ -382,6 +382,17 @@ class MainWindow(QtGui.QMainWindow):
 		StatesHbox.addWidget(self.progress_bar_reachability)
 		vLayout.addLayout(StatesHbox)
 
+		# Compute reactions button
+
+		StatesHbox = QHBoxLayout()
+
+		self.compute_reachability_button = createButton(self, 'Check reachability', self.startReachability, True)
+		self.compute_reachability_button.setStatusTip("Check whether chosen agents are reachable.")
+
+		StatesHbox.addWidget(self.compute_reachability_button)
+
+		vLayout.addLayout(StatesHbox)
+
 		# show result - message
 
 		StatesHbox = QHBoxLayout()
@@ -393,17 +404,6 @@ class MainWindow(QtGui.QMainWindow):
 		self.reachable_states_button = createButton(self, "Show results", self.showReachableStates, True)
 
 		StatesHbox.addWidget(self.reachable_states_button)
-
-		vLayout.addLayout(StatesHbox)
-
-		# Compute reactions button
-
-		StatesHbox = QHBoxLayout()
-
-		self.compute_reachability_button = createButton(self, 'Check reachability', self.startReachability, True)
-		self.compute_reachability_button.setStatusTip("Check whether chosen agents are reachable.")
-
-		StatesHbox.addWidget(self.compute_reachability_button)
 
 		vLayout.addLayout(StatesHbox)
 
@@ -509,8 +509,8 @@ class MainWindow(QtGui.QMainWindow):
 
 		# -------------
 
-		self.progress_bar_simulation = QProgressBar(self)
-		self.progress_bar_simulation.setRange(0,100)
+		self.progress_bar_simulation = createProgressBar(self)
+		self.progress_bar_simulation.setRange(0,10000)
 
 		vLayout.addWidget(self.progress_bar_simulation)
 
@@ -550,13 +550,13 @@ class MainWindow(QtGui.QMainWindow):
 		if str(self.maxTimeEdit.text()).isdigit():
 			maxTime = int(self.maxTimeEdit.text())
 			if maxTime != 1:
-				self.step = (100/(maxTime - 1))/self.simulationWorker.numberOfRuns
+				self.step = (10000/(maxTime-1))/self.simulationWorker.numberOfRuns
 
 	def showPlot(self):
 		self.maxTimeEdit.setReadOnly(False)
 		self.compute_simulation_button.setDisabled(False)
 		self.cancel_simulation_button.setDisabled(True)
-		self.progress_bar_simulation.setValue(100)
+		self.progress_bar_simulation.setValue(10000)
 		self.plot = SimulationPlot(self.simulationWorker.data, self.simulationWorker.times, self.simulationWorker.translations, self.screenWidth, self.screenHeight, self.useInterpolation)
 
 	def updateSimulationProgress(self):
@@ -580,9 +580,10 @@ class MainWindow(QtGui.QMainWindow):
 		if str(self.maxTimeEdit.text()).isdigit():
 			maxTime = int(self.maxTimeEdit.text())
 			if maxTime != 1:
-				self.step = (100/(maxTime - 1))/self.simulationWorker.numberOfRuns
+				self.step = (10000/(maxTime-1))/self.simulationWorker.numberOfRuns
 			self.simulationWorker.max_time = maxTime
-			self.compute_simulation_button.setDisabled(False)
+			if Import.checkRates(str(self.textBox.toPlainText())):
+				self.compute_simulation_button.setDisabled(False)
 		else:
 			self.compute_simulation_button.setDisabled(True)
 
@@ -622,7 +623,6 @@ class MainWindow(QtGui.QMainWindow):
 				self.computeStateSpace_button.setDisabled(False)
 
 	def setCustomFontSize(self):
-		self.customFontSize.setChecked(True)
 		self.fontSize = FontSize(self)
 		self.fontSize.show()
 
@@ -884,6 +884,7 @@ class MainWindow(QtGui.QMainWindow):
 
 	def clearText(self):
 		self.textBox.clear()
+		self.textBox.setText("# rules\n\n\n# initial state\n")
 
 	def undoText(self):
 		self.textBox.undo()
@@ -909,6 +910,10 @@ class MainWindow(QtGui.QMainWindow):
 		if self.load_state_space():
 			self.stateWorker.states, self.stateWorker.edges, self.stateWorker.uniqueAgents = Import.importStateSpace(self.stateWorker.stateSpaceFile)
 			self.addButton.setDisabled(False)
+			self.clearText()
+			self.num_of_states.setText('No. of States:'.ljust(30) + str(len(self.stateWorker.states)))
+			self.num_of_edges.setText('No. of Edges:'.ljust(30) + str(len(self.stateWorker.edges)))
+			self.num_of_reactions.setText('No. of Reactions:'.ljust(30))
 
 	def resizeEvent(self, event):
 		widthShrint = self.width() - appWidth
