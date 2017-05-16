@@ -15,7 +15,6 @@ class FillAgentToBeFound(QtGui.QWidget):
 
 		completer = QtGui.QCompleter()
 		completer.setCaseSensitivity(QtCore.Qt.CaseInsensitive)
-		completer.setCompletionMode(QtGui.QCompleter.InlineCompletion)
 
 		self.agent.setCompleter(completer)
 		model = QtGui.QStringListModel()
