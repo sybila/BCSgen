@@ -32,6 +32,7 @@ class StateSpaceWorker(QtCore.QObject):
 		self.uniqueAgents = None
 		self.states = None
 		self.edges = None
+		self.initialState = None
 		
 		self.TheWorker = QtCore.QThread()
 		self.moveToThread(self.TheWorker)
@@ -51,6 +52,8 @@ class StateSpaceWorker(QtCore.QObject):
 		self.showMostStates.emit()
 
 		self.states, self.edges = self.generateStateSpace(bound)
+
+		self.initialState = self.VN.getState()
 
 		Gen.printStateSpace(self.states, self.edges, self.VN.getTranslations(), self.stateSpaceFile, self.VN.getState())
 		self.lenStates.setText('No. of States:'.ljust(30) + str(len(self.states)))

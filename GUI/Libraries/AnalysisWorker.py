@@ -38,6 +38,9 @@ class AnalysisWorker(QtCore.QObject):
 
 	def compute_reach(self):
 		self.satisfyingStates = filter(lambda state: (self.toBeReached <= state).all(), self.stateWorker.states)
+		if len(self.satisfyingStates) == 1:
+			if self.satisfyingStates[0] == self.stateWorker.initialState:
+				self.satisfyingStates.pop()
 		if self.satisfyingStates:
 			self.reachablityResult = True
 		else:

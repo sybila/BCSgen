@@ -30,6 +30,7 @@ def createVectorNetwork(reactions, initialState):
 		orderedAgents.update(collectAgents(reaction))
 		parsedReactions.append(reaction)
 
+	orderedAgents.update(set(initialState))
 	orderedAgents = list(orderedAgents)
 
 	state = toVector(orderedAgents, collections.Counter(initialState))
