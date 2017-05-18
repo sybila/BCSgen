@@ -13,6 +13,9 @@ import Implicit_reaction_network_generator as Implicit
 import Import as Import
 from Libraries import *
 
+# global
+DELIMITER = "=============================================================\n\n"
+
 # global methods for creating PyQt objects
 
 def createProgressBar(it):
@@ -543,6 +546,10 @@ class MainWindow(QtGui.QMainWindow):
 		self.simulationWorker.simulationFinished.connect(self.showPlot)
 		self.simulationWorker.nextSecondCalculated.connect(self.updateSimulationProgress)
 
+		# clear log
+
+		self.saveToLog("", 'w')
+
 	def setInterpolationState(self):
 		if self.interpolationBox.checkState():
 			self.useInterpolation = True
@@ -557,6 +564,11 @@ class MainWindow(QtGui.QMainWindow):
 				self.step = (10000/(maxTime-1))/self.simulationWorker.numberOfRuns
 
 	def showPlot(self):
+		# log
+		logInfo = time.ctime() + " ~ Simulation finished.\n\n"
+		timeInfo = "System time: %s seconds " % (time.time() - self.simulation_start_time) + '\n'
+		self.saveToLog(logInfo + timeInfo)
+
 		self.maxTimeEdit.setReadOnly(False)
 		self.compute_simulation_button.setDisabled(False)
 		self.cancel_simulation_button.setDisabled(True)
@@ -574,10 +586,15 @@ class MainWindow(QtGui.QMainWindow):
 			self.compute_simulation_button.setDisabled(True)
 
 	def simulationStarted(self):
+		self.simulation_start_time = time.time()
 		self.progress_bar_simulation.reset()
 		self.cancel_simulation_button.setDisabled(False)
 		self.maxTimeEdit.setReadOnly(True)
 		self.compute_simulation_button.setDisabled(True)
+		# log
+		logInfo = time.ctime() + " ~ Started simulation.\n\n"
+		info = "Maximum time: " + str(self.simulationWorker.max_time) + '\n' + 'Number of runs: ' + str(self.simulationWorker.numberOfRuns) + '\n'
+		self.saveToLog(DELIMITER + logInfo + info)
 
 	def updateSimulationMaxTime(self):
 		self.progress_bar_simulation.reset()
@@ -597,6 +614,9 @@ class MainWindow(QtGui.QMainWindow):
 			self.compute_simulation_button.setDisabled(True)
 			self.cancel_simulation_button.setDisabled(True)
 			self.progress_bar_simulation.reset()
+			# log
+			logInfo = time.ctime() + " ~ Simulation interrupted.\n\n"
+			self.saveToLog(DELIMITER + logInfo)
 
 	def checkRules(self):
 		noErroFormat = QtGui.QTextCharFormat()
@@ -689,6 +709,14 @@ class MainWindow(QtGui.QMainWindow):
 		else:
 			self.reachabilityResult.setText("Not reachable !")
 		self.reachabilityResult.setStyleSheet("color: rgb(0, 155, 0);")
+		# log
+		logInfo = time.ctime() + " ~ Reachability results:\n\n"
+		if self.analysisWorker.satisfyingStates:
+			results = "Satisfying states:\n" + "\n".join(map(str, self.analysisWorker.satisfyingStates))
+		else:
+			results = ""
+		unique = "\n".join(['ID -> Name'] + map(str, enumerate(self.stateWorker.uniqueAgents)))
+		self.saveToLog(logInfo + str(self.reachabilityResult.text()) + '\n' + results + '\n\n' + unique + '\n')
 
 	def startReachability(self):
 		self.progress_bar_reachability.setRange(0,0)
@@ -705,6 +733,10 @@ class MainWindow(QtGui.QMainWindow):
 						stochio = str(widget.stochio.text())
 						vector[orderedAgents.index(agent)] = int(stochio)
 					self.analysisWorker.toBeReached = np.array(vector)
+					# log
+					shouldBeReached = "Tested: " + str(self.analysisWorker.toBeReached) + '\n'
+					logInfo = time.ctime() + " ~ Checking for reachability:\n\n"
+					self.saveToLog(DELIMITER + logInfo + shouldBeReached)
 					self.analysisWorker.compute_reach()
 
 		self.progress_bar_reachability.setRange(0,1)
@@ -777,6 +809,8 @@ class MainWindow(QtGui.QMainWindow):
 		self.noConflictsMessage.setText("")
 		self.window = DisplayConflicts(self.analysisWorker.message[:-22])
 		self.window.show()
+		logInfo = time.ctime() + " ~ Computed model conflicts:\n\n"
+		self.saveToLog(DELIMITER + logInfo + self.analysisWorker.message + "\n")
 
 	def showNoConflicts(self):
 		self.noConflictsMessage.setText("No conflicts !")
@@ -811,8 +845,12 @@ class MainWindow(QtGui.QMainWindow):
 		self.save_reactions_button.setDisabled(False)
 
 	def progressbarStatesOnStart(self): 
+		self.stateSpace_start_time = time.time()
 		self.progress_bar_states.setRange(0,0)
 		self.cancel_state.setDisabled(False)
+		# log
+		logInfo = time.ctime() + " ~ Computing state space:\n\n"
+		self.saveToLog(DELIMITER + logInfo)
 
 	def progressbarStatesOnFinished(self):
 		self.progress_bar_states.setRange(0,1)
@@ -820,6 +858,11 @@ class MainWindow(QtGui.QMainWindow):
 		self.cancel_state.setDisabled(True)
 		self.addButton.setDisabled(False)
 		self.display_graph_button.setDisabled(False)
+		# log
+		logInfo = time.ctime() + " ~ Finished.\n\n"
+		timeInfo = "System time: %s seconds " % (time.time() - self.stateSpace_start_time)
+		statistics = self.num_of_states.text() + '\n' + self.num_of_edges.text() + '\n' + self.num_of_reactions.text() + '\n'
+		self.saveToLog(logInfo + statistics + timeInfo + '\n')
 
 	def open_model(self):
 		file = QFileDialog.getOpenFileName(self, 'Choose model', directory = '../Examples/', filter ="BCS (*.bcs);;All types (*)")
@@ -829,6 +872,9 @@ class MainWindow(QtGui.QMainWindow):
 			self.compute_conflicts.setDisabled(False)
 			if self.stateWorker.stateSpaceFile and self.rulesAreCorrect:
 				self.computeStateSpace_button.setDisabled(False)
+			# log
+			logInfo = time.ctime() + " ~ Imported model:\n\n"
+			self.saveToLog(DELIMITER + logInfo + file.name + "\n")
 
 	def load_state_space(self):
 		file = QFileDialog.getOpenFileName(self, 'Choose file', filter ="JSON (*.json);;All types (*)")
@@ -836,6 +882,9 @@ class MainWindow(QtGui.QMainWindow):
 			self.stateWorker.stateSpaceFile = file
 			self.stateSpace_text.setText(self.stateWorker.stateSpaceFile)
 			self.display_graph_button.setDisabled(False)
+			# log
+			logInfo = time.ctime() + " ~ Loaded file for state space:\n\n"
+			self.saveToLog(DELIMITER + logInfo + file + "\n")
 			return True
 		return False
 
@@ -847,6 +896,9 @@ class MainWindow(QtGui.QMainWindow):
 				file = str(file) + ".json"
 			self.stateWorker.stateSpaceFile = file
 			self.stateSpace_text.setText(self.stateWorker.stateSpaceFile)
+			# log
+			logInfo = time.ctime() + " ~ Exported state space to file:\n\n"
+			self.saveToLog(DELIMITER + logInfo + file + "\n")
 			if self.stateWorker.modelFile and self.rulesAreCorrect:
 				self.computeStateSpace_button.setDisabled(False)
 
@@ -859,6 +911,9 @@ class MainWindow(QtGui.QMainWindow):
 			f = open(file,'w')
 			f.write("\n".join(self.stateWorker.reactions))
 			f.close()
+			# log
+			logInfo = time.ctime() + " ~ Exported reactions to file:\n\n"
+			self.saveToLog(DELIMITER + logInfo + file + "\n")
 
 	def cancel_computation_states(self):
 		if not self.stateWorker.TheWorker.wait(100):
@@ -866,6 +921,9 @@ class MainWindow(QtGui.QMainWindow):
 			self.computeStateSpace_button.setDisabled(True)
 			self.cancel_state.setDisabled(True)
 			self.stateSpace.setDisabled(True)
+			# log
+			logInfo = time.ctime() + " ~ cancelled.\n\n"
+			self.saveToLog(logInfo)
 
 	def showStateProgress(self):
 		self.stateSpaceTime = self.stateSpaceTime.addSecs(1)
@@ -879,6 +937,9 @@ class MainWindow(QtGui.QMainWindow):
 				file = str(file) + ".bcs"
 			with open(file, 'w') as file:
 				file.write(self.textBox.toPlainText())
+			# log
+			logInfo = time.ctime() + " ~ Saved model to file:\n\n"
+			self.saveToLog(DELIMITER + logInfo + file.name + "\n")
 
 	def copySelection(self):
 		self.textBox.copy()
@@ -918,6 +979,11 @@ class MainWindow(QtGui.QMainWindow):
 			self.num_of_states.setText('No. of States:'.ljust(30) + str(len(self.stateWorker.states)))
 			self.num_of_edges.setText('No. of Edges:'.ljust(30) + str(len(self.stateWorker.edges)))
 			self.num_of_reactions.setText('No. of Reactions:'.ljust(30))
+			# log
+			logInfo = time.ctime() + " ~ Imported state space from file:\n\n"
+			self.saveToLog(DELIMITER + logInfo + str(self.stateWorker.stateSpaceFile) + "\n")
+			self.saveToLog('No. of States:'.ljust(30) + str(len(self.stateWorker.states)) + "\n")
+			self.saveToLog('No. of Edges:'.ljust(30) + str(len(self.stateWorker.edges)) + "\n")
 
 	def resizeEvent(self, event):
 		widthShrint = self.width() - appWidth
@@ -934,8 +1000,10 @@ class MainWindow(QtGui.QMainWindow):
 		self.simulationWorker.TheWorker.quit()
 		self.simulationWorker.TheWorker.wait()
 
-	def tearDown(self):
-		self.app.deleteLater()
+	def saveToLog(self, text, mode = 'a'):
+		file = open('session.log', mode)
+		file.write(text)
+		file.close()
 
 def handleIntSignal(signum, frame):
 	"""Handler for the SIGINT signal.

@@ -24,21 +24,12 @@ class DisplayConflicts(QtGui.QWidget):
 		scroll.setWidget(conflictBox)
 		vLayout.addWidget(scroll)
 
-		buttonSave = QtGui.QPushButton("Save conflicts to file", self)
-		buttonSave.clicked.connect(self.save_log)
+		buttonSave = QtGui.QPushButton("Close", self)
+		buttonSave.clicked.connect(self.close)
 		vLayout.addWidget(buttonSave)
 
 		self.setLayout(vLayout)
 		self.setWindowModality(QtCore.Qt.ApplicationModal)
-
-	def save_log(self):
-		file = QtGui.QFileDialog.getSaveFileName(self, 'Choose log file', filter =".log (*.log);;All types (*)")
-		if file:
-			if not os.path.splitext(str(file))[1]:
-				file = str(file) + ".log"
-			f = open(file,'w')
-			f.write(self.message[:-30])
-			f.close()
 
 	def closeEvent(self, event):
 		event.accept()

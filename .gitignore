@@ -48,4 +48,4 @@ GUI/Libraries/SimulationPlot.pyc
 GUI/Libraries/SimulationWorker.pyc
 GUI/Libraries/StateSpaceWorker.pyc
 GUI/Libraries/__init__.pyc
-
+GUI/session.log
