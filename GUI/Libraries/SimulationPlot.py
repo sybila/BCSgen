@@ -9,7 +9,7 @@ class SimulationPlot(QtGui.QWidget):
 		super(SimulationPlot, self).__init__()
 
 		self.setWindowModality(QtCore.Qt.ApplicationModal)
-		plt.rcParams["figure.figsize"] = (int(math.floor(screenWidth/80.)) - 2, int(math.floor(screenHeight/80.)) - 2)
+		plt.rcParams["figure.figsize"] = (int(math.floor(screenWidth/80.)) - 4, int(math.floor(screenHeight/80.)) - 3)
 
 		self.fig, self.ax = plt.subplots()
 		self.fig.canvas.set_window_title('Simulation results')
@@ -27,7 +27,7 @@ class SimulationPlot(QtGui.QWidget):
 
 		self.ax.legend(loc='upper center', bbox_to_anchor=(0.5,-0.1), ncol=4)
 
-		numOfLines = int(len(translations)/4.0)/2 + 1
+		numOfLines = int(len(translations)/4.0)/2 + 1.2
 
 		self.fig.subplots_adjust(bottom=0.15*numOfLines)
 		self.ax.grid('on')
