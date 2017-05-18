@@ -702,6 +702,15 @@ class MainWindow(QtGui.QMainWindow):
 		self.reachabilityResult.setText("")
 		#self.reachable_states_button.setDisabled(True)
 
+	def markReachbilityPossitions(self):
+		text = " "
+		for i in self.analysisWorker.toBeReached:
+			if i:
+				text += "*  "
+			else:
+				text += "   "
+		return text
+
 	def writeReachResult(self):
 		if self.analysisWorker.reachablityResult:
 			self.reachabilityResult.setText("Reachable !")
@@ -709,14 +718,15 @@ class MainWindow(QtGui.QMainWindow):
 		else:
 			self.reachabilityResult.setText("Not reachable !")
 		self.reachabilityResult.setStyleSheet("color: rgb(0, 155, 0);")
+
+		
 		# log
-		logInfo = time.ctime() + " ~ Reachability results:\n\n"
 		if self.analysisWorker.satisfyingStates:
-			results = "Satisfying states:\n" + "\n".join(map(str, self.analysisWorker.satisfyingStates))
+			results = "Satisfying states:\n" + "\n".join([self.markReachbilityPossitions()] + map(str, self.analysisWorker.satisfyingStates))
 		else:
 			results = ""
 		unique = "\n".join(['ID -> Name'] + map(str, enumerate(self.stateWorker.uniqueAgents)))
-		self.saveToLog(logInfo + str(self.reachabilityResult.text()) + '\n' + results + '\n\n' + unique + '\n')
+		self.saveToLog(" ... " + str(self.reachabilityResult.text()) + '\n' + results + '\n\n' + unique + '\n')
 
 	def startReachability(self):
 		self.progress_bar_reachability.setRange(0,0)
@@ -734,8 +744,8 @@ class MainWindow(QtGui.QMainWindow):
 						vector[orderedAgents.index(agent)] = int(stochio)
 					self.analysisWorker.toBeReached = np.array(vector)
 					# log
-					shouldBeReached = "Tested: " + str(self.analysisWorker.toBeReached) + '\n'
-					logInfo = time.ctime() + " ~ Checking for reachability:\n\n"
+					shouldBeReached = "Testing:\n" + "(" + ", ".join(map(str, self.analysisWorker.toBeReached)) + ")"
+					logInfo = time.ctime() + " ~ Checking for reachability...\n"
 					self.saveToLog(DELIMITER + logInfo + shouldBeReached)
 					self.analysisWorker.compute_reach()
 
