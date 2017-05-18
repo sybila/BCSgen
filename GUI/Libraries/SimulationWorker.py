@@ -72,6 +72,9 @@ class SimulationWorker(QtCore.QObject):
 			oldData = self.data
 			oldTimes = self.times
 
+		self.data = [np.array(initial_solution)] + self.data
+		self.times = [0] + self.times
+
 		self.simulationFinished.emit()
 
 	def applyReaction(self, reaction, solution):
