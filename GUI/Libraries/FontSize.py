@@ -6,13 +6,14 @@ def createButton(it, text, to_connect, disabled):
 	button.setDisabled(disabled)
 	return button
 
-class FontSize(QtGui.QDialog):
+class FontSize(QtGui.QWidget):
 	def __init__(self, parent = None):
-		QtGui.QDialog.__init__(self, parent)
+		super(FontSize, self).__init__()
 		self.parent = parent
 
 		self.setWindowModality(QtCore.Qt.ApplicationModal)
 
+		self.setWindowTitle("Custom font size")
 		self.setFixedHeight(60)
 		self.setFixedWidth(230)
 
@@ -33,7 +34,7 @@ class FontSize(QtGui.QDialog):
 			self.parent.size16.setChecked(False)
 			self.parent.size20.setChecked(False)
 			self.parent.changeFontSize(int(self.textLine.text()))
-		self.close()
+			self.close()
 
 	def closeEvent(self, event):
 		if str(self.textLine.text()).isdigit():
