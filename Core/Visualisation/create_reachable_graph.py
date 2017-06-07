@@ -8,7 +8,9 @@ import json
 def newReachableGraph(state_space_file, output_file, path, screenWidth, screenHeight, satisfyingStates):
 	write_part(firstpart_1, output_file, "w")
 	write_size(screenWidth, screenHeight, output_file)
-	write_part(firstpart_2, output_file, "a")
+	write_part(firstpart_21, output_file, "a")
+	write_size(screenWidth, screenHeight, output_file)
+	write_part(firstpart_22, output_file, "a")
 	write_part(str(screenWidth - 50), output_file, "a")
 	write_part(firstpart_3, output_file, "a")
 
@@ -156,89 +158,89 @@ firstpart_1 = \
 	   #mynetwork {
 '''
 
-firstpart_2 = '''
+firstpart_21 = '''
 			border: 1px solid lightgray;
 		}
-	    #rectangle {
-		    text-align: center;
-		    font-weight: bold;
-	    }
+		#rectangle {
+			text-align: center;
+			font-weight: bold;
+		}
 		#loadingBar {
-            position:absolute;
-            top:0px;
-            left:0px;
-            width: 902px;
-            height: 902px;
-            background-color:rgba(200,200,200,0.8);
-            -webkit-transition: all 0.5s ease;
-            -moz-transition: all 0.5s ease;
-            -ms-transition: all 0.5s ease;
-            -o-transition: all 0.5s ease;
-            transition: all 0.5s ease;
-            opacity:1;
-        }
-        #wrapper {
-            position:relative;
-            width:900px;
-            height:900px;
-        }
+			position:absolute;
+			top:10px;
+			left:10px;
+'''
+firstpart_22 = '''
+			background-color:rgba(200,200,200,0.8);
+			-webkit-transition: all 0.5s ease;
+			-moz-transition: all 0.5s ease;
+			-ms-transition: all 0.5s ease;
+			-o-transition: all 0.5s ease;
+			transition: all 0.5s ease;
+			opacity:1;
+		}
+		#wrapper {
+			position:relative;
+			width:900px;
+			height:900px;
+		}
 
-        #text {
-            position:absolute;
-            top:8px;
-            left:530px;
-            width:30px;
-            height:50px;
-            margin:auto auto auto auto;
-            font-size:22px;
-            color: #000000;
-        }
+		#text {
+			position:absolute;
+			top:8px;
+			left:530px;
+			width:30px;
+			height:50px;
+			margin:auto auto auto auto;
+			font-size:22px;
+			color: #000000;
+		}
 
 
-        div.outerBorder {
-            position:relative;
-            top:400px;
-            width:600px;
-            height:44px;
-            margin:auto auto auto auto;
-            border:8px solid rgba(0,0,0,0.1);
-            background: rgb(252,252,252); /* Old browsers */
-            background: -moz-linear-gradient(top,  rgba(252,252,252,1) 0%, rgba(237,237,237,1) 100%); /* FF3.6+ */
-            background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(252,252,252,1)), color-stop(100%,rgba(237,237,237,1))); /* Chrome,Safari4+ */
-            background: -webkit-linear-gradient(top,  rgba(252,252,252,1) 0%,rgba(237,237,237,1) 100%); /* Chrome10+,Safari5.1+ */
-            background: -o-linear-gradient(top,  rgba(252,252,252,1) 0%,rgba(237,237,237,1) 100%); /* Opera 11.10+ */
-            background: -ms-linear-gradient(top,  rgba(252,252,252,1) 0%,rgba(237,237,237,1) 100%); /* IE10+ */
-            background: linear-gradient(to bottom,  rgba(252,252,252,1) 0%,rgba(237,237,237,1) 100%); /* W3C */
-            filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#fcfcfc', endColorstr='#ededed',GradientType=0 ); /* IE6-9 */
-            border-radius:72px;
-            box-shadow: 0px 0px 10px rgba(0,0,0,0.2);
-        }
+		div.outerBorder {
+			position:relative;
+			top:400px;
+			width:600px;
+			height:44px;
+			margin:auto auto auto auto;
+			border:8px solid rgba(0,0,0,0.1);
+			background: rgb(252,252,252); /* Old browsers */
+			background: -moz-linear-gradient(top,  rgba(252,252,252,1) 0%, rgba(237,237,237,1) 100%); /* FF3.6+ */
+			background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(252,252,252,1)), color-stop(100%,rgba(237,237,237,1))); /* Chrome,Safari4+ */
+			background: -webkit-linear-gradient(top,  rgba(252,252,252,1) 0%,rgba(237,237,237,1) 100%); /* Chrome10+,Safari5.1+ */
+			background: -o-linear-gradient(top,  rgba(252,252,252,1) 0%,rgba(237,237,237,1) 100%); /* Opera 11.10+ */
+			background: -ms-linear-gradient(top,  rgba(252,252,252,1) 0%,rgba(237,237,237,1) 100%); /* IE10+ */
+			background: linear-gradient(to bottom,  rgba(252,252,252,1) 0%,rgba(237,237,237,1) 100%); /* W3C */
+			filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#fcfcfc', endColorstr='#ededed',GradientType=0 ); /* IE6-9 */
+			border-radius:72px;
+			box-shadow: 0px 0px 10px rgba(0,0,0,0.2);
+		}
 
-        #border {
-            position:absolute;
-            top:10px;
-            left:10px;
-            width:500px;
-            height:23px;
-            margin:auto auto auto auto;
-            box-shadow: 0px 0px 4px rgba(0,0,0,0.2);
-            border-radius:10px;
-        }
+		#border {
+			position:absolute;
+			top:10px;
+			left:10px;
+			width:500px;
+			height:23px;
+			margin:auto auto auto auto;
+			box-shadow: 0px 0px 4px rgba(0,0,0,0.2);
+			border-radius:10px;
+		}
 
-        #bar {
-            position:absolute;
-            top:0px;
-            left:0px;
-            width:20px;
-            height:20px;
-            margin:auto auto auto auto;
-            border-radius:11px;
-            border:2px solid rgba(30,30,30,0.05);
-            background: rgb(0, 173, 246); /* Old browsers */
-            box-shadow: 2px 0px 4px rgba(0,0,0,0.4);
-        }
+		#bar {
+			position:absolute;
+			top:0px;
+			left:0px;
+			width:20px;
+			height:20px;
+			margin:auto auto auto auto;
+			border-radius:11px;
+			border:2px solid rgba(30,30,30,0.05);
+			background: rgb(0, 173, 246); /* Old browsers */
+			box-shadow: 2px 0px 4px rgba(0,0,0,0.4);
+		}
 }
-    </style>
+	</style>
 </head>
 <body>
 
@@ -247,12 +249,12 @@ firstpart_2 = '''
 
 firstpart_3 = '''px;height:100%;border:1px solid #000;"> </div>
 <div id="loadingBar">
-        <div class="outerBorder">
-            <div id="text">0%</div>
-            <div id="border">
-                <div id="bar"></div>
-            </div>
-        </div>
+		<div class="outerBorder">
+			<div id="text">0%</div>
+			<div id="border">
+				<div id="bar"></div>
+			</div>
+		</div>
 </div>
 
 <script type="text/javascript">
@@ -264,15 +266,15 @@ secondpart_1 = '''
 	]);
 
 	// create a network
-    var container = document.getElementById('mynetwork');
-    var data = {
-        nodes: nodes,
-        edges: edges
-    };
+	var container = document.getElementById('mynetwork');
+	var data = {
+		nodes: nodes,
+		edges: edges
+	};
 	
 	var stabil = true;
 	
-    var options = {
+	var options = {
 		layout: {randomSeed:2},
 		physics: {
 			enabled: true,
@@ -285,34 +287,34 @@ secondpart_1 = '''
 			},
 			maxVelocity: 50,
 			minVelocity: 7.5,
-            solver: 'barnesHut',
-            timestep: 0.5,
-            stabilization: {
-                        enabled:true,
-                        iterations:5000,
-                    },
-        },
+			solver: 'barnesHut',
+			timestep: 0.5,
+			stabilization: {
+						enabled:true,
+						iterations:5000,
+					},
+		},
 		nodes: {
-            size: 15,
-            font: {
-                size: 20
-            },
-            borderWidth: 2,
+			size: 15,
+			font: {
+				size: 20
+			},
+			borderWidth: 2,
 			borderWidthSelected: 4,
-            color:{highlight:{border: '#B20F0F', background: 'red'}}
-        },
-        edges: {
-            width: 4,
+			color:{highlight:{border: '#B20F0F', background: 'red'}}
+		},
+		edges: {
+			width: 4,
 			selectionWidth: function (width) {return width*2.5;},
-            color:{color:'#2B7CE9', hover:'#2B7CE9', highlight: 'red'}
-        },
+			color:{color:'#2B7CE9', hover:'#2B7CE9', highlight: 'red'}
+		},
 		interaction: {
-          navigationButtons: true,
-          keyboard: true,
+		  navigationButtons: true,
+		  keyboard: true,
 		  hover: true,
 		  tooltipDelay: 500,
-          multiselect: true
-        }
+		  multiselect: true
+		}
 	};
 '''
 
@@ -321,29 +323,29 @@ secondpart_2 = '''	var paths = [];
 	var highlightNodes = [];
 	var highlightEdges = [];
 	
-    var network = new vis.Network(container, data, options);
+	var network = new vis.Network(container, data, options);
 
-    network.on("stabilizationProgress", function(params) {
-                var maxWidth = 496;
-                var minWidth = 20;
-                var widthFactor = params.iterations/params.total*10;
-                var width = Math.max(minWidth,maxWidth * widthFactor);
+	network.on("stabilizationProgress", function(params) {
+				var maxWidth = 496;
+				var minWidth = 20;
+				var widthFactor = params.iterations/params.total*10;
+				var width = Math.max(minWidth,maxWidth * widthFactor);
 
-                document.getElementById('bar').style.width = width + 'px';
-                document.getElementById('text').innerHTML = Math.round(widthFactor*100) + '%';
-            });
-    network.once("stabilizationIterationsDone", function() {
-                document.getElementById('text').innerHTML = '100%';
-                document.getElementById('bar').style.width = '496px';
-                document.getElementById('loadingBar').style.opacity = 0;
-                // really clean the dom element
-                setTimeout(function () {document.getElementById('loadingBar').style.display = 'none';}, 500);
-    });
+				document.getElementById('bar').style.width = width + 'px';
+				document.getElementById('text').innerHTML = Math.round(widthFactor*100) + '%';
+			});
+	network.once("stabilizationIterationsDone", function() {
+				document.getElementById('text').innerHTML = '100%';
+				document.getElementById('bar').style.width = '496px';
+				document.getElementById('loadingBar').style.opacity = 0;
+				// really clean the dom element
+				setTimeout(function () {document.getElementById('loadingBar').style.display = 'none';}, 500);
+	});
 	
 	network.setOptions(options);
 
-    network.on("click", function (params) {
-        params.event = "[original event]";
+	network.on("click", function (params) {
+		params.event = "[original event]";
 		
 		if(toNode.includes(params.nodes[0])) {
 		if(highlightNodes.length >= 1) {
@@ -440,11 +442,11 @@ secondpart_2 = '''	var paths = [];
 		var tmp = " ";
 
 		for (var i = 1; i <= nodes.length; i++) {
-        	if (nodes.get(i).id == params.nodes) {
+			if (nodes.get(i).id == params.nodes) {
 				tmp = nodes.get(i).text;
 				break;
 			};
-    	};
+		};
 
 		if(params.nodes.length === 0 && params.edges.length > 0) {
 			for (var i = 1; i <= edges.length; i++) {
@@ -457,7 +459,7 @@ secondpart_2 = '''	var paths = [];
 		document.getElementById('rectangle').innerHTML = '<div style="width:'''
 
 secondpart_3 = '''px;height:100%;text-align:center;border:0px solid #000;">' + tmp + '</div>';
-    });
+	});
 
 	network.on("stabilized", function (params) {
 	if(stabil) {
@@ -495,7 +497,7 @@ secondpart_3 = '''px;height:100%;text-align:center;border:0px solid #000;">' + t
 });
 
 	network.on("doubleClick", function (params) {
-        params.event = "[original event]";
+		params.event = "[original event]";
 		//set to original colors
 		if(highlightNodes.length >= 1) {
 			for (var i = 1; i < highlightNodes.length-1; i++) {		
@@ -650,7 +652,7 @@ secondpart_4 = '''px;height:100%;text-align:center;border:0px solid #000;">' + s
 }
 
 function getHexColor(number){
-    return "#"+((number)>>>0).toString(16).slice(-6);
+	return "#"+((number)>>>0).toString(16).slice(-6);
 }
 
 </script>

@@ -647,6 +647,7 @@ class MainWindow(QtGui.QMainWindow):
 				self.computeStateSpace_button.setDisabled(False)
 
 	def setCustomFontSize(self):
+		print self.textBox.fontWeight()
 		self.fontSize = FontSize(self)#, self.textBox.fontPointSize())
 		self.fontSize.show()
 
