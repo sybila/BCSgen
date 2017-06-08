@@ -58,7 +58,6 @@ class MainWindow(QtGui.QMainWindow):
 		super(MainWindow, self).__init__(parent)
 
 		self.rulesAreCorrect = False
-		self.useInterpolation = False
 
 		self.screenWidth = screenWidth
 		self.screenHeight = screenHeight
@@ -545,6 +544,7 @@ class MainWindow(QtGui.QMainWindow):
 
 		self.simulationWorker.simulationFinished.connect(self.showPlot)
 		self.simulationWorker.nextSecondCalculated.connect(self.updateSimulationProgress)
+		self.simulationWorker.changeSizeOfStep.connect(self.decreaseSizeOfStep)
 
 		# clear log
 
@@ -552,9 +552,9 @@ class MainWindow(QtGui.QMainWindow):
 
 	def setInterpolationState(self):
 		if self.interpolationBox.checkState():
-			self.useInterpolation = True
+			self.simulationWorker.useInterpolation = True
 		else:
-			self.useInterpolation = False
+			self.simulationWorker.useInterpolation = False
 
 	def updateNumberOfRuns(self):
 		self.simulationWorker.numberOfRuns = int(self.number_of_runs.value())
@@ -573,7 +573,15 @@ class MainWindow(QtGui.QMainWindow):
 		self.compute_simulation_button.setDisabled(False)
 		self.cancel_simulation_button.setDisabled(True)
 		self.progress_bar_simulation.setValue(10000)
-		self.plot = SimulationPlot(self.simulationWorker.data, self.simulationWorker.times, self.simulationWorker.translations, self.screenWidth, self.screenHeight, self.useInterpolation)
+		self.plot = SimulationPlot(self.simulationWorker.data, self.simulationWorker.times, self.simulationWorker.translations, self.screenWidth, self.screenHeight)
+
+		self.plot.nextStep.connect(self.testFun)
+
+	def decreaseSizeOfStep(self):
+		print 'happened'
+		NoRuns = 10000.0/self.step
+		IncreasedNoRuns = NoRuns + len(self.simulationWorker.translations)
+		self.step = (NoRuns/IncreasedNoRuns)*self.step
 
 	def updateSimulationProgress(self):
 		self.progress_bar_simulation.setValue(self.progress_bar_simulation.value() + self.step)
@@ -696,7 +704,7 @@ class MainWindow(QtGui.QMainWindow):
 		self.graph = GraphVisual(self.stateWorker.stateSpaceFile, self.screenWidth - 100, self.screenHeight - 100, useHTMLvisual)
 
 	def showReachableStates(self):
-		self.graphReach = ReachableGraphVisual(self.stateWorker.stateSpaceFile, self.screenWidth - 100, self.screenHeight - 100, self.analysisWorker.satisfyingStates)
+		self.graphReach = ReachableGraphVisual(self.stateWorker.stateSpaceFile, self.screenWidth - 100, self.screenHeight - 200, self.analysisWorker.satisfyingStates)
 
 	def resetReachIndicators(self):
 		self.progress_bar_reachability.reset()

@@ -4,16 +4,18 @@ import os.path
 import numpy as np
 import random 
 import math
+from scipy import interpolate
+import sympy
 
 sys.path.append(os.path.abspath('../../Core/'))
 import Import as Import
 import Explicit_reaction_network_generator as Explicit
 import State_space_generator as Gen
-import sympy
 
 class SimulationWorker(QtCore.QObject):
 	simulationFinished = QtCore.pyqtSignal()   # emited when simulations is finished	
 	nextSecondCalculated = QtCore.pyqtSignal() # emited when another second of simulation time is processed
+	changeSizeOfStep = QtCore.pyqtSignal()	   # emited if interpolation is used
 
 	def __init__(self, model, parent=None):
 		QtCore.QObject.__init__(self, parent)
@@ -25,6 +27,7 @@ class SimulationWorker(QtCore.QObject):
 		self.times = []
 		self.translations = []
 		self.numberOfRuns = 1
+		self.useInterpolation = False
 
 		self.TheWorker = QtCore.QThread()
 		self.moveToThread(self.TheWorker)
@@ -37,6 +40,7 @@ class SimulationWorker(QtCore.QObject):
 		VN = Gen.createVectorNetwork(reactions, initialState)
 
 		self.translations = VN.Translations
+		self.changeSizeOfStep.emit()
 		self.simulateGillespieAlgorithm(map(lambda r: r.difference, VN.Vectors), np.array(VN.State), rates, self.max_time)
 
 	def simulateGillespieAlgorithm(self, reactions, initial_solution, rates, max_time):
@@ -75,7 +79,20 @@ class SimulationWorker(QtCore.QObject):
 		self.data = [np.array(initial_solution)] + self.data
 		self.times = [0] + self.times
 
+		if self.useInterpolation:
+			newData = []
+			oldtimes = self.times
+			self.times = np.array(np.arange(self.times[0], self.times[-1], 0.001), dtype='float64')
+			for i in range(len(self.data[0])):
+				inter = interpolate.pchip(oldtimes, self.column(self.data, i))
+				newData.append(inter(self.times))
+				self.nextSecondCalculated.emit()
+			self.data = newData
+
 		self.simulationFinished.emit()
+
+	def column(self, matrix, i):
+ 		return [row[i] for row in matrix]
 
 	def applyReaction(self, reaction, solution):
 		vec = solution + reaction
