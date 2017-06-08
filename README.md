@@ -53,3 +53,5 @@ For Windows, use [this](http://www.lfd.uci.edu/~gohlke/pythonlibs/#pyqt4) binary
 Moreover, additional python packages are required (markdown, numpy, sympy, scipy) and might be installed using `pip`.
 
 > <sup>3</sup> [RuleParser](https://gitlab.fi.muni.cz/grp-sybila/rule-parser) improves writing and allows validation of BCSL models inside BCSgen. Therefore path to directory with `RuleParser.py` and `_RuleParser.so` must be specified (alternatively, both files might be placed in Core/Import/ directory).
+
+> `On Linux machines, linux_install.sh script can be used in order to install all required packages.`
