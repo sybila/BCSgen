@@ -13,10 +13,8 @@ class SimulationPlot(QtGui.QWidget):
 		self.fig, self.ax = plt.subplots()
 		self.fig.canvas.set_window_title('Simulation results')
 
-		size = len(data[0])
-
-		for i in range(size):
-			self.ax.plot(times, self.column(data, i), label=translations[i])
+		for i in range(len(data)):
+			self.ax.plot(times, data[i], label=translations[i])
 
 		self.ax.legend(loc='upper center', bbox_to_anchor=(0.5,-0.1), ncol=4)
 

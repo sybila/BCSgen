@@ -575,10 +575,7 @@ class MainWindow(QtGui.QMainWindow):
 		self.progress_bar_simulation.setValue(10000)
 		self.plot = SimulationPlot(self.simulationWorker.data, self.simulationWorker.times, self.simulationWorker.translations, self.screenWidth, self.screenHeight)
 
-		self.plot.nextStep.connect(self.testFun)
-
 	def decreaseSizeOfStep(self):
-		print 'happened'
 		NoRuns = 10000.0/self.step
 		IncreasedNoRuns = NoRuns + len(self.simulationWorker.translations)
 		self.step = (NoRuns/IncreasedNoRuns)*self.step
@@ -655,7 +652,6 @@ class MainWindow(QtGui.QMainWindow):
 				self.computeStateSpace_button.setDisabled(False)
 
 	def setCustomFontSize(self):
-		print self.textBox.fontWeight()
 		self.fontSize = FontSize(self)#, self.textBox.fontPointSize())
 		self.fontSize.show()
 

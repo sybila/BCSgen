@@ -40,7 +40,8 @@ class SimulationWorker(QtCore.QObject):
 		VN = Gen.createVectorNetwork(reactions, initialState)
 
 		self.translations = VN.Translations
-		self.changeSizeOfStep.emit()
+		if self.useInterpolation:
+			self.changeSizeOfStep.emit()
 		self.simulateGillespieAlgorithm(map(lambda r: r.difference, VN.Vectors), np.array(VN.State), rates, self.max_time)
 
 	def simulateGillespieAlgorithm(self, reactions, initial_solution, rates, max_time):
@@ -88,6 +89,8 @@ class SimulationWorker(QtCore.QObject):
 				newData.append(inter(self.times))
 				self.nextSecondCalculated.emit()
 			self.data = newData
+		else:
+			self.data = np.array(self.data).transpose()
 
 		self.simulationFinished.emit()
 
