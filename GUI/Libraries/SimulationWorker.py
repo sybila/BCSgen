@@ -82,11 +82,9 @@ class SimulationWorker(QtCore.QObject):
 
 		if self.useInterpolation:
 			newData = []
-			oldtimes = self.times
+			oldtimes = np.array(self.times, dtype='float64')
 			self.times = np.array(np.arange(self.times[0], self.times[-1], 0.001), dtype='float64')
 			for i in range(len(self.data[0])):
-				# not working, for testing in file /usr/local/lib/python2.7/dist-packages/scipy/_lib/_util.py
-				# put line objects_ok = True before if not objects_ok: on line 239
 				inter = interpolate.pchip(oldtimes, self.column(self.data, i))
 				newData.append(inter(self.times))
 				self.nextSecondCalculated.emit()
