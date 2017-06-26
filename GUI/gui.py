@@ -473,13 +473,13 @@ class MainWindow(QtGui.QMainWindow):
 		self.radioDeterministic = QRadioButton("Deterministic")
 		self.radioDeterministic.toggled.connect(self.deterministicChosen)
 		StatesHbox.addWidget(self.radioDeterministic)
-		self.radioDeterministic.setDisabled(True)
+		#self.radioDeterministic.setDisabled(True)
 
 		self.radioNonDeterministic = QRadioButton("Nondeterministic")
 		self.radioNonDeterministic.setChecked(True)
 		self.radioNonDeterministic.toggled.connect(self.nonDeterministicChosen)
 		StatesHbox.addWidget(self.radioNonDeterministic)
-		self.radioNonDeterministic.setDisabled(True)
+		#self.radioNonDeterministic.setDisabled(True)
 
 		vLayout.addLayout(StatesHbox)
 
@@ -567,10 +567,12 @@ class MainWindow(QtGui.QMainWindow):
 	def deterministicChosen(self):
 		self.interpolationBox.setDisabled(True)
 		self.number_of_runs.setDisabled(True)
+		self.simulationWorker.useDeterministic = True
 
 	def nonDeterministicChosen(self):
 		self.interpolationBox.setDisabled(False)
 		self.number_of_runs.setDisabled(False)
+		self.simulationWorker.useDeterministic = False
 
 	def setInterpolationState(self):
 		if self.interpolationBox.checkState():

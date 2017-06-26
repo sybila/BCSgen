@@ -5,6 +5,7 @@ import numpy as np
 import random 
 import math
 from scipy import interpolate
+from scipy.integrate import odeint
 import sympy
 
 sys.path.append(os.path.abspath('../../Core/'))
@@ -28,6 +29,7 @@ class SimulationWorker(QtCore.QObject):
 		self.translations = []
 		self.numberOfRuns = 1
 		self.useInterpolation = False
+		self.useDeterministic = False
 
 		self.TheWorker = QtCore.QThread()
 		self.moveToThread(self.TheWorker)
@@ -42,7 +44,38 @@ class SimulationWorker(QtCore.QObject):
 		self.translations = VN.Translations
 		if self.useInterpolation:
 			self.changeSizeOfStep.emit()
-		self.simulateGillespieAlgorithm(map(lambda r: r.difference, VN.Vectors), np.array(VN.State), rates, self.max_time)
+		if not self.useDeterministic:
+			self.simulateGillespieAlgorithm(map(lambda r: r.difference, VN.Vectors), np.array(VN.State), rates, self.max_time)
+		else:
+			self.simulateDeterministicAlgorithm(map(lambda r: r.difference, VN.Vectors), np.array(VN.State), rates, self.max_time)
+
+	def simulateDeterministicAlgorithm(self, reactions, y0, rates, max_time):
+		rates = self.prepareRatesForSolving(self.translations, rates)
+		self.ODEs = self.createODEs(reactions, len(y0), rates)
+		self.data = []
+		self.times = []
+
+		t = np.arange(0, max_time, 0.01)
+		y = odeint(self.f, y0, t)
+
+		self.times = t
+		for i in range(len(y0)):
+			self.data.append(self.column(y, i))
+		self.simulationFinished.emit()
+
+	def createODEs(self, reactions, len_initial_solution, rates):
+		ODEs = [""] * len_initial_solution
+		for i in range(len_initial_solution):
+			for j in range(len(reactions)):
+				if reactions[j][i] != 0:
+					ODEs[i] += " + (" + str(np.sign(reactions[j][i])) + ") * (" + rates[j] + ")"
+			if ODEs[i] == "":
+				ODEs[i] += "0"
+		return ODEs
+
+	#this is the rhs of the ODE to integrate, i.e. dy/dt=f(y,t)
+	def f(self, y, t):
+		return map(eval, self.ODEs)
 
 	def simulateGillespieAlgorithm(self, reactions, initial_solution, rates, max_time):
 		rates = self.vectorizeRates(self.translations, rates)
@@ -95,7 +128,7 @@ class SimulationWorker(QtCore.QObject):
 		self.simulationFinished.emit()
 
 	def column(self, matrix, i):
- 		return [row[i] for row in matrix]
+		return [row[i] for row in matrix]
 
 	def applyReaction(self, reaction, solution):
 		vec = solution + reaction
@@ -112,6 +145,16 @@ class SimulationWorker(QtCore.QObject):
 			for i in range(len(translations)):
 				new_rate = new_rate.replace(translations[i], "x_" + str(i))
 			new_rates.append(sympy.sympify(new_rate))
+		return new_rates
+
+	def prepareRatesForSolving(self, translations, rates):
+		translations = map(lambda trans: "'" + trans + "'", translations)
+		new_rates = []
+		for rate in rates:
+			new_rate = rate
+			for i in range(len(translations)):
+				new_rate = new_rate.replace(translations[i], "y[" + str(i) + "]")
+			new_rates.append(new_rate)
 		return new_rates
 
 	def enumerateRate(self, names, solution, rate):
