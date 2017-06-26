@@ -470,6 +470,20 @@ class MainWindow(QtGui.QMainWindow):
 		vLayout.addWidget(self.simulationSettingsLabel)
 
 		StatesHbox = QHBoxLayout()
+		self.radioDeterministic = QRadioButton("Deterministic")
+		self.radioDeterministic.toggled.connect(self.deterministicChosen)
+		StatesHbox.addWidget(self.radioDeterministic)
+		self.radioDeterministic.setDisabled(True)
+
+		self.radioNonDeterministic = QRadioButton("Nondeterministic")
+		self.radioNonDeterministic.setChecked(True)
+		self.radioNonDeterministic.toggled.connect(self.nonDeterministicChosen)
+		StatesHbox.addWidget(self.radioNonDeterministic)
+		self.radioNonDeterministic.setDisabled(True)
+
+		vLayout.addLayout(StatesHbox)
+
+		StatesHbox = QHBoxLayout()
 
 		self.maxTimeLabel = QtGui.QLabel(self)
 		self.maxTimeLabel.setText("Maximum time:")
@@ -549,6 +563,14 @@ class MainWindow(QtGui.QMainWindow):
 		# clear log
 
 		self.saveToLog("", 'w')
+
+	def deterministicChosen(self):
+		self.interpolationBox.setDisabled(True)
+		self.number_of_runs.setDisabled(True)
+
+	def nonDeterministicChosen(self):
+		self.interpolationBox.setDisabled(False)
+		self.number_of_runs.setDisabled(False)
 
 	def setInterpolationState(self):
 		if self.interpolationBox.checkState():
