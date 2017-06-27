@@ -7,6 +7,7 @@ import math
 from scipy import interpolate
 from scipy.integrate import odeint
 import sympy
+#import odespy
 
 sys.path.append(os.path.abspath('../../Core/'))
 import Import as Import
@@ -56,6 +57,12 @@ class SimulationWorker(QtCore.QObject):
 		self.times = []
 
 		t = np.arange(0, max_time, 0.01)
+
+		# solving with LSODE
+		# solver = odespy.odepack.Lsode(self.f)
+		# solver.set_initial_condition(y0)
+		# y, t = solver.solve(t)
+
 		y = odeint(self.f, y0, t)
 
 		self.times = t

@@ -1,0 +1,11 @@
+# rules
+None::rep + X::rep => None::rep @ 0.05
+None::rep + Y::rep => None::rep @ 0.12
+None::rep + Z::rep => None::rep @ 0.05
+None::rep => None::rep + X::rep @ 1/(1+('Z::rep'/5)**4)
+None::rep => None::rep + Y::rep @ 1/(1+('X::rep'/5)**4)
+None::rep => None::rep + Z::rep @ 1/(1+('Y::rep'/5)**4)
+
+# initial state
+1 X::rep
+1 Y::rep
