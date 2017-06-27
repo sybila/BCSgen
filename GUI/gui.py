@@ -557,6 +557,7 @@ class MainWindow(QtGui.QMainWindow):
 		#########################################
 
 		self.simulationWorker.simulationFinished.connect(self.showPlot)
+		self.simulationWorker.deterministicSimulationStarted.connect(self.rangeProgessBarOfSimulation)
 		self.simulationWorker.nextSecondCalculated.connect(self.updateSimulationProgress)
 		self.simulationWorker.changeSizeOfStep.connect(self.decreaseSizeOfStep)
 
@@ -587,6 +588,9 @@ class MainWindow(QtGui.QMainWindow):
 			if maxTime != 1:
 				self.step = (10000/(maxTime-1))/self.simulationWorker.numberOfRuns
 
+	def rangeProgessBarOfSimulation(self):
+		self.progress_bar_simulation.setRange(0,0)
+
 	def showPlot(self):
 		# log
 		logInfo = time.ctime() + " ~ Simulation finished.\n\n"
@@ -596,6 +600,7 @@ class MainWindow(QtGui.QMainWindow):
 		self.maxTimeEdit.setReadOnly(False)
 		self.compute_simulation_button.setDisabled(False)
 		self.cancel_simulation_button.setDisabled(True)
+		self.progress_bar_simulation.setRange(0,10000)
 		self.progress_bar_simulation.setValue(10000)
 		self.plot = SimulationPlot(self.simulationWorker.data, self.simulationWorker.times, self.simulationWorker.translations, self.screenWidth, self.screenHeight)
 

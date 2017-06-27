@@ -18,6 +18,7 @@ class SimulationWorker(QtCore.QObject):
 	simulationFinished = QtCore.pyqtSignal()   # emited when simulations is finished	
 	nextSecondCalculated = QtCore.pyqtSignal() # emited when another second of simulation time is processed
 	changeSizeOfStep = QtCore.pyqtSignal()	   # emited if interpolation is used
+	deterministicSimulationStarted = QtCore.pyqtSignal()
 
 	def __init__(self, model, parent=None):
 		QtCore.QObject.__init__(self, parent)
@@ -51,6 +52,7 @@ class SimulationWorker(QtCore.QObject):
 			self.simulateDeterministicAlgorithm(map(lambda r: r.difference, VN.Vectors), np.array(VN.State), rates, self.max_time)
 
 	def simulateDeterministicAlgorithm(self, reactions, y0, rates, max_time):
+		self.deterministicSimulationStarted.emit()
 		rates = self.prepareRatesForSolving(self.translations, rates)
 		self.ODEs = self.createODEs(reactions, len(y0), rates)
 		self.data = []
