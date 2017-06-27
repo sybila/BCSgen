@@ -475,7 +475,7 @@ class MainWindow(QtGui.QMainWindow):
 		StatesHbox.addWidget(self.radioDeterministic)
 		#self.radioDeterministic.setDisabled(True)
 
-		self.radioNonDeterministic = QRadioButton("Nondeterministic")
+		self.radioNonDeterministic = QRadioButton("Stochastic")
 		self.radioNonDeterministic.setChecked(True)
 		self.radioNonDeterministic.toggled.connect(self.nonDeterministicChosen)
 		StatesHbox.addWidget(self.radioNonDeterministic)
