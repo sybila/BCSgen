@@ -521,7 +521,7 @@ class MainWindow(QtGui.QMainWindow):
 
 		# -------------
 
-		self.interpolationBox = QCheckBox("Interpolation")
+		self.interpolationBox = QCheckBox("Apply interpolation")
 		self.interpolationBox.stateChanged.connect(self.setInterpolationState)
 		self.interpolationBox.setStatusTip("Check for apply interpolation on simulation plot.")
 

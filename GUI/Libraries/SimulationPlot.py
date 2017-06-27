@@ -13,8 +13,11 @@ class SimulationPlot(QtGui.QWidget):
 		self.fig, self.ax = plt.subplots()
 		self.fig.canvas.set_window_title('Simulation results')
 
-		plt.xlabel('Time')
-		plt.ylabel('Concentration')
+		plt.xlabel('Time', fontweight='bold')
+		plt.ylabel('Concentration', fontweight='bold', rotation=0)
+
+		self.ax.xaxis.set_label_coords(1.05, -0.025)
+		self.ax.yaxis.set_label_coords(-0.025, 1.05)
 
 		for i in range(len(data)):
 			self.ax.plot(times, data[i], label=translations[i])
