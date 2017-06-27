@@ -1,0 +1,10 @@
+# rules
+dump::field => dump::field + wolf::field @ 1*'sheep::field'*'wolf::field'
+dump::field + wolf::field => dump::field @ 1*'wolf::field'
+dump::field => dump::field + sheep::field @ 1*'sheep::field'
+dump::field + sheep::field => dump::field @ 8/3*'sheep::field'*'wolf::field'
+
+# initial state
+1 dump::field
+5 sheep::field
+5 wolf::field
