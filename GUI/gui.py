@@ -557,6 +557,7 @@ class MainWindow(QtGui.QMainWindow):
 		#########################################
 
 		self.simulationWorker.simulationFinished.connect(self.showPlot)
+		self.simulationWorker.finishProgressbar.connect(self.setSimulationbarFinished)
 		self.simulationWorker.deterministicSimulationStarted.connect(self.rangeProgessBarOfSimulation)
 		self.simulationWorker.nextSecondCalculated.connect(self.updateSimulationProgress)
 		self.simulationWorker.changeSizeOfStep.connect(self.decreaseSizeOfStep)
@@ -600,14 +601,17 @@ class MainWindow(QtGui.QMainWindow):
 		self.maxTimeEdit.setReadOnly(False)
 		self.compute_simulation_button.setDisabled(False)
 		self.cancel_simulation_button.setDisabled(True)
-		self.progress_bar_simulation.setRange(0,10000)
-		self.progress_bar_simulation.setValue(10000)
+
 		self.plot = SimulationPlot(self.simulationWorker.data, self.simulationWorker.times, self.simulationWorker.translations, self.screenWidth, self.screenHeight)
 
 	def decreaseSizeOfStep(self):
 		NoRuns = 10000.0/self.step
 		IncreasedNoRuns = NoRuns + len(self.simulationWorker.translations)
 		self.step = (NoRuns/IncreasedNoRuns)*self.step
+
+	def setSimulationbarFinished(self):
+		self.progress_bar_simulation.setRange(0,10000)
+		self.progress_bar_simulation.setValue(10000)
 
 	def updateSimulationProgress(self):
 		self.progress_bar_simulation.setValue(self.progress_bar_simulation.value() + self.step)

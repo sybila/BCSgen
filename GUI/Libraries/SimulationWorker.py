@@ -15,6 +15,7 @@ import Explicit_reaction_network_generator as Explicit
 import State_space_generator as Gen
 
 class SimulationWorker(QtCore.QObject):
+	finishProgressbar = QtCore.pyqtSignal()
 	simulationFinished = QtCore.pyqtSignal()   # emited when simulations is finished	
 	nextSecondCalculated = QtCore.pyqtSignal() # emited when another second of simulation time is processed
 	changeSizeOfStep = QtCore.pyqtSignal()	   # emited if interpolation is used
@@ -70,6 +71,8 @@ class SimulationWorker(QtCore.QObject):
 		self.times = t
 		for i in range(len(y0)):
 			self.data.append(self.column(y, i))
+
+		self.finishProgressbar.emit()
 		self.simulationFinished.emit()
 
 	def createODEs(self, reactions, len_initial_solution, rates):
@@ -134,6 +137,7 @@ class SimulationWorker(QtCore.QObject):
 		else:
 			self.data = np.array(self.data).transpose()
 
+		self.finishProgressbar.emit()
 		self.simulationFinished.emit()
 
 	def column(self, matrix, i):
