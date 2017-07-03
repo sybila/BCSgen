@@ -116,8 +116,6 @@ def verifyRules(rules):
 		results.append(parseEquations(rule.text))
 
 	for i in range(len(results)):
-		# print results[i] # problem with parsing of :: (when its omited)
-
 		result = json.loads(results[i])
 		if "error" in result:
 			start = int(result["start"]) + getPositionOfRule(i, rules)
@@ -141,6 +139,11 @@ def computeReactions(rules, rates):
 """
 Ground forms translation of rules
 """
+
+def preprocessRules(rules):
+	rulesOK = True
+	message = []
+	return rules, message, rulesOK
 
 """
 Replaces all occurrences from defined substitutions for an agent
