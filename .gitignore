@@ -8,11 +8,6 @@ Core/Implicit_reaction_network_generator/__init__.pyc
 Core/Import/__init__.pyc
 Core/Import/import_model.pyc
 Core/Import/import_rules.pyc
-Core/Interpreter_of_BCSL/Atomic_Agent.pyc
-Core/Interpreter_of_BCSL/Complex_Agent.pyc
-Core/Interpreter_of_BCSL/Rule.pyc
-Core/Interpreter_of_BCSL/Structure_Agent.pyc
-Core/Interpreter_of_BCSL/__init__.pyc
 Core/State_space_generator/Vector_network.pyc
 Core/State_space_generator/Vector_reaction.pyc
 Model/output/

@@ -11,26 +11,32 @@ stateSpaceFile = sys.argv[-1]
 
 file = open(inputFile).read()
 rules, initialState, rates = Import.import_rules(file)
-reactionGenerator = Explicit.Compute()
-reactions = reactionGenerator.computeReactions(rules)
 
-initialState = Explicit.sortInitialState(initialState)
+message, isOK = Import.verifyRules(rules)
 
-VN = Gen.createVectorNetwork(reactions, initialState)
+if isOK:
+	reactionGenerator = Explicit.Compute()
+	reactions, rates = Import.computeReactions(rules, rates)
 
-bound = VN.getBound()
+	initialState = Explicit.sortInitialState(initialState)
 
-new_states = {VN.getState()}
-states = set([VN.getState()])
-edges = set()
+	VN = Gen.createVectorNetwork(reactions, initialState)
 
-while new_states:
-	results = set()
-	for state in new_states:
-		result_states = VN.applyVectors(state, bound)
-		edges |= set(map(lambda vec: Gen.Vector_reaction(np.array(state), np.array(vec)), result_states))
-		results |= set(result_states)
-	new_states = results - states
-	states |= new_states
+	bound = VN.getBound()
 
-Gen.printStateSpace(states, edges, VN.getTranslations(), stateSpaceFile)
+	new_states = {VN.getState()}
+	states = set([VN.getState()])
+	edges = set()
+
+	while new_states:
+		results = set()
+		for state in new_states:
+			result_states = VN.applyVectors(state, bound)
+			edges |= set(map(lambda vec: Gen.Vector_reaction(np.array(state), np.array(vec)), result_states))
+			results |= set(result_states)
+		new_states = results - states
+		states |= new_states
+
+	Gen.printStateSpace(states, edges, VN.getTranslations(), stateSpaceFile, VN.getState())
+else:
+	print message[2]

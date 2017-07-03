@@ -9,7 +9,6 @@ import signal
 sys.path.append(os.path.abspath('../Core/'))
 
 import State_space_generator as Gen
-import Implicit_reaction_network_generator as Implicit
 import Import as Import
 from Libraries import *
 
@@ -900,10 +899,6 @@ class MainWindow(QtGui.QMainWindow):
 	def startStateSpaceTimer(self):
 		self.spaceTimer.start(1000)
 		self.stateSpaceEstimate = time.strftime("%H:%M:%S", time.gmtime(Gen.estimateComputation(3, 10, 10)))
-
-	def stateReactionsTimer(self):
-		self.reactionsTimer.start(1000)
-		self.reactionsEstimate = time.strftime("%H:%M:%S", time.gmtime(Implicit.estimateComputation(10)))
 
 	def stateSpaceCanceled(self):
 		self.num_of_states.setText('No. of States:'.ljust(30) + 'n\\a' )

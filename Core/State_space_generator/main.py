@@ -1,7 +1,6 @@
 import os
 import sys
 from Vector_network import *
-import Interpreter_of_BCSL as BCSL
 import numpy as np
 import json
 import itertools
@@ -48,7 +47,10 @@ Creates State from given vector and ordered unique agents
 """
 def createState(state, orderedAgents):
 	multiset = sum(map(lambda i: [orderedAgents[i]] * state[i], range(len(orderedAgents))), [])
-	return BCSL.State(multiset, "|".join(map(lambda item: str(item), state)))
+	return ("|".join(map(lambda item: str(item), state)), collections.Counter(multiset))
+
+def getDictAgents(agents):
+	return dict([(str(k), str(v)) for k, v in agents.items()])
 
 """
 Prints state space to given output files
@@ -61,8 +63,8 @@ Prints state space to given output files
 def printStateSpace(states, transitions, orderedAgents, stateSpaceFile, initialState):
 	nodes = dict()
 	edges = dict()
-	for state in map(lambda s: createState(s, orderedAgents), states):
-		nodes[state.getID()] = state.getDictAgents()
+	for ID, agents in map(lambda s: createState(s, orderedAgents), states):
+		nodes[ID] = getDictAgents(agents)
 
 	transitions = list(transitions)
 
@@ -73,7 +75,6 @@ def printStateSpace(states, transitions, orderedAgents, stateSpaceFile, initialS
 
 	with open(stateSpaceFile, 'w') as f:
 		json.dump(data, f, indent=4)
-
 
 """
 Estimates how long the computation should take.
