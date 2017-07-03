@@ -2,12 +2,14 @@ import sys
 import copy
 import re
 import os
-sys.path.append(os.path.abspath('../'))
-import Explicit_reaction_network_generator as Explicit
 import json
 import numpy as np
 import subprocess
 import threading
+
+sys.path.append(os.path.abspath('../'))
+import Explicit_reaction_network_generator as Explicit
+import State_space_generator as Gen
 
 parserPath = sys.argv[-1]
 sys.path.append(os.path.abspath(parserPath))
@@ -16,10 +18,22 @@ from RuleParser import *
 #####################################################################
 
 class Rule():
-	def __init__(self, index, text):
+	def __init__(self, index, text, length):
 		self.index = index
 		self.text = text.split("@")[0]
-		self.length = len(text)
+		self.length = length
+
+"""
+If first given string is a number, return (number - 1) multiplied second string joined by sign "+"
+:param s1: first string
+:param 21: second string
+:return: first string if condition is not satisfied
+"""
+def multiply_string(s1, s2):
+	if s1.isdigit():
+		return "+".join([s2] * (int(s1) -1) + [""])
+	else:
+		return s1
 
 """
 Cleans rule (string) from steichiometry by multiplying appropriate agent
@@ -34,6 +48,11 @@ def remove_steichiometry(rule):
 	new_rule.append(splitted_rule[len(splitted_rule) - 1])
 	return "".join(new_rule)
 
+"""
+Removes duplicated white spaces from a string
+:param rule: given string
+:return: clean string
+"""
 def remove_spaces(rule):
 	splitted_rule = rule.split(" ")
 	splitted_rule = filter(None, splitted_rule)
@@ -72,7 +91,7 @@ def import_rules(input_file):
 			rule = rule[0]
 			rule = remove_spaces(rule)			# maybe not needed?
 			rule = remove_steichiometry(rule)	# maybe not needed?
-			created_rules.append(Rule(lineNum, rule))
+			created_rules.append(Rule(lineNum, rule, len(line)))
 	return created_rules, import_initial_state(inits), rates
 
 def getPositionOfRule(index, rules):
@@ -97,6 +116,8 @@ def verifyRules(rules):
 		results.append(parseEquations(rule.text))
 
 	for i in range(len(results)):
+		# print results[i] # problem with parsing of :: (when its omited)
+
 		result = json.loads(results[i])
 		if "error" in result:
 			start = int(result["start"]) + getPositionOfRule(i, rules)
@@ -297,169 +318,10 @@ def flattenRule(rule):
 		rule_sides.append(" + ".join(agents))
 	return " => ".join(rule_sides)
 
-'''
-Functions for parsing "atomic" rules (executable)
-'''
-
+########################################################################
 """
-Creates atomic agent from given string
-:param agent: string which represents atomic agent
-:param compartment: given compartment
-:return: new Atomic agent
+Import state space section
 """
-def create_atomic_agent(agent, compartment):
-	agent = agent[:-1]
-	parts = agent.split("{")
-	return BCSL.Atomic_Agent(parts[0], [parts[1]], compartment)
-
-"""
-Creates structure agent from given string
-:param agent: string which represents structure agent
-:param compartment: given compartment
-:return: new Structure agent
-"""
-def create_structure_agent(agent, compartment):
-	if "(" in agent:
-		agent = agent[:-1]
-		name = agent.split("(")[0]
-		partial_composition = map(lambda a: create_atomic_agent(a, compartment), agent.split("(")[1].split(","))
-	else:
-		name = agent
-		partial_composition = []
-	return BCSL.Structure_Agent(name, partial_composition, compartment)
-
-"""
-Creates complex agent from given list of strings
-:param agents: list of strings
-:param compartment: given compartment
-:return: new Complex agent
-"""
-def create_complex_agent(agents, compartment):
-	full_composition = []
-	for agent in agents:
-		if "(" in agent:
-			full_composition.append(create_structure_agent(agent, compartment))
-		else:
-			if "{" in agent:
-				full_composition.append(create_atomic_agent(agent, compartment))
-			else:
-				full_composition.append(create_structure_agent(agent, compartment))
-	return BCSL.Complex_Agent(full_composition, compartment)
-
-"""
-Creates agent from given string of form
-agent::compartment
-:param agent: given string representing an agent
-:return: new agent
-"""
-def create_agent(agent):
-	compartment = agent.split("::")[1]
-	subagents = agent.split("::")[0].split(".")
-	if len(subagents) > 1:
-		return create_complex_agent(subagents, compartment)
-	else:
-		if "(" in subagents[0]:
-			return create_structure_agent(subagents[0], compartment)
-		else:
-			if "{" in subagents[0]:
-				return create_atomic_agent(subagents[0], compartment)
-			else:
-				return create_structure_agent(subagents[0], compartment)
-"""
-Removes duplicated white spaces from a string
-:param rule: given string
-:return: clean string
-"""
-def remove_spaces(rule):
-	splitted_rule = rule.split(" ")
-	splitted_rule = filter(None, splitted_rule)
-	return " ".join(splitted_rule)
-
-def remove_rate(rule):
-	return 
-
-"""
-If first given string is a number, return (number - 1) multiplied second string joined by sign "+"
-:param s1: first string
-:param 21: second string
-:return: first string if condition is not satisfied
-"""
-def multiply_string(s1, s2):
-	if s1.isdigit():
-		return "+".join([s2] * (int(s1) -1) + [""])
-	else:
-		return s1
-
-
-
-"""
-Creates rule from given string
-:param rule: string representing rule
-:return: new Rule
-"""
-def create_rule(rule):
-	sides = rule.split("=>")
-	rule_sides = []
-	for side in sides:
-		if side:
-			created_agents = []
-			agents = side.split("+")
-			for agent in agents:
-				created_agents.append(create_agent(agent))
-		else:
-			created_agents = []
-		rule_sides.append(created_agents)
-	return BCSL.Rule(rule_sides[0], rule_sides[1])
-
-"""
-Imports rules from file
-:param input_file: name of file with model
-"""
-def import_model(input_file, sub_file = None):
-	inits, created_rules = [], []
-
-	lines = filter(None, input_file.split("\n"))
-
-	lineNum = 0
-	for line in lines:
-		lineNum += 1
-		if line.startswith('#') and lineNum != 1:
-			for line in lines[lineNum:]:
-				inits.append(line)
-			break
-		elif not line.startswith('#'):
-			rule = remove_spaces(line)
-			rule = remove_steichiometry(rule)
-			if sub_file:
-				rule = substitute_rule(import_substitutions(sub_file), rule)
-			#rule = flattenRule(rule)
-
-			# here the rule has to be well-formed !
-			created_rules.append(create_rule(rule))
-	return created_rules, import_initial_state_as_State(inits)
-
-"""
-Imports agent names to be substituted
-:param subs_file: file containing line agent_sub==to_be_subted
-:return: list of pairs
-"""
-def import_substitutions(subs_file):
-	substitutions = []
-	with open(subs_file) as complexes:
-		for line in complexes:
-			line = line.rstrip()
-			substitutions.append(line.split("=="))
-	return substitutions
-
-
-
-def import_initial_state_as_State(inits):
-	agents = []
-	for line in inits:
-		line = line.rstrip()
-		for i in xrange(0, int(line.split(" ")[0])):
-			agents.append(create_agent(line.split(" ")[1]))
-	return BCSL.State(agents)
 
 def parseState(state):
 	return tuple(map(int, state.split("|")))

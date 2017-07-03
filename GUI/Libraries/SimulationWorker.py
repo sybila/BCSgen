@@ -48,9 +48,9 @@ class SimulationWorker(QtCore.QObject):
 		if self.useInterpolation:
 			self.changeSizeOfStep.emit()
 		if not self.useDeterministic:
-			self.simulateGillespieAlgorithm(map(lambda r: r.difference, VN.Vectors), np.array(VN.State), rates, self.max_time)
+			self.simulateGillespieAlgorithm(map(lambda r: r.difference, VN.Vectors), np.array(VN.State), self.rates, self.max_time)
 		else:
-			self.simulateDeterministicAlgorithm(map(lambda r: r.difference, VN.Vectors), np.array(VN.State), rates, self.max_time)
+			self.simulateDeterministicAlgorithm(map(lambda r: r.difference, VN.Vectors), np.array(VN.State), self.rates, self.max_time)
 
 	def simulateDeterministicAlgorithm(self, reactions, y0, rates, max_time):
 		self.deterministicSimulationStarted.emit()

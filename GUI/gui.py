@@ -422,37 +422,37 @@ class MainWindow(QtGui.QMainWindow):
 
 		#########################################
 
-		# static analysis
+		# # static analysis
 
-		StatesHbox = QHBoxLayout()
+		# StatesHbox = QHBoxLayout()
 
-		style = '''QLineEdit {background-color: rgb(214, 214, 214); border: none ; }'''
+		# style = '''QLineEdit {background-color: rgb(214, 214, 214); border: none ; }'''
 
-		self.reach_text = createTextBox(self, 'Static analysis', '''QLineEdit {border: none ; font-weight: bold }''', True)
+		# self.reach_text = createTextBox(self, 'Static analysis', '''QLineEdit {border: none ; font-weight: bold }''', True)
 
-		StatesHbox.addWidget(self.reach_text)
-		vLayout.addLayout(StatesHbox)
-
-
-		StatesHbox = QHBoxLayout()
-
-		self.compute_conflicts = createButton(self, 'Compute conflicts', self.analysisWorker.compute_conflicts, True)
-		self.compute_conflicts.setStatusTip("Apply static analysis for checking conflicts in given model.")
-
-		StatesHbox.addWidget(self.compute_conflicts)
-
-		vLayout.addLayout(StatesHbox)
-
-		self.analysisWorker.noConflicts.connect(self.showConflicts)
-		self.analysisWorker.conflicts.connect(self.showNoConflicts)
+		# StatesHbox.addWidget(self.reach_text)
+		# vLayout.addLayout(StatesHbox)
 
 
-		StatesHbox = QHBoxLayout()
+		# StatesHbox = QHBoxLayout()
 
-		self.noConflictsMessage = QtGui.QLabel(self)
+		# self.compute_conflicts = createButton(self, 'Compute conflicts', self.analysisWorker.compute_conflicts, True)
+		# self.compute_conflicts.setStatusTip("Apply static analysis for checking conflicts in given model.")
 
-		StatesHbox.addWidget(self.noConflictsMessage)
-		vLayout.addLayout(StatesHbox)
+		# StatesHbox.addWidget(self.compute_conflicts)
+
+		# vLayout.addLayout(StatesHbox)
+
+		# self.analysisWorker.noConflicts.connect(self.showConflicts)
+		# self.analysisWorker.conflicts.connect(self.showNoConflicts)
+
+
+		# StatesHbox = QHBoxLayout()
+
+		# self.noConflictsMessage = QtGui.QLabel(self)
+
+		# StatesHbox.addWidget(self.noConflictsMessage)
+		# vLayout.addLayout(StatesHbox)
 
 		# result field
 
@@ -682,6 +682,7 @@ class MainWindow(QtGui.QMainWindow):
 		self.stateWorker.reactions = self.importWorker.reactions
 		self.stateWorker.initialState = self.importWorker.init_state
 
+		self.statusBar().clearMessage()
 		self.cursor = self.textBox.textCursor()
 		self.clearErrorFormat()
 
@@ -938,7 +939,7 @@ class MainWindow(QtGui.QMainWindow):
 		if file:
 			file = open(file, "r")
 			self.textBox.setPlainText(file.read())
-			self.compute_conflicts.setDisabled(False)
+			#self.compute_conflicts.setDisabled(False)
 			if self.stateWorker.stateSpaceFile and self.rulesAreCorrect:
 				self.computeStateSpace_button.setDisabled(False)
 			# log

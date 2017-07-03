@@ -31,7 +31,6 @@ class ImportWorker(QtCore.QObject):
 
 	def analyseModel(self):
 		if self.modelUpdated():
-			print 'nochange'
 			rules, self.init_state, rates = Import.import_rules(self.model.toPlainText())
 			if len(rules) != len(rates):
 				self.notEnoughRates.emit()

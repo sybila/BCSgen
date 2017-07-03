@@ -1,9 +1,4 @@
 from PyQt4 import QtGui, QtCore
-import sys
-import os.path
-
-sys.path.append(os.path.abspath('../../Core/'))
-import Implicit_reaction_network_generator as Implicit
 
 """
 Class AnalysisWorker
@@ -28,13 +23,6 @@ class AnalysisWorker(QtCore.QObject):
 		self.TheWorker = QtCore.QThread()
 		self.moveToThread(self.TheWorker)
 		self.TheWorker.start()
-
-	def compute_conflicts(self):
-		self.network, state, networkStatusOK, self.message = Implicit.initializeNetwork(str(self.modelFile.toPlainText()))
-		if networkStatusOK:
-			self.conflicts.emit()
-		else:
-			self.noConflicts.emit()
 
 	def compute_reach(self):
 		self.satisfyingStates = filter(lambda state: (self.toBeReached <= state).all(), self.stateWorker.states)
