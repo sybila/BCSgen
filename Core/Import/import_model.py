@@ -3,8 +3,7 @@ import copy
 import re
 import os
 sys.path.append(os.path.abspath('../'))
-import Interpreter_of_BCSL as BCSL
-import State_space_generator as Gen
+import Explicit_reaction_network_generator as Explicit
 import json
 import numpy as np
 import subprocess
@@ -14,13 +13,67 @@ parserPath = sys.argv[-1]
 sys.path.append(os.path.abspath(parserPath))
 from RuleParser import *
 
+#####################################################################
+
 class Rule():
 	def __init__(self, index, text):
 		self.index = index
 		self.text = text.split("@")[0]
-		if len(text.split("@")) > 1:
-			self.rate = text.split("@")[1]
 		self.length = len(text)
+
+"""
+Cleans rule (string) from steichiometry by multiplying appropriate agent
+:param rule: given rule in string form
+:return: rule without steichiometry
+"""
+def remove_steichiometry(rule):
+	new_rule = []
+	splitted_rule = rule.split(" ")
+	for i in range(len(splitted_rule) - 1):
+		new_rule.append(multiply_string(splitted_rule[i], splitted_rule[i + 1]))
+	new_rule.append(splitted_rule[len(splitted_rule) - 1])
+	return "".join(new_rule)
+
+def remove_spaces(rule):
+	splitted_rule = rule.split(" ")
+	splitted_rule = filter(None, splitted_rule)
+	return " ".join(splitted_rule)
+
+"""
+Imports agent names for initial state
+:param init_file: file containing lines number agent
+:return: initial State
+"""
+def import_initial_state(inits):
+	agents = []
+	for line in inits:
+		line = line.rstrip()
+		for i in xrange(0, int(line.split(" ")[0])):
+			agents.append(line.split(" ")[1])
+	return agents
+
+def import_rules(input_file):
+	inits, created_rules, rates = [], [], []
+
+	lines = filter(None, input_file.split("\n"))
+
+	lineNum = 0
+	for line in lines:
+		line = str(line)
+		lineNum += 1
+		if line.startswith('#') and lineNum != 1:
+			for line in lines[lineNum:]:
+				inits.append(str(line))
+			break
+		elif not line.startswith('#') and not line.isspace():
+			rule = line.split("@")
+			if len(rule) > 1:
+				rates.append(rule[1])
+			rule = rule[0]
+			rule = remove_spaces(rule)			# maybe not needed?
+			rule = remove_steichiometry(rule)	# maybe not needed?
+			created_rules.append(Rule(lineNum, rule))
+	return created_rules, import_initial_state(inits), rates
 
 def getPositionOfRule(index, rules):
 	return sum(map(lambda rule: rule.length + 1, rules[:index])) + 8
@@ -36,7 +89,13 @@ def createMessage(unexpected, expected):
 	else:
 		return "Syntax error: unexpected end of line."
 
-def verifyResults(results, rules):
+def verifyRules(rules):
+
+	# here goes new parser version
+	results = []
+	for rule in rules:
+		results.append(parseEquations(rule.text))
+
 	for i in range(len(results)):
 		result = json.loads(results[i])
 		if "error" in result:
@@ -48,28 +107,16 @@ def verifyResults(results, rules):
 				unexpected = result["unexpected"]
 				end = start + len(result["unexpected"])
 			message = createMessage(unexpected, result["expected"])
-			return False, [start, end, message]
-	return True, []
+			return [start, end, message], False
 
-def analyseRules(rules):
-	rules = str(rules).split("\n")
+	return [], True
 
-	cleanRules = []
-	for i in range(len(rules) - 1):
-		if rules[i + 1].startswith('# initial state'):
-			break
-		elif rules[i + 1]:
-			cleanRules.append(Rule(i + 1, rules[i + 1]))
+def computeReactions(rules, rates):
+	reactionGenerator = Explicit.Compute()
+	reactions, rates = reactionGenerator.computeReactions(map(lambda rule: rule.text, rules), rates)
+	return reactions, rates
 
-	results = []
-	for rule in cleanRules:
-		results.append(parseEquations(rule.text))
-
-	return verifyResults(results, cleanRules)
-
-'''
-Functions for parsing common rules (human-readable)
-'''
+########################################################################
 
 """
 Replaces all occurrences from defined substitutions for an agent
@@ -329,7 +376,7 @@ def remove_spaces(rule):
 	return " ".join(splitted_rule)
 
 def remove_rate(rule):
-	return rule.split("@")
+	return 
 
 """
 If first given string is a number, return (number - 1) multiplied second string joined by sign "+"
@@ -343,18 +390,7 @@ def multiply_string(s1, s2):
 	else:
 		return s1
 
-"""
-Cleans rule (string) from steichiometry by multiplying appropriate agent
-:param rule: given rule in string form
-:return: rule without steichiometry
-"""
-def remove_steichiometry(rule):
-	new_rule = []
-	splitted_rule = rule.split(" ")
-	for i in range(len(splitted_rule) - 1):
-		new_rule.append(multiply_string(splitted_rule[i], splitted_rule[i + 1]))
-	new_rule.append(splitted_rule[len(splitted_rule) - 1])
-	return "".join(new_rule)
+
 
 """
 Creates rule from given string
@@ -415,18 +451,7 @@ def import_substitutions(subs_file):
 			substitutions.append(line.split("=="))
 	return substitutions
 
-"""
-Imports agent names for initial state
-:param init_file: file containing lines number agent
-:return: initial State
-"""
-def import_initial_state(inits):
-	agents = []
-	for line in inits:
-		line = line.rstrip()
-		for i in xrange(0, int(line.split(" ")[0])):
-			agents.append(line.split(" ")[1])
-	return agents
+
 
 def import_initial_state_as_State(inits):
 	agents = []
@@ -435,44 +460,6 @@ def import_initial_state_as_State(inits):
 		for i in xrange(0, int(line.split(" ")[0])):
 			agents.append(create_agent(line.split(" ")[1]))
 	return BCSL.State(agents)
-
-def import_rules(input_file):
-	inits, created_rules, rates = [], [], []
-
-	lines = filter(None, input_file.split("\n"))
-
-	lineNum = 0
-	for line in lines:
-		lineNum += 1
-		if line.startswith('#') and lineNum != 1:
-			for line in lines[lineNum:]:
-				inits.append(line)
-			break
-		elif not line.startswith('#'):
-			rule = remove_rate(line)
-			if len(rule) > 1:
-				rates.append(rule[1])
-			rule = rule[0]
-			rule = remove_spaces(rule)
-			rule = remove_steichiometry(rule)
-			created_rules.append(rule)
-	return created_rules, import_initial_state(inits), rates
-
-def checkRates(input):
-	enoughRates = True
-	lines = filter(None, input.split("\n"))
-	lineNum = 0
-	for line in lines:
-		lineNum += 1
-		if line.startswith('#') and lineNum != 1:
-			break
-		elif not line.startswith('#'):
-			rule = line.split("@")
-			if len(rule) == 1:
-				enoughRates = False
-			elif not rule[1] or rule[1].isspace():
-				enoughRates = False
-	return enoughRates
 
 def parseState(state):
 	return tuple(map(int, state.split("|")))

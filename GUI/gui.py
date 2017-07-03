@@ -206,16 +206,28 @@ class MainWindow(QtGui.QMainWindow):
 
 		self.oldPlainText = self.textBox.toPlainText()
 
-		self.textBox.textChanged.connect(self.checkRules)
-		self.textBox.textChanged.connect(self.checkRates)
 
 		#########################################
 
 		self.stateWorker = StateSpaceWorker(self.textBox)
 		self.analysisWorker = AnalysisWorker(self.textBox, self.stateWorker)
 		self.simulationWorker = SimulationWorker(self.textBox)
+		self.importWorker = ImportWorker(self.textBox)
 
 		#########################################
+
+		self.importWorker.modelCorrect.connect(self.modelIsCorrect)
+		self.importWorker.syntaxErrors.connect(self.syntaxErrorsInModels)
+		self.importWorker.notEnoughRates.connect(self.cannotSimulate)
+		self.importWorker.reactionsDone.connect(self.enableSaveReactions)
+
+		self.stateWorker.taskFinished.connect(self.progressbarStatesOnFinished)
+		self.stateWorker.showMostStates.connect(self.showNumberOfStates)
+		self.stateWorker.NumOfStates.connect(self.updateNumOfStates)
+
+		#########################################
+
+		self.textBox.textChanged.connect(self.importWorker.analyseModel)
 
 		vLayout = QVBoxLayout()
 
@@ -261,11 +273,6 @@ class MainWindow(QtGui.QMainWindow):
 
 		StatesHbox.addWidget(self.progress_bar_states)
 		vLayout.addLayout(StatesHbox)
-
-		self.stateWorker.taskFinished.connect(self.progressbarStatesOnFinished)
-		self.stateWorker.showMostStates.connect(self.showNumberOfStates)
-		self.stateWorker.NumOfStates.connect(self.updateNumOfStates)
-		self.stateWorker.reactionsDone.connect(self.enableSaveReactions)
 
 		# show graph
 
@@ -616,10 +623,9 @@ class MainWindow(QtGui.QMainWindow):
 	def updateSimulationProgress(self):
 		self.progress_bar_simulation.setValue(self.progress_bar_simulation.value() + self.step)
 
-	def checkRates(self):
-		if Import.checkRates(str(self.textBox.toPlainText())):
-			if self.maxTimeEdit.text():
-				self.compute_simulation_button.setDisabled(False)
+	def cannotSimulate(self):
+		if self.maxTimeEdit.text():
+			self.compute_simulation_button.setDisabled(False)
 		else:
 			self.compute_simulation_button.setDisabled(True)
 
@@ -641,7 +647,7 @@ class MainWindow(QtGui.QMainWindow):
 			if maxTime != 1:
 				self.step = (10000/(maxTime-1))/self.simulationWorker.numberOfRuns
 			self.simulationWorker.max_time = maxTime
-			if Import.checkRates(str(self.textBox.toPlainText())):
+			if self.importWorker.enoughRates:
 				self.compute_simulation_button.setDisabled(False)
 		else:
 			self.compute_simulation_button.setDisabled(True)
@@ -656,33 +662,48 @@ class MainWindow(QtGui.QMainWindow):
 			logInfo = time.ctime() + " ~ Simulation interrupted.\n\n"
 			self.saveToLog(DELIMITER + logInfo)
 
-	def checkRules(self):
+	def clearErrorFormat(self):
 		noErroFormat = QtGui.QTextCharFormat()
 		noErroFormat.setUnderlineStyle(QTextCharFormat.NoUnderline)
 
-		if self.oldPlainText != self.textBox.toPlainText():
-			self.oldPlainText = self.textBox.toPlainText()
-			self.statusBar().clearMessage()
-			self.rulesAreCorrect, error = Import.analyseRules(self.textBox.toPlainText())
-			self.cursor = self.textBox.textCursor()
-			self.cursor.setPosition(QTextCursor.Start)
-			self.cursor.movePosition(QTextCursor.End, 1)
-			self.cursor.mergeCharFormat(noErroFormat)
+		self.cursor.setPosition(QTextCursor.Start)
+		self.cursor.movePosition(QTextCursor.End, 1)
+		self.cursor.mergeCharFormat(noErroFormat)
 
-			if not self.rulesAreCorrect:
-				errorFormat = QtGui.QTextCharFormat()
-				errorFormat.setUnderlineStyle(QtGui.QTextCharFormat.WaveUnderline)
-				errorFormat.setUnderlineColor(QtGui.QColor("red"))
+	def modelIsCorrect(self):
+		self.rulesAreCorrect = self.importWorker.isOK
+		if self.stateWorker.stateSpaceFile:
+			self.computeStateSpace_button.setDisabled(False)
 
-				self.cursor.setPosition(error[0])
-				for i in range(error[0], error[1]):
-					self.cursor.movePosition(QtGui.QTextCursor.NextCharacter, 1)
-				self.cursor.mergeCharFormat(errorFormat)
+		self.simulationWorker.reactions = self.importWorker.reactions
+		self.simulationWorker.initialState = self.importWorker.init_state
+		self.simulationWorker.rates = self.importWorker.rates
 
-				self.statusBar().showMessage(self.tr(error[2]))
-				self.computeStateSpace_button.setDisabled(True)
-			elif self.stateWorker.stateSpaceFile:
-				self.computeStateSpace_button.setDisabled(False)
+		self.stateWorker.reactions = self.importWorker.reactions
+		self.stateWorker.initialState = self.importWorker.init_state
+
+		self.cursor = self.textBox.textCursor()
+		self.clearErrorFormat()
+
+	def syntaxErrorsInModels(self):
+		errorFormat = QtGui.QTextCharFormat()
+		errorFormat.setUnderlineStyle(QtGui.QTextCharFormat.WaveUnderline)
+		errorFormat.setUnderlineColor(QtGui.QColor("red"))
+
+		self.statusBar().clearMessage()
+		error = self.importWorker.message
+		
+		self.rulesAreCorrect = self.importWorker.isOK
+		self.cursor = self.textBox.textCursor()
+		self.clearErrorFormat()
+
+		self.cursor.setPosition(error[0])
+		for i in range(error[0], error[1]):
+			self.cursor.movePosition(QtGui.QTextCursor.NextCharacter, 1)
+		self.cursor.mergeCharFormat(errorFormat)
+
+		self.statusBar().showMessage(self.tr(error[2]))
+		self.computeStateSpace_button.setDisabled(True)
 
 	def setCustomFontSize(self):
 		self.fontSize = FontSize(self)#, self.textBox.fontPointSize())
@@ -957,7 +978,7 @@ class MainWindow(QtGui.QMainWindow):
 			if not os.path.splitext(str(file))[1]:
 				file = str(file) + ".txt"
 			f = open(file,'w')
-			f.write("\n".join(self.stateWorker.reactions))
+			f.write("\n".join(self.importWorker.reactions))
 			f.close()
 			# log
 			logInfo = time.ctime() + " ~ Exported reactions to file:\n\n"

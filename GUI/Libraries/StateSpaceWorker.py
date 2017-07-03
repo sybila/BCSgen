@@ -17,7 +17,6 @@ class StateSpaceWorker(QtCore.QObject):
 	taskFinished = QtCore.pyqtSignal()
 	showMostStates = QtCore.pyqtSignal()
 	NumOfStates = QtCore.pyqtSignal()
-	reactionsDone = QtCore.pyqtSignal()
 
 	def __init__(self, model, parent=None):
 		QtCore.QObject.__init__(self, parent)
@@ -32,19 +31,15 @@ class StateSpaceWorker(QtCore.QObject):
 		self.uniqueAgents = None
 		self.states = None
 		self.edges = None
-		self.initialState = None
+		self.reactions = []
+		self.initialState = []
 		
 		self.TheWorker = QtCore.QThread()
 		self.moveToThread(self.TheWorker)
 		self.TheWorker.start()
 
 	def computeStateSpace(self):
-		rules, initialState, rates = Import.import_rules(str(self.modelFile.toPlainText()))
-		reactionGenerator = Explicit.Compute()
-		self.reactions, rates = reactionGenerator.computeReactions(rules)
-		self.reactionsDone.emit()
-
-		initialState = Explicit.sortInitialState(initialState)
+		initialState = Explicit.sortInitialState(self.initialState)
 		self.VN = Gen.createVectorNetwork(self.reactions, initialState)
 		bound = self.VN.getBound()
 

@@ -33,16 +33,16 @@ class SimulationWorker(QtCore.QObject):
 		self.numberOfRuns = 1
 		self.useInterpolation = False
 		self.useDeterministic = False
+		self.reactions = []
+		self.initialState = []
+		self.rates = []
 
 		self.TheWorker = QtCore.QThread()
 		self.moveToThread(self.TheWorker)
 		self.TheWorker.start()
 
 	def simulate(self):
-		rules, initialState, rates = Import.import_rules(str(self.modelFile.toPlainText()))
-		reactionGenerator = Explicit.Compute()
-		reactions, rates = reactionGenerator.computeReactions(rules, rates)
-		VN = Gen.createVectorNetwork(reactions, initialState)
+		VN = Gen.createVectorNetwork(self.reactions, self.initialState)
 
 		self.translations = VN.Translations
 		if self.useInterpolation:
