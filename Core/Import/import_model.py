@@ -138,6 +138,9 @@ def computeReactions(rules, rates):
 	return reactions, rates
 
 ########################################################################
+"""
+Ground forms translation of rules
+"""
 
 """
 Replaces all occurrences from defined substitutions for an agent

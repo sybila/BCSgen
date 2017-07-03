@@ -218,6 +218,7 @@ class MainWindow(QtGui.QMainWindow):
 
 		self.importWorker.modelCorrect.connect(self.modelIsCorrect)
 		self.importWorker.syntaxErrors.connect(self.syntaxErrorsInModels)
+		self.importWorker.hasEnoughRates.connect(self.ableToSimulate)
 		self.importWorker.notEnoughRates.connect(self.cannotSimulate)
 		self.importWorker.reactionsDone.connect(self.enableSaveReactions)
 
@@ -624,6 +625,9 @@ class MainWindow(QtGui.QMainWindow):
 		self.progress_bar_simulation.setValue(self.progress_bar_simulation.value() + self.step)
 
 	def cannotSimulate(self):
+		self.compute_simulation_button.setDisabled(True)
+
+	def ableToSimulate(self):
 		if self.maxTimeEdit.text():
 			self.compute_simulation_button.setDisabled(False)
 		else:

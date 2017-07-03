@@ -9,6 +9,7 @@ import Import as Import
 class ImportWorker(QtCore.QObject):
 	modelCorrect = QtCore.pyqtSignal()
 	syntaxErrors = QtCore.pyqtSignal()
+	hasEnoughRates = QtCore.pyqtSignal()
 	notEnoughRates = QtCore.pyqtSignal()
 	reactionsDone = QtCore.pyqtSignal()
 
@@ -36,6 +37,7 @@ class ImportWorker(QtCore.QObject):
 				self.notEnoughRates.emit()
 				self.enoughRates = False
 			else:
+				self.hasEnoughRates.emit()
 				self.enoughRates = True
 
 			# would be fine to check initial state too
