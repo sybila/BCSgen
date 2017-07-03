@@ -1074,6 +1074,22 @@ class MainWindow(QtGui.QMainWindow):
 		file.write(text)
 		file.close()
 
+def removeFiles():
+	try:
+		os.remove("graphReach.html")
+	except OSError:
+		pass
+
+	try:
+		os.remove("graph.html")
+	except OSError:
+		pass
+
+	try:
+		os.remove("graph.svg")
+	except OSError:
+		pass
+
 def handleIntSignal(signum, frame):
 	"""Handler for the SIGINT signal.
 	sends Exit Code Number 130 'Script terminated by Control-C' 
@@ -1110,12 +1126,8 @@ main.setWindowTitle('BCSgen')
 main.show()
 
 app.exec_()
-try:
-	os.remove("graphReach.html")
-	os.remove("graph.html")
-	os.remove("graph.svg")
-except OSError:
-	pass
+
+removeFiles()
 
 main.quitThreads()
 
