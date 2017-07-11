@@ -23,6 +23,12 @@ class Rule():
 		self.text = text.split("@")[0]
 		self.length = length
 
+	def __repr__(self):
+		return str(self.index) + " -- " + self.text
+
+	def __str__(self):
+		return self.__repr__()
+
 """
 If first given string is a number, return (number - 1) multiplied second string joined by sign "+"
 :param s1: first string
@@ -143,6 +149,11 @@ Ground forms translation of rules
 def preprocessRules(rules):
 	rulesOK = True
 	message = []
+
+	# remove variable
+	# remove nested ::
+	# allow complex names ? (another part of model definition, could include parameters)
+
 	return rules, message, rulesOK
 
 """
