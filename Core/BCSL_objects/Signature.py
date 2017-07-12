@@ -7,7 +7,7 @@ class AtomicSignature:
 		return str(self)
 
 	def __str__(self):
-		return "Sigma(" + self.name + ") = {" + ",".join(map(str, self.states)) "}"
+		return "Sigma(" + self.name + ") = {" + ",".join(map(str, self.states)) + "}"
 
 	def __lt__(self, other):
 		return str(self) < str(other)
@@ -21,7 +21,7 @@ class StructureSignature:
 		return str(self)
 
 	def __str__(self):
-		return "Sigma(" + self.name + ") = {" + ",".join(map(str, self.atomic_names)) "}"
+		return "Sigma(" + self.name + ") = {" + ",".join(map(str, self.atomic_names)) + "}"
 
 	def __lt__(self, other):
 		return str(self) < str(other)

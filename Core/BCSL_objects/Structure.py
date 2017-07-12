@@ -14,3 +14,6 @@ class StructureAgent:
 
 	def __eq__(self, other):
 		return self.name == other.name and self.composition == other.composition
+
+	def __hash__(self):
+		return hash(str(self))

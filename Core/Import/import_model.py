@@ -10,6 +10,7 @@ import threading
 sys.path.append(os.path.abspath('../'))
 import Explicit_reaction_network_generator as Explicit
 import State_space_generator as Gen
+import BCSL_objects as BCSL
 
 parserPath = sys.argv[-1]
 sys.path.append(os.path.abspath(parserPath))
@@ -146,9 +147,14 @@ def computeReactions(rules, rates):
 Ground forms translation of rules
 """
 
-def preprocessRules(rules):
+def preprocessRules(rules, initial_state):
 	rulesOK = True
 	message = []
+
+	createdRules = BCSL.createRules(rules, initial_state)
+	for rule in createdRules:
+		print "---------------------"
+		print rule
 
 	# remove variable
 	# remove nested ::

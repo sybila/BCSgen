@@ -45,3 +45,11 @@ GUI/Libraries/StateSpaceWorker.pyc
 GUI/Libraries/__init__.pyc
 GUI/session.log
 GUI/Libraries/ImportWorker.pyc
+Core/BCSL_objects/Atomic.pyc
+Core/BCSL_objects/Complex.pyc
+Core/BCSL_objects/Reaction.pyc
+Core/BCSL_objects/Rule.pyc
+Core/BCSL_objects/Semantic_Function.pyc
+Core/BCSL_objects/Signature.pyc
+Core/BCSL_objects/Structure.pyc
+Core/BCSL_objects/__init__.pyc

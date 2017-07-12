@@ -14,3 +14,6 @@ class AtomicAgent:
 
 	def __eq__(self, other):
 		return self.name == other.name #and self.state == other.state
+
+	def __hash__(self):
+		return hash(str(self))

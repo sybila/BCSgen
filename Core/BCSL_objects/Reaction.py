@@ -8,7 +8,7 @@ class Rule:
 
 	def __str__(self):
 		return "seq = [" + ",".join(map(str, self.seq)) + "]" + "\n" +\
-			   "I = " + str(self.I) + "\n" +\
+			   "I = " + str(self.I) + "\n"
 			   
 	def __lt__(self, other):
 		return str(self) < str(other)
