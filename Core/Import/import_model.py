@@ -152,9 +152,9 @@ def preprocessRules(rules, initial_state):
 	message = []
 
 	createdRules = BCSL.createRules(rules, initial_state)
-	for rule in createdRules:
-		print "---------------------"
-		print rule
+	#for rule in createdRules:
+	#	print "---------------------"
+	#	print rule
 
 	# remove variable
 	# remove nested ::

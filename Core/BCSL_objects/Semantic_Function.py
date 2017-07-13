@@ -4,10 +4,62 @@ from Structure import *
 from Atomic import *
 from Signature import *
 
-def obtainSignatureNames(rules, initialState):
-	# this is quite complicated and has to be solved !!!
-	# we need both signatures (dicts) + a set of atomic names
-	return ["S"]
+def splitComplex(complex):
+	splitted_complex = complex.split("::")
+	sequence = splitted_complex[0].split(".")
+	return sequence
+
+def appendToAtomicSignature(agent, atomicSignatures, names):
+	parts = agent.split("{")
+	names.add(parts[0])
+	if parts[0] in atomicSignatures.keys():
+		atomicSignatures[parts[0]] |= set(parts[1][:-1])
+	else:
+		atomicSignatures[parts[0]] = set(parts[1][:-1])
+	return atomicSignatures, names
+
+def appendToStructureSignature(agent, structureSignatures, atomicSignatures, names):
+	parts = agent.split("(")
+	names.add(parts[0])
+	atoms = parts[1][:-1].split(",")
+	for atom in atoms:
+		atomicSignatures, names = appendToAtomicSignature(atom, atomicSignatures, names)
+	atomNames = set(map(lambda atom: atom.split("{")[0], atoms))
+	if parts[0] in structureSignatures.keys():
+		structureSignatures[parts[0]] |= atomNames
+	else:
+		structureSignatures[parts[0]] = atomNames
+	return structureSignatures, atomicSignatures, names
+
+def processAgents(agents):
+	atomicSignatures = dict()
+	structureSignatures = dict()
+	names = set()
+	for agent in agents:
+		if "(" in agent:
+			structureSignatures, atomicSignatures, names = \
+				appendToStructureSignature(agent, structureSignatures, atomicSignatures, names)
+		elif "{" in agent:
+			atomicSignatures, names = appendToAtomicSignature(agent, atomicSignatures, names)
+		else:
+			names.add(agent)
+
+	names = names - set(atomicSignatures.keys()) - set(structureSignatures.keys())
+	for name in names:
+		structureSignatures[name] = set()
+	return atomicSignatures, structureSignatures
+
+def obtainSignatures(rules, initialState):
+	mixture = []
+	for rule in rules:
+		splitted_rule = rule.text.split("=>")
+		lhs = splitted_rule[0].split("+")
+		rhs = splitted_rule[1].split("+")
+		mixture += lhs + rhs
+	mixture = set(mixture + initialState)
+	mixture = set(sum(map(splitComplex, mixture), []))
+	atomicSignatures, structureSignatures = processAgents(mixture)
+	return atomicSignatures, structureSignatures, atomicSignatures.keys()
 
 def getIndexmap(sequences):
 	number = 0
@@ -18,7 +70,6 @@ def getIndexmap(sequences):
 	return indexMap
 
 def getIndices(lhs, maximum):
-	print lhs, maximum
 	indices = []
 	rhs = maximum - lhs
 	if lhs >= rhs:
@@ -33,31 +84,33 @@ def getIndices(lhs, maximum):
 
 def createRules(rules, initialState):
 	createdRules = []
-	atomicSignatures = obtainSignatureNames(rules, initialState)
+	atomicSignatures, structureSignatures, atomicNames = obtainSignatures(rules, initialState)
+	print "AA", atomicSignatures
+	print "SA", structureSignatures
+	print "names", atomicNames
 	for rule in rules:
 		splitted_rule = rule.text.split("=>")
 		lhs = splitted_rule[0].split("+")
 		rhs = splitted_rule[1].split("+")
 		I = len(lhs) - 1
-		chi = createComplexes(lhs + rhs, atomicSignatures)
+		chi = createComplexes(lhs + rhs, atomicNames)
 		sequences = map(lambda complex: complex.sequence, chi)
 		omega = sum(sequences, [])
-		print omega
 		indexMap = getIndexmap(sequences)
 		indices = getIndices(indexMap[I], len(omega) - 1)
 		createdRules.append(Rule(chi, omega, I, indexMap, indices))
-	return createdRules
+	return createdRules, atomicSignatures, structureSignatures
 
-def createComplexes(complexes, atomicSignatures):
+def createComplexes(complexes, atomicNames):
 	createdComplexes = []
 	for complex in complexes:
 		splitted_complex = complex.split("::")
 		sequence = splitted_complex[0].split(".")
-		agents = createAgents(sequence, atomicSignatures)
+		agents = createAgents(sequence, atomicNames)
 		createdComplexes.append(Complex(agents, splitted_complex[1]))
 	return createdComplexes
 
-def createAgents(sequence, atomicSignatures):
+def createAgents(sequence, atomicNames):
 	createdAgents = []
 	for agent in sequence:
 		if "(" in agent:
@@ -65,7 +118,7 @@ def createAgents(sequence, atomicSignatures):
 		elif "{" in agent:
 			createdAgents.append(createAtomicAgent(agent))
 		else:
-			if agent in atomicSignatures:
+			if agent in atomicNames:
 				createdAgents.append(AtomicAgent(agent, "_"))
 			else:
 				createdAgents.append(StructureAgent(agent, set()))
