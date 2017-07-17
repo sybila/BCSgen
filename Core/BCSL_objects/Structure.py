@@ -17,3 +17,6 @@ class StructureAgent:
 
 	def __hash__(self):
 		return hash(str(self))
+
+	def getAtomicNames(self):
+		return set(map(lambda atomic: atomic.name, self.sequence))
