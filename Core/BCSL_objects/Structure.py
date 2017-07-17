@@ -1,4 +1,4 @@
-class StructureAgent:
+class StructureAgent(object):
 	def __init__(self, name, composition):
 		self.name = name
 		self.composition = composition
@@ -19,4 +19,11 @@ class StructureAgent:
 		return hash(str(self))
 
 	def getAtomicNames(self):
-		return set(map(lambda atomic: atomic.name, self.sequence))
+		return set(map(lambda atomic: atomic.name, self.composition))
+
+	def exceptTheseNames(self, names):
+		reducedComposition = set()
+		for agent in self.composition:
+			if agent.name not in names:
+				reducedComposition.add(agent)
+		return reducedComposition

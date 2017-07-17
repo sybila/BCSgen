@@ -85,9 +85,6 @@ def getIndices(lhs, maximum):
 def createRules(rules, initialState):
 	createdRules = []
 	atomicSignatures, structureSignatures, atomicNames = obtainSignatures(rules, initialState)
-	print "AA", atomicSignatures
-	print "SA", structureSignatures
-	print "names", atomicNames
 	for rule in rules:
 		splitted_rule = rule.text.split("=>")
 		lhs = splitted_rule[0].split("+")

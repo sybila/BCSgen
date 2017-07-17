@@ -1,4 +1,4 @@
-class AtomicAgent:
+class AtomicAgent(object):
 	def __init__(self, name, state):
 		self.name = name
 		self.state = state

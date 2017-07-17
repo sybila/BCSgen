@@ -48,6 +48,7 @@ class ImportWorker(QtCore.QObject):
 				rules, self.message, rulesOK = Import.preprocessRules(rules, self.init_state)
 				if rulesOK:
 					self.reactions, self.rates = Import.computeReactions(rules, rates)
+					print 'old', len(self.reactions)
 					self.reactionsDone.emit()
 					self.modelCorrect.emit()
 				else:

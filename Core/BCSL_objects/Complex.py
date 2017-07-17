@@ -1,4 +1,4 @@
-class Complex:
+class Complex(object):
 	def __init__(self, sequence, compartment):
 		self.sequence = sequence
 		self.compartment = compartment

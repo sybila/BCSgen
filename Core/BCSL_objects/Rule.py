@@ -1,9 +1,9 @@
-class Rule:
+class Rule(object):
 	def __init__(self, chi, omega, I, indexMap, Indices):
 		self.chi = chi
 		self.omega = omega
 		self.I = I 					# last index on lhs
-		self.indexMap = indexMap
+		self.indexMap = [-1] + indexMap
 		self.Indices = Indices
 
 	def __repr__(self):

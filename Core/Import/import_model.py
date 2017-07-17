@@ -151,10 +151,14 @@ def preprocessRules(rules, initial_state):
 	rulesOK = True
 	message = []
 
-	createdRules = BCSL.createRules(rules, initial_state)
+	createdRules, atomicSignatures, structureSignatures = BCSL.createRules(rules, initial_state)
+	#print "AA", atomicSignatures
+	#print "SA", structureSignatures
 	#for rule in createdRules:
 	#	print "---------------------"
 	#	print rule
+
+	BCSL.createReactions(createdRules, atomicSignatures, structureSignatures)
 
 	# remove variable
 	# remove nested ::

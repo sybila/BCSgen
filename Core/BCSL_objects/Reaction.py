@@ -1,4 +1,4 @@
-class Rule:
+class Reaction(object):
 	def __init__(self, seq, I):
 		self.seq = seq
 		self.I = I
@@ -7,8 +7,11 @@ class Rule:
 		return str(self)
 
 	def __str__(self):
-		return "seq = [" + ",".join(map(str, self.seq)) + "]" + "\n" +\
-			   "I = " + str(self.I) + "\n"
+		return " + ".join(map(str, self.seq[0:self.I + 1])) + " => " +\
+				" + ".join(map(str, self.seq[self.I + 1:len(self.seq)]))
 			   
 	def __lt__(self, other):
 		return str(self) < str(other)
+
+	def __eq__(self, other):
+		return self.seq == other.seq and self.I == other.I
