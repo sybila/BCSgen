@@ -54,14 +54,14 @@ def indicesGroundForm(omega, Indices, atomicSignatures, structureSignatures):
 				nones = [None] * len(gf)
 				results.append(set(zip(gf, nones))) # (AA, None)
 			else:
-				results.append(pairAtomicsGroundForm(omega[i], omega[j], atomicSignatures))# (AA, AA)
+				results.append(pairAtomicsGroundForm(omega[i], omega[j], atomicSignatures)) # (AA, AA)
 		else:
 			if j is None:
 				gf = structureGroundForm(omega[i], structureSignatures[omega[i].name], atomicSignatures)
 				nones = [None] * len(gf)
 				results.append(set(zip(gf, nones))) # (SA, None)
 			else:
-				results.append(pairStructuresGroundForm(omega[i], omega[j], atomicSignatures, structureSignatures))# (SA, SA)
+				results.append(pairStructuresGroundForm(omega[i], omega[j], atomicSignatures, structureSignatures)) # (SA, SA)
 	return results
 
 def ruleGroundForm(rule, atomicSignatures, structureSignatures):

@@ -99,6 +99,7 @@ def createRules(rules, initialState):
 	return createdRules, atomicSignatures, structureSignatures
 
 def createComplexes(complexes, atomicNames):
+	complexes = filter(None, complexes)
 	createdComplexes = []
 	for complex in complexes:
 		splitted_complex = complex.split("::")
