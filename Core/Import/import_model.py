@@ -158,7 +158,10 @@ def preprocessRules(rules, initial_state):
 	#	print "---------------------"
 	#	print rule
 
-	BCSL.createReactions(createdRules, atomicSignatures, structureSignatures)
+	reactions = BCSL.createReactions(createdRules, atomicSignatures, structureSignatures)
+	#print 'new', len(reactions)
+	#for r in reactions:
+	#	print r
 
 	# remove variable
 	# remove nested ::

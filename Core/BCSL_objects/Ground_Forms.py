@@ -39,29 +39,28 @@ def containsSameNames(agent1_origin, agent1_grounded, agent2_origin, agent2_grou
 def indicesGroundForm(omega, Indices, atomicSignatures, structureSignatures):
 	results = []
 	for (i, j) in Indices:
-		#print "--------------"
-		#print 'next', i, j
 		if i is None:
 			if type(omega[j]) is AtomicAgent:
-				print "None"
-				return # (None, AA)
+				gf = atomicGroundForm(omega[j], atomicSignatures[omega[j].name])
+				nones = [None] * len(gf)
+				results.append(set(zip(nones, gf))) # (None, AA)
 			else:
-				print "None"
-				return # (None, SA)
+				gf = structureGroundForm(omega[j], structureSignatures[omega[j].name], atomicSignatures)
+				nones = [None] * len(gf)
+				results.append(set(zip(nones, gf))) # (None, SA)
 		elif type(omega[i]) is AtomicAgent:
 			if j is None:
-				print "None"
-				return # (AA, None)
+				gf = atomicGroundForm(omega[i], atomicSignatures[omega[i].name])
+				nones = [None] * len(gf)
+				results.append(set(zip(gf, nones))) # (AA, None)
 			else:
-				print omega[i], omega[j]
 				results.append(pairAtomicsGroundForm(omega[i], omega[j], atomicSignatures))# (AA, AA)
 		else:
 			if j is None:
-				print "None"
-				return # (SA, None)
+				gf = structureGroundForm(omega[i], structureSignatures[omega[i].name], atomicSignatures)
+				nones = [None] * len(gf)
+				results.append(set(zip(gf, nones))) # (SA, None)
 			else:
-				#print omega[i], omega[j]
-				#print type(omega[i])
 				results.append(pairStructuresGroundForm(omega[i], omega[j], atomicSignatures, structureSignatures))# (SA, SA)
 	return results
 
@@ -78,4 +77,4 @@ def createReactions(rules, atomicSignatures, structureSignatures):
 			sequence = list(itertools.chain.from_iterable(rxn))
 			seq = [Complex(sequence[rule.indexMap[i] + 1:rule.indexMap[i + 1] + 1], rule.chi[i].compartment) for i in range(len(rule.indexMap) - 1)]
 			reactions.add(Reaction(seq, rule.I))
-	print 'new', len(reactions)
+	return reactions
