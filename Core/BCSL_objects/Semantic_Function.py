@@ -83,8 +83,8 @@ def getIndices(lhs, maximum):
 	return indices
 
 def sortInitialState(initialState, atomicNames):
-	return map(str, map(lambda item: Complex(createAgents(item.split("::")[0].split("."), atomicNames), \
-					item.split("::")[1]), initialState))
+	return map(lambda item: Complex(createAgents(item.split("::")[0].split("."), atomicNames), \
+					item.split("::")[1]), initialState)
 
 def createRules(rules, initialState):
 	createdRules = []
@@ -103,7 +103,6 @@ def createRules(rules, initialState):
 	return createdRules, atomicSignatures, structureSignatures, sortInitialState(initialState, atomicNames)
 
 def createComplexes(complexes, atomicNames):
-	#complexes = filter(None, complexes)
 	createdComplexes = []
 	for complex in complexes:
 		splitted_complex = complex.split("::")

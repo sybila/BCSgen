@@ -1,3 +1,5 @@
+import collections
+
 class Reaction(object):
 	def __init__(self, seq, I):
 		self.seq = seq
@@ -15,3 +17,6 @@ class Reaction(object):
 
 	def __eq__(self, other):
 		return self.seq == other.seq and self.I == other.I
+
+	def getCounteredSides(self):
+		return [collections.Counter(self.seq[:self.I + 1]), collections.Counter(self.seq[self.I + 1:])]

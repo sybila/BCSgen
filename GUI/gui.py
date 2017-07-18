@@ -678,11 +678,11 @@ class MainWindow(QtGui.QMainWindow):
 		if self.stateWorker.stateSpaceFile:
 			self.computeStateSpace_button.setDisabled(False)
 
-		self.simulationWorker.reactions = map(str, self.importWorker.reactions)
+		self.simulationWorker.reactions = self.importWorker.reactions
 		self.simulationWorker.originiInitialState = self.importWorker.init_state
 		self.simulationWorker.rates = self.importWorker.rates
 
-		self.stateWorker.reactions = map(str, self.importWorker.reactions)
+		self.stateWorker.reactions = self.importWorker.reactions
 		self.stateWorker.originiInitialState = self.importWorker.init_state
 
 		self.statusBar().clearMessage()

@@ -15,29 +15,17 @@ def toVector(orderedAgents, agents):
 def reactionToVector(reaction, orderedAgents):
 	return Vector_reaction(toVector(orderedAgents, reaction[0]), toVector(orderedAgents, reaction[1]))
 
-def parseEquation(equation):
-	return map(lambda side: collections.Counter(filter(None, side.split(" + "))), equation.split(" => "))
-
-def collectAgents(reaction):
-	return set(reaction[0]) | set(reaction[1])
-
 def createVectorNetwork(reactions, initialState):
-	orderedAgents = set()
-	parsedReactions = list()
-	for equation in reactions:
-		reaction = parseEquation(equation)
-		orderedAgents.update(collectAgents(reaction))
-		parsedReactions.append(reaction)
+	parsedReactions = map(lambda reaction: reaction.getCounteredSides(), reactions)
 
+	orderedAgents = set.union(*map(lambda reaction: set(reaction.seq), reactions))
 	orderedAgents.update(set(initialState))
 	orderedAgents = list(orderedAgents)
 
 	state = toVector(orderedAgents, collections.Counter(initialState))
 	vectors = map(lambda reaction: reactionToVector(reaction, orderedAgents), parsedReactions)
 
-	VN = Vector_network(tuple(state), vectors, orderedAgents)
-
-	return VN
+	return Vector_network(tuple(state), vectors, orderedAgents)
 
 """
 Creates State from given vector and ordered unique agents
@@ -71,7 +59,7 @@ def printStateSpace(states, transitions, orderedAgents, stateSpaceFile, initialS
 	for i in range(len(transitions)):
 		edges[i+1] = transitions[i].getDict()
 
-	data = {'nodes' : nodes, 'edges' : edges, 'unique' : orderedAgents, 'initial' : "|".join(map(str, initialState))}
+	data = {'nodes' : nodes, 'edges' : edges, 'unique' : map(str, orderedAgents), 'initial' : "|".join(map(str, initialState))}
 
 	with open(stateSpaceFile, 'w') as f:
 		json.dump(data, f, indent=4)

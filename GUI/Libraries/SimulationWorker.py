@@ -152,7 +152,7 @@ class SimulationWorker(QtCore.QObject):
 			return solution
 
 	def vectorizeRates(self, translations, rates):
-		translations = map(lambda trans: "'" + trans + "'", translations)
+		translations = map(lambda trans: "'" + trans + "'", map(str, translations))
 		new_rates = []
 		for rate in rates:
 			new_rate = rate
@@ -162,7 +162,7 @@ class SimulationWorker(QtCore.QObject):
 		return new_rates
 
 	def prepareRatesForSolving(self, translations, rates):
-		translations = map(lambda trans: "'" + trans + "'", translations)
+		translations = map(lambda trans: "'" + trans + "'", map(str, translations))
 		new_rates = []
 		for rate in rates:
 			new_rate = rate

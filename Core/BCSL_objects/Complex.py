@@ -17,3 +17,6 @@ class Complex(object):
 	def __eq__(self, other):
 		return self.compartment == other.compartment and \
 				collections.Counter(self.sequence) == collections.Counter(other.sequence)
+
+	def __hash__(self):
+		return hash(str(self))
