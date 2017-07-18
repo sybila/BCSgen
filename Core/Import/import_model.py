@@ -17,10 +17,10 @@ from RuleParser import *
 
 #####################################################################
 
-class Rule():
+class Rule(object):
 	def __init__(self, index, text, length):
 		self.index = index
-		self.text = text.split("@")[0]
+		self.text = text
 		self.length = length
 
 	def __repr__(self):
@@ -69,10 +69,10 @@ Imports agent names for initial state
 :param init_file: file containing lines number agent
 :return: initial State
 """
-def import_initial_state(inits):
+def improveInitialState(inits):
 	agents = []
 	for line in inits:
-		line = line.rstrip()
+		line = line.text.rstrip()
 		for i in xrange(0, int(line.split(" ")[0])):
 			agents.append(line.split(" ")[1])
 	return agents
@@ -80,28 +80,32 @@ def import_initial_state(inits):
 def import_rules(input_file):
 	inits, created_rules, rates = [], [], []
 
-	lines = filter(None, input_file.split("\n"))
-
-	lineNum = 0
-	for line in lines:
-		line = str(line)
-		lineNum += 1
-		if line.startswith('#') and lineNum != 1:
-			for line in lines[lineNum:]:
-				inits.append(str(line))
-			break
-		elif not line.startswith('#') and not line.isspace():
-			rule = line.split("@")
-			if len(rule) > 1:
-				rates.append(rule[1])
-			rule = rule[0]
-			rule = remove_spaces(rule)			# maybe not needed?
-			rule = remove_steichiometry(rule)	# maybe not needed?
-			created_rules.append(Rule(lineNum, rule, len(line)))
-	return created_rules, import_initial_state(inits), rates
+	lines = input_file.split("\n")
+	processingRules = True
+	for lineNum in range(len(lines)):
+		line = str(lines[lineNum])
+		if line:
+			if line.startswith('#') and lineNum != 0:
+				processingRules = False
+			if not line.startswith('#'):
+				if processingRules:
+					rule = line.split("@")
+					if len(rule) > 1:
+						rates.append(rule[1])
+					rule = rule[0]
+					rule = remove_spaces(rule)			# maybe not needed?
+					rule = remove_steichiometry(rule)	# maybe not needed?
+					created_rules.append(Rule(lineNum, rule, len(line)))
+				else:
+					inits.append(Rule(lineNum, line, len(line)))
+	return created_rules, inits, rates
 
 def getPositionOfRule(index, rules):
 	return sum(map(lambda rule: rule.length + 1, rules[:index])) + 8
+
+def getPositionOfInit(index, inits, rules):
+	return sum(map(lambda init: init.length + 1, inits[:index])) + 8 \
+			+ 17 + sum(map(lambda rule: rule.length + 1, rules))
 
 def createMessage(unexpected, expected):
 	if unexpected:
@@ -114,7 +118,7 @@ def createMessage(unexpected, expected):
 	else:
 		return "Syntax error: unexpected end of line."
 
-def verifyRules(rules):
+def parseModel(rules, inits):
 
 	# here goes new parser version
 	results = []
@@ -134,17 +138,40 @@ def verifyRules(rules):
 			message = createMessage(unexpected, result["expected"])
 			return [start, end, message], False
 
+	results = []
+	for init in inits:
+		results.append(parseEquations(init.text + " =>"))
+
+	for i in range(len(results)):
+		result = json.loads(results[i])
+		if "error" in result:
+			start = int(result["start"]) + getPositionOfInit(i, inits, rules)
+			if result["unexpected"] == "end of input":
+				unexpected = None
+				end = start
+			else:
+				unexpected = result["unexpected"]
+				end = start + len(result["unexpected"])
+			message = createMessage(unexpected, result["expected"])
+			return [start, end, message], False
+
 	return [], True
 
-########################################################################
 """
 Ground forms translation of rules
 """
 
 def preprocessRules(rules, initial_state, rates):
-	createdRules, atomicSignatures, structureSignatures = BCSL.createRules(rules, initial_state)
+	inits = improveInitialState(initial_state)
+	createdRules, atomicSignatures, structureSignatures, inits = BCSL.createRules(rules, inits)
 	reactions, rates = BCSL.createReactions(createdRules, atomicSignatures, structureSignatures, rates)
-	return reactions, rates
+	return reactions, rates, inits
+
+########################################################################
+
+"""
+Removal of syntactic sugar
+"""
 
 """
 Replaces all occurrences from defined substitutions for an agent

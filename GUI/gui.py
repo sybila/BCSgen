@@ -679,11 +679,11 @@ class MainWindow(QtGui.QMainWindow):
 			self.computeStateSpace_button.setDisabled(False)
 
 		self.simulationWorker.reactions = map(str, self.importWorker.reactions)
-		self.simulationWorker.initialState = self.importWorker.init_state
+		self.simulationWorker.originiInitialState = self.importWorker.init_state
 		self.simulationWorker.rates = self.importWorker.rates
 
 		self.stateWorker.reactions = map(str, self.importWorker.reactions)
-		self.stateWorker.initialState = self.importWorker.init_state
+		self.stateWorker.originiInitialState = self.importWorker.init_state
 
 		self.statusBar().clearMessage()
 		self.cursor = self.textBox.textCursor()

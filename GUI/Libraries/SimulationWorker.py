@@ -11,7 +11,6 @@ import sympy
 
 sys.path.append(os.path.abspath('../../Core/'))
 import Import as Import
-import Explicit_reaction_network_generator as Explicit
 import State_space_generator as Gen
 
 class SimulationWorker(QtCore.QObject):
@@ -36,12 +35,14 @@ class SimulationWorker(QtCore.QObject):
 		self.reactions = []
 		self.initialState = []
 		self.rates = []
+		self.originiInitialState = []
 
 		self.TheWorker = QtCore.QThread()
 		self.moveToThread(self.TheWorker)
 		self.TheWorker.start()
 
 	def simulate(self):
+		self.initialState = self.originiInitialState
 		VN = Gen.createVectorNetwork(self.reactions, self.initialState)
 
 		self.translations = VN.Translations

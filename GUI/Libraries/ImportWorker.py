@@ -40,12 +40,14 @@ class ImportWorker(QtCore.QObject):
 				self.hasEnoughRates.emit()
 				self.enoughRates = True
 
-			self.message, self.isOK = Import.verifyRules(rules)
+			self.message, self.isOK = Import.parseModel(rules, self.init_state)
 
 			if self.isOK:
 				# would be fine to check initial state too
 				# preprocessing of the rules goes here (semantical check + syntactic sugar removal)
-				self.reactions, self.rates = Import.preprocessRules(rules, self.init_state, rates)
+				self.reactions, self.rates, self.init_state = Import.preprocessRules(rules, self.init_state, rates)
+				#for r in self.reactions:
+				#	print r
 				self.reactionsDone.emit()
 				self.modelCorrect.emit()
 			else:

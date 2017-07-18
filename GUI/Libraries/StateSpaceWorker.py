@@ -5,7 +5,6 @@ import numpy as np
 
 sys.path.append(os.path.abspath('../../Core/'))
 import State_space_generator as Gen
-import Explicit_reaction_network_generator as Explicit
 import Import as Import
 
 """
@@ -33,14 +32,15 @@ class StateSpaceWorker(QtCore.QObject):
 		self.edges = None
 		self.reactions = []
 		self.initialState = []
+		self.originiInitialState = []
 		
 		self.TheWorker = QtCore.QThread()
 		self.moveToThread(self.TheWorker)
 		self.TheWorker.start()
 
 	def computeStateSpace(self):
-		initialState = Explicit.sortInitialState(self.initialState)
-		self.VN = Gen.createVectorNetwork(self.reactions, initialState)
+		self.initialState = self.originiInitialState
+		self.VN = Gen.createVectorNetwork(self.reactions, self.initialState)
 		bound = self.VN.getBound()
 
 		self.mostNumberOfStates = Gen.estimateNumberOfStates(bound, len(self.VN.getTranslations()))

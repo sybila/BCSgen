@@ -16,7 +16,7 @@ def reactionToVector(reaction, orderedAgents):
 	return Vector_reaction(toVector(orderedAgents, reaction[0]), toVector(orderedAgents, reaction[1]))
 
 def parseEquation(equation):
-	return map(lambda side: collections.Counter(side.split(" + ")), equation.split(" => "))
+	return map(lambda side: collections.Counter(filter(None, side.split(" + "))), equation.split(" => "))
 
 def collectAgents(reaction):
 	return set(reaction[0]) | set(reaction[1])

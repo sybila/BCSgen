@@ -82,13 +82,17 @@ def getIndices(lhs, maximum):
 			indices.append((None, i))
 	return indices
 
+def sortInitialState(initialState, atomicNames):
+	return map(str, map(lambda item: Complex(createAgents(item.split("::")[0].split("."), atomicNames), \
+					item.split("::")[1]), initialState))
+
 def createRules(rules, initialState):
 	createdRules = []
 	atomicSignatures, structureSignatures, atomicNames = obtainSignatures(rules, initialState)
 	for rule in rules:
 		splitted_rule = rule.text.split("=>")
-		lhs = splitted_rule[0].split("+")
-		rhs = splitted_rule[1].split("+")
+		lhs = filter(None, splitted_rule[0].split("+"))
+		rhs = filter(None, splitted_rule[1].split("+"))
 		I = len(lhs) - 1
 		chi = createComplexes(lhs + rhs, atomicNames)
 		sequences = map(lambda complex: complex.sequence, chi)
@@ -96,10 +100,10 @@ def createRules(rules, initialState):
 		indexMap = getIndexmap(sequences)
 		indices = getIndices(indexMap[I], len(omega) - 1)
 		createdRules.append(Rule(chi, omega, I, indexMap, indices))
-	return createdRules, atomicSignatures, structureSignatures
+	return createdRules, atomicSignatures, structureSignatures, sortInitialState(initialState, atomicNames)
 
 def createComplexes(complexes, atomicNames):
-	complexes = filter(None, complexes)
+	#complexes = filter(None, complexes)
 	createdComplexes = []
 	for complex in complexes:
 		splitted_complex = complex.split("::")

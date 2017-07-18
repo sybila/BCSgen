@@ -1,10 +1,10 @@
 # rules
-Zero::rep + X::rep => Zero::rep @ 0.05*'X::rep'
-Zero::rep + Y::rep => Zero::rep @ 0.12*'Y::rep'
-Zero::rep + Z::rep => Zero::rep @ 0.05*'Z::rep'
-Zero::rep => Zero::rep + X::rep @ 1/(1+('Z::rep'/5)**4)
-Zero::rep => Zero::rep + Y::rep @ 1/(1+('X::rep'/5)**4)
-Zero::rep => Zero::rep + Z::rep @ 1/(1+('Y::rep'/5)**4)
+X::rep => @ 0.05*'X::rep'
+Y::rep => @ 0.12*'Y::rep'
+Z::rep => @ 0.05*'Z::rep'
+ => X::rep @ 1/(1+('Z::rep'/5)**4)
+ => Y::rep @ 1/(1+('X::rep'/5)**4)
+ => Z::rep @ 1/(1+('Y::rep'/5)**4)
 
 # initial state
 1 X::rep
