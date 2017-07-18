@@ -8,7 +8,6 @@ import subprocess
 import threading
 
 sys.path.append(os.path.abspath('../'))
-import Explicit_reaction_network_generator as Explicit
 import State_space_generator as Gen
 import BCSL_objects as BCSL
 
@@ -136,11 +135,6 @@ def verifyRules(rules):
 			return [start, end, message], False
 
 	return [], True
-
-def computeReactions(rules, rates):
-	reactionGenerator = Explicit.Compute()
-	reactions, rates = reactionGenerator.computeReactions(map(lambda rule: rule.text, rules), rates)
-	return reactions, rates
 
 ########################################################################
 """
