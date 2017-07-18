@@ -48,11 +48,11 @@ Cleans rule (string) from steichiometry by multiplying appropriate agent
 """
 def remove_steichiometry(rule):
 	new_rule = []
-	splitted_rule = rule.split(" ")
+	splitted_rule = rule.text.split(" ")
 	for i in range(len(splitted_rule) - 1):
 		new_rule.append(multiply_string(splitted_rule[i], splitted_rule[i + 1]))
 	new_rule.append(splitted_rule[len(splitted_rule) - 1])
-	return "".join(new_rule)
+	return Rule(rule.index, "".join(new_rule), rule.length)
 
 """
 Removes duplicated white spaces from a string
@@ -60,9 +60,9 @@ Removes duplicated white spaces from a string
 :return: clean string
 """
 def remove_spaces(rule):
-	splitted_rule = rule.split(" ")
+	splitted_rule = rule.text.split(" ")
 	splitted_rule = filter(None, splitted_rule)
-	return " ".join(splitted_rule)
+	return Rule(rule.index, " ".join(splitted_rule), rule.length)
 
 """
 Imports agent names for initial state
@@ -93,8 +93,6 @@ def import_rules(input_file):
 					if len(rule) > 1:
 						rates.append(rule[1])
 					rule = rule[0]
-					rule = remove_spaces(rule)			# maybe not needed?
-					rule = remove_steichiometry(rule)	# maybe not needed?
 					created_rules.append(Rule(lineNum, rule, len(line)))
 				else:
 					inits.append(Rule(lineNum, line, len(line)))
@@ -163,6 +161,7 @@ Ground forms translation of rules
 
 def preprocessRules(rules, initial_state, rates):
 	inits = improveInitialState(initial_state)
+	rules = map(remove_spaces, map(remove_steichiometry, rules))
 	createdRules, atomicSignatures, structureSignatures, inits = BCSL.createRules(rules, inits)
 	reactions, rates = BCSL.createReactions(createdRules, atomicSignatures, structureSignatures, rates)
 	return reactions, rates, inits
