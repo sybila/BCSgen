@@ -794,7 +794,7 @@ class MainWindow(QtGui.QMainWindow):
 	def startReachability(self):
 		self.progress_bar_reachability.setRange(0,0)
 		checkWheterReachable = True
-		orderedAgents = self.stateWorker.uniqueAgents
+		orderedAgents = map(str, self.stateWorker.uniqueAgents)
 		vector = [0] * len(orderedAgents)
 
 		if self.checkAgentFields():
@@ -863,7 +863,7 @@ class MainWindow(QtGui.QMainWindow):
 	def addDynamicWidget(self):
 		self.resetReachIndicators()
 		self.addButton.deleteLater()
-		self.scrollLayout.addRow(FillAgentToBeFound(self.stateWorker.uniqueAgents, self))
+		self.scrollLayout.addRow(FillAgentToBeFound(map(str, self.stateWorker.uniqueAgents), self))
 
 		self.addButton = QtGui.QPushButton('+')
 		self.addButton.setMaximumWidth(25)
