@@ -7,7 +7,10 @@ class StructureAgent(object):
 		return str(self)
 
 	def __str__(self):
-		return self.name + "(" + ",".join(map(str, self.composition)) + ")"
+		if self.composition:
+			return self.name + "(" + ",".join(map(str, sorted(self.composition))) + ")"
+		else:
+			return self.name
 
 	def __lt__(self, other):
 		return str(self) < str(other)

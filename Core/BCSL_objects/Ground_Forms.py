@@ -69,12 +69,17 @@ def ruleGroundForm(rule, atomicSignatures, structureSignatures):
 	combinations = list(itertools.product(*results))
 	return map(lambda combo: zip(*combo), combinations)
 
-def createReactions(rules, atomicSignatures, structureSignatures):
-	reactions = set()
-	for rule in rules:
+def createReactions(rules, atomicSignatures, structureSignatures, inputRates):
+	if len(rules) != len(inputRates):
+		inputRates = [1] * len(rules)
+	reactions = []
+	rates = []
+	for rule, rate in zip(rules, inputRates):
 		tmpRxns = ruleGroundForm(rule, atomicSignatures, structureSignatures)
 		for rxn in tmpRxns:
 			sequence = list(itertools.chain.from_iterable(rxn))
+			sequence = filter(None, sequence)
 			seq = [Complex(sequence[rule.indexMap[i] + 1:rule.indexMap[i + 1] + 1], rule.chi[i].compartment) for i in range(len(rule.indexMap) - 1)]
-			reactions.add(Reaction(seq, rule.I))
-	return reactions
+			reactions.append(Reaction(seq, rule.I))
+			rates.append(rate)
+	return reactions, rates

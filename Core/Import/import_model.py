@@ -147,27 +147,10 @@ def computeReactions(rules, rates):
 Ground forms translation of rules
 """
 
-def preprocessRules(rules, initial_state):
-	rulesOK = True
-	message = []
-
+def preprocessRules(rules, initial_state, rates):
 	createdRules, atomicSignatures, structureSignatures = BCSL.createRules(rules, initial_state)
-	#print "AA", atomicSignatures
-	#print "SA", structureSignatures
-	#for rule in createdRules:
-	#	print "---------------------"
-	#	print rule
-
-	reactions = BCSL.createReactions(createdRules, atomicSignatures, structureSignatures)
-	#print 'new', len(reactions)
-	#for r in reactions:
-	#	print r
-
-	# remove variable
-	# remove nested ::
-	# allow complex names ? (another part of model definition, could include parameters)
-
-	return rules, message, rulesOK
+	reactions, rates = BCSL.createReactions(createdRules, atomicSignatures, structureSignatures, rates)
+	return reactions, rates
 
 """
 Replaces all occurrences from defined substitutions for an agent

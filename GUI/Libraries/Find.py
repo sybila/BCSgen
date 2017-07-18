@@ -7,12 +7,13 @@ class Find(QtGui.QDialog):
 
 		self.setWindowModality(QtCore.Qt.ApplicationModal)
 
-		StatesHbox = QHBoxLayout()
+		StatesHbox = QtGui.QHBoxLayout()
 
-		self.textLine = QLineEdit(self)
+		self.textLine = QtGui.QLineEdit(self)
 		self.textLine.setMinimumWidth(200)
 		StatesHbox.addWidget(self.textLine)
-		self.findButton = createButton(self, "Find", self.sendInfo, False)
+		self.findButton = QtGui.QPushButton("Find", self)
+		self.findButton.clicked.connect(self.sendInfo)
 		StatesHbox.addWidget(self.findButton)
 
 		self.setLayout(StatesHbox)

@@ -678,11 +678,11 @@ class MainWindow(QtGui.QMainWindow):
 		if self.stateWorker.stateSpaceFile:
 			self.computeStateSpace_button.setDisabled(False)
 
-		self.simulationWorker.reactions = self.importWorker.reactions
+		self.simulationWorker.reactions = map(str, self.importWorker.reactions)
 		self.simulationWorker.initialState = self.importWorker.init_state
 		self.simulationWorker.rates = self.importWorker.rates
 
-		self.stateWorker.reactions = self.importWorker.reactions
+		self.stateWorker.reactions = map(str, self.importWorker.reactions)
 		self.stateWorker.initialState = self.importWorker.init_state
 
 		self.statusBar().clearMessage()
@@ -978,7 +978,7 @@ class MainWindow(QtGui.QMainWindow):
 			if not os.path.splitext(str(file))[1]:
 				file = str(file) + ".txt"
 			f = open(file,'w')
-			f.write("\n".join(self.importWorker.reactions))
+			f.write("\n".join(map(str, self.importWorker.reactions)))
 			f.close()
 			# log
 			logInfo = time.ctime() + " ~ Exported reactions to file:\n\n"
