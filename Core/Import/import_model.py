@@ -165,9 +165,16 @@ Ground forms translation of rules
 """
 
 def preprocessRules(rules, initial_state, rates):
-	inits = improveInitialState(initial_state)
-	rules = map(remove_spaces, map(remove_steichiometry, rules))
-	createdRules, atomicSignatures, structureSignatures, inits = BCSL.createRules(rules, inits)
+	# print "**********rules************"
+	# for r in rules:
+	# 	print r
+	# print "----------init--------------"
+	# for i in initial_state:
+	# 	print i
+	# print "***************************"
+	#nits = improveInitialState(initial_state)
+	#rules = map(remove_spaces, map(remove_steichiometry, rules))
+	createdRules, atomicSignatures, structureSignatures, inits = BCSL.createRules(rules, initial_state)
 	reactions, rates = BCSL.createReactions(createdRules, atomicSignatures, structureSignatures, rates)
 	return reactions, rates, inits
 

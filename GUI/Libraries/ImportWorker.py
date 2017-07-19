@@ -40,7 +40,7 @@ class ImportWorker(QtCore.QObject):
 				self.hasEnoughRates.emit()
 				self.enoughRates = True
 
-			self.message, self.isOK, rulesParsed, initsParsed = Import.parseModel(rules, inits)
+			self.message, self.isOK, rules, inits = Import.parseModel(rules, inits)
 
 			if self.isOK:
 				self.reactions, self.rates, self.init_state = Import.preprocessRules(rules, inits, rates)

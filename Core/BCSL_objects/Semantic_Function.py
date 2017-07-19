@@ -4,62 +4,66 @@ from Structure import *
 from Atomic import *
 from Signature import *
 
-def splitComplex(complex):
-	splitted_complex = complex.split("::")
-	sequence = splitted_complex[0].split(".")
-	return sequence
+"""
+Static analysis for obtaining signatures
+"""
 
-def appendToAtomicSignature(agent, atomicSignatures, names):
-	parts = agent.split("{")
-	names.add(parts[0])
-	if parts[0] in atomicSignatures.keys():
-		atomicSignatures[parts[0]] |= set(parts[1][:-1])
+def appendToAtomicSignature(part, atomicSignatures, names):
+	if part['children']:
+		states = set(map(lambda state: str(state['token']), part['children']))
+		if str(part['token']) in atomicSignatures.keys():
+			atomicSignatures[str(part['token'])] |= states
+		else:
+			atomicSignatures[str(part['token'])] = states
 	else:
-		atomicSignatures[parts[0]] = set(parts[1][:-1])
+		names.add(str(part['token']))
 	return atomicSignatures, names
 
-def appendToStructureSignature(agent, structureSignatures, atomicSignatures, names):
-	parts = agent.split("(")
-	names.add(parts[0])
-	atoms = parts[1][:-1].split(",")
-	for atom in atoms:
-		atomicSignatures, names = appendToAtomicSignature(atom, atomicSignatures, names)
-	atomNames = set(map(lambda atom: atom.split("{")[0], atoms))
-	if parts[0] in structureSignatures.keys():
-		structureSignatures[parts[0]] |= atomNames
-	else:
-		structureSignatures[parts[0]] = atomNames
-	return structureSignatures, atomicSignatures, names
+def processComplex(complex, atomicSignatures, structureSignatures, names):
+	for part in complex['children']:
+		if part['type'] == 8:
+			atomicSignatures, names = appendToAtomicSignature(part, atomicSignatures, names)
+		elif part['type'] == 6:
+			if part['children']:
+				for child in part['children']:
+					atomicSignatures, names = appendToAtomicSignature(child, atomicSignatures, names)
+				atomics = set(map(lambda atomic: str(atomic['token']), part['children']))
+				if str(part['entity']['token']) in structureSignatures.keys():
+					structureSignatures[str(part['entity']['token'])] |= atomics
+				else:
+					structureSignatures[str(part['entity']['token'])] = atomics
+			else:
+				names.add(str(part['entity']['token']))
+	return atomicSignatures, structureSignatures, names
 
-def processAgents(agents):
+def processStochioAgents(agents):
 	atomicSignatures = dict()
 	structureSignatures = dict()
 	names = set()
 	for agent in agents:
-		if "(" in agent:
-			structureSignatures, atomicSignatures, names = \
-				appendToStructureSignature(agent, structureSignatures, atomicSignatures, names)
-		elif "{" in agent:
-			atomicSignatures, names = appendToAtomicSignature(agent, atomicSignatures, names)
-		else:
-			names.add(agent)
+		for ruleAgent in agent['children'][0]['children'][:-1]:
+			atomicSignatures, structureSignatures, names = \
+				processComplex(ruleAgent, atomicSignatures, structureSignatures, names)
 
 	names = names - set(atomicSignatures.keys()) - set(structureSignatures.keys())
 	for name in names:
 		structureSignatures[name] = set()
+
 	return atomicSignatures, structureSignatures
 
 def obtainSignatures(rules, initialState):
 	mixture = []
 	for rule in rules:
-		splitted_rule = rule.text.split("=>")
-		lhs = splitted_rule[0].split("+")
-		rhs = splitted_rule[1].split("+")
-		mixture += lhs + rhs
-	mixture = set(mixture + initialState)
-	mixture = set(sum(map(splitComplex, mixture), []))
-	atomicSignatures, structureSignatures = processAgents(mixture)
+		mixture += rule['children'][0]['children'][0]['children']
+		mixture += rule['children'][0]['children'][1]['children']
+	for init in initialState:
+		mixture += init['children'][0]['children'][0]['children']
+
+	atomicSignatures, structureSignatures = processStochioAgents(mixture)
 	return atomicSignatures, structureSignatures, atomicSignatures.keys()
+
+
+#######################################################################################
 
 def getIndexmap(sequences):
 	number = 0
@@ -89,6 +93,7 @@ def sortInitialState(initialState, atomicNames):
 def createRules(rules, initialState):
 	createdRules = []
 	atomicSignatures, structureSignatures, atomicNames = obtainSignatures(rules, initialState)
+	print "here we go....."
 	for rule in rules:
 		splitted_rule = rule.text.split("=>")
 		lhs = filter(None, splitted_rule[0].split("+"))
