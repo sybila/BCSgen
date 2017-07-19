@@ -27,9 +27,9 @@ Core/Explicit_reaction_network_generator/State.pyc
 Core/Explicit_reaction_network_generator/__init__.pyc
 Core/Visualisation/__init__.pyc
 Core/Visualisation/create_graph.pyc
-Core/Import/RuleParser.pyc
-Core/Import/RuleParser.py
-Core/Import/_RuleParser.so
+Core/Import/RuleParserPy.pyc
+Core/Import/RuleParserPy.py
+Core/Import/_RuleParserPy.so
 Core/Visualisation/create_reachable_graph.pyc
 GUI/Libraries/AnalysisWorker.pyc
 GUI/Libraries/DisplayConflicts.pyc

@@ -13,7 +13,7 @@ import BCSL_objects as BCSL
 
 parserPath = sys.argv[-1]
 sys.path.append(os.path.abspath(parserPath))
-from RuleParser import *
+from RuleParserPy import *
 
 #####################################################################
 
@@ -135,7 +135,7 @@ def parseModel(rules, inits):
 				unexpected = result["unexpected"]
 				end = start + len(result["unexpected"])
 			message = createMessage(unexpected, result["expected"])
-			return [start, end, message], False
+			return [start, end, message], False, [], []
 		else:
 			createdRules.append(result)
 
@@ -154,7 +154,7 @@ def parseModel(rules, inits):
 				unexpected = result["unexpected"]
 				end = start + len(result["unexpected"])
 			message = createMessage(unexpected, result["expected"])
-			return [start, end, message], False
+			return [start, end, message], False, [], []
 		else:
 			createdInits.append(result)
 
