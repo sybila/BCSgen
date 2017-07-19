@@ -21,17 +21,21 @@ def appendToAtomicSignature(part, atomicSignatures, names):
 
 def processComplex(complex, atomicSignatures, structureSignatures, names):
 	for part in complex['children']:
-		if part['type'] == 8:
-			atomicSignatures, names = appendToAtomicSignature(part, atomicSignatures, names)
-		elif part['type'] == 6:
-			if part['children']:
-				for child in part['children']:
-					atomicSignatures, names = appendToAtomicSignature(child, atomicSignatures, names)
-				atomics = set(map(lambda atomic: str(atomic['token']), part['children']))
-				if str(part['entity']['token']) in structureSignatures.keys():
-					structureSignatures[str(part['entity']['token'])] |= atomics
+		if part['children']:
+			for child in part['children']:
+				atomicSignatures, names = appendToAtomicSignature(child, atomicSignatures, names)
+			atomics = set(map(lambda atomic: str(atomic['token']), part['children']))
+			if str(part['entity']['token']) in structureSignatures.keys():
+				structureSignatures[str(part['entity']['token'])] |= atomics
+			else:
+				structureSignatures[str(part['entity']['token'])] = atomics
+		else:
+			if part['entity']['children']:
+				states = set(map(lambda state: str(state['token']), part['entity']['children']))
+				if str(part['entity']['token']) in atomicSignatures.keys():
+					atomicSignatures[str(part['entity']['token'])] |= states
 				else:
-					structureSignatures[str(part['entity']['token'])] = atomics
+					atomicSignatures[str(part['entity']['token'])] = states
 			else:
 				names.add(str(part['entity']['token']))
 	return atomicSignatures, structureSignatures, names
@@ -52,6 +56,7 @@ def processStochioAgents(agents):
 	return atomicSignatures, structureSignatures
 
 def obtainSignatures(rules, initialState):
+	# atomics not in partial composition do not obtain their states
 	mixture = []
 	for rule in rules:
 		mixture += rule['children'][0]['children'][0]['children']
@@ -65,39 +70,17 @@ def obtainSignatures(rules, initialState):
 
 #######################################################################################
 
-def getIndexmap(sequences):
-	number = 0
-	indexMap = []
-	for seq in sequences:
-		number += len(seq)
-		indexMap.append(number - 1)
-	return indexMap
-
-def getIndices(lhs, maximum):
-	indices = []
-	rhs = maximum - lhs
-	if lhs >= rhs:
-		indices += zip(range(rhs), range(lhs + 1, maximum + 1))
-		for i in range(rhs, lhs + 1):
-			indices.append((i, None))
-	else:
-		indices += zip(range(lhs + 1), range(lhs + 1, lhs*2 + 2))
-		for i in range(lhs*2 + 2, maximum + 1):
-			indices.append((None, i))
-	return indices
-
-def sortInitialState(initialState, atomicNames):
-	return map(lambda item: Complex(createAgents(item.split("::")[0].split("."), atomicNames), \
-					item.split("::")[1]), initialState)
+"""
+Creating Rule objects from parsed tree
+"""
 
 def createRules(rules, initialState):
 	createdRules = []
 	atomicSignatures, structureSignatures, atomicNames = obtainSignatures(rules, initialState)
-	print "here we go....."
 	for rule in rules:
-		splitted_rule = rule.text.split("=>")
-		lhs = filter(None, splitted_rule[0].split("+"))
-		rhs = filter(None, splitted_rule[1].split("+"))
+		# removal of stoichiometry goes here
+		lhs = rule['children'][0]['children'][0]['children']
+		rhs = rule['children'][0]['children'][1]['children']
 		I = len(lhs) - 1
 		chi = createComplexes(lhs + rhs, atomicNames)
 		sequences = map(lambda complex: complex.sequence, chi)
@@ -105,18 +88,29 @@ def createRules(rules, initialState):
 		indexMap = getIndexmap(sequences)
 		indices = getIndices(indexMap[I], len(omega) - 1)
 		createdRules.append(Rule(chi, omega, I, indexMap, indices))
-	return createdRules, atomicSignatures, structureSignatures, sortInitialState(initialState, atomicNames)
+	initialState = createComplexes(map(lambda init: \
+		init['children'][0]['children'][0]['children'][0], initialState), atomicNames)
+	return createdRules, atomicSignatures, structureSignatures, initialState
 
 def createComplexes(complexes, atomicNames):
+	print "here we go....."
 	createdComplexes = []
 	for complex in complexes:
-		splitted_complex = complex.split("::")
-		sequence = splitted_complex[0].split(".")
-		agents = createAgents(sequence, atomicNames)
-		createdComplexes.append(Complex(agents, splitted_complex[1]))
+		sequence = []
+		print '*****************************'
+		print complex
+		print complex['children'][0]['children'][-1]['children']
+		compartment = complex['children'][0]['children'][-1]['children'][0]['entity']['token']
+		if len(complex['children'][0]['children']) > 2:
+			return # removal of nested complexes goes here
+		else:
+			sequence = complex['children'][0]['children'][0]['children']
+		agents = createAgents(sequence, atomicNames) # !!!!!!!!!!!!! not working yet
+		createdComplexes.append(Complex(agents, compartment))
 	return createdComplexes
 
 def createAgents(sequence, atomicNames):
+	print "to this moment it should work good"
 	createdAgents = []
 	for agent in sequence:
 		if "(" in agent:
@@ -139,3 +133,24 @@ def createStructureAgent(agent):
 def createAtomicAgent(agent):
 	parts = agent.split("{")
 	return AtomicAgent(parts[0], parts[1][:-1])
+
+def getIndexmap(sequences):
+	number = 0
+	indexMap = []
+	for seq in sequences:
+		number += len(seq)
+		indexMap.append(number - 1)
+	return indexMap
+
+def getIndices(lhs, maximum):
+	indices = []
+	rhs = maximum - lhs
+	if lhs >= rhs:
+		indices += zip(range(rhs), range(lhs + 1, maximum + 1))
+		for i in range(rhs, lhs + 1):
+			indices.append((i, None))
+	else:
+		indices += zip(range(lhs + 1), range(lhs + 1, lhs*2 + 2))
+		for i in range(lhs*2 + 2, maximum + 1):
+			indices.append((None, i))
+	return indices
