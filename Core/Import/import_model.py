@@ -117,8 +117,6 @@ def createMessage(unexpected, expected):
 		return "Syntax error: unexpected end of line."
 
 def parseModel(rules, inits):
-
-	# here goes new parser version
 	results = []
 	for rule in rules:
 		results.append(parseEquations(rule.text))
@@ -165,6 +163,60 @@ def preprocessRules(rules, initial_state, rates):
 	createdRules, atomicSignatures, structureSignatures, inits = BCSL.createRules(rules, inits)
 	reactions, rates = BCSL.createReactions(createdRules, atomicSignatures, structureSignatures, rates)
 	return reactions, rates, inits
+
+def preprocessRules_new(rules, inits, rates):
+	return 
+
+########################################################################
+
+"""
+New parser stuff
+"""
+
+def parseModel_new(rules, inits):
+	results = []
+	createdRules = []
+	createdInits = []
+
+	for rule in rules:
+		results.append(parse(rule.text))
+
+	for i in range(len(results)):
+		if results[i].isOk():
+			createdRules.append(results[i].getTree())
+		else:
+			error = results[i].getError()
+			start = error.getStart() + getPositionOfInit(i, inits, rules)
+			if error.getUnexpected() == "end of input":
+				expected = None
+				end = start
+			else:
+				unexpected = error.getUnexpected()
+				end = start + error.getNumExpected() # i would rather need unexpected
+			message = createMessage(unexpected, error.getExpected())
+			return [start, end, message], False, [], []
+
+	results = []
+	for init in inits:
+		results.append(parse(init.text + " =>"))
+
+	for i in range(len(results)):
+		if results[i].isOk():
+			createdInits.append(results[i].getTree())
+		else:
+			error = results[i].getError()
+			start = error.getStart() + getPositionOfInit(i, inits, rules)
+			if error.getUnexpected() == "end of input":
+				expected = None
+				end = start
+			else:
+				unexpected = error.getUnexpected()
+				end = start + error.getNumExpected() # i would rather need unexpected
+			message = createMessage(unexpected, error.getExpected())
+			return [start, end, message], False, [], []
+
+	return [], True, createdRules, createdInits
+
 
 ########################################################################
 

@@ -32,7 +32,7 @@ class ImportWorker(QtCore.QObject):
 
 	def analyseModel(self):
 		if self.modelUpdated():
-			rules, self.init_state, rates = Import.import_rules(self.model.toPlainText())
+			rules, inits, rates = Import.import_rules(self.model.toPlainText())
 			if len(rules) != len(rates):
 				self.notEnoughRates.emit()
 				self.enoughRates = False
@@ -40,14 +40,12 @@ class ImportWorker(QtCore.QObject):
 				self.hasEnoughRates.emit()
 				self.enoughRates = True
 
-			self.message, self.isOK = Import.parseModel(rules, self.init_state)
+			self.message, self.isOK = Import.parseModel(rules, inits)
+			#self.message, self.isOK, rules, inits = Import.parseModel_new(rules, inits)
 
 			if self.isOK:
-				# would be fine to check initial state too
-				# preprocessing of the rules goes here (semantical check + syntactic sugar removal)
-				self.reactions, self.rates, self.init_state = Import.preprocessRules(rules, self.init_state, rates)
-				#for r in self.reactions:
-				#	print r
+				self.reactions, self.rates, self.init_state = Import.preprocessRules(rules, inits, rates)
+				#self.reactions, self.rates, self.init_state = Import.preprocessRules_new(rules, inits, rates)
 				self.reactionsDone.emit()
 				self.modelCorrect.emit()
 			else:
