@@ -56,7 +56,6 @@ def processStochioAgents(agents):
 	return atomicSignatures, structureSignatures
 
 def obtainSignatures(rules, initialState):
-	# atomics not in partial composition do not obtain their states
 	mixture = []
 	for rule in rules:
 		mixture += rule['children'][0]['children'][0]['children']
@@ -93,46 +92,40 @@ def createRules(rules, initialState):
 	return createdRules, atomicSignatures, structureSignatures, initialState
 
 def createComplexes(complexes, atomicNames):
-	print "here we go....."
 	createdComplexes = []
 	for complex in complexes:
 		sequence = []
-		print '*****************************'
-		print complex
-		print complex['children'][0]['children'][-1]['children']
 		compartment = complex['children'][0]['children'][-1]['children'][0]['entity']['token']
 		if len(complex['children'][0]['children']) > 2:
 			return # removal of nested complexes goes here
 		else:
 			sequence = complex['children'][0]['children'][0]['children']
-		agents = createAgents(sequence, atomicNames) # !!!!!!!!!!!!! not working yet
+		agents = createAgents(sequence, atomicNames)
 		createdComplexes.append(Complex(agents, compartment))
 	return createdComplexes
 
 def createAgents(sequence, atomicNames):
-	print "to this moment it should work good"
 	createdAgents = []
 	for agent in sequence:
-		if "(" in agent:
-			createdAgents.append(createStructureAgent(agent))
-		elif "{" in agent:
-			createdAgents.append(createAtomicAgent(agent))
+		name = str(agent['entity']['token'])
+		if name in atomicNames:
+			createdAgents.append(createAtomicAgent(name, agent['entity']['children']))
 		else:
-			if agent in atomicNames:
-				createdAgents.append(AtomicAgent(agent, "_"))
-			else:
-				createdAgents.append(StructureAgent(agent, set()))
+			createdAgents.append(createStructureAgent(name, agent['children']))
 	return createdAgents
 
-def createStructureAgent(agent):
-	parts = agent.split("(")
-	atomics = parts[1][:-1].split(",")
-	atomics = map(createAtomicAgent, atomics)
-	return StructureAgent(parts[0], set(atomics))
+def createStructureAgent(name, atomics):
+	if atomics:
+		atoms = map(lambda atom: createAtomicAgent(str(atom['token']), atom['children']), atomics)
+		return StructureAgent(name, set(atoms))
+	else:
+		return StructureAgent(name, set())
 
-def createAtomicAgent(agent):
-	parts = agent.split("{")
-	return AtomicAgent(parts[0], parts[1][:-1])
+def createAtomicAgent(name, state):
+	if state:
+		return AtomicAgent(name, str(state[0]['token']))
+	else:
+		return AtomicAgent(name, "_")
 
 def getIndexmap(sequences):
 	number = 0

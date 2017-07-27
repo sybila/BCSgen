@@ -8,7 +8,7 @@ from Complex import *
 def atomicGroundForm(agent, allowedStates):
 	if agent.state == "_":
 		return set(map(lambda state: AtomicAgent(agent.name, state), allowedStates))
-	return set(agent)
+	return set([agent])
 
 def structureGroundForm(agent, allowedAtomics, atomicSignatures):
 	names = allowedAtomics - agent.getAtomicNames()
