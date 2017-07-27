@@ -89,6 +89,7 @@ def createRules(rules, initialState):
 		createdRules.append(Rule(chi, omega, I, indexMap, indices))
 	initialState = createComplexes(map(lambda init: \
 		init['children'][0]['children'][0]['children'][0], initialState), atomicNames)
+
 	return createdRules, atomicSignatures, structureSignatures, initialState
 
 def createComplexes(complexes, atomicNames):
@@ -101,7 +102,8 @@ def createComplexes(complexes, atomicNames):
 		else:
 			sequence = complex['children'][0]['children'][0]['children']
 		agents = createAgents(sequence, atomicNames)
-		createdComplexes.append(Complex(agents, compartment))
+		for _ in range(int(complex['token'])): # this removes stoichiometry from init, not rules !
+			createdComplexes.append(Complex(agents, compartment))
 	return createdComplexes
 
 def createAgents(sequence, atomicNames):

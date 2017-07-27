@@ -29,8 +29,9 @@ def pairStructuresGroundForm(agent1, agent2, atomicSignatures, structureSignatur
 		containsSameNames(agent1, agent1_grounded, agent2, agent2_grounded), pairs))
 
 def pairAtomicsGroundForm(agent1, agent2, atomicSignatures):
-	grounded = atomicGroundForm(agent1, atomicSignatures[agent1.name])
-	return set(zip(grounded, grounded))  # maybe copy is needed
+	grounded1 = atomicGroundForm(agent1, atomicSignatures[agent1.name])
+	grounded2 = atomicGroundForm(agent2, atomicSignatures[agent2.name])
+	return set(zip(grounded1, grounded2))  # maybe copy is needed
 
 def containsSameNames(agent1_origin, agent1_grounded, agent2_origin, agent2_grounded):
 	return agent1_grounded.exceptTheseNames(agent1_origin.getAtomicNames()) == \

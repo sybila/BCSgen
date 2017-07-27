@@ -1,8 +1,9 @@
 # rules
-KaiC::cyt + KaiB::cyt => KaiC.KaiB::cyt
-KaiC.KaiB::cyt => KaiC::cyt + KaiB::cyt
-KaiC(S{u}).KaiB::cyt => KaiC(S{p}).KaiB::cyt
+KaiC::cyt + KaiB.A{i}::cyt => KaiC.KaiB.A{i}::cyt
+KaiC.KaiB.A::cyt => KaiC::cyt + KaiB.A::cyt
+KaiC(S{u}).KaiB.A::cyt => KaiC(S{p}).KaiB.A::cyt
+KaiB.A{i}::cyt => KaiB.A{a}::cyt
 
 # initial state
 1 KaiC(S{u})::cyt
-1 KaiB::cyt
+1 KaiB.A{i}::cyt
