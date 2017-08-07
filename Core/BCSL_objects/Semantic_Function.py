@@ -74,18 +74,12 @@ Creating Rule objects from parsed tree
 """
 
 def createRules(rules, initialState):
-	for rule in rules:
-		print "---------------"
-		print rule
 	createdRules = []
 	atomicSignatures, structureSignatures, atomicNames = obtainSignatures(rules, initialState)
-	print atomicSignatures
-	print structureSignatures
 	for rule in rules:
-		# removal of stoichiometry goes here
 		lhs = rule['children'][0]['children'][0]['children']
 		rhs = rule['children'][0]['children'][1]['children']
-		I = len(lhs) - 1
+		I =  sum(map(lambda cx: int(cx['token']), lhs)) - 1
 		chi, atomicSignatures, structureSignatures = \
 			createComplexes(lhs + rhs, atomicNames, atomicSignatures, structureSignatures)
 		sequences = map(lambda complex: complex.sequence, chi)
@@ -95,7 +89,6 @@ def createRules(rules, initialState):
 		createdRules.append(Rule(chi, omega, I, indexMap, indices))
 	initialState = createComplexes(map(lambda init: \
 		init['children'][0]['children'][0]['children'][0], initialState), atomicNames, atomicSignatures, structureSignatures)
-
 	return createdRules, atomicSignatures, structureSignatures, initialState
 
 def createComplexes(complexes, atomicNames, atomicSignatures, structureSignatures):
@@ -106,21 +99,18 @@ def createComplexes(complexes, atomicNames, atomicSignatures, structureSignature
 		if len(complex['children'][0]['children']) > 2:
 			composition = []
 			for comp in complex['children'][0]['children'][:-1]:
-				print comp
 				composition.append(Complex(createAgents(comp['children'], atomicNames), compartment))
-			print "----------------------------------------"
 			agent = composition[0]
 			for comp in composition[1:]:
 				agent = mergeComplexes(agent, comp)
 			atomicSignatures, structureSignatures = updateSignatures(agent, atomicSignatures, structureSignatures)
-			createdComplexes.append(agent)
+			for _ in range(int(complex['token'])): # this removes stoichiometry from init, not rules !
+				createdComplexes.append(agent)
 		else:
 			sequence = complex['children'][0]['children'][0]['children']
 			agents = createAgents(sequence, atomicNames)
 			for _ in range(int(complex['token'])): # this removes stoichiometry from init, not rules !
 				createdComplexes.append(Complex(agents, compartment))
-	for complex in createdComplexes:
-		print complex
 	return createdComplexes, atomicSignatures, structureSignatures
 
 def mergeComplexes(complex_left, complex_right):
