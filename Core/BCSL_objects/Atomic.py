@@ -13,7 +13,10 @@ class AtomicAgent(object):
 		return self.name < other.name
 
 	def __eq__(self, other):
-		return self.name == other.name #and self.state == other.state
+		return self.name == other.name and self.state == other.state
 
 	def __hash__(self):
 		return hash(str(self))
+
+	def setState(self, newState):
+		self.state = newState

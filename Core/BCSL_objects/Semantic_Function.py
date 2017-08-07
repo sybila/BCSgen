@@ -124,7 +124,7 @@ def createComplexes(complexes, atomicNames, atomicSignatures, structureSignature
 	return createdComplexes, atomicSignatures, structureSignatures
 
 def mergeComplexes(complex_left, complex_right):
-	if len(complex_left.sequence) == 1 and len(complex_right.sequence) == 1:
+	if len(complex_right.sequence) == 1:
 		if complex_left.sequence[0].name not in complex_right.sequence[0].getAtomicNames():
 			atom = complex_left.sequence[0]
 			struct = complex_right.sequence[0]
@@ -132,7 +132,21 @@ def mergeComplexes(complex_left, complex_right):
 		else:
 			return complex_right
 	else:
-		return
+		for i in range(len(complex_right.sequence)):
+			agent = complex_right.sequence[i]
+			if complex_left.sequence[0].name == agent.name:
+				if isinstance(complex_left.sequence[0].name, AtomicAgent):
+					if agent.state:
+						return complex_right
+					else:
+						complex_right.updateAtomicAgentOnPossition(i, complex_left.sequence[0].state)
+						return complex_right
+				else:
+					if complex_left.sequence[0].getAtomicNames() & agent.getAtomicNames():
+						return complex_right
+					else:
+						complex_right.updateStructureAgentOnPossition(i, complex_left.sequence[0].composition)
+		return complex_right
 
 def updateSignatures(complex, atomicSignatures, structureSignatures):
 	for agent in complex.sequence:

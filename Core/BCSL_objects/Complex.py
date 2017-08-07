@@ -20,3 +20,8 @@ class Complex(object):
 
 	def __hash__(self):
 		return hash(str(self))
+
+	def updateAtomicAgentOnPossition(self, possition, state):
+		self.sequence[possition].setState(state)
+	def updateStructureAgentOnPossition(self, possition, atomics):
+		self.sequence[possition].setComposition(atomics)

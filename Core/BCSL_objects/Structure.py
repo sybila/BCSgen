@@ -30,3 +30,6 @@ class StructureAgent(object):
 			if agent.name not in names:
 				reducedComposition.add(agent)
 		return reducedComposition
+
+	def setComposition(self, atomics):
+		self.composition |= atomics
