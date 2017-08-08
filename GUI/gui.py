@@ -912,6 +912,7 @@ class MainWindow(QtGui.QMainWindow):
 
 	def enableSaveReactions(self):
 		self.save_reactions_button.setDisabled(False)
+		self.num_of_reactions.setText('No. of Reactions:'.ljust(30) + str(len(self.importWorker.reactions)) )
 
 	def progressbarStatesOnStart(self): 
 		self.stateSpace_start_time = time.time()
@@ -945,6 +946,10 @@ class MainWindow(QtGui.QMainWindow):
 			logInfo = time.ctime() + " ~ Imported model:\n\n"
 			self.saveToLog(DELIMITER + logInfo + file.name + "\n")
 
+			self.num_of_states.setText('No. of States:'.ljust(30))
+			self.num_of_edges.setText('No. of Edges:'.ljust(30))
+			self.num_of_reactions.setText('No. of Reactions:'.ljust(30))
+
 	def load_state_space(self):
 		file = QFileDialog.getOpenFileName(self, 'Choose file', filter ="JSON (*.json);;All types (*)")
 		if file:
@@ -955,6 +960,10 @@ class MainWindow(QtGui.QMainWindow):
 			logInfo = time.ctime() + " ~ Loaded file for state space:\n\n"
 			self.saveToLog(DELIMITER + logInfo + file + "\n")
 			return True
+
+			self.num_of_states.setText('No. of States:'.ljust(30))
+			self.num_of_edges.setText('No. of Edges:'.ljust(30))
+			self.num_of_reactions.setText('No. of Reactions:'.ljust(30))
 		return False
 
 	def save_stateSpace(self):

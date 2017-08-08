@@ -53,7 +53,7 @@ class StateSpaceWorker(QtCore.QObject):
 		Gen.printStateSpace(self.states, self.edges, self.VN.getTranslations(), self.stateSpaceFile, self.VN.getState())
 		self.lenStates.setText('No. of States:'.ljust(30) + str(len(self.states)))
 		self.lenEdges.setText('No. of Edges:'.ljust(30) + str(len(self.edges)))
-		self.lenReactions.setText('No. of Reactions:'.ljust(30) + str(len(self.reactions)))
+		#self.lenReactions.setText('No. of Reactions:'.ljust(30) + str(len(self.reactions)))
 
 		self.uniqueAgents = self.VN.getTranslations()
 		self.taskFinished.emit()

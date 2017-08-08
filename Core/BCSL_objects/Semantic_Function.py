@@ -87,7 +87,7 @@ def createRules(rules, initialState):
 		indexMap = getIndexmap(sequences)
 		indices = getIndices(indexMap[I], len(omega) - 1)
 		createdRules.append(Rule(chi, omega, I, indexMap, indices))
-	initialState = createComplexes(map(lambda init: \
+	initialState, atomicSignatures, structureSignatures = createComplexes(map(lambda init: \
 		init['children'][0]['children'][0]['children'][0], initialState), atomicNames, atomicSignatures, structureSignatures)
 	return createdRules, atomicSignatures, structureSignatures, initialState
 
