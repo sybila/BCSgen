@@ -1035,8 +1035,11 @@ class MainWindow(QtGui.QMainWindow):
 		file = QFileDialog.getOpenFileName(self, 'Choose model', directory = '../Examples/', filter ="BCS (*.bcs);;All types (*)")
 		if file:
 			file = open(file, "r")
-			self.textBox.setPlainText(file.read())
-			#self.compute_conflicts.setDisabled(False)
+			rules, inits, subs = Import.loadModel(file)
+			self.textBox.setPlainText(rules)
+			self.initsBox.setPlainText(inits)
+			# self.tableWidget.filldata(subs) # prepared
+
 			if self.stateWorker.stateSpaceFile and self.rulesAreCorrect and self.initsAreCorrect:
 				self.computeStateSpace_button.setDisabled(False)
 			# log
@@ -1111,26 +1114,27 @@ class MainWindow(QtGui.QMainWindow):
 			if not os.path.splitext(str(file))[1]:
 				file = str(file) + ".bcs"
 			with open(file, 'w') as file:
-				file.write(self.textBox.toPlainText())
+				output = Import.saveModel(self.textBox.toPlainText(), self.initsBox.toPlainText())
+				file.write(output)
 			# log
 			logInfo = time.ctime() + " ~ Saved model to file:\n\n"
 			self.saveToLog(DELIMITER + logInfo + file.name + "\n")
 
 	def copySelection(self):
-		self.textBox.copy()
+		self.focusWidget().copy()
 
 	def pasteText(self):
-		self.textBox.paste()
+		self.focusWidget().paste()
 
 	def clearText(self):
 		self.textBox.clear()
-		self.textBox.setText("# rules\n\n\n# initial state\n")
+		self.initsBox.clear()
 
 	def undoText(self):
-		self.textBox.undo()
+		self.focusWidget().undo()
 
 	def redoText(self):
-		self.textBox.redo()
+		self.focusWidget().redo()
 
 	def findTextDialog(self):
 		self.textBox.moveCursor(QTextCursor.Start)

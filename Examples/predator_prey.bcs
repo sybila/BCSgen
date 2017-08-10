@@ -1,9 +1,9 @@
-# rules
+#! rules
  => wolf::field @ 1*'sheep::field'*'wolf::field'
 wolf::field =>  @ 1*'wolf::field'
  => sheep::field @ 1*'sheep::field'
 sheep::field =>  @ 8/3*'sheep::field'*'wolf::field'
 
-# initial state
+#! inits
 5 sheep::field
 5 wolf::field

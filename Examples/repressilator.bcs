@@ -1,4 +1,4 @@
-# rules
+#! rules
 X::rep => @ 0.05*'X::rep'
 Y::rep => @ 0.12*'Y::rep'
 Z::rep => @ 0.05*'Z::rep'
@@ -6,6 +6,6 @@ Z::rep => @ 0.05*'Z::rep'
  => Y::rep @ 1/(1+('X::rep'/5)**4)
  => Z::rep @ 1/(1+('Y::rep'/5)**4)
 
-# initial state
+#! inits
 1 X::rep
 1 Y::rep
