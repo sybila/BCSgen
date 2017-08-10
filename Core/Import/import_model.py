@@ -32,9 +32,7 @@ def loadModel(inputFile):
 	return "\n".join(rules), "\n".join(inits), subs
 
 def saveModel(rules, inits, subs = ""):
-	return
-
-
+	return "#! rules\n" + rules + "\n\n#! inits\n" + inits
 
 #####################################################################
 

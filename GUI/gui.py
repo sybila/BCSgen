@@ -848,6 +848,11 @@ class MainWindow(QtGui.QMainWindow):
 		self.textBox.setFontPointSize(size)
 		self.textBox.setTextCursor(cursor)
 
+		cursor = self.initsBox.textCursor()
+		self.initsBox.selectAll()
+		self.initsBox.setFontPointSize(size)
+		self.initsBox.setTextCursor(cursor)
+
 	def showGraph(self):
 		useHTMLvisual = True
 		#if len(self.stateWorker.states) > 100:
