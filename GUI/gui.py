@@ -176,9 +176,11 @@ class MainWindow(QtGui.QMainWindow):
 		#self.stateSpaceEstimate = 0
 		#self.reactionsEstimate = 0
 
+		self.StatesHbox = QHBoxLayout()
+
 		self.tabs = QTabWidget(self)
-		self.tabs.move(605, 30)
 		self.tabs.setMinimumSize(320, 430)
+		self.tabs.setMaximumWidth(320)
 
 		self.tab1 = QWidget()
 		self.tab2 = QWidget()
@@ -190,21 +192,87 @@ class MainWindow(QtGui.QMainWindow):
 
 		#########################################
 
-		# text area
+		# text areas
+
+		self.textAreas = QWidget()
+		self.textAreas.move(10, 50)
+
+		self.mainLayout = QVBoxLayout()
+
+		# rules label
+
+		self.rulesLabel = QLabel(self)
+		self.rulesLabel.setText("Rules")
+
+		self.mainLayout.addWidget(self.rulesLabel)
+
+		# rules text area
 
 		self.textBox = QTextEdit(self)
-		self.textBox.setMinimumSize(590, 430)
-		self.textBox.move(10, 30)
-		#self.textBox.cursorPositionChanged.connect(self.textEdited)
+		self.textBox.setMinimumSize(590, 330)
 		self.textBox.setLineWrapColumnOrWidth(590)
 		self.textBox.setLineWrapMode(QtGui.QTextEdit.FixedColumnWidth)
+		#self.textBox.setMaximumHeight(330)
+
+		self.mainLayout.addWidget(self.textBox)
 
 		self.highlighter = MyHighlighter( self.textBox )
-
 		self.textBox.setText("# rules\n\n\n# initial state\n")
-
 		self.oldPlainText = self.textBox.toPlainText()
 
+		self.labelsHbox = QHBoxLayout()
+
+		# init label
+
+		self.initLabel = QLabel(self)
+		self.initLabel.setText("Initial state")
+
+		self.labelsHbox.addWidget(self.initLabel)
+
+		# definitions label
+
+		self.definitionsLabel = QLabel(self)
+		self.definitionsLabel.setText("Definitions")
+
+		self.labelsHbox.addWidget(self.definitionsLabel)
+
+		self.mainLayout.addLayout(self.labelsHbox)
+
+		self.areasHbox = QHBoxLayout()
+
+		# init text area
+
+		self.initsBox = QTextEdit(self)
+		self.initsBox.setMinimumSize(200, 110)
+		self.initsBox.setLineWrapColumnOrWidth(200)
+		self.initsBox.setLineWrapMode(QtGui.QTextEdit.FixedColumnWidth)
+
+		self.highlighterInits = MyHighlighter( self.initsBox )
+		self.initsBox.setText("# hea\n")
+		self.oldPlainTextInits = self.initsBox.toPlainText()
+
+		self.areasHbox.addWidget(self.initsBox)
+
+		# definitions text area?
+
+		self.tableWidget = QTableWidget(12, 2, self)
+		self.tableWidget.setMinimumSize(200, 110)
+
+		self.areasHbox.addWidget(self.tableWidget)
+
+		self.mainLayout.addLayout(self.areasHbox)
+
+		# setup of whole GUI
+
+		self.textAreas.setLayout(self.mainLayout)
+
+		self.StatesHbox.addWidget(self.textAreas)
+		self.StatesHbox.addWidget(self.tabs)
+
+		self.centralWidget = QWidget()
+		self.centralWidget.setLayout(self.StatesHbox)
+
+		self.setCentralWidget(self.centralWidget) 
 
 		#########################################
 
@@ -1063,13 +1131,6 @@ class MainWindow(QtGui.QMainWindow):
 			self.saveToLog('No. of States:'.ljust(30) + str(len(self.stateWorker.states)) + "\n")
 			self.saveToLog('No. of Edges:'.ljust(30) + str(len(self.stateWorker.edges)) + "\n")
 
-	def resizeEvent(self, event):
-		widthShrint = self.width() - appWidth
-		heightShrink = self.height() - appHeight 
-		self.textBox.resize(590 + widthShrint, 430 + heightShrink)
-		self.tabs.move(605 + widthShrint, 30)
-		self.tabs.resize(320, 430 + heightShrink)
-
 	def quitThreads(self):
 		self.analysisWorker.TheWorker.quit()
 		self.analysisWorker.TheWorker.wait()
@@ -1124,8 +1185,8 @@ app.setWindowIcon(app_icon)
 screen_rect = app.desktop().screenGeometry()
 screenWidth, screenHeight = screen_rect.width(), screen_rect.height()
 
-appWidth = 930
-appHeight = 485
+appWidth = 950
+appHeight = 620
 
 QtCore.qInstallMsgHandler(handler)
 
