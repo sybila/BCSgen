@@ -201,8 +201,7 @@ class MainWindow(QtGui.QMainWindow):
 
 		# rules label
 
-		self.rulesLabel = QLabel(self)
-		self.rulesLabel.setText("Rules")
+		self.rulesLabel = createTextBox(self, 'Rules', '''QLineEdit {border: none ; font-weight: bold }''', True)
 
 		self.mainLayout.addWidget(self.rulesLabel)
 
@@ -224,15 +223,13 @@ class MainWindow(QtGui.QMainWindow):
 
 		# init label
 
-		self.initLabel = QLabel(self)
-		self.initLabel.setText("Initial state")
+		self.initLabel = createTextBox(self, 'Initial state', '''QLineEdit {border: none ; font-weight: bold }''', True)
 
 		self.labelsHbox.addWidget(self.initLabel)
 
 		# definitions label
 
-		self.definitionsLabel = QLabel(self)
-		self.definitionsLabel.setText("Definitions")
+		self.definitionsLabel = createTextBox(self, 'Definitions', '''QLineEdit {border: none ; font-weight: bold }''', True)
 
 		self.labelsHbox.addWidget(self.definitionsLabel)
 
@@ -256,7 +253,14 @@ class MainWindow(QtGui.QMainWindow):
 		# definitions text area?
 
 		self.tableWidget = QTableWidget(12, 2, self)
+		self.tableWidget.setHorizontalHeaderLabels(["Name", "Definition"])
 		self.tableWidget.setMinimumSize(200, 110)
+		self.tableWidget.horizontalHeader().setClickable(False)
+		self.tableWidget.horizontalHeader().setStretchLastSection(True)
+		self.tableWidget.verticalHeader().hide()
+		self.tableWidget.setSelectionMode(QAbstractItemView.NoSelection)
+
+		# self.tableWidget.itemClicked.connect(self.dostuff)
 
 		self.areasHbox.addWidget(self.tableWidget)
 
