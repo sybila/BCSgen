@@ -8,16 +8,19 @@ import Import as Import
 
 class ImportWorker(QtCore.QObject):
 	modelCorrect = QtCore.pyqtSignal()
-	syntaxErrors = QtCore.pyqtSignal()
+	syntaxErrorsInRules = QtCore.pyqtSignal()
+	syntaxErrorsInInits = QtCore.pyqtSignal()
 	hasEnoughRates = QtCore.pyqtSignal()
 	notEnoughRates = QtCore.pyqtSignal()
 	reactionsDone = QtCore.pyqtSignal()
 
-	def __init__(self, model, parent = None):
+	def __init__(self, rules, inits, parent = None):
 		QtCore.QObject.__init__(self, parent)
 
-		self.model = model
-		self.oldPlainText = ""
+		self.rules = rules
+		self.inits = inits
+		self.oldPlainTextRules = ""
+		self.oldPlainTextInits = ""
 
 		self.reactions = []
 		self.rates = []
@@ -32,7 +35,7 @@ class ImportWorker(QtCore.QObject):
 
 	def analyseModel(self):
 		if self.modelUpdated():
-			rules, inits, rates = Import.import_rules(self.model.toPlainText())
+			rules, inits, rates = Import.import_rules(self.rules.toPlainText(), self.inits.toPlainText())
 			if len(rules) != len(rates):
 				self.notEnoughRates.emit()
 				self.enoughRates = False
@@ -40,17 +43,22 @@ class ImportWorker(QtCore.QObject):
 				self.hasEnoughRates.emit()
 				self.enoughRates = True
 
-			self.message, self.isOK, rules, inits = Import.parseModel(rules, inits)
+			self.message, self.isOK, rules, inits, errorInRules = Import.parseModel(rules, inits)
 
 			if self.isOK:
 				self.reactions, self.rates, self.init_state = Import.preprocessRules(rules, inits, rates)
 				self.reactionsDone.emit()
 				self.modelCorrect.emit()
+			elif errorInRules:
+				self.syntaxErrorsInRules.emit()
 			else:
-				self.syntaxErrors.emit()
+				self.syntaxErrorsInInits.emit()
 
 	def modelUpdated(self):
-		if self.oldPlainText != self.model.toPlainText():
-			self.oldPlainText = self.model.toPlainText()
+		if self.oldPlainTextRules != self.rules.toPlainText():
+			self.oldPlainTextRules = self.rules.toPlainText()
+			return True
+		elif self.oldPlainTextInits != self.inits.toPlainText():
+			self.oldPlainTextInits = self.inits.toPlainText()
 			return True
 		return False

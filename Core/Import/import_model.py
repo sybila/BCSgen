@@ -77,33 +77,35 @@ def improveInitialState(inits):
 			agents.append(line.split(" ")[1])
 	return agents
 
-def import_rules(input_file):
+def import_rules(inputRulesFile, inputInitsFile):
 	inits, created_rules, rates = [], [], []
 
-	lines = input_file.split("\n")
-	processingRules = True
+	lines = inputRulesFile.split("\n")
 	for lineNum in range(len(lines)):
 		line = str(lines[lineNum])
 		if line:
-			if line.startswith('#') and lineNum != 0:
-				processingRules = False
 			if not line.startswith('#'):
-				if processingRules:
-					rule = line.split("@")
-					if len(rule) > 1:
-						rates.append(rule[1])
-					rule = rule[0]
-					created_rules.append(Rule(lineNum, rule, len(line)))
-				else:
-					inits.append(Rule(lineNum, line, len(line)))
+				rule = line.split("@")
+				if len(rule) > 1:
+					rates.append(rule[1])
+				rule = rule[0]
+				created_rules.append(Rule(lineNum, rule, len(line)))
+
+	lines = inputInitsFile.split("\n")
+
+	for lineNum in range(len(lines)):
+		line = str(lines[lineNum])
+		if line:
+			if not line.startswith('#'):
+				inits.append(Rule(lineNum, line, len(line)))
+
 	return created_rules, inits, rates
 
 def getPositionOfRule(index, rules):
-	return sum(map(lambda rule: rule.length + 1, rules[:index])) + 8
+	return sum(map(lambda rule: rule.length + 1, rules[:index]))
 
-def getPositionOfInit(index, inits, rules):
-	return sum(map(lambda init: init.length + 1, inits[:index])) + 8 \
-			+ 17 + sum(map(lambda rule: rule.length + 1, rules))
+def getPositionOfInit(index, inits):
+	return sum(map(lambda init: init.length + 1, inits[:index]))
 
 def createMessage(unexpected, expected):
 	if unexpected:
@@ -135,7 +137,7 @@ def parseModel(rules, inits):
 				unexpected = result["unexpected"]
 				end = start + len(result["unexpected"])
 			message = createMessage(unexpected, result["expected"])
-			return [start, end, message], False, [], []
+			return [start, end, message], False, [], [], True
 		else:
 			createdRules.append(result)
 
@@ -146,7 +148,7 @@ def parseModel(rules, inits):
 	for i in range(len(results)):
 		result = json.loads(results[i])
 		if "error" in result:
-			start = int(result["start"]) + getPositionOfInit(i, inits, rules)
+			start = int(result["start"]) + getPositionOfInit(i, inits)
 			if result["unexpected"] == "end of input":
 				unexpected = None
 				end = start
@@ -154,11 +156,11 @@ def parseModel(rules, inits):
 				unexpected = result["unexpected"]
 				end = start + len(result["unexpected"])
 			message = createMessage(unexpected, result["expected"])
-			return [start, end, message], False, [], []
+			return [start, end, message], False, [], [], False
 		else:
 			createdInits.append(result)
 
-	return [], True, createdRules, createdInits
+	return [], True, createdRules, createdInits, None
 
 """
 Ground forms translation of rules

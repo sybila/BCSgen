@@ -57,6 +57,7 @@ class MainWindow(QtGui.QMainWindow):
 		super(MainWindow, self).__init__(parent)
 
 		self.rulesAreCorrect = False
+		self.initsAreCorrect = False
 
 		self.screenWidth = screenWidth
 		self.screenHeight = screenHeight
@@ -216,8 +217,7 @@ class MainWindow(QtGui.QMainWindow):
 		self.mainLayout.addWidget(self.textBox)
 
 		self.highlighter = MyHighlighter( self.textBox )
-		self.textBox.setText("# rules\n\n\n# initial state\n")
-		self.oldPlainText = self.textBox.toPlainText()
+		#self.oldPlainTextRules = self.textBox.toPlainText()
 
 		self.labelsHbox = QHBoxLayout()
 
@@ -245,8 +245,7 @@ class MainWindow(QtGui.QMainWindow):
 		self.initsBox.setLineWrapMode(QtGui.QTextEdit.FixedColumnWidth)
 
 		self.highlighterInits = MyHighlighter( self.initsBox )
-		self.initsBox.setText("# hea\n")
-		self.oldPlainTextInits = self.initsBox.toPlainText()
+		#self.oldPlainTextInits = self.initsBox.toPlainText()
 
 		self.areasHbox.addWidget(self.initsBox)
 
@@ -283,12 +282,13 @@ class MainWindow(QtGui.QMainWindow):
 		self.stateWorker = StateSpaceWorker(self.textBox)
 		self.analysisWorker = AnalysisWorker(self.textBox, self.stateWorker)
 		self.simulationWorker = SimulationWorker(self.textBox)
-		self.importWorker = ImportWorker(self.textBox)
+		self.importWorker = ImportWorker(self.textBox, self.initsBox)
 
 		#########################################
 
 		self.importWorker.modelCorrect.connect(self.modelIsCorrect)
-		self.importWorker.syntaxErrors.connect(self.syntaxErrorsInModels)
+		self.importWorker.syntaxErrorsInRules.connect(self.syntaxErrorsInRules)
+		self.importWorker.syntaxErrorsInInits.connect(self.syntaxErrorsInInits)
 		self.importWorker.hasEnoughRates.connect(self.ableToSimulate)
 		self.importWorker.notEnoughRates.connect(self.cannotSimulate)
 		self.importWorker.reactionsDone.connect(self.enableSaveReactions)
@@ -300,6 +300,7 @@ class MainWindow(QtGui.QMainWindow):
 		#########################################
 
 		self.textBox.textChanged.connect(self.importWorker.analyseModel)
+		self.initsBox.textChanged.connect(self.importWorker.analyseModel)
 
 		vLayout = QVBoxLayout()
 
@@ -747,6 +748,7 @@ class MainWindow(QtGui.QMainWindow):
 
 	def modelIsCorrect(self):
 		self.rulesAreCorrect = self.importWorker.isOK
+		self.initsAreCorrect = self.importWorker.isOK
 		if self.stateWorker.stateSpaceFile:
 			self.computeStateSpace_button.setDisabled(False)
 
@@ -761,7 +763,10 @@ class MainWindow(QtGui.QMainWindow):
 		self.cursor = self.textBox.textCursor()
 		self.clearErrorFormat()
 
-	def syntaxErrorsInModels(self):
+		self.cursor = self.initsBox.textCursor()
+		self.clearErrorFormat()
+
+	def syntaxErrorsInRules(self):
 		errorFormat = QtGui.QTextCharFormat()
 		errorFormat.setUnderlineStyle(QtGui.QTextCharFormat.WaveUnderline)
 		errorFormat.setUnderlineColor(QtGui.QColor("red"))
@@ -771,6 +776,26 @@ class MainWindow(QtGui.QMainWindow):
 		
 		self.rulesAreCorrect = self.importWorker.isOK
 		self.cursor = self.textBox.textCursor()
+		self.clearErrorFormat()
+
+		self.cursor.setPosition(error[0])
+		for i in range(error[0], error[1]):
+			self.cursor.movePosition(QtGui.QTextCursor.NextCharacter, 1)
+		self.cursor.mergeCharFormat(errorFormat)
+
+		self.statusBar().showMessage(self.tr(error[2]))
+		self.computeStateSpace_button.setDisabled(True)
+
+	def syntaxErrorsInInits(self):
+		errorFormat = QtGui.QTextCharFormat()
+		errorFormat.setUnderlineStyle(QtGui.QTextCharFormat.WaveUnderline)
+		errorFormat.setUnderlineColor(QtGui.QColor("red"))
+
+		self.statusBar().clearMessage()
+		error = self.importWorker.message
+		
+		self.initsAreCorrect = self.importWorker.isOK
+		self.cursor = self.initsBox.textCursor()
 		self.clearErrorFormat()
 
 		self.cursor.setPosition(error[0])
@@ -1012,7 +1037,7 @@ class MainWindow(QtGui.QMainWindow):
 			file = open(file, "r")
 			self.textBox.setPlainText(file.read())
 			#self.compute_conflicts.setDisabled(False)
-			if self.stateWorker.stateSpaceFile and self.rulesAreCorrect:
+			if self.stateWorker.stateSpaceFile and self.rulesAreCorrect and self.initsAreCorrect:
 				self.computeStateSpace_button.setDisabled(False)
 			# log
 			logInfo = time.ctime() + " ~ Imported model:\n\n"
@@ -1049,7 +1074,7 @@ class MainWindow(QtGui.QMainWindow):
 			# log
 			logInfo = time.ctime() + " ~ Exported state space to file:\n\n"
 			self.saveToLog(DELIMITER + logInfo + file + "\n")
-			if self.stateWorker.modelFile and self.rulesAreCorrect:
+			if self.stateWorker.modelFile and self.rulesAreCorrect and self.initsAreCorrect:
 				self.computeStateSpace_button.setDisabled(False)
 
 	def save_reactions(self):
