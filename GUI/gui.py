@@ -251,7 +251,7 @@ class MainWindow(QtGui.QMainWindow):
 
 		# definitions text area?
 
-		self.tableWidget = QTableWidget(12, 2, self)
+		self.tableWidget = QTableWidget(1, 2, self)
 		self.tableWidget.setHorizontalHeaderLabels(["Name", "Definition"])
 		self.tableWidget.setMinimumSize(200, 110)
 		self.tableWidget.horizontalHeader().setClickable(False)
@@ -259,7 +259,7 @@ class MainWindow(QtGui.QMainWindow):
 		self.tableWidget.verticalHeader().hide()
 		self.tableWidget.setSelectionMode(QAbstractItemView.NoSelection)
 
-		# self.tableWidget.itemClicked.connect(self.dostuff)
+		self.tableWidget.itemChanged.connect(self.updateTable)
 
 		self.areasHbox.addWidget(self.tableWidget)
 
@@ -645,6 +645,18 @@ class MainWindow(QtGui.QMainWindow):
 		# clear log
 
 		self.saveToLog("", 'w')
+
+	def updateTable(self):
+		numOfRows = self.tableWidget.rowCount()
+		preLastRowName = self.tableWidget.item(numOfRows - 1, 0)
+		preLastRowDefinition = self.tableWidget.item(numOfRows - 1, 1)
+
+		if (not preLastRowName or preLastRowName.text().isEmpty()) and \
+		   (not preLastRowDefinition or preLastRowDefinition.text().isEmpty()):
+			if numOfRows > 2:
+				self.tableWidget.removeRow(numOfRows - 1)
+		else:
+			self.tableWidget.insertRow(numOfRows) 
 
 	def deterministicChosen(self):
 		self.interpolationBox.setDisabled(True)
