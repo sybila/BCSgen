@@ -14,13 +14,15 @@ class ImportWorker(QtCore.QObject):
 	notEnoughRates = QtCore.pyqtSignal()
 	reactionsDone = QtCore.pyqtSignal()
 
-	def __init__(self, rules, inits, parent = None):
+	def __init__(self, rules, inits, defns, parent = None):
 		QtCore.QObject.__init__(self, parent)
 
 		self.rules = rules
 		self.inits = inits
+		self.definitions = []
 		self.oldPlainTextRules = ""
 		self.oldPlainTextInits = ""
+		self.oldDefinitions = []
 
 		self.reactions = []
 		self.rates = []
@@ -60,5 +62,8 @@ class ImportWorker(QtCore.QObject):
 			return True
 		elif self.oldPlainTextInits != self.inits.toPlainText():
 			self.oldPlainTextInits = self.inits.toPlainText()
+			return True
+		elif self.definitions != self.oldDefinitions:
+			self.oldDefinitions = self.definitions
 			return True
 		return False

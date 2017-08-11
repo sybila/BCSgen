@@ -260,6 +260,7 @@ class MainWindow(QtGui.QMainWindow):
 		self.tableWidget.setSelectionMode(QAbstractItemView.NoSelection)
 
 		self.tableWidget.itemChanged.connect(self.updateTable)
+		self.definitions = []
 
 		self.areasHbox.addWidget(self.tableWidget)
 
@@ -282,7 +283,7 @@ class MainWindow(QtGui.QMainWindow):
 		self.stateWorker = StateSpaceWorker(self.textBox)
 		self.analysisWorker = AnalysisWorker(self.textBox, self.stateWorker)
 		self.simulationWorker = SimulationWorker(self.textBox)
-		self.importWorker = ImportWorker(self.textBox, self.initsBox)
+		self.importWorker = ImportWorker(self.textBox, self.initsBox, self.definitions)
 
 		#########################################
 
@@ -301,6 +302,7 @@ class MainWindow(QtGui.QMainWindow):
 
 		self.textBox.textChanged.connect(self.importWorker.analyseModel)
 		self.initsBox.textChanged.connect(self.importWorker.analyseModel)
+		self.tableWidget.itemChanged.connect(self.importWorker.analyseModel)
 
 		vLayout = QVBoxLayout()
 
@@ -656,7 +658,17 @@ class MainWindow(QtGui.QMainWindow):
 			if numOfRows > 2:
 				self.tableWidget.removeRow(numOfRows - 1)
 		else:
-			self.tableWidget.insertRow(numOfRows) 
+			self.tableWidget.insertRow(numOfRows)
+
+		self.definitions = []
+
+		for i in range(self.tableWidget.rowCount()):
+			name = self.tableWidget.item(i, 0)
+			defn = self.tableWidget.item(i, 1)
+			if name and defn:
+				self.definitions.append((str(name.text()), str(defn.text())))
+
+		self.importWorker.definitions = self.definitions
 
 	def deterministicChosen(self):
 		self.interpolationBox.setDisabled(True)
