@@ -650,13 +650,18 @@ class MainWindow(QtGui.QMainWindow):
 
 	def updateTable(self):
 		numOfRows = self.tableWidget.rowCount()
-		preLastRowName = self.tableWidget.item(numOfRows - 1, 0)
-		preLastRowDefinition = self.tableWidget.item(numOfRows - 1, 1)
+		LastRowName = self.tableWidget.item(numOfRows - 1, 0)
+		LastRowDefinition = self.tableWidget.item(numOfRows - 1, 1)
 
-		if (not preLastRowName or preLastRowName.text().isEmpty()) and \
-		   (not preLastRowDefinition or preLastRowDefinition.text().isEmpty()):
+		if (not LastRowName or LastRowName.text().isEmpty()) and \
+		   (not LastRowDefinition or LastRowDefinition.text().isEmpty()):
 			if numOfRows > 2:
-				self.tableWidget.removeRow(numOfRows - 1)
+				preLastRowName = self.tableWidget.item(numOfRows - 2, 0)
+				preLastRowDefinition = self.tableWidget.item(numOfRows - 2, 1)
+				if (not preLastRowName or preLastRowName.text().isEmpty()) and \
+		   		   (not preLastRowDefinition or preLastRowDefinition.text().isEmpty()):
+					self.tableWidget.removeRow(numOfRows - 1)
+					self.updateTable()
 		else:
 			self.tableWidget.insertRow(numOfRows)
 
