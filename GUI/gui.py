@@ -659,7 +659,7 @@ class MainWindow(QtGui.QMainWindow):
 				preLastRowName = self.tableWidget.item(numOfRows - 2, 0)
 				preLastRowDefinition = self.tableWidget.item(numOfRows - 2, 1)
 				if (not preLastRowName or preLastRowName.text().isEmpty()) and \
-		   		   (not preLastRowDefinition or preLastRowDefinition.text().isEmpty()):
+				   (not preLastRowDefinition or preLastRowDefinition.text().isEmpty()):
 					self.tableWidget.removeRow(numOfRows - 1)
 					self.updateTable()
 		else:
@@ -674,6 +674,17 @@ class MainWindow(QtGui.QMainWindow):
 				self.definitions.append((str(name.text()), str(defn.text())))
 
 		self.importWorker.definitions = self.definitions
+
+	def filldataToTable(self, defns):
+		self.tableWidget.clearContents()
+		while self.tableWidget.rowCount() > 1:
+			self.tableWidget.removeRow(self.tableWidget.rowCount() - 1)
+
+		for i in range(len(defns)):
+			newName = QTableWidgetItem(defns[i][0])
+			self.tableWidget.setItem(i, 0, newName)
+			newDefn = QTableWidgetItem(defns[i][1])
+			self.tableWidget.setItem(i, 1, newDefn)
 
 	def deterministicChosen(self):
 		self.interpolationBox.setDisabled(True)
@@ -1069,10 +1080,10 @@ class MainWindow(QtGui.QMainWindow):
 		file = QFileDialog.getOpenFileName(self, 'Choose model', directory = '../Examples/', filter ="BCS (*.bcs);;All types (*)")
 		if file:
 			file = open(file, "r")
-			rules, inits, subs = Import.loadModel(file)
+			rules, inits, defns = Import.loadModel(file)
 			self.textBox.setPlainText(rules)
 			self.initsBox.setPlainText(inits)
-			# self.tableWidget.filldata(subs) # prepared
+			self.filldataToTable(defns) # ToDO
 
 			if self.stateWorker.stateSpaceFile and self.rulesAreCorrect and self.initsAreCorrect:
 				self.computeStateSpace_button.setDisabled(False)
@@ -1148,7 +1159,7 @@ class MainWindow(QtGui.QMainWindow):
 			if not os.path.splitext(str(file))[1]:
 				file = str(file) + ".bcs"
 			with open(file, 'w') as file:
-				output = Import.saveModel(self.textBox.toPlainText(), self.initsBox.toPlainText())
+				output = Import.saveModel(self.textBox.toPlainText(), self.initsBox.toPlainText(), self.definitions)
 				file.write(output)
 			# log
 			logInfo = time.ctime() + " ~ Saved model to file:\n\n"

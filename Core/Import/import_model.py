@@ -19,20 +19,30 @@ from RuleParserPy import *
 
 def loadModel(inputFile):
 	processingRules = True
-	rules, inits, subs = [], [], []
+	processingInits = False
+	rules, inits, defns = [], [], []
 
 	for line in inputFile.readlines()[1:]:
 		if not line.isspace():
 			if "#! inits" in line:
 				processingRules = False
+				processingInits = True
+			elif "#! definitions" in line:
+				processingInits = False
 			if processingRules:
 				rules.append(line.rstrip())
-			elif "#! inits" not in line:
-				inits.append(line.rstrip())
-	return "\n".join(rules), "\n".join(inits), subs
+			elif processingInits:
+				if "#! inits" not in line:
+					inits.append(line.rstrip())
+			else:
+				if "#! definitions" not in line:
+					defns.append(line.rstrip().split(" = "))
+				
+	return "\n".join(rules), "\n".join(inits), defns
 
-def saveModel(rules, inits, subs = ""):
-	return "#! rules\n" + rules + "\n\n#! inits\n" + inits
+def saveModel(rules, inits, defns):
+	defns = "\n".join(map(lambda pair: " = ".join(pair), defns))
+	return "#! rules\n" + rules + "\n\n#! inits\n" + inits + "\n\n#! defintions\n" + defns
 
 #####################################################################
 
