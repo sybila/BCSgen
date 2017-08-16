@@ -59,41 +59,6 @@ class Rule(object):
 		return self.__repr__()
 
 """
-If first given string is a number, return (number - 1) multiplied second string joined by sign "+"
-:param s1: first string
-:param 21: second string
-:return: first string if condition is not satisfied
-"""
-def multiply_string(s1, s2):
-	if s1.isdigit():
-		return "+".join([s2] * (int(s1) -1) + [""])
-	else:
-		return s1
-
-"""
-Cleans rule (string) from steichiometry by multiplying appropriate agent
-:param rule: given rule in string form
-:return: rule without steichiometry
-"""
-def remove_steichiometry(rule):
-	new_rule = []
-	splitted_rule = rule.text.split(" ")
-	for i in range(len(splitted_rule) - 1):
-		new_rule.append(multiply_string(splitted_rule[i], splitted_rule[i + 1]))
-	new_rule.append(splitted_rule[len(splitted_rule) - 1])
-	return Rule(rule.index, "".join(new_rule), rule.length)
-
-"""
-Removes duplicated white spaces from a string
-:param rule: given string
-:return: clean string
-"""
-def remove_spaces(rule):
-	splitted_rule = rule.text.split(" ")
-	splitted_rule = filter(None, splitted_rule)
-	return Rule(rule.index, " ".join(splitted_rule), rule.length)
-
-"""
 Imports agent names for initial state
 :param init_file: file containing lines number agent
 :return: initial State

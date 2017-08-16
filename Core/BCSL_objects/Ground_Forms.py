@@ -81,6 +81,8 @@ def createReactions(rules, atomicSignatures, structureSignatures, inputRates):
 			sequence = list(itertools.chain.from_iterable(rxn))
 			sequence = filter(None, sequence)
 			seq = [Complex(sequence[rule.indexMap[i] + 1:rule.indexMap[i + 1] + 1], rule.chi[i].compartment) for i in range(len(rule.indexMap) - 1)]
-			reactions.append(Reaction(seq, rule.I))
-			rates.append(rate)
+			reaction = Reaction(seq, rule.I)
+			if reaction not in reactions:
+				reactions.append(reaction)
+				rates.append(rate)
 	return reactions, rates

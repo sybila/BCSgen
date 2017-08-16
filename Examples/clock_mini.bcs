@@ -1,0 +1,8 @@
+#! rules
+S{u}::KaiC::KaiC.KaiC.KaiC::cyt => S{p}::KaiC::KaiC.KaiC.KaiC::cyt
+S{p}::KaiC::KaiC.KaiC.KaiC::cyt => S{u}::KaiC::KaiC.KaiC.KaiC::cyt
+
+#! inits
+1 KaiC(S{u}).KaiC(S{u}).KaiC(S{u})::cyt
+
+#! defintions

@@ -104,12 +104,12 @@ def createComplexes(complexes, atomicNames, atomicSignatures, structureSignature
 			for comp in composition[1:]:
 				agent = mergeComplexes(agent, comp)
 			atomicSignatures, structureSignatures = updateSignatures(agent, atomicSignatures, structureSignatures)
-			for _ in range(int(complex['token'])): # this removes stoichiometry from init, not rules !
+			for _ in range(int(complex['token'])): 
 				createdComplexes.append(agent)
 		else:
 			sequence = complex['children'][0]['children'][0]['children']
 			agents = createAgents(sequence, atomicNames)
-			for _ in range(int(complex['token'])): # this removes stoichiometry from init, not rules !
+			for _ in range(int(complex['token'])): 
 				createdComplexes.append(Complex(agents, compartment))
 	return createdComplexes, atomicSignatures, structureSignatures
 
@@ -136,6 +136,7 @@ def mergeComplexes(complex_left, complex_right):
 						return complex_right
 					else:
 						complex_right.updateStructureAgentOnPossition(i, complex_left.sequence[0].composition)
+						return complex_right
 		return complex_right
 
 def updateSignatures(complex, atomicSignatures, structureSignatures):
