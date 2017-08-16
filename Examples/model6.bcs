@@ -16,4 +16,4 @@ KaiC.KaiB.KaiA(S{p})::cyt => KaiC::cyt + KaiB::cyt + KaiA(S{p})::cyt
 1 KaiA(S{u})::cyt
 1 KaiB::cyt
 
-#! defintions
+#! definitions

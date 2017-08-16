@@ -42,7 +42,7 @@ def loadModel(inputFile):
 
 def saveModel(rules, inits, defns):
 	defns = "\n".join(map(lambda pair: " = ".join(pair), defns))
-	return "#! rules\n" + rules + "\n\n#! inits\n" + inits + "\n\n#! defintions\n" + defns
+	return "#! rules\n" + rules + "\n\n#! inits\n" + inits + "\n\n#! definitions\n" + defns
 
 #####################################################################
 
