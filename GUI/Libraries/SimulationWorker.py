@@ -11,7 +11,6 @@ import sympy
 
 sys.path.append(os.path.abspath('../../Core/'))
 import Import as Import
-import Explicit_reaction_network_generator as Explicit
 import State_space_generator as Gen
 
 class SimulationWorker(QtCore.QObject):
@@ -33,24 +32,26 @@ class SimulationWorker(QtCore.QObject):
 		self.numberOfRuns = 1
 		self.useInterpolation = False
 		self.useDeterministic = False
+		self.reactions = []
+		self.initialState = []
+		self.rates = []
+		self.originiInitialState = []
 
 		self.TheWorker = QtCore.QThread()
 		self.moveToThread(self.TheWorker)
 		self.TheWorker.start()
 
 	def simulate(self):
-		rules, initialState, rates = Import.import_rules(str(self.modelFile.toPlainText()))
-		reactionGenerator = Explicit.Compute()
-		reactions, rates = reactionGenerator.computeReactions(rules, rates)
-		VN = Gen.createVectorNetwork(reactions, initialState)
+		self.initialState = self.originiInitialState
+		VN = Gen.createVectorNetwork(self.reactions, self.initialState)
 
 		self.translations = VN.Translations
 		if self.useInterpolation:
 			self.changeSizeOfStep.emit()
 		if not self.useDeterministic:
-			self.simulateGillespieAlgorithm(map(lambda r: r.difference, VN.Vectors), np.array(VN.State), rates, self.max_time)
+			self.simulateGillespieAlgorithm(map(lambda r: r.difference, VN.Vectors), np.array(VN.State), self.rates, self.max_time)
 		else:
-			self.simulateDeterministicAlgorithm(map(lambda r: r.difference, VN.Vectors), np.array(VN.State), rates, self.max_time)
+			self.simulateDeterministicAlgorithm(map(lambda r: r.difference, VN.Vectors), np.array(VN.State), self.rates, self.max_time)
 
 	def simulateDeterministicAlgorithm(self, reactions, y0, rates, max_time):
 		self.deterministicSimulationStarted.emit()
@@ -151,7 +152,7 @@ class SimulationWorker(QtCore.QObject):
 			return solution
 
 	def vectorizeRates(self, translations, rates):
-		translations = map(lambda trans: "'" + trans + "'", translations)
+		translations = map(lambda trans: "'" + trans + "'", map(str, translations))
 		new_rates = []
 		for rate in rates:
 			new_rate = rate
@@ -161,7 +162,7 @@ class SimulationWorker(QtCore.QObject):
 		return new_rates
 
 	def prepareRatesForSolving(self, translations, rates):
-		translations = map(lambda trans: "'" + trans + "'", translations)
+		translations = map(lambda trans: "'" + trans + "'", map(str, translations))
 		new_rates = []
 		for rate in rates:
 			new_rate = rate

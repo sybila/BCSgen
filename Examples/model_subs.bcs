@@ -7,3 +7,7 @@ KaiB.A{i}::cyt => KaiB.A{a}::cyt
 #! inits
 1 KaiC(S{u})::cyt
 1 KaiB.A{i}::cyt
+
+#! definitions
+A = B.C
+abc = bcs

@@ -1,4 +1,4 @@
-# rules
+#! rules
 KaiC::cyt + KaiB::cyt => KaiC.KaiB::cyt
 KaiC.KaiB::cyt => KaiC::cyt + KaiB::cyt
 KaiC(S{u}).KaiB::cyt => KaiC(S{p}).KaiB::cyt
@@ -8,10 +8,12 @@ KaiC::cyt + KaiC.KaiC.KaiC.KaiB::cyt => KaiC.KaiC.KaiC.KaiC.KaiB::cyt
 KaiC.KaiC.KaiC.KaiC.KaiB::cyt + KaiA::cyt => KaiC.KaiC.KaiC.KaiC.KaiB.KaiA::cyt
 KaiC.KaiC.KaiC.KaiC.KaiB.KaiA(S{u})::cyt => KaiC.KaiC.KaiC.KaiC.KaiB.KaiA(S{p})::cyt
 KaiC.KaiC.KaiC.KaiC.KaiB.KaiA(S{p})::cyt => KaiC.KaiC.KaiC::cyt + KaiC.KaiB.KaiA(S{p})::cyt
-KaiC.KaiC.KaiC::cyt => KaiC::cyt + KaiC::cyt + KaiC::cyt
+KaiC.KaiC.KaiC::cyt =>3 KaiC::cyt
 KaiC.KaiB.KaiA(S{p})::cyt => KaiC::cyt + KaiB::cyt + KaiA(S{p})::cyt
 
-# initial state
+#! inits
 4 KaiC(S{u})::cyt
 1 KaiA(S{u})::cyt
 1 KaiB::cyt
+
+#! definitions

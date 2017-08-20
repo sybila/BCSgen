@@ -9,7 +9,6 @@ import signal
 sys.path.append(os.path.abspath('../Core/'))
 
 import State_space_generator as Gen
-import Implicit_reaction_network_generator as Implicit
 import Import as Import
 from Libraries import *
 
@@ -58,6 +57,7 @@ class MainWindow(QtGui.QMainWindow):
 		super(MainWindow, self).__init__(parent)
 
 		self.rulesAreCorrect = False
+		self.initsAreCorrect = False
 
 		self.screenWidth = screenWidth
 		self.screenHeight = screenHeight
@@ -177,9 +177,11 @@ class MainWindow(QtGui.QMainWindow):
 		#self.stateSpaceEstimate = 0
 		#self.reactionsEstimate = 0
 
+		self.StatesHbox = QHBoxLayout()
+
 		self.tabs = QTabWidget(self)
-		self.tabs.move(605, 30)
 		self.tabs.setMinimumSize(320, 430)
+		self.tabs.setMaximumWidth(320)
 
 		self.tab1 = QWidget()
 		self.tab2 = QWidget()
@@ -191,31 +193,116 @@ class MainWindow(QtGui.QMainWindow):
 
 		#########################################
 
-		# text area
+		# text areas
+
+		self.textAreas = QWidget()
+		self.textAreas.move(10, 50)
+
+		self.mainLayout = QVBoxLayout()
+
+		# rules label
+
+		self.rulesLabel = createTextBox(self, 'Rules', '''QLineEdit {border: none ; font-weight: bold }''', True)
+
+		self.mainLayout.addWidget(self.rulesLabel)
+
+		# rules text area
 
 		self.textBox = QTextEdit(self)
-		self.textBox.setMinimumSize(590, 430)
-		self.textBox.move(10, 30)
-		#self.textBox.cursorPositionChanged.connect(self.textEdited)
+		self.textBox.setMinimumSize(590, 330)
 		self.textBox.setLineWrapColumnOrWidth(590)
 		self.textBox.setLineWrapMode(QtGui.QTextEdit.FixedColumnWidth)
+		#self.textBox.setMaximumHeight(330)
+
+		self.mainLayout.addWidget(self.textBox)
 
 		self.highlighter = MyHighlighter( self.textBox )
+		#self.oldPlainTextRules = self.textBox.toPlainText()
 
-		self.textBox.setText("# rules\n\n\n# initial state\n")
+		self.labelsHbox = QHBoxLayout()
 
-		self.oldPlainText = self.textBox.toPlainText()
+		# init label
 
-		self.textBox.textChanged.connect(self.checkRules)
-		self.textBox.textChanged.connect(self.checkRates)
+		self.initLabel = createTextBox(self, 'Initial state', '''QLineEdit {border: none ; font-weight: bold }''', True)
+
+		self.labelsHbox.addWidget(self.initLabel)
+
+		# definitions label
+
+		self.definitionsLabel = createTextBox(self, 'Definitions', '''QLineEdit {border: none ; font-weight: bold }''', True)
+
+		self.labelsHbox.addWidget(self.definitionsLabel)
+
+		self.mainLayout.addLayout(self.labelsHbox)
+
+		self.areasHbox = QHBoxLayout()
+
+		# init text area
+
+		self.initsBox = QTextEdit(self)
+		self.initsBox.setMinimumSize(200, 110)
+		self.initsBox.setLineWrapColumnOrWidth(200)
+		self.initsBox.setLineWrapMode(QtGui.QTextEdit.FixedColumnWidth)
+
+		self.highlighterInits = MyHighlighter( self.initsBox )
+		#self.oldPlainTextInits = self.initsBox.toPlainText()
+
+		self.areasHbox.addWidget(self.initsBox)
+
+		# definitions text area?
+
+		self.tableWidget = QTableWidget(1, 2, self)
+		self.tableWidget.setHorizontalHeaderLabels(["Name", "Definition"])
+		self.tableWidget.setMinimumSize(200, 110)
+		self.tableWidget.horizontalHeader().setClickable(False)
+		self.tableWidget.horizontalHeader().setStretchLastSection(True)
+		self.tableWidget.verticalHeader().hide()
+		self.tableWidget.setSelectionMode(QAbstractItemView.NoSelection)
+
+		self.tableWidget.itemChanged.connect(self.updateTable)
+		self.definitions = []
+
+		self.areasHbox.addWidget(self.tableWidget)
+
+		self.mainLayout.addLayout(self.areasHbox)
+
+		# setup of whole GUI
+
+		self.textAreas.setLayout(self.mainLayout)
+
+		self.StatesHbox.addWidget(self.textAreas)
+		self.StatesHbox.addWidget(self.tabs)
+
+		self.centralWidget = QWidget()
+		self.centralWidget.setLayout(self.StatesHbox)
+
+		self.setCentralWidget(self.centralWidget) 
 
 		#########################################
 
 		self.stateWorker = StateSpaceWorker(self.textBox)
 		self.analysisWorker = AnalysisWorker(self.textBox, self.stateWorker)
 		self.simulationWorker = SimulationWorker(self.textBox)
+		self.importWorker = ImportWorker(self.textBox, self.initsBox, self.definitions)
 
 		#########################################
+
+		self.importWorker.modelCorrect.connect(self.modelIsCorrect)
+		self.importWorker.syntaxErrorsInRules.connect(self.syntaxErrorsInRules)
+		self.importWorker.syntaxErrorsInInits.connect(self.syntaxErrorsInInits)
+		self.importWorker.hasEnoughRates.connect(self.ableToSimulate)
+		self.importWorker.notEnoughRates.connect(self.cannotSimulate)
+		self.importWorker.reactionsDone.connect(self.enableSaveReactions)
+
+		self.stateWorker.taskFinished.connect(self.progressbarStatesOnFinished)
+		self.stateWorker.showMostStates.connect(self.showNumberOfStates)
+		self.stateWorker.NumOfStates.connect(self.updateNumOfStates)
+
+		#########################################
+
+		self.textBox.textChanged.connect(self.importWorker.analyseModel)
+		self.initsBox.textChanged.connect(self.importWorker.analyseModel)
+		self.tableWidget.itemChanged.connect(self.importWorker.analyseModel)
 
 		vLayout = QVBoxLayout()
 
@@ -261,11 +348,6 @@ class MainWindow(QtGui.QMainWindow):
 
 		StatesHbox.addWidget(self.progress_bar_states)
 		vLayout.addLayout(StatesHbox)
-
-		self.stateWorker.taskFinished.connect(self.progressbarStatesOnFinished)
-		self.stateWorker.showMostStates.connect(self.showNumberOfStates)
-		self.stateWorker.NumOfStates.connect(self.updateNumOfStates)
-		self.stateWorker.reactionsDone.connect(self.enableSaveReactions)
 
 		# show graph
 
@@ -415,37 +497,37 @@ class MainWindow(QtGui.QMainWindow):
 
 		#########################################
 
-		# static analysis
+		# # static analysis
 
-		StatesHbox = QHBoxLayout()
+		# StatesHbox = QHBoxLayout()
 
-		style = '''QLineEdit {background-color: rgb(214, 214, 214); border: none ; }'''
+		# style = '''QLineEdit {background-color: rgb(214, 214, 214); border: none ; }'''
 
-		self.reach_text = createTextBox(self, 'Static analysis', '''QLineEdit {border: none ; font-weight: bold }''', True)
+		# self.reach_text = createTextBox(self, 'Static analysis', '''QLineEdit {border: none ; font-weight: bold }''', True)
 
-		StatesHbox.addWidget(self.reach_text)
-		vLayout.addLayout(StatesHbox)
-
-
-		StatesHbox = QHBoxLayout()
-
-		self.compute_conflicts = createButton(self, 'Compute conflicts', self.analysisWorker.compute_conflicts, True)
-		self.compute_conflicts.setStatusTip("Apply static analysis for checking conflicts in given model.")
-
-		StatesHbox.addWidget(self.compute_conflicts)
-
-		vLayout.addLayout(StatesHbox)
-
-		self.analysisWorker.noConflicts.connect(self.showConflicts)
-		self.analysisWorker.conflicts.connect(self.showNoConflicts)
+		# StatesHbox.addWidget(self.reach_text)
+		# vLayout.addLayout(StatesHbox)
 
 
-		StatesHbox = QHBoxLayout()
+		# StatesHbox = QHBoxLayout()
 
-		self.noConflictsMessage = QtGui.QLabel(self)
+		# self.compute_conflicts = createButton(self, 'Compute conflicts', self.analysisWorker.compute_conflicts, True)
+		# self.compute_conflicts.setStatusTip("Apply static analysis for checking conflicts in given model.")
 
-		StatesHbox.addWidget(self.noConflictsMessage)
-		vLayout.addLayout(StatesHbox)
+		# StatesHbox.addWidget(self.compute_conflicts)
+
+		# vLayout.addLayout(StatesHbox)
+
+		# self.analysisWorker.noConflicts.connect(self.showConflicts)
+		# self.analysisWorker.conflicts.connect(self.showNoConflicts)
+
+
+		# StatesHbox = QHBoxLayout()
+
+		# self.noConflictsMessage = QtGui.QLabel(self)
+
+		# StatesHbox.addWidget(self.noConflictsMessage)
+		# vLayout.addLayout(StatesHbox)
 
 		# result field
 
@@ -566,6 +648,44 @@ class MainWindow(QtGui.QMainWindow):
 
 		self.saveToLog("", 'w')
 
+	def updateTable(self):
+		numOfRows = self.tableWidget.rowCount()
+		LastRowName = self.tableWidget.item(numOfRows - 1, 0)
+		LastRowDefinition = self.tableWidget.item(numOfRows - 1, 1)
+
+		if (not LastRowName or LastRowName.text().isEmpty()) and \
+		   (not LastRowDefinition or LastRowDefinition.text().isEmpty()):
+			if numOfRows > 2:
+				preLastRowName = self.tableWidget.item(numOfRows - 2, 0)
+				preLastRowDefinition = self.tableWidget.item(numOfRows - 2, 1)
+				if (not preLastRowName or preLastRowName.text().isEmpty()) and \
+				   (not preLastRowDefinition or preLastRowDefinition.text().isEmpty()):
+					self.tableWidget.removeRow(numOfRows - 1)
+					self.updateTable()
+		else:
+			self.tableWidget.insertRow(numOfRows)
+
+		self.definitions = []
+
+		for i in range(self.tableWidget.rowCount()):
+			name = self.tableWidget.item(i, 0)
+			defn = self.tableWidget.item(i, 1)
+			if name and defn:
+				self.definitions.append((str(name.text()), str(defn.text())))
+
+		self.importWorker.definitions = self.definitions
+
+	def filldataToTable(self, defns):
+		self.tableWidget.clearContents()
+		while self.tableWidget.rowCount() > 1:
+			self.tableWidget.removeRow(self.tableWidget.rowCount() - 1)
+
+		for i in range(len(defns)):
+			newName = QTableWidgetItem(defns[i][0])
+			self.tableWidget.setItem(i, 0, newName)
+			newDefn = QTableWidgetItem(defns[i][1])
+			self.tableWidget.setItem(i, 1, newDefn)
+
 	def deterministicChosen(self):
 		self.interpolationBox.setDisabled(True)
 		self.number_of_runs.setDisabled(True)
@@ -616,10 +736,12 @@ class MainWindow(QtGui.QMainWindow):
 	def updateSimulationProgress(self):
 		self.progress_bar_simulation.setValue(self.progress_bar_simulation.value() + self.step)
 
-	def checkRates(self):
-		if Import.checkRates(str(self.textBox.toPlainText())):
-			if self.maxTimeEdit.text():
-				self.compute_simulation_button.setDisabled(False)
+	def cannotSimulate(self):
+		self.compute_simulation_button.setDisabled(True)
+
+	def ableToSimulate(self):
+		if self.maxTimeEdit.text():
+			self.compute_simulation_button.setDisabled(False)
 		else:
 			self.compute_simulation_button.setDisabled(True)
 
@@ -641,7 +763,7 @@ class MainWindow(QtGui.QMainWindow):
 			if maxTime != 1:
 				self.step = (10000/(maxTime-1))/self.simulationWorker.numberOfRuns
 			self.simulationWorker.max_time = maxTime
-			if Import.checkRates(str(self.textBox.toPlainText())):
+			if self.importWorker.enoughRates:
 				self.compute_simulation_button.setDisabled(False)
 		else:
 			self.compute_simulation_button.setDisabled(True)
@@ -656,33 +778,73 @@ class MainWindow(QtGui.QMainWindow):
 			logInfo = time.ctime() + " ~ Simulation interrupted.\n\n"
 			self.saveToLog(DELIMITER + logInfo)
 
-	def checkRules(self):
+	def clearErrorFormat(self):
 		noErroFormat = QtGui.QTextCharFormat()
 		noErroFormat.setUnderlineStyle(QTextCharFormat.NoUnderline)
 
-		if self.oldPlainText != self.textBox.toPlainText():
-			self.oldPlainText = self.textBox.toPlainText()
-			self.statusBar().clearMessage()
-			self.rulesAreCorrect, error = Import.analyseRules(self.textBox.toPlainText())
-			self.cursor = self.textBox.textCursor()
-			self.cursor.setPosition(QTextCursor.Start)
-			self.cursor.movePosition(QTextCursor.End, 1)
-			self.cursor.mergeCharFormat(noErroFormat)
+		self.cursor.setPosition(QTextCursor.Start)
+		self.cursor.movePosition(QTextCursor.End, 1)
+		self.cursor.mergeCharFormat(noErroFormat)
 
-			if not self.rulesAreCorrect:
-				errorFormat = QtGui.QTextCharFormat()
-				errorFormat.setUnderlineStyle(QtGui.QTextCharFormat.WaveUnderline)
-				errorFormat.setUnderlineColor(QtGui.QColor("red"))
+	def modelIsCorrect(self):
+		self.rulesAreCorrect = self.importWorker.isOK
+		self.initsAreCorrect = self.importWorker.isOK
+		if self.stateWorker.stateSpaceFile:
+			self.computeStateSpace_button.setDisabled(False)
 
-				self.cursor.setPosition(error[0])
-				for i in range(error[0], error[1]):
-					self.cursor.movePosition(QtGui.QTextCursor.NextCharacter, 1)
-				self.cursor.mergeCharFormat(errorFormat)
+		self.simulationWorker.reactions = self.importWorker.reactions
+		self.simulationWorker.originiInitialState = self.importWorker.init_state
+		self.simulationWorker.rates = self.importWorker.rates
 
-				self.statusBar().showMessage(self.tr(error[2]))
-				self.computeStateSpace_button.setDisabled(True)
-			elif self.stateWorker.stateSpaceFile:
-				self.computeStateSpace_button.setDisabled(False)
+		self.stateWorker.reactions = self.importWorker.reactions
+		self.stateWorker.originiInitialState = self.importWorker.init_state
+
+		self.statusBar().clearMessage()
+		self.cursor = self.textBox.textCursor()
+		self.clearErrorFormat()
+
+		self.cursor = self.initsBox.textCursor()
+		self.clearErrorFormat()
+
+	def syntaxErrorsInRules(self):
+		errorFormat = QtGui.QTextCharFormat()
+		errorFormat.setUnderlineStyle(QtGui.QTextCharFormat.WaveUnderline)
+		errorFormat.setUnderlineColor(QtGui.QColor("red"))
+
+		self.statusBar().clearMessage()
+		error = self.importWorker.message
+		
+		self.rulesAreCorrect = self.importWorker.isOK
+		self.cursor = self.textBox.textCursor()
+		self.clearErrorFormat()
+
+		self.cursor.setPosition(error[0])
+		for i in range(error[0], error[1]):
+			self.cursor.movePosition(QtGui.QTextCursor.NextCharacter, 1)
+		self.cursor.mergeCharFormat(errorFormat)
+
+		self.statusBar().showMessage(self.tr(error[2]))
+		self.computeStateSpace_button.setDisabled(True)
+
+	def syntaxErrorsInInits(self):
+		errorFormat = QtGui.QTextCharFormat()
+		errorFormat.setUnderlineStyle(QtGui.QTextCharFormat.WaveUnderline)
+		errorFormat.setUnderlineColor(QtGui.QColor("red"))
+
+		self.statusBar().clearMessage()
+		error = self.importWorker.message
+		
+		self.initsAreCorrect = self.importWorker.isOK
+		self.cursor = self.initsBox.textCursor()
+		self.clearErrorFormat()
+
+		self.cursor.setPosition(error[0])
+		for i in range(error[0], error[1]):
+			self.cursor.movePosition(QtGui.QTextCursor.NextCharacter, 1)
+		self.cursor.mergeCharFormat(errorFormat)
+
+		self.statusBar().showMessage(self.tr(error[2]))
+		self.computeStateSpace_button.setDisabled(True)
 
 	def setCustomFontSize(self):
 		self.fontSize = FontSize(self)#, self.textBox.fontPointSize())
@@ -725,6 +887,11 @@ class MainWindow(QtGui.QMainWindow):
 		self.textBox.selectAll()
 		self.textBox.setFontPointSize(size)
 		self.textBox.setTextCursor(cursor)
+
+		cursor = self.initsBox.textCursor()
+		self.initsBox.selectAll()
+		self.initsBox.setFontPointSize(size)
+		self.initsBox.setTextCursor(cursor)
 
 	def showGraph(self):
 		useHTMLvisual = True
@@ -769,7 +936,7 @@ class MainWindow(QtGui.QMainWindow):
 	def startReachability(self):
 		self.progress_bar_reachability.setRange(0,0)
 		checkWheterReachable = True
-		orderedAgents = self.stateWorker.uniqueAgents
+		orderedAgents = map(str, self.stateWorker.uniqueAgents)
 		vector = [0] * len(orderedAgents)
 
 		if self.checkAgentFields():
@@ -838,7 +1005,7 @@ class MainWindow(QtGui.QMainWindow):
 	def addDynamicWidget(self):
 		self.resetReachIndicators()
 		self.addButton.deleteLater()
-		self.scrollLayout.addRow(FillAgentToBeFound(self.stateWorker.uniqueAgents, self))
+		self.scrollLayout.addRow(FillAgentToBeFound(map(str, self.stateWorker.uniqueAgents), self))
 
 		self.addButton = QtGui.QPushButton('+')
 		self.addButton.setMaximumWidth(25)
@@ -875,10 +1042,6 @@ class MainWindow(QtGui.QMainWindow):
 		self.spaceTimer.start(1000)
 		self.stateSpaceEstimate = time.strftime("%H:%M:%S", time.gmtime(Gen.estimateComputation(3, 10, 10)))
 
-	def stateReactionsTimer(self):
-		self.reactionsTimer.start(1000)
-		self.reactionsEstimate = time.strftime("%H:%M:%S", time.gmtime(Implicit.estimateComputation(10)))
-
 	def stateSpaceCanceled(self):
 		self.num_of_states.setText('No. of States:'.ljust(30) + 'n\\a' )
 		self.num_of_edges.setText('No. of Edges:'.ljust(30) + 'n\\a' )
@@ -891,6 +1054,7 @@ class MainWindow(QtGui.QMainWindow):
 
 	def enableSaveReactions(self):
 		self.save_reactions_button.setDisabled(False)
+		self.num_of_reactions.setText('No. of Reactions:'.ljust(30) + str(len(self.importWorker.reactions)) )
 
 	def progressbarStatesOnStart(self): 
 		self.stateSpace_start_time = time.time()
@@ -916,13 +1080,20 @@ class MainWindow(QtGui.QMainWindow):
 		file = QFileDialog.getOpenFileName(self, 'Choose model', directory = '../Examples/', filter ="BCS (*.bcs);;All types (*)")
 		if file:
 			file = open(file, "r")
-			self.textBox.setPlainText(file.read())
-			self.compute_conflicts.setDisabled(False)
-			if self.stateWorker.stateSpaceFile and self.rulesAreCorrect:
+			rules, inits, defns = Import.loadModel(file)
+			self.textBox.setPlainText(rules)
+			self.initsBox.setPlainText(inits)
+			self.filldataToTable(defns) # ToDO
+
+			if self.stateWorker.stateSpaceFile and self.rulesAreCorrect and self.initsAreCorrect:
 				self.computeStateSpace_button.setDisabled(False)
 			# log
 			logInfo = time.ctime() + " ~ Imported model:\n\n"
 			self.saveToLog(DELIMITER + logInfo + file.name + "\n")
+
+			self.num_of_states.setText('No. of States:'.ljust(30))
+			self.num_of_edges.setText('No. of Edges:'.ljust(30))
+			self.num_of_reactions.setText('No. of Reactions:'.ljust(30))
 
 	def load_state_space(self):
 		file = QFileDialog.getOpenFileName(self, 'Choose file', filter ="JSON (*.json);;All types (*)")
@@ -934,6 +1105,10 @@ class MainWindow(QtGui.QMainWindow):
 			logInfo = time.ctime() + " ~ Loaded file for state space:\n\n"
 			self.saveToLog(DELIMITER + logInfo + file + "\n")
 			return True
+
+			self.num_of_states.setText('No. of States:'.ljust(30))
+			self.num_of_edges.setText('No. of Edges:'.ljust(30))
+			self.num_of_reactions.setText('No. of Reactions:'.ljust(30))
 		return False
 
 	def save_stateSpace(self):
@@ -947,7 +1122,7 @@ class MainWindow(QtGui.QMainWindow):
 			# log
 			logInfo = time.ctime() + " ~ Exported state space to file:\n\n"
 			self.saveToLog(DELIMITER + logInfo + file + "\n")
-			if self.stateWorker.modelFile and self.rulesAreCorrect:
+			if self.stateWorker.modelFile and self.rulesAreCorrect and self.initsAreCorrect:
 				self.computeStateSpace_button.setDisabled(False)
 
 	def save_reactions(self):
@@ -957,7 +1132,7 @@ class MainWindow(QtGui.QMainWindow):
 			if not os.path.splitext(str(file))[1]:
 				file = str(file) + ".txt"
 			f = open(file,'w')
-			f.write("\n".join(self.stateWorker.reactions))
+			f.write("\n".join(map(str, self.importWorker.reactions)))
 			f.close()
 			# log
 			logInfo = time.ctime() + " ~ Exported reactions to file:\n\n"
@@ -984,26 +1159,27 @@ class MainWindow(QtGui.QMainWindow):
 			if not os.path.splitext(str(file))[1]:
 				file = str(file) + ".bcs"
 			with open(file, 'w') as file:
-				file.write(self.textBox.toPlainText())
+				output = Import.saveModel(self.textBox.toPlainText(), self.initsBox.toPlainText(), self.definitions)
+				file.write(output)
 			# log
 			logInfo = time.ctime() + " ~ Saved model to file:\n\n"
 			self.saveToLog(DELIMITER + logInfo + file.name + "\n")
 
 	def copySelection(self):
-		self.textBox.copy()
+		self.focusWidget().copy()
 
 	def pasteText(self):
-		self.textBox.paste()
+		self.focusWidget().paste()
 
 	def clearText(self):
 		self.textBox.clear()
-		self.textBox.setText("# rules\n\n\n# initial state\n")
+		self.initsBox.clear()
 
 	def undoText(self):
-		self.textBox.undo()
+		self.focusWidget().undo()
 
 	def redoText(self):
-		self.textBox.redo()
+		self.focusWidget().redo()
 
 	def findTextDialog(self):
 		self.textBox.moveCursor(QTextCursor.Start)
@@ -1033,13 +1209,6 @@ class MainWindow(QtGui.QMainWindow):
 			self.saveToLog('No. of States:'.ljust(30) + str(len(self.stateWorker.states)) + "\n")
 			self.saveToLog('No. of Edges:'.ljust(30) + str(len(self.stateWorker.edges)) + "\n")
 
-	def resizeEvent(self, event):
-		widthShrint = self.width() - appWidth
-		heightShrink = self.height() - appHeight 
-		self.textBox.resize(590 + widthShrint, 430 + heightShrink)
-		self.tabs.move(605 + widthShrint, 30)
-		self.tabs.resize(320, 430 + heightShrink)
-
 	def quitThreads(self):
 		self.analysisWorker.TheWorker.quit()
 		self.analysisWorker.TheWorker.wait()
@@ -1052,6 +1221,22 @@ class MainWindow(QtGui.QMainWindow):
 		file = open('session.log', mode)
 		file.write(text)
 		file.close()
+
+def removeFiles():
+	try:
+		os.remove("graphReach.html")
+	except OSError:
+		pass
+
+	try:
+		os.remove("graph.html")
+	except OSError:
+		pass
+
+	try:
+		os.remove("graph.svg")
+	except OSError:
+		pass
 
 def handleIntSignal(signum, frame):
 	"""Handler for the SIGINT signal.
@@ -1078,8 +1263,8 @@ app.setWindowIcon(app_icon)
 screen_rect = app.desktop().screenGeometry()
 screenWidth, screenHeight = screen_rect.width(), screen_rect.height()
 
-appWidth = 930
-appHeight = 485
+appWidth = 950
+appHeight = 620
 
 QtCore.qInstallMsgHandler(handler)
 
@@ -1089,12 +1274,8 @@ main.setWindowTitle('BCSgen')
 main.show()
 
 app.exec_()
-try:
-	os.remove("graphReach.html")
-	os.remove("graph.html")
-	os.remove("graph.svg")
-except OSError:
-	pass
+
+removeFiles()
 
 main.quitThreads()
 

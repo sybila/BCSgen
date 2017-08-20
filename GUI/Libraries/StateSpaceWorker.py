@@ -5,7 +5,6 @@ import numpy as np
 
 sys.path.append(os.path.abspath('../../Core/'))
 import State_space_generator as Gen
-import Explicit_reaction_network_generator as Explicit
 import Import as Import
 
 """
@@ -17,7 +16,6 @@ class StateSpaceWorker(QtCore.QObject):
 	taskFinished = QtCore.pyqtSignal()
 	showMostStates = QtCore.pyqtSignal()
 	NumOfStates = QtCore.pyqtSignal()
-	reactionsDone = QtCore.pyqtSignal()
 
 	def __init__(self, model, parent=None):
 		QtCore.QObject.__init__(self, parent)
@@ -32,20 +30,17 @@ class StateSpaceWorker(QtCore.QObject):
 		self.uniqueAgents = None
 		self.states = None
 		self.edges = None
-		self.initialState = None
+		self.reactions = []
+		self.initialState = []
+		self.originiInitialState = []
 		
 		self.TheWorker = QtCore.QThread()
 		self.moveToThread(self.TheWorker)
 		self.TheWorker.start()
 
 	def computeStateSpace(self):
-		rules, initialState, rates = Import.import_rules(str(self.modelFile.toPlainText()))
-		reactionGenerator = Explicit.Compute()
-		self.reactions, rates = reactionGenerator.computeReactions(rules)
-		self.reactionsDone.emit()
-
-		initialState = Explicit.sortInitialState(initialState)
-		self.VN = Gen.createVectorNetwork(self.reactions, initialState)
+		self.initialState = self.originiInitialState
+		self.VN = Gen.createVectorNetwork(self.reactions, self.initialState)
 		bound = self.VN.getBound()
 
 		self.mostNumberOfStates = Gen.estimateNumberOfStates(bound, len(self.VN.getTranslations()))
@@ -58,7 +53,7 @@ class StateSpaceWorker(QtCore.QObject):
 		Gen.printStateSpace(self.states, self.edges, self.VN.getTranslations(), self.stateSpaceFile, self.VN.getState())
 		self.lenStates.setText('No. of States:'.ljust(30) + str(len(self.states)))
 		self.lenEdges.setText('No. of Edges:'.ljust(30) + str(len(self.edges)))
-		self.lenReactions.setText('No. of Reactions:'.ljust(30) + str(len(self.reactions)))
+		#self.lenReactions.setText('No. of Reactions:'.ljust(30) + str(len(self.reactions)))
 
 		self.uniqueAgents = self.VN.getTranslations()
 		self.taskFinished.emit()

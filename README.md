@@ -1,4 +1,4 @@
-# BCSgen <img src="https://gitlab.fi.muni.cz/xtrojak/BCSgen/raw/f86b612af8a8d1f53eefad9ed680b1666398aa5c/GUI/icons/128x128.png" width="64">  
+# BCSgen <img src="https://raw.githubusercontent.com/sybila/BCSgen/72-pre-processing-of-rules/GUI/icons/128x128.png" width="64">  
 
 Biochemical Space language software tool
 

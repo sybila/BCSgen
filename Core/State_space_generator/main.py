@@ -1,7 +1,6 @@
 import os
 import sys
 from Vector_network import *
-import Interpreter_of_BCSL as BCSL
 import numpy as np
 import json
 import itertools
@@ -16,29 +15,17 @@ def toVector(orderedAgents, agents):
 def reactionToVector(reaction, orderedAgents):
 	return Vector_reaction(toVector(orderedAgents, reaction[0]), toVector(orderedAgents, reaction[1]))
 
-def parseEquation(equation):
-	return map(lambda side: collections.Counter(side.split(" + ")), equation.split(" => "))
-
-def collectAgents(reaction):
-	return set(reaction[0]) | set(reaction[1])
-
 def createVectorNetwork(reactions, initialState):
-	orderedAgents = set()
-	parsedReactions = list()
-	for equation in reactions:
-		reaction = parseEquation(equation)
-		orderedAgents.update(collectAgents(reaction))
-		parsedReactions.append(reaction)
+	parsedReactions = map(lambda reaction: reaction.getCounteredSides(), reactions)
 
+	orderedAgents = set.union(*map(lambda reaction: set(reaction.seq), reactions))
 	orderedAgents.update(set(initialState))
 	orderedAgents = list(orderedAgents)
 
 	state = toVector(orderedAgents, collections.Counter(initialState))
 	vectors = map(lambda reaction: reactionToVector(reaction, orderedAgents), parsedReactions)
 
-	VN = Vector_network(tuple(state), vectors, orderedAgents)
-
-	return VN
+	return Vector_network(tuple(state), vectors, orderedAgents)
 
 """
 Creates State from given vector and ordered unique agents
@@ -48,7 +35,10 @@ Creates State from given vector and ordered unique agents
 """
 def createState(state, orderedAgents):
 	multiset = sum(map(lambda i: [orderedAgents[i]] * state[i], range(len(orderedAgents))), [])
-	return BCSL.State(multiset, "|".join(map(lambda item: str(item), state)))
+	return ("|".join(map(lambda item: str(item), state)), collections.Counter(multiset))
+
+def getDictAgents(agents):
+	return dict([(str(k), str(v)) for k, v in agents.items()])
 
 """
 Prints state space to given output files
@@ -61,19 +51,18 @@ Prints state space to given output files
 def printStateSpace(states, transitions, orderedAgents, stateSpaceFile, initialState):
 	nodes = dict()
 	edges = dict()
-	for state in map(lambda s: createState(s, orderedAgents), states):
-		nodes[state.getID()] = state.getDictAgents()
+	for ID, agents in map(lambda s: createState(s, orderedAgents), states):
+		nodes[ID] = getDictAgents(agents)
 
 	transitions = list(transitions)
 
 	for i in range(len(transitions)):
 		edges[i+1] = transitions[i].getDict()
 
-	data = {'nodes' : nodes, 'edges' : edges, 'unique' : orderedAgents, 'initial' : "|".join(map(str, initialState))}
+	data = {'nodes' : nodes, 'edges' : edges, 'unique' : map(str, orderedAgents), 'initial' : "|".join(map(str, initialState))}
 
 	with open(stateSpaceFile, 'w') as f:
 		json.dump(data, f, indent=4)
-
 
 """
 Estimates how long the computation should take.

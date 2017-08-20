@@ -32,7 +32,7 @@ class MyHighlighter(QtGui.QSyntaxHighlighter):
 		specialChars = QtGui.QTextCharFormat()
 		specialChars.setForeground( QtGui.QColor(255,50,50) ) #Qt.red)
 		specialChars.setFontWeight(QtGui.QFont.Bold)
-		rule = HighlightingRule("[=>+]", specialChars)
+		rule = HighlightingRule("[<=>+]", specialChars)
 		self.highlightingRules.append(rule)
 
 	def highlightBlock(self, text):

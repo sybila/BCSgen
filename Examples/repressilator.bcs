@@ -1,11 +1,11 @@
-# rules
-None::rep + X::rep => None::rep @ 0.05*'X::rep'
-None::rep + Y::rep => None::rep @ 0.12*'Y::rep'
-None::rep + Z::rep => None::rep @ 0.05*'Z::rep'
-None::rep => None::rep + X::rep @ 1/(1+('Z::rep'/5)**4)
-None::rep => None::rep + Y::rep @ 1/(1+('X::rep'/5)**4)
-None::rep => None::rep + Z::rep @ 1/(1+('Y::rep'/5)**4)
+#! rules
+X::rep => @ 0.05*'X::rep'
+Y::rep => @ 0.12*'Y::rep'
+Z::rep => @ 0.05*'Z::rep'
+ => X::rep @ 1/(1+('Z::rep'/5)**4)
+ => Y::rep @ 1/(1+('X::rep'/5)**4)
+ => Z::rep @ 1/(1+('Y::rep'/5)**4)
 
-# initial state
+#! inits
 1 X::rep
 1 Y::rep

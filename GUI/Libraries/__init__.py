@@ -9,3 +9,4 @@ from Highlighter import MyHighlighter
 from FillAgentToBeFound import FillAgentToBeFound
 from DisplayConflicts import DisplayConflicts
 from AnalysisWorker import AnalysisWorker
+from ImportWorker import ImportWorker

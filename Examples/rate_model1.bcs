@@ -1,7 +1,7 @@
-# rules
+#! rules
 mRNA::cyt => KaiC(S{u})::cyt + KaiB::cyt + mRNA::cyt @ 10
 KaiC::cyt + KaiB::cyt => KaiC.KaiB::cyt @ 5*('KaiC(S{u})::cyt' + 'KaiC(S{p})::cyt')
 KaiC(S{u}).KaiB::cyt => KaiC(S{p}).KaiB::cyt @ 3*'KaiB.KaiC(S{u})::cyt'
 
-# initial state
+#! inits
 1 mRNA::cyt
