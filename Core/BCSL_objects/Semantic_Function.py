@@ -2,7 +2,6 @@ from Rule import *
 from Complex import *
 from Structure import *
 from Atomic import *
-from Signature import *
 
 """
 Static analysis for obtaining signatures
