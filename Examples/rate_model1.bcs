@@ -5,3 +5,7 @@ KaiC(S{u}).KaiB::cyt => KaiC(S{p}).KaiB::cyt @ 3*'KaiB.KaiC(S{u})::cyt'
 
 #! inits
 1 mRNA::cyt
+
+#! definitions
+A = B.C
+abc = bcs

@@ -5,9 +5,13 @@ KaiC(S{a}).KaiB::cyt + KaiA(S{u})::cyt => KaiC(S{a}).KaiB.KaiA(S{u})::cyt
 KaiC.KaiB.KaiA(S{u})::cyt => KaiC.KaiB.KaiA(S{p})::cyt
 KaiC(T{i}).KaiB.KaiA(S{p})::cyt => KaiC(T{a}).KaiB.KaiA(S{p})::cyt
 KaiC.KaiB.KaiA::cyt => KaiC::cyt + KaiB::cyt + KaiA::cyt
-KaiC(S{a}|T{a}).KaiB.KaiA(S{p})::cyt + KaiB::cyt => KaiC(S{a}|T{a}).KaiB.KaiA(S{p}).KaiB::cyt
+KaiC(S{a},T{a}).KaiB.KaiA(S{p})::cyt + KaiB::cyt => KaiC(S{a},T{a}).KaiB.KaiA(S{p}).KaiB::cyt
 
 #! inits
 1 KaiC(S{i},T{i})::cyt
 2 KaiB::cyt
 1 KaiA(S{u})::cyt
+
+#! definitions
+A = B.C
+abc = bcs

@@ -9,3 +9,5 @@ KaiC::cyt + KaiC.KaiC.KaiC.KaiB::cyt => KaiC.KaiC.KaiC.KaiC.KaiB::cyt
 #! inits
 4 KaiC(S{u})::cyt
 1 KaiB::cyt
+
+#! definitions

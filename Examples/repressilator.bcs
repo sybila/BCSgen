@@ -9,3 +9,7 @@ Z::rep => @ 0.05*'Z::rep'
 #! inits
 1 X::rep
 1 Y::rep
+
+#! definitions
+A = B.C
+abc = bcs
