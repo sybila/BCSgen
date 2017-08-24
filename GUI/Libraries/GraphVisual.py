@@ -18,7 +18,7 @@ class GraphVisual(QtWebKit.QWebView):
 
 		path = os.path.dirname(os.path.abspath(__file__))
 
-		self.url = Visual.newGraph(jsonSpace, path, html, screenWidth, screenHeight)
+		self.url = Visual.newGraph(jsonSpace, "file:///" + path, html, screenWidth, screenHeight)
 
 		self.setWindowModality(QtCore.Qt.ApplicationModal)
 
@@ -33,7 +33,7 @@ class ReachableGraphVisual(QtWebKit.QWebView):
 
 		path = os.path.dirname(os.path.abspath(__file__))
 
-		self.url = Visual.newReachableGraph(jsonSpace, "graphReach.html", path, screenWidth, screenHeight, satisfyingStates)
+		self.url = Visual.newReachableGraph(jsonSpace, "graphReach.html", "file:///" + path, screenWidth, screenHeight, satisfyingStates)
 
 		# alternative solution until bug with javascript will be fixed:
 		# show the graph in browser :)
