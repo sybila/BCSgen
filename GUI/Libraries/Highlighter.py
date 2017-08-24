@@ -26,7 +26,7 @@ class MyHighlighter(QtGui.QSyntaxHighlighter):
 
 		number = QtGui.QTextCharFormat()
 		number.setForeground( QtGui.QColor(255,0,255) ) #Qt.magenta)
-		rule = HighlightingRule("[0-9]", number)    
+		rule = HighlightingRule(r'\b[0-9]+\b', number)
 		self.highlightingRules.append(rule)
 
 		specialChars = QtGui.QTextCharFormat()
