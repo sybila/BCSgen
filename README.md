@@ -11,7 +11,7 @@ This tool serves for interpreting basic functionality to maintain Biochemical Sp
 The most proper way is to run the [binary file](https://gitlab.fi.muni.cz/xtrojak/BCSgen/tags/v2.1) with __Graphical User Interface__ suitable for your platform.
 
 <div align="center">
-  <img src="http://i.imgur.com/7g2zp9Z.png"><br><br>
+  <img src="http://i.imgur.com/KFptuX3.png"><br><br>
 </div>
 
 To obtain __state space__:
@@ -22,6 +22,12 @@ To obtain __state space__:
 To compute __reachability__:
 * set entities (with their stoichiometry),
 * press Check reachability button.
+
+To __simulate__ the model:
+* choose deterministic or stochastic variant,
+* set maximum computation time in seconds,
+* (for stochastic option, set number of runs decide whether apply interpolation)
+* press Simulation button.
 
 ---
 
