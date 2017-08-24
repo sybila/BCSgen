@@ -16,7 +16,15 @@ class Reaction(object):
 		return str(self) < str(other)
 
 	def __eq__(self, other):
-		return self.seq == other.seq and self.I == other.I
+		return self.I == other.I and \
+		self.getCounterLeft() == other.getCounterLeft() and \
+		self.getCounterRight() == other.getCounterRight()
 
 	def getCounteredSides(self):
-		return [collections.Counter(self.seq[:self.I + 1]), collections.Counter(self.seq[self.I + 1:])]
+		return [self.getCounterLeft(), self.getCounterRight()]
+
+	def getCounterLeft(self):
+		return collections.Counter(self.seq[:self.I + 1])
+
+	def getCounterRight(self):
+		return collections.Counter(self.seq[self.I + 1:])

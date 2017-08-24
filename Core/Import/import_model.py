@@ -160,8 +160,8 @@ def parseModel(rules, inits):
 Ground forms translation of rules
 """
 
-def preprocessRules(rules, initial_state, rates):
-	createdRules, atomicSignatures, structureSignatures, inits = BCSL.createRules(rules, initial_state)
+def preprocessRules(rules, initial_state, rates, defns):
+	createdRules, atomicSignatures, structureSignatures, inits = BCSL.createRules(rules, initial_state, defns)
 	reactions, rates = BCSL.createReactions(createdRules, atomicSignatures, structureSignatures, rates)
 	return reactions, rates, inits
 
