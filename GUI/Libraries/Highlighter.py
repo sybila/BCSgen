@@ -19,11 +19,6 @@ class MyHighlighter(QtGui.QSyntaxHighlighter):
 		self.parent = parent
 		self.highlightingRules = []
 
-		comment = QtGui.QTextCharFormat()
-		comment.setForeground( QtGui.QColor(0,153,0) ) #Qt.darkGreen)
-		rule = HighlightingRule("#(.*)$", comment)
-		self.highlightingRules.append(rule)
-
 		number = QtGui.QTextCharFormat()
 		number.setForeground( QtGui.QColor(255,0,255) ) #Qt.magenta)
 		rule = HighlightingRule(r'\b[0-9]+\b', number)
@@ -33,6 +28,11 @@ class MyHighlighter(QtGui.QSyntaxHighlighter):
 		specialChars.setForeground( QtGui.QColor(255,50,50) ) #Qt.red)
 		specialChars.setFontWeight(QtGui.QFont.Bold)
 		rule = HighlightingRule("[<=>+]", specialChars)
+		self.highlightingRules.append(rule)
+
+		comment = QtGui.QTextCharFormat()
+		comment.setForeground( QtGui.QColor(0,153,0) ) #Qt.darkGreen)
+		rule = HighlightingRule("#(.*)$", comment)
 		self.highlightingRules.append(rule)
 
 	def highlightBlock(self, text):
