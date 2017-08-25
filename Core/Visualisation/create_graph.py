@@ -155,6 +155,7 @@ firstpart_1 = \
 <head>
     <title>Network | Interaction events</title>
 
+    <script src="**FULLPATH**/.vis/es5-shim.min.js"></script>
     <script type="text/javascript" src="**FULLPATH**/.vis/vis.js"></script>
     <link href="**FULLPATH**/.vis/vis.css" rel="stylesheet" type="text/css"/>
 
@@ -276,7 +277,6 @@ secondpart_2 = '''px;height:100%;text-align:center;border:0px solid #000;">' + t
 
 </script>
 
-<script src="../../googleAnalytics.js"></script>
 </body>
 </html>
 '''
