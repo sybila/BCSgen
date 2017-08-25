@@ -4,6 +4,7 @@ import os.path
 import numpy as np
 from PyQt4 import QtGui, QtCore, QtWebKit
 from PyQt4.QtGui import *
+from PyQt4.QtWebKit import *
 import signal
 
 sys.path.append(os.path.abspath('../Core/'))
@@ -898,6 +899,7 @@ class MainWindow(QtGui.QMainWindow):
 		#if len(self.stateWorker.states) > 100:
 		#	useHTMLvisual = False
 		self.graph = GraphVisual(self.stateWorker.stateSpaceFile, self.screenWidth - 100, self.screenHeight - 100, useHTMLvisual)
+		self.graph.show()
 
 	def showReachableStates(self):
 		self.graphReach = ReachableGraphVisual(self.stateWorker.stateSpaceFile, self.screenWidth - 100, self.screenHeight - 200, self.analysisWorker.satisfyingStates)
@@ -1259,6 +1261,8 @@ app_icon.addFile('icons/32x32.png', QtCore.QSize(32,32))
 app_icon.addFile('icons/48x48.png', QtCore.QSize(48,48))
 app_icon.addFile('icons/128x128.png', QtCore.QSize(128,128))
 app.setWindowIcon(app_icon)
+
+QWebSettings.globalSettings().setAttribute(QWebSettings.DeveloperExtrasEnabled, True)
 
 screen_rect = app.desktop().screenGeometry()
 screenWidth, screenHeight = screen_rect.width(), screen_rect.height()

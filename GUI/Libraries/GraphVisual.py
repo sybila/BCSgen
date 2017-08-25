@@ -20,11 +20,10 @@ class GraphVisual(QtWebKit.QWebView):
 
 		self.url = Visual.newGraph(jsonSpace, "file:///" + path, html, screenWidth, screenHeight)
 
-		self.setWindowModality(QtCore.Qt.ApplicationModal)
+		#self.setWindowModality(QtCore.Qt.ApplicationModal)
 
 		self.setFixedSize(screenWidth,screenHeight)
 		self.load(QtCore.QUrl(self.url))
-		self.show()
 
 
 class ReachableGraphVisual(QtWebKit.QWebView):
