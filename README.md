@@ -8,7 +8,7 @@ This tool serves for interpreting basic functionality to maintain Biochemical Sp
 
 ## Graphical User Interface
 
-The most proper way is to run the [binary file](https://gitlab.fi.muni.cz/xtrojak/BCSgen/tags/v2.1) with __Graphical User Interface__ suitable for your platform.
+The most proper way is to run the [binary file](https://github.com/sybila/BCSgen/releases/tag/v2.2) with __Graphical User Interface__ suitable for your platform.
 
 <div align="center">
   <img src="http://i.imgur.com/KFptuX3.png"><br><br>
