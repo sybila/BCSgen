@@ -87,6 +87,10 @@ def write_size(screenWidth, screenHeight, output_file):
         file.write("            width: " + str(screenWidth-50) + "px;\n")
         file.write("            height: " + str(screenHeight-100) + "px;")
 
+def write_initial(init, output_file, mode):
+    with open(output_file, mode) as file:
+        file.write("    var fromNode = " + str(init) + ";\n")
+
 def createHTMLGraph(state_space_file, output_file, path, screenWidth, screenHeight):
 
     write_part(firstpart_1, output_file, "w")
@@ -115,8 +119,12 @@ def createHTMLGraph(state_space_file, output_file, path, screenWidth, screenHeig
     for edge_id, value in data['edges'].iteritems():
     	From, To = create_reaction(data['nodes'][value['from']], data['nodes'][value['to']])
     	write_reaction(edge_id, IDs[value['from']], IDs[value['to']], From, To, output_file)
+
+    initial = IDs[data['initial']]
     		
     write_part(secondpart_1, output_file, "a")
+    write_initial(initial, output_file, "a")
+    write_part(secondpart_1_2, output_file, "a")
     write_part(str(screenWidth - 50), output_file, "a")
     write_part(secondpart_2, output_file, "a")
 
@@ -238,7 +246,9 @@ secondpart_1 = '''
 	};
     var network = new vis.Network(container, data, options);
 	var stabil = true;
+'''
 
+secondpart_1_2 = '''
     network.on("click", function (params) {
         params.event = "[original event]";
 		var tmp = " ";
@@ -269,6 +279,17 @@ secondpart_2 = '''px;height:100%;text-align:center;border:0px solid #000;">' + t
 		stabil = false;
 	};
 	});
+
+    clickedNode = nodes.get(fromNode);
+    clickedNode.color = {
+            border: 'orange',
+            background: 'orange',
+            highlight: {
+                border: 'orange',
+                background: 'orange'
+            }
+        }
+        nodes.update(clickedNode);
 
 	network.on("doubleClick", function (params) {
         params.event = "[original event]";
