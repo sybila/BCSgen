@@ -1,11 +1,11 @@
 #! rules
-mRNA::cyt => KaiC(S{u})::cyt + KaiB::cyt + mRNA::cyt @ 10
-KaiC::cyt + KaiB::cyt => KaiC.KaiB::cyt @ 5*('KaiC(S{u})::cyt' + 'KaiC(S{p})::cyt')
+mRNA::cyt => KaiC(S{u})::cyt + KaiB::cyt + mRNA::cyt @ 'k1'
+KaiC::cyt + KaiB::cyt => KaiC.KaiB::cyt @ 'k2'*('KaiC(S{u})::cyt' + 'KaiC(S{p})::cyt')
 KaiC(S{u}).KaiB::cyt => KaiC(S{p}).KaiB::cyt @ 3*'KaiB.KaiC(S{u})::cyt'
 
 #! inits
 1 mRNA::cyt
 
 #! definitions
-A = B.C
-abc = bcs
+k1 = 10
+k2 = 5

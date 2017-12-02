@@ -1159,7 +1159,7 @@ class MainWindow(QtGui.QMainWindow):
 		#self.runningStates.setText(text + " / " + self.stateSpaceEstimate)
 		
 	def save_model(self):
-		file = QFileDialog.getSaveFileName(self, 'Choose model file', filter ="BCS (*.bcs);;All types (*)")
+		file = QFileDialog.getSaveFileName(self, 'Choose model file', directory = '../Examples/', filter ="BCS (*.bcs);;All types (*)")
 		if file:
 			if not os.path.splitext(str(file))[1]:
 				file = str(file) + ".bcs"

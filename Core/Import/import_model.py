@@ -162,8 +162,16 @@ Ground forms translation of rules
 
 def preprocessRules(rules, initial_state, rates, defns):
 	createdRules, atomicSignatures, structureSignatures, inits = BCSL.createRules(rules, initial_state, defns)
+	rates = replaceDefnsInRates(rates, defns)
 	reactions, rates = BCSL.createReactions(createdRules, atomicSignatures, structureSignatures, rates)
 	return reactions, rates, inits
+
+
+def replaceDefnsInRates(rates, defns):
+	for defn in defns:
+		for i in range(len(rates)):
+			rates[i] = rates[i].replace("\'" + defn[0] + "\'", defn[1])
+	return rates
 
 #####################################################################
 
