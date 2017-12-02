@@ -1,4 +1,5 @@
 from PyQt4 import QtGui, QtCore
+from copy import deepcopy
 
 """
 Class FillAgentToBeFound
@@ -13,14 +14,15 @@ class FillAgentToBeFound(QtGui.QWidget):
 		self.agent = QtGui.QLineEdit()
 		self.agent.textEdited.connect(self.textEdited)
 
-		completer = QtGui.QCompleter()
+		model = QtGui.QStringListModel()
+		model.setStringList(data)
+
+		completer = CustomQCompleter()
+		completer.setModel(model)
 		completer.setCaseSensitivity(QtCore.Qt.CaseInsensitive)
 
 		self.agent.setCompleter(completer)
-		model = QtGui.QStringListModel()
-		completer.setModel(model)
-		model.setStringList(data)
-
+		
 		self.stochio = QtGui.QLineEdit()
 		self.stochio.setMaximumWidth(30)
 		self.stochio.textEdited.connect(self.resetColor)
@@ -47,3 +49,39 @@ class FillAgentToBeFound(QtGui.QWidget):
 	def textEdited(self):
 		self.parent.resetReachIndicators()
 		self.agent.setStyleSheet("background-color : rgb(255, 255, 255);")
+
+
+class CustomQCompleter(QtGui.QCompleter):
+    def __init__(self, *args):
+        super(CustomQCompleter, self).__init__(*args)
+        self.local_completion_prefix = ""
+        self.source_model = None
+        self.filterProxyModel = QtGui.QSortFilterProxyModel(self)
+        self.usingOriginalModel = False
+
+    def setModel(self, model):
+        self.source_model = model
+        self.filterProxyModel = QtGui.QSortFilterProxyModel(self)
+        self.filterProxyModel.setSourceModel(self.source_model)
+        super(CustomQCompleter, self).setModel(self.filterProxyModel)
+        self.usingOriginalModel = True
+
+    def updateModel(self):
+        if not self.usingOriginalModel:
+            self.filterProxyModel.setSourceModel(self.source_model)
+
+        pattern = QtCore.QRegExp(self.local_completion_prefix,
+                                QtCore.Qt.CaseInsensitive,
+                                QtCore.QRegExp.FixedString)
+
+        self.filterProxyModel.setFilterRegExp(pattern)
+
+    def splitPath(self, path):
+        self.local_completion_prefix = path
+        self.updateModel()
+        if self.filterProxyModel.rowCount() == 0:
+            self.usingOriginalModel = False
+            self.filterProxyModel.setSourceModel(QtGui.QStringListModel([path]))
+            return [path]
+
+        return []
