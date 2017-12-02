@@ -801,6 +801,7 @@ class MainWindow(QtGui.QMainWindow):
 		self.stateWorker.originiInitialState = self.importWorker.init_state
 
 		self.statusBar().clearMessage()
+		self.statusBar().setStyleSheet("QStatusBar{color:black;}")
 		self.cursor = self.textBox.textCursor()
 		self.clearErrorFormat()
 
@@ -824,6 +825,7 @@ class MainWindow(QtGui.QMainWindow):
 			self.cursor.movePosition(QtGui.QTextCursor.NextCharacter, 1)
 		self.cursor.mergeCharFormat(errorFormat)
 
+		self.statusBar().setStyleSheet("QStatusBar{color:red;}")
 		self.statusBar().showMessage(self.tr(error[2]))
 		self.computeStateSpace_button.setDisabled(True)
 
@@ -844,6 +846,7 @@ class MainWindow(QtGui.QMainWindow):
 			self.cursor.movePosition(QtGui.QTextCursor.NextCharacter, 1)
 		self.cursor.mergeCharFormat(errorFormat)
 
+		self.statusBar().setStyleSheet("QStatusBar{color:red;}")
 		self.statusBar().showMessage(self.tr(error[2]))
 		self.computeStateSpace_button.setDisabled(True)
 
