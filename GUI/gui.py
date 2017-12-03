@@ -910,7 +910,7 @@ class MainWindow(QtGui.QMainWindow):
 	def resetReachIndicators(self):
 		self.progress_bar_reachability.reset()
 		self.reachabilityResult.setText("")
-		#self.reachable_states_button.setDisabled(True)
+		self.reachable_states_button.setDisabled(True)
 
 	def markReachbilityPossitions(self):
 		text = " "
