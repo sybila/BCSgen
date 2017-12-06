@@ -1,0 +1,11 @@
+#! rules
+S{u}::KaiC::KaiC4::cyt => S{p}::KaiC::KaiC4::cyt
+S{p}::KaiC::KaiC4::cyt => S{u}::KaiC::KaiC4::cyt
+T{u}::KaiC::KaiC4::cyt => T{p}::KaiC::KaiC4::cyt
+T{p}::KaiC::KaiC4::cyt => T{u}::KaiC::KaiC4::cyt
+
+#! inits
+1 KaiC(S{u}, T{u}).KaiC(S{u}, T{u}).KaiC(S{u}, T{u}).KaiC(S{u}, T{u})::cyt
+
+#! definitions
+KaiC4 = KaiC.KaiC.KaiC.KaiC

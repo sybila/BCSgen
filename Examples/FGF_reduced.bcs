@@ -1,0 +1,34 @@
+#! rules
+FGF::cyt + R::cyt <=> FGF.R::cyt
+2 FGF.R::cyt <=> FGF.R.FGF.R::cyt
+FRS::cyt + FGF.R.FGF.R::cyt <=> FGF.R.FGF.R.FRS::cyt
+FRS::cyt + SHP::cyt <=> FRS.SHP::cyt
+GS::cyt + GPP::cyt <=> GS.GPP::cyt
+GS::cyt + ERK::cyt <=> GS.ERK::cyt
+FRS::cyt + GS::cyt <=> FRS.GS::cyt
+Ras::cyt + FRS.GS::cyt <=> FRS.GS.Ras::cyt
+Ras::cyt + GAP::cyt <=> GAP.Ras::cyt
+Raf::cyt + Ras::cyt <=> Ras.Raf::cyt
+Raf::cyt + PP::cyt <=> PP.Raf::cyt
+MEK::cyt + Raf::cyt <=> Raf.MEK::cyt
+MEK::cyt + XPP::cyt <=> XPP.MEK::cyt
+ERK::cyt + MEK::cyt <=> MEK.ERK::cyt
+ERK::cyt + MKP::cyt <=> MKP.ERK::cyt
+ERK::cyt + FRS::cyt <=> ERK.FRS::cyt
+
+#! inits
+2 FGF::cyt
+2 R::cyt
+1 FRS::cyt
+1 SHP::cyt
+1 GS::cyt
+1 GPP::cyt
+1 ERK::cyt
+1 Ras::cyt
+1 GAP::cyt
+1 Raf::cyt
+1 PP::cyt
+1 MEK::cyt
+1 XPP::cyt
+
+#! definitions

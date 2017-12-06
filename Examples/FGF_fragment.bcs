@@ -1,0 +1,13 @@
+#! rules
+FGF::cyt + R::cyt <=> FGF.R::cyt
+2 FGF.R::cyt <=> FGF.R.FGF.R::cyt
+FGF(Thr{u}).R.FGF.R::cyt <=> FGF(Thr{p}).R.FGF.R::cyt
+FRS(Thr{u})::cyt + FGF(Thr{p}).R.FGF(Thr{p}).R::cyt => FGF(Thr{p}).R.FGF(Thr{p}).R.FRS(Thr{u})::cyt
+FRS(Thr{u}).FGF.R.FGF.R::cyt => FRS(Thr{p}).FGF.R.FGF.R::cyt
+
+#! inits
+2 FGF(Thr{u})::cyt
+2 R::cyt
+1 FRS(Thr{u}, Tyr{u})::cyt
+
+#! definitions
