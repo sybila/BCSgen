@@ -1,4 +1,5 @@
 import itertools
+import copy
 
 from Reaction import *
 from Atomic import *
@@ -17,7 +18,11 @@ def structureGroundForm(agent, allowedAtomics, atomicSignatures):
 		atomics.append(atomicGroundForm(AtomicAgent(name, "_"), atomicSignatures[name]))
 	if agent.composition:
 		atomics = [agent.composition] + atomics
-	cartesian = itertools.product(*atomics)
+
+	if len(atomics) == 1 and len(agent.composition) == len(atomics[0]):
+		cartesian = [tuple(agent.composition)]
+	else:
+		cartesian = itertools.product(*atomics)
 	results = map(lambda composition: StructureAgent(agent.name, set(composition)), cartesian)
 	return set(results)
 
