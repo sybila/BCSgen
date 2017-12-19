@@ -84,30 +84,48 @@ def createRules(rules, initialState, defns):
 	defns = dict(defns)
 	atomicSignatures, structureSignatures, atomicNames = obtainSignatures(rules, initialState)
 	structureSignatures = removeComplexNames(structureSignatures, defns)
+	print "----------start-------------"
 	for rule in rules:
+		variables = []
+		print "next rule :::::::::::::::::::::::::;"
+		#print rule
 		lhs = rule['children'][0]['children'][0]['children']
 		rhs = rule['children'][0]['children'][1]['children']
-		I =  sum(map(lambda cx: int(cx['token']), lhs)) - 1
-		chi, atomicSignatures, structureSignatures = \
-			createComplexes(lhs + rhs, atomicNames, atomicSignatures, structureSignatures, defns)
-		sequences = map(lambda complex: complex.sequence, chi)
-		omega = sum(sequences, [])
-		indexMap = getIndexmap(sequences)
-		indices = getIndices(indexMap[I], len(omega) - 1)
-		createdRules.append(Rule(chi, omega, I, indexMap, indices))
+		if rule['children'][1]['token'] == '?X':
+			variables = rule['children'][1]['children']
+			for variable in variables:
+				createdRules.append(createRule(lhs, rhs, defns, atomicSignatures, structureSignatures, atomicNames, variable))
+		else:
+			createdRules.append(createRule(lhs, rhs, defns, atomicSignatures, structureSignatures, atomicNames, None))
+
 	initialState, atomicSignatures, structureSignatures = createComplexes(map(lambda init: \
-		init['children'][0]['children'][0]['children'][0], initialState), atomicNames, atomicSignatures, structureSignatures, defns)
+		init['children'][0]['children'][0]['children'][0], initialState), atomicNames, atomicSignatures, structureSignatures, defns, None)
+	print "*************createRules**************"
+	for rule in createdRules:
+		print rule
 	return createdRules, atomicSignatures, structureSignatures, initialState
 
-def createComplexes(complexes, atomicNames, atomicSignatures, structureSignatures, defns):
+def createRule(lhs, rhs, defns, atomicSignatures, structureSignatures, atomicNames, variable):
+	I = sum(map(lambda cx: int(cx['token']), lhs)) - 1
+	chi, atomicSignatures, structureSignatures = \
+		createComplexes(lhs + rhs, atomicNames, atomicSignatures, structureSignatures, defns, variable)
+	sequences = map(lambda complex: complex.sequence, chi)
+	omega = sum(sequences, [])
+	indexMap = getIndexmap(sequences)
+	indices = getIndices(indexMap[I], len(omega) - 1)
+	return Rule(chi, omega, I, indexMap, indices)
+
+def createComplexes(complexes, atomicNames, atomicSignatures, structureSignatures, defns, variable):
 	createdComplexes = []
 	for complex in complexes:
+		print "next complexx ::::::::::::::"
+		print complex
 		sequence = []
 		compartment = complex['children'][0]['children'][-1]['children'][0]['entity']['token']
 		if len(complex['children'][0]['children']) > 2:
 			composition = []
 			for comp in complex['children'][0]['children'][:-1]:
-				composition.append(Complex(createAgents(comp['children'], atomicNames, defns), compartment))
+				composition.append(Complex(createAgents(comp['children'], atomicNames, defns, variable), compartment))
 			agent = composition[0]
 			for comp in composition[1:]:
 				agent = mergeComplexes(agent, comp)
@@ -116,7 +134,7 @@ def createComplexes(complexes, atomicNames, atomicSignatures, structureSignature
 				createdComplexes.append(agent)
 		else:
 			sequence = complex['children'][0]['children'][0]['children']
-			agents = createAgents(sequence, atomicNames, defns)
+			agents = createAgents(sequence, atomicNames, defns, variable)
 			for _ in range(int(complex['token'])): 
 				createdComplexes.append(Complex(agents, compartment))
 	return createdComplexes, atomicSignatures, structureSignatures
@@ -164,10 +182,17 @@ def createDefinedComplex(sequence, atomicNames):
 			createdAgents.append(createStructureAgent(name, None))
 	return createdAgents
 
-def createAgents(sequence, atomicNames, defns):
+def createAgents(sequence, atomicNames, defns, variable):
+	print "++++++++++++++ compare"
+	print sequence
+	print variable
+	print " compare ++++++++++++"
 	createdAgents = []
 	for agent in sequence:
-		name = str(agent['entity']['token'])
+		if str(agent['entity']['token']) == '?X':
+			name = str(variable['token'])
+		else:
+			name = str(agent['entity']['token'])
 		if name in defns:
 			return createDefinedComplex(defns[name], atomicNames)
 		if name in atomicNames:
