@@ -63,6 +63,7 @@ class MainWindow(QtGui.QMainWindow):
 		self.screenWidth = screenWidth
 		self.screenHeight = screenHeight
 
+		self.modelLoaded = QLineEdit("False")
 		self.rowDeleted = QLineEdit("0")
 		self.rowDeleted.textChanged.connect(self.checkScrollArea)
 
@@ -294,6 +295,7 @@ class MainWindow(QtGui.QMainWindow):
 		self.importWorker.hasEnoughRates.connect(self.ableToSimulate)
 		self.importWorker.notEnoughRates.connect(self.cannotSimulate)
 		self.importWorker.reactionsDone.connect(self.enableSaveReactions)
+		self.modelLoaded.textChanged.connect(self.importWorker.activateAnalysis)
 
 		self.stateWorker.taskFinished.connect(self.progressbarStatesOnFinished)
 		self.stateWorker.showMostStates.connect(self.showNumberOfStates)
@@ -1088,7 +1090,9 @@ class MainWindow(QtGui.QMainWindow):
 			rules, inits, defns = Import.loadModel(file)
 			self.textBox.setPlainText(rules)
 			self.initsBox.setPlainText(inits)
-			self.filldataToTable(defns) # ToDO
+			self.filldataToTable(defns)
+
+			self.modelLoaded.setText("True")
 
 			if self.stateWorker.stateSpaceFile and self.rulesAreCorrect and self.initsAreCorrect:
 				self.computeStateSpace_button.setDisabled(False)

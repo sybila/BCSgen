@@ -30,10 +30,15 @@ class ImportWorker(QtCore.QObject):
 		self.message = []
 		self.isOK = False
 		self.enoughRates = False
+		self.modelLoaded = False
 
 		self.TheWorker = QtCore.QThread()
 		self.moveToThread(self.TheWorker)
 		self.TheWorker.start()
+
+	def activateAnalysis(self):
+		self.modelLoaded = True
+		self.analyseModel()
 
 	def analyseModel(self):
 		if self.modelUpdated():
@@ -57,13 +62,19 @@ class ImportWorker(QtCore.QObject):
 				self.syntaxErrorsInInits.emit()
 
 	def modelUpdated(self):
-		if self.oldPlainTextRules != self.rules.toPlainText():
-			self.oldPlainTextRules = self.rules.toPlainText()
-			return True
-		elif self.oldPlainTextInits != self.inits.toPlainText():
-			self.oldPlainTextInits = self.inits.toPlainText()
-			return True
-		elif self.definitions != self.oldDefinitions:
-			self.oldDefinitions = self.definitions
-			return True
+		if self.modelLoaded:
+			if self.oldPlainTextRules != self.rules.toPlainText():
+				self.storeOldData()
+				return True
+			elif self.oldPlainTextInits != self.inits.toPlainText():
+				self.storeOldData()
+				return True
+			elif self.definitions != self.oldDefinitions:
+				self.storeOldData()
+				return True
 		return False
+
+	def storeOldData(self):
+		self.oldPlainTextRules = self.rules.toPlainText()
+		self.oldPlainTextInits = self.inits.toPlainText()
+		self.oldDefinitions = self.definitions

@@ -27,11 +27,13 @@ def structureGroundForm(agent, allowedAtomics, atomicSignatures):
 	return set(results)
 
 def pairStructuresGroundForm(agent1, agent2, atomicSignatures, structureSignatures):
-	groundedAgents1 = structureGroundForm(agent1, structureSignatures[agent1.name], atomicSignatures)
-	groundedAgents2 = structureGroundForm(agent2, structureSignatures[agent2.name], atomicSignatures)
-	pairs = itertools.product(groundedAgents1, groundedAgents2)
-	return set(filter(lambda (agent1_grounded, agent2_grounded): \
-		containsSameNames(agent1, agent1_grounded, agent2, agent2_grounded), pairs))
+	if agent1.name in structureSignatures and agent2.name in structureSignatures:
+		groundedAgents1 = structureGroundForm(agent1, structureSignatures[agent1.name], atomicSignatures)
+		groundedAgents2 = structureGroundForm(agent2, structureSignatures[agent2.name], atomicSignatures)
+		pairs = itertools.product(groundedAgents1, groundedAgents2)
+		return set(filter(lambda (agent1_grounded, agent2_grounded): \
+			containsSameNames(agent1, agent1_grounded, agent2, agent2_grounded), pairs))
+	return set()
 
 def pairAtomicsGroundForm(agent1, agent2, atomicSignatures):
 	grounded1 = atomicGroundForm(agent1, atomicSignatures[agent1.name])
