@@ -1,0 +1,11 @@
+#! rules
+KaiC.A{i}::cyt => KaiC.A{a}::cyt
+A{i}::KaiC::?X::cyt => A{a}::KaiC::?X::cyt ; ?X = {KaiCB, KaiCC}
+
+#! inits
+1 KaiC(S{u})::cyt
+1 KaiB.A{i}::cyt
+
+#! definitions
+KaiCB = KaiC.KaiB
+KaiCC = KaiC.KaiC

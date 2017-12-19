@@ -84,10 +84,10 @@ def createRules(rules, initialState, defns):
 	defns = dict(defns)
 	atomicSignatures, structureSignatures, atomicNames = obtainSignatures(rules, initialState)
 	structureSignatures = removeComplexNames(structureSignatures, defns)
-	print "----------start-------------"
+	#print "----------start-------------"
 	for rule in rules:
 		variables = []
-		print "next rule :::::::::::::::::::::::::;"
+		#print "next rule :::::::::::::::::::::::::;"
 		#print rule
 		lhs = rule['children'][0]['children'][0]['children']
 		rhs = rule['children'][0]['children'][1]['children']
@@ -100,9 +100,10 @@ def createRules(rules, initialState, defns):
 
 	initialState, atomicSignatures, structureSignatures = createComplexes(map(lambda init: \
 		init['children'][0]['children'][0]['children'][0], initialState), atomicNames, atomicSignatures, structureSignatures, defns, None)
-	print "*************createRules**************"
-	for rule in createdRules:
-		print rule
+	#print "*************createRules**************"
+	#print len(createdRules)
+	#for rule in createdRules:
+	#	print rule
 	return createdRules, atomicSignatures, structureSignatures, initialState
 
 def createRule(lhs, rhs, defns, atomicSignatures, structureSignatures, atomicNames, variable):
@@ -117,9 +118,8 @@ def createRule(lhs, rhs, defns, atomicSignatures, structureSignatures, atomicNam
 
 def createComplexes(complexes, atomicNames, atomicSignatures, structureSignatures, defns, variable):
 	createdComplexes = []
+	#print "structureSignatures", structureSignatures
 	for complex in complexes:
-		print "next complexx ::::::::::::::"
-		print complex
 		sequence = []
 		compartment = complex['children'][0]['children'][-1]['children'][0]['entity']['token']
 		if len(complex['children'][0]['children']) > 2:
@@ -128,7 +128,9 @@ def createComplexes(complexes, atomicNames, atomicSignatures, structureSignature
 				composition.append(Complex(createAgents(comp['children'], atomicNames, defns, variable), compartment))
 			agent = composition[0]
 			for comp in composition[1:]:
+			#	print comp
 				agent = mergeComplexes(agent, comp)
+			#print agent
 			atomicSignatures, structureSignatures = updateSignatures(agent, atomicSignatures, structureSignatures)
 			for _ in range(int(complex['token'])): 
 				createdComplexes.append(agent)
@@ -173,7 +175,7 @@ def updateSignatures(complex, atomicSignatures, structureSignatures):
 			structureSignatures[agent.name] |= agent.getAtomicNames()
 	return atomicSignatures, structureSignatures
 
-def createDefinedComplex(sequence, atomicNames):
+def createDefinedComplex(sequence, atomicNames): #problem when variable is part of a sequence
 	createdAgents = []
 	for name in sequence.split("."):
 		if name in atomicNames:
@@ -183,17 +185,13 @@ def createDefinedComplex(sequence, atomicNames):
 	return createdAgents
 
 def createAgents(sequence, atomicNames, defns, variable):
-	print "++++++++++++++ compare"
-	print sequence
-	print variable
-	print " compare ++++++++++++"
 	createdAgents = []
 	for agent in sequence:
 		if str(agent['entity']['token']) == '?X':
 			name = str(variable['token'])
 		else:
 			name = str(agent['entity']['token'])
-		if name in defns:
+		if name in defns:  # give also the rest of the sequence ?
 			return createDefinedComplex(defns[name], atomicNames)
 		if name in atomicNames:
 			createdAgents.append(createAtomicAgent(name, agent['entity']['children']))
