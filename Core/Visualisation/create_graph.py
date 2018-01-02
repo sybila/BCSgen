@@ -82,22 +82,12 @@ def write_reaction(edge_id, left_index, right_index, From, To, output_file):
                  ", arrows:'to', text: '" + From.__str__() + " => " + To.__str__() + "'},\n")
     output.close()
 
-def write_size(screenWidth, screenHeight, output_file):
-    with open(output_file, "a") as file:
-        file.write("            width: " + str(screenWidth-50) + "px;\n")
-        file.write("            height: " + str(screenHeight-100) + "px;")
-
 def write_initial(init, output_file, mode):
     with open(output_file, mode) as file:
         file.write("    var fromNode = " + str(init) + ";\n")
 
 def createHTMLGraph(state_space_file, output_file, path, screenWidth, screenHeight):
-
-    write_part(firstpart_1, output_file, "w")
-    write_size(screenWidth, screenHeight, output_file)
-    write_part(firstpart_2, output_file, "a")
-    write_part(str(screenWidth - 50), output_file, "a")
-    write_part(firstpart_3, output_file, "a")
+    write_part(firstpart, output_file, "w")
 
     with open(state_space_file, 'r') as f:
     	data = json.load(f)
@@ -124,8 +114,6 @@ def createHTMLGraph(state_space_file, output_file, path, screenWidth, screenHeig
     		
     write_part(secondpart_1, output_file, "a")
     write_initial(initial, output_file, "a")
-    write_part(secondpart_1_2, output_file, "a")
-    write_part(str(screenWidth - 50), output_file, "a")
     write_part(secondpart_2, output_file, "a")
 
     fixPath(output_file, path)
@@ -157,7 +145,7 @@ def newGraph(state_space_file, path, type, screenWidth, screenHeight):
     else:
         return createSVGGraph(state_space_file, "graph.svg", path)
 
-firstpart_1 = \
+firstpart = \
 '''<!doctype html>
 <html>
 <head>
@@ -169,24 +157,27 @@ firstpart_1 = \
 
     <style type="text/css">
        #mynetwork {
-'''
-
-firstpart_2 = '''
+            width: 100%;
+            height: 100%;
             border: 1px solid lightgray;
         }
-	    #rectangle {
-		    text-align: center;
-		    font-weight: bold;
-	    }
-}
+        #rectangle {
+            text-align: center;
+            font-weight: bold;
+        }
+        html { 
+            height: 100%;
+        }
+        body { 
+            height: 90%;
+            border:1px solid #000;
+        }
     </style>
 </head>
 <body>
 
 <div id="mynetwork"></div>
-<div id="rectangle"style="width:'''
-
-firstpart_3 = '''px;height:100%;border:1px solid #000;"> </div>
+<div id="rectangle"style="width:100%;border:1px solid #000;"> </div>
 
 <script type="text/javascript">
     // create an array with nodes
@@ -248,7 +239,7 @@ secondpart_1 = '''
 	var stabil = true;
 '''
 
-secondpart_1_2 = '''
+secondpart_2 = '''
     network.on("click", function (params) {
         params.event = "[original event]";
 		var tmp = " ";
@@ -268,9 +259,7 @@ secondpart_1_2 = '''
 			};
 		};
 
-		document.getElementById('rectangle').innerHTML = '<div style="width:'''
-
-secondpart_2 = '''px;height:100%;text-align:center;border:0px solid #000;">' + tmp + '</div>';
+		document.getElementById('rectangle').innerHTML = '<div style="width:100%;height:100%;text-align:center;border:0px solid #000;">' + tmp + '</div>';
     });
 
 	network.on("stabilized", function (params) {
