@@ -889,15 +889,9 @@ class MainWindow(QtGui.QMainWindow):
 		self.customFontSize.setChecked(False)
 
 	def changeFontSize(self, size):
-		cursor = self.textBox.textCursor()
-		self.textBox.selectAll()
-		self.textBox.setFontPointSize(size)
-		self.textBox.setTextCursor(cursor)
-
-		cursor = self.initsBox.textCursor()
-		self.initsBox.selectAll()
-		self.initsBox.setFontPointSize(size)
-		self.initsBox.setTextCursor(cursor)
+		self.textBox.setFont(QtGui.QFont('Noto Sans', size))
+		self.initsBox.setFont(QtGui.QFont('Noto Sans', size))
+		self.tableWidget.setFont(QtGui.QFont('Noto Sans', size))
 
 	def showGraph(self):
 		useHTMLvisual = True

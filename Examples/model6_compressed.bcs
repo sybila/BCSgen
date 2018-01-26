@@ -1,0 +1,26 @@
+#! rules
+KaiC::cyt + KaiB::cyt => KaiBC::cyt
+KaiBC::cyt => KaiC::cyt + KaiB::cyt
+S{u}::KaiC::KaiBC::cyt => S{p}::KaiC::KaiBC::cyt
+KaiC::cyt + KaiBC::cyt => KaiBC2::cyt
+KaiC::cyt + KaiBC2::cyt => KaiBC3::cyt
+KaiC::cyt + KaiBC3::cyt => KaiBC4::cyt
+KaiBC4::cyt + KaiA::cyt => KaiABC4::cyt
+S{u}::KaiA::KaiABC4::cyt => S{p}::KaiA::KaiABC4::cyt
+S{p}::KaiA::KaiABC4::cyt => KaiC3::cyt + S{p}::KaiA::KaiABC::cyt
+KaiC3::cyt => 3 KaiC::cyt
+S{p}::KaiA::KaiABC::cyt => KaiC::cyt + KaiB::cyt + KaiA(S{p})::cyt
+
+#! inits
+4 KaiC(S{u})::cyt
+1 KaiA(S{u})::cyt
+1 KaiB::cyt
+
+#! definitions
+KaiABC4 = KaiC.KaiC.KaiC.KaiC.KaiB.KaiA
+KaiBC = KaiC.KaiB
+KaiBC2 = KaiC.KaiC.KaiB
+KaiBC3 = KaiC.KaiC.KaiC.KaiB
+KaiBC4 = KaiC.KaiC.KaiC.KaiC.KaiB
+KaiABC = KaiC.KaiB.KaiA
+KaiC3 = KaiC.KaiC.KaiC
