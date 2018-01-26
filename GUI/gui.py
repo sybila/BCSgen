@@ -189,7 +189,7 @@ class MainWindow(QtGui.QMainWindow):
 		self.tab2 = QWidget()
 		self.tab3 = QWidget()
 
-		self.tabs.addTab(self.tab1, "State space")
+		self.tabs.addTab(self.tab1, "Transition system")
 		self.tabs.addTab(self.tab2, "Model analysis")
 		self.tabs.addTab(self.tab3, "Simulation")
 
@@ -313,8 +313,8 @@ class MainWindow(QtGui.QMainWindow):
 
 		StatesHbox = QHBoxLayout()
 
-		self.stateSpace = createButton(self, 'State space output file', self.save_stateSpace, False)
-		self.stateSpace.setStatusTip("Choose file for storing state space.")
+		self.stateSpace = createButton(self, 'Transition system file', self.save_stateSpace, False)
+		self.stateSpace.setStatusTip("Choose file for storing transition system.")
 
 		StatesHbox.addWidget(self.stateSpace)
 
