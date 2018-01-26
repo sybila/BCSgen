@@ -5,14 +5,8 @@ import collections
 from compiler.ast import flatten
 import json
 
-def newReachableGraph(state_space_file, output_file, path, screenWidth, screenHeight, satisfyingStates):
-	write_part(firstpart_1, output_file, "w")
-	write_size(screenWidth, screenHeight, output_file)
-	write_part(firstpart_21, output_file, "a")
-	write_size(screenWidth, screenHeight, output_file)
-	write_part(firstpart_22, output_file, "a")
-	write_part(str(screenWidth - 50), output_file, "a")
-	write_part(firstpart_3, output_file, "a")
+def newReachableGraph(state_space_file, output_file, path, satisfyingStates):
+	write_part(firstpart, output_file, "w")
 
 	with open(state_space_file, 'r') as f:
 		data = json.load(f)
@@ -42,10 +36,6 @@ def newReachableGraph(state_space_file, output_file, path, screenWidth, screenHe
 	write_part(secondpart_1, output_file, "a")
 	write_reachability_part(initial, satisfyingStates, output_file, "a")
 	write_part(secondpart_2, output_file, "a")
-	write_part(str(screenWidth - 50), output_file, "a")
-	write_part(secondpart_3, output_file, "a")
-	write_part(str(screenWidth - 50), output_file, "a")
-	write_part(secondpart_4, output_file, "a")
 
 	fixPath(output_file, path)
 
@@ -145,7 +135,7 @@ def write_size(screenWidth, screenHeight, output_file):
 		file.write("            height: " + str(screenHeight-100) + "px;")
 
 
-firstpart_1 = \
+firstpart = \
 '''<!doctype html>
 <html>
 <head>
@@ -156,9 +146,8 @@ firstpart_1 = \
 
 	<style type="text/css">
 	   #mynetwork {
-'''
-
-firstpart_21 = '''
+            width: 100%;
+            height: 100%;
 			border: 1px solid lightgray;
 		}
 		#rectangle {
@@ -167,10 +156,10 @@ firstpart_21 = '''
 		}
 		#loadingBar {
 			position:absolute;
-			top:10px;
-			left:10px;
-'''
-firstpart_22 = '''
+			top:1px;
+			left:1px;
+            width: 100%;
+            height: 93%;
 			background-color:rgba(200,200,200,0.8);
 			-webkit-transition: all 0.5s ease;
 			-moz-transition: all 0.5s ease;
@@ -239,15 +228,20 @@ firstpart_22 = '''
 			background: rgb(0, 173, 246); /* Old browsers */
 			box-shadow: 2px 0px 4px rgba(0,0,0,0.4);
 		}
+		html { 
+            height: 100%;
+        }
+        body { 
+            height: 90%;
+            border:1px solid #000;
+        }
 }
 	</style>
 </head>
 <body>
 
 <div id="mynetwork"></div>
-<div id="rectangle"style="width:'''
-
-firstpart_3 = '''px;height:100%;border:1px solid #000;"> </div>
+<div id="rectangle"style="width:width:100%;border:1px solid #000;"> </div>
 <div id="loadingBar">
 		<div class="outerBorder">
 			<div id="text">0%</div>
@@ -456,9 +450,7 @@ secondpart_2 = '''	var paths = [];
 				};
 			};
 		};
-		document.getElementById('rectangle').innerHTML = '<div style="width:'''
-
-secondpart_3 = '''px;height:100%;text-align:center;border:0px solid #000;">' + tmp + '</div>';
+		document.getElementById('rectangle').innerHTML = '<div style="width:100%;height:100%;text-align:center;border:0px solid #000;">' + tmp + '</div>';
 	});
 
 	network.on("stabilized", function (params) {
@@ -646,9 +638,7 @@ function getShortestPath(source, nextNode, path, parents) {
 
 function print(s) {  // A quick and dirty way to display output.
   s = s || '';
-  document.getElementById('rectangle').innerHTML = '<div style="width:'''
-
-secondpart_4 = '''px;height:100%;text-align:center;border:0px solid #000;">' + s + '</div>';
+  document.getElementById('rectangle').innerHTML = '<div style="width:100%;height:100%;text-align:center;border:0px solid #000;">' + s + '</div>';
 }
 
 function getHexColor(number){

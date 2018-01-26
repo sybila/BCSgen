@@ -897,11 +897,11 @@ class MainWindow(QtGui.QMainWindow):
 		useHTMLvisual = True
 		#if len(self.stateWorker.states) > 100:
 		#	useHTMLvisual = False
-		self.graph = GraphVisual(self.stateWorker.stateSpaceFile, self.screenWidth - 100, self.screenHeight - 100, useHTMLvisual)
+		self.graph = GraphVisual(self.stateWorker.stateSpaceFile, self.screenWidth, self.screenHeight, useHTMLvisual)
 		self.graph.show()
 
 	def showReachableStates(self):
-		self.graphReach = ReachableGraphVisual(self.stateWorker.stateSpaceFile, self.screenWidth - 100, self.screenHeight - 200, self.analysisWorker.satisfyingStates)
+		self.graphReach = ReachableGraphVisual(self.stateWorker.stateSpaceFile, self.analysisWorker.satisfyingStates)
 
 	def resetReachIndicators(self):
 		self.progress_bar_reachability.reset()

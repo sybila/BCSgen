@@ -86,7 +86,7 @@ def write_initial(init, output_file, mode):
     with open(output_file, mode) as file:
         file.write("    var fromNode = " + str(init) + ";\n")
 
-def createHTMLGraph(state_space_file, output_file, path, screenWidth, screenHeight):
+def createHTMLGraph(state_space_file, output_file, path):
     write_part(firstpart, output_file, "w")
 
     with open(state_space_file, 'r') as f:
@@ -139,9 +139,9 @@ def add_edges(graph, edges):
             graph.edge(*e)
     return graph
 
-def newGraph(state_space_file, path, type, screenWidth, screenHeight):
+def newGraph(state_space_file, path, type):
     if type:
-        return createHTMLGraph(state_space_file, "graph.html", path, screenWidth, screenHeight)
+        return createHTMLGraph(state_space_file, "graph.html", path)
     else:
         return createSVGGraph(state_space_file, "graph.svg", path)
 
@@ -156,7 +156,7 @@ firstpart = \
     <link href="**FULLPATH**/.vis/vis.css" rel="stylesheet" type="text/css"/>
 
     <style type="text/css">
-       #mynetwork {
+        #mynetwork {
             width: 100%;
             height: 100%;
             border: 1px solid lightgray;
