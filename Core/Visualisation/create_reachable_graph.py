@@ -145,9 +145,9 @@ firstpart = \
 	<link href="**FULLPATH**/.vis/vis.css" rel="stylesheet" type="text/css"/>
 
 	<style type="text/css">
-	   #mynetwork {
-            width: 100%;
-            height: 100%;
+		#mynetwork {
+			width: 100%;
+			height: 100%;
 			border: 1px solid lightgray;
 		}
 		#rectangle {
@@ -158,8 +158,8 @@ firstpart = \
 			position:absolute;
 			top:1px;
 			left:1px;
-            width: 100%;
-            height: 93%;
+			width: 100%;
+			height: 93%;
 			background-color:rgba(200,200,200,0.8);
 			-webkit-transition: all 0.5s ease;
 			-moz-transition: all 0.5s ease;
@@ -229,12 +229,12 @@ firstpart = \
 			box-shadow: 2px 0px 4px rgba(0,0,0,0.4);
 		}
 		html { 
-            height: 100%;
-        }
-        body { 
-            height: 90%;
-            border:1px solid #000;
-        }
+			height: 100%;
+		}
+		body { 
+			height: 90%;
+			border:1px solid #000;
+		}
 }
 	</style>
 </head>
