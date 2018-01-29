@@ -347,7 +347,7 @@ secondpart_2 = '''
 	});
 
 	network.on("stabilizationProgress", function(params) {
-				var maxWidth = 450;
+				var maxWidth = 500;
 				var minWidth = 20;
 				var widthFactor = params.iterations/params.total*10;
 				var width = Math.max(minWidth,maxWidth * widthFactor);
