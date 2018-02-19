@@ -8,6 +8,8 @@ echo 'Installing python-qt4...'
 sudo apt-get -y install python-qt4
 echo 'Installing matplotlib...'
 sudo apt-get -y install python-matplotlib
+echo 'Installing tk...'
+sudo apt-get -y install python-tk
 
 PKG_OK=$(dpkg-query -W --showformat='${Status}\n' python-pip|grep "install ok installed")
 echo 'Checking for pip:' $PKG_OK
