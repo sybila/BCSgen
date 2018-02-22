@@ -58,6 +58,6 @@ Alternatively, CLI can be used.
 For Windows, use [this](http://www.lfd.uci.edu/~gohlke/pythonlibs/#pyqt4) binary file, for Linux use [following](http://pythoncentral.io/install-pyside-pyqt-on-windows-mac-linux/) instructions, and for Mac OS use [this](https://sourceforge.net/projects/pyqtx/) installer (with all requirements). Next, [matplotlib](https://matplotlib.org/users/installing.html) is required for plotting simulation results.
 Moreover, additional python packages are required (markdown, numpy, sympy, scipy) and might be installed using `pip`.
 
-> <sup>3</sup> [RuleParser](https://gitlab.fi.muni.cz/grp-sybila/rule-parser) improves writing and allows validation of BCSL models inside BCSgen. Therefore path to directory with `RuleParser.py` and `_RuleParser.so` must be specified (alternatively, both files might be placed in Core/Import/ directory).
+> <sup>3</sup> [RuleParser](https://github.com/sybila/BCSLruleParser) improves writing and allows validation of BCSL models inside BCSgen. Therefore path to directory with `RuleParser.py` and `_RuleParser.so` must be specified (alternatively, both files might be placed in Core/Import/ directory).
 
 > `On Linux machines, linux_install.sh script can be used in order to install all required packages.`
