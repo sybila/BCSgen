@@ -1,0 +1,10 @@
+#! rules
+=> 1 x::cyt @ 'y::cyt'
+=> 1 y::cyt @ 2*(1-'x::cyt'*'x::cyt')*'y::cyt' - 'x::cyt'
+
+#! inits
+2 x::cyt
+
+#! definitions
+ = 
+ = 
