@@ -42,5 +42,5 @@ fi
 
 #git clone "https://github.com/sybila/BCSgen.git"
 
-# download release of RuleParser from this link: https://gitlab.fi.muni.cz/grp-sybila/rule-parser/tags
+# download release of RuleParser from this link: https://github.com/sybila/BCSLruleParser
 # and place it to Core/Import/ directory
