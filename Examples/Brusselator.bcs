@@ -1,0 +1,12 @@
+#! rules
+=> x::test @ 'a' + 'x::test'*'x::test'*'y::test' - 'b'*'x::test' - 'x::test'
+=> y::test @ 'b'*'x::test' - 'x::test'*'x::test'*'y::test'
+
+#! inits
+1 x::test
+2 y::test
+
+#! definitions
+a = 1
+b = 1.7
+oscill_b = 3

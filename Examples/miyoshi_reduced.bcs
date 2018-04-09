@@ -1,0 +1,14 @@
+#! rules
+KaiC(S{u},T{u}).KaiC(S{u},T{u}).KaiC(S{u},T{u}).KaiC(S{u},T{u}).KaiC(S{u},T{u}).KaiC(S{u},T{u})::cyt => KaiC(S{p},T{u}).KaiC(S{p},T{u}).KaiC(S{p},T{u}).KaiC(S{p},T{u}).KaiC(S{p},T{u}).KaiC(S{p},T{u})::cyt
+KaiC(S{p},T{u}).KaiC(S{p},T{u}).KaiC(S{p},T{u}).KaiC(S{p},T{u}).KaiC(S{p},T{u}).KaiC(S{p},T{u})::cyt => KaiC(S{u},T{u}).KaiC(S{u},T{u}).KaiC(S{u},T{u}).KaiC(S{u},T{u}).KaiC(S{u},T{u}).KaiC(S{u},T{u})::cyt
+KaiC(S{p},T{u}).KaiC(S{p},T{u}).KaiC(S{p},T{u}).KaiC(S{p},T{u}).KaiC(S{p},T{u}).KaiC(S{p},T{u})::cyt => KaiC(S{p},T{p}).KaiC(S{p},T{p}).KaiC(S{p},T{p}).KaiC(S{p},T{p}).KaiC(S{p},T{p}).KaiC(S{p},T{p})::cyt
+KaiC(S{p},T{p}).KaiC(S{p},T{p}).KaiC(S{p},T{p}).KaiC(S{p},T{p}).KaiC(S{p},T{p}).KaiC(S{p},T{p})::cyt => KaiC(S{p},T{u}).KaiC(S{p},T{u}).KaiC(S{p},T{u}).KaiC(S{p},T{u}).KaiC(S{p},T{u}).KaiC(S{p},T{u})::cyt
+6 KaiC(S{u},T{u})::cyt => KaiC(S{u},T{u}).KaiC(S{u},T{u}).KaiC(S{u},T{u}).KaiC(S{u},T{u}).KaiC(S{u},T{u}).KaiC(S{u},T{u})::cyt
+6 KaiC(S{p},T{u})::cyt => KaiC(S{p},T{u}).KaiC(S{p},T{u}).KaiC(S{p},T{u}).KaiC(S{p},T{u}).KaiC(S{p},T{u}).KaiC(S{p},T{u})::cyt
+6 KaiC(S{p},T{p})::cyt => KaiC(S{p},T{p}).KaiC(S{p},T{p}).KaiC(S{p},T{p}).KaiC(S{p},T{p}).KaiC(S{p},T{p}).KaiC(S{p},T{p})::cyt
+KaiC.KaiC.KaiC.KaiC.KaiC.KaiC::cyt => 6 KaiC::cyt
+
+#! inits
+6 KaiC(S{u},T{u})::cyt
+
+#! definitions
