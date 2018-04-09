@@ -8,7 +8,7 @@ class StructureAgent(object):
 
 	def __str__(self):
 		if self.composition:
-			return self.name + "(" + ",".join(map(str, sorted(self.composition))) + ")"
+			return self.name + "(" + ",".join(list(map(str, sorted(self.composition)))) + ")"
 		else:
 			return self.name
 
@@ -22,7 +22,7 @@ class StructureAgent(object):
 		return hash(str(self))
 
 	def getAtomicNames(self):
-		return set(map(lambda atomic: atomic.name, self.composition))
+		return set(list(map(lambda atomic: atomic.name, self.composition)))
 
 	def exceptTheseNames(self, names):
 		reducedComposition = set()

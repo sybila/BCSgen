@@ -49,9 +49,9 @@ class SimulationWorker(QtCore.QObject):
 		if self.useInterpolation:
 			self.changeSizeOfStep.emit()
 		if not self.useDeterministic:
-			self.simulateGillespieAlgorithm(map(lambda r: r.difference, VN.Vectors), np.array(VN.State), self.rates, self.max_time)
+			self.simulateGillespieAlgorithm(list(map(lambda r: r.difference, VN.Vectors)), np.array(VN.State), self.rates, self.max_time)
 		else:
-			self.simulateDeterministicAlgorithm(map(lambda r: r.difference, VN.Vectors), np.array(VN.State), self.rates, self.max_time)
+			self.simulateDeterministicAlgorithm(list(map(lambda r: r.difference, VN.Vectors)), np.array(VN.State), self.rates, self.max_time)
 
 	def simulateDeterministicAlgorithm(self, reactions, y0, rates, max_time):
 		self.deterministicSimulationStarted.emit()
@@ -88,7 +88,7 @@ class SimulationWorker(QtCore.QObject):
 
 	#this is the rhs of the ODE to integrate, i.e. dy/dt=f(y,t)
 	def f(self, y, t):
-		return map(eval, self.ODEs)
+		return list(map(eval, self.ODEs))
 
 	def simulateGillespieAlgorithm(self, reactions, initial_solution, rates, max_time):
 		rates = self.vectorizeRates(self.translations, rates)
@@ -106,7 +106,7 @@ class SimulationWorker(QtCore.QObject):
 					sendInfoStep += 1
 					self.nextSecondCalculated.emit()
 
-				enumerated_rates = map(lambda rate: self.enumerateRate(names, solution, rate), rates)
+				enumerated_rates = list(map(lambda rate: self.enumerateRate(names, solution, rate), rates))
 				enumerated_rates_sum = sum(enumerated_rates)
 				props = self.enumeratedRatesToTuples(enumerated_rates)
 
@@ -152,7 +152,7 @@ class SimulationWorker(QtCore.QObject):
 			return solution
 
 	def vectorizeRates(self, translations, rates):
-		translations = map(lambda trans: "'" + trans + "'", map(str, translations))
+		translations = list(map(lambda trans: "'" + trans + "'", list(map(str, translations))))
 		new_rates = []
 		for rate in rates:
 			new_rate = rate
@@ -162,7 +162,7 @@ class SimulationWorker(QtCore.QObject):
 		return new_rates
 
 	def prepareRatesForSolving(self, translations, rates):
-		translations = map(lambda trans: "'" + trans + "'", map(str, translations))
+		translations = list(map(lambda trans: "'" + trans + "'", list(map(str, translations))))
 		new_rates = []
 		for rate in rates:
 			new_rate = rate

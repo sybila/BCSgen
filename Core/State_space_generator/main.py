@@ -1,31 +1,30 @@
 import os
 import sys
-from Vector_network import *
+from .Vector_network import *
 import numpy as np
 import json
 import itertools
 import collections
 
 def toVector(orderedAgents, agents):
-	vector = [0] * len(orderedAgents)
-	for item in list(agents):
-		vector[orderedAgents.index(item)] = agents[item]
-	return np.array(vector)
+    vector = [0] * len(orderedAgents)
+    for item in list(agents):
+        vector[orderedAgents.index(item)] = agents[item]
+    return np.array(vector)
 
 def reactionToVector(reaction, orderedAgents):
-	return Vector_reaction(toVector(orderedAgents, reaction[0]), toVector(orderedAgents, reaction[1]))
+    return Vector_reaction(toVector(orderedAgents, reaction[0]), toVector(orderedAgents, reaction[1]))
 
 def createVectorNetwork(reactions, initialState):
-	parsedReactions = map(lambda reaction: reaction.getCounteredSides(), reactions)
+    parsedReactions = list(map(lambda reaction: reaction.getCounteredSides(), reactions))
 
-	orderedAgents = set.union(*map(lambda reaction: set(reaction.seq), reactions))
-	orderedAgents.update(set(initialState))
-	orderedAgents = list(orderedAgents)
+    orderedAgents = set.union(*list(map(lambda reaction: set(reaction.seq), reactions)))
+    orderedAgents.update(set(initialState))
+    orderedAgents = list(orderedAgents)
 
-	state = toVector(orderedAgents, collections.Counter(initialState))
-	vectors = map(lambda reaction: reactionToVector(reaction, orderedAgents), parsedReactions)
-
-	return Vector_network(tuple(state), vectors, orderedAgents)
+    state = toVector(orderedAgents, collections.Counter(initialState))
+    vectors = list(map(lambda reaction: reactionToVector(reaction, orderedAgents), parsedReactions))
+    return Vector_network(tuple(state), vectors, orderedAgents)
 
 """
 Creates State from given vector and ordered unique agents
@@ -34,11 +33,11 @@ Creates State from given vector and ordered unique agents
 :return: State
 """
 def createState(state, orderedAgents):
-	multiset = sum(map(lambda i: [orderedAgents[i]] * state[i], range(len(orderedAgents))), [])
-	return ("|".join(map(lambda item: str(item), state)), collections.Counter(multiset))
+    multiset = sum(list(map(lambda i: [orderedAgents[i]] * state[i], range(len(orderedAgents)))), [])
+    return ("|".join(list(map(lambda item: str(item), state))), collections.Counter(multiset))
 
 def getDictAgents(agents):
-	return dict([(str(k), str(v)) for k, v in agents.items()])
+    return dict([(str(k), str(v)) for k, v in agents.items()])
 
 """
 Prints state space to given output files
@@ -49,20 +48,20 @@ Prints state space to given output files
 :param edgesFile: output file for edges
 """
 def printStateSpace(states, transitions, orderedAgents, stateSpaceFile, initialState):
-	nodes = dict()
-	edges = dict()
-	for ID, agents in map(lambda s: createState(s, orderedAgents), states):
-		nodes[ID] = getDictAgents(agents)
+    nodes = dict()
+    edges = dict()
+    for ID, agents in map(lambda s: createState(s, orderedAgents), states):
+        nodes[ID] = getDictAgents(agents)
 
-	transitions = list(transitions)
+    transitions = list(transitions)
 
-	for i in range(len(transitions)):
-		edges[i+1] = transitions[i].getDict()
+    for i in range(len(transitions)):
+        edges[i+1] = transitions[i].getDict()
 
-	data = {'nodes' : nodes, 'edges' : edges, 'unique' : map(str, orderedAgents), 'initial' : "|".join(map(str, initialState))}
+    data = {'nodes' : nodes, 'edges' : edges, 'unique' : list(map(str, orderedAgents)), 'initial' : "|".join(list(map(str, initialState)))}
 
-	with open(stateSpaceFile, 'w') as f:
-		json.dump(data, f, indent=4)
+    with open(stateSpaceFile, 'w') as f:
+        json.dump(data, f, indent=4)
 
 """
 Estimates how long the computation should take.
@@ -73,4 +72,4 @@ It takes into account bound, number of agents and reactions.
 :return: estimated time
 """
 def estimateNumberOfStates(bound, numOfDistinctAgents):
-	return (bound + 1) ** numOfDistinctAgents
+    return (bound + 1) ** numOfDistinctAgents

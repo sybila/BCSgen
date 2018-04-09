@@ -2,33 +2,35 @@
 
 # Pyt_installed=$(python --version)
 
-echo 'Installing python2.7...'
-sudo apt-get -y install python2.7
+echo 'Installing python3...'
+sudo apt-get -y install python3
 echo 'Installing python-qt4...'
-sudo apt-get -y install python-qt4
+sudo apt-get -y install python3-pyqt4
 echo 'Installing matplotlib...'
-sudo apt-get -y install python-matplotlib
+sudo apt-get -y install python3-matplotlib
 echo 'Installing tk...'
-sudo apt-get -y install python-tk
+sudo apt-get -y install python3-tk
+echo 'Installing pyside...'
+sudo apt-get -y install python3-pyside
 
-PKG_OK=$(dpkg-query -W --showformat='${Status}\n' python-pip|grep "install ok installed")
+PKG_OK=$(dpkg-query -W --showformat='${Status}\n' python3-pip|grep "install ok installed")
 echo 'Checking for pip:' $PKG_OK
 
 if [ "" == "$PKG_OK" ]; then
   echo "Installing pip..."
-  sudo apt-get -y install python-pip
+  sudo apt-get -y install python3-pip
 fi
 
 echo "Installing setuptools..."
-sudo pip install setuptools
+sudo pip3 install setuptools
 echo "Installing markdown..."
-sudo pip install markdown
+sudo pip3 install markdown
 echo "Installing numpy..."
-sudo pip install numpy
+sudo pip3 install numpy
 echo "Installing sympy..."
-sudo pip install sympy
+sudo pip3 install sympy
 echo "Installing scipy..."
-sudo pip install scipy
+sudo pip3 install scipy
 
 PKG_OK=$(dpkg-query -W --showformat='${Status}\n' git|grep "install ok installed")
 echo 'Checking for git:' $PKG_OK

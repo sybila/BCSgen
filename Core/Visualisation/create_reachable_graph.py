@@ -2,8 +2,16 @@ import sys
 import os
 import copy
 import collections
-from compiler.ast import flatten
 import json
+
+def flatten(x):
+    result = []
+    for el in x:
+        if isinstance(x, collections.Iterable) and not isinstance(el, str):
+            result.extend(flatten(el))
+        else:
+            result.append(el)
+    return result
 
 def newReachableGraph(state_space_file, output_file, path, satisfyingStates):
 	write_part(firstpart, output_file, "w")
@@ -13,10 +21,10 @@ def newReachableGraph(state_space_file, output_file, path, satisfyingStates):
 
 	IDs = dict()
 	vertex_id = 0
-	for key, value in data['nodes'].iteritems():
+	for key, value in data['nodes'].items():
 		vertex_id += 1
 		label = ""
-		for k, v in value.iteritems():
+		for k, v in value.items():
 			label += v + " " + k + "<br>"
 		write_entity(vertex_id, key, label, output_file)
 		IDs[key] = vertex_id
@@ -25,7 +33,7 @@ def newReachableGraph(state_space_file, output_file, path, satisfyingStates):
 	output.write("\t]);\n\n\t// create an array with edges\n\tvar edges = new vis.DataSet([\n")
 	output.close()
 
-	for edge_id, value in data['edges'].iteritems():
+	for edge_id, value in data['edges'].items():
 		From, To = create_reaction(data['nodes'][value['from']], data['nodes'][value['to']])
 		write_reaction(edge_id, IDs[value['from']], IDs[value['to']], From, To, output_file)
 
@@ -42,10 +50,10 @@ def newReachableGraph(state_space_file, output_file, path, satisfyingStates):
 	return output_file
 
 def convertStatesToStrings(states):
-	return map(lambda state: "|".join(map(str, state)), states)
+	return list(map(lambda state: "|".join(list(map(str, state))), states))
 
 def convertStatesToIDs(states, IDdict):
-	return map(lambda state: IDdict[state], states)
+	return list(map(lambda state: IDdict[state], states))
 
 def fixPath(output_file, path):
 	with open(output_file, 'r') as file :
@@ -82,7 +90,7 @@ Creates collection from given side
 :return: collection
 """
 def create_collection(side):
-	return collections.Counter(flatten(map(lambda (k, v): [k]*int(v), side.iteritems())))
+	return collections.Counter(flatten(list(map(lambda k_v: [k_v[0]]*int(k_v[1]), side.items()))))
 
 """
 Removes pairs of same agents from left and right side, i.e. creates a reaction.
@@ -97,8 +105,8 @@ def create_reaction(From, To):
 	left = From - To
 	right = To - From
 
-	left = map(lambda (a,b): b.__str__() + " " + a, left.items())
-	right = map(lambda (a,b): b.__str__() + " " + a, right.items())
+	left = list(map(lambda a_b: a_b[1].__str__() + " " + a_b[0], left.items()))
+	right = list(map(lambda a_b: a_b[1].__str__() + " " + a_b[0], right.items()))
 
 	return " + ".join(left), " + ".join(right)
 

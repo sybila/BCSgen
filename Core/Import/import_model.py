@@ -13,7 +13,7 @@ import BCSL_objects as BCSL
 
 parserPath = sys.argv[-1]
 sys.path.append(os.path.abspath(parserPath))
-from RuleParserPy import *
+from .RuleParserPy import *
 
 #####################################################################
 
@@ -41,7 +41,7 @@ def loadModel(inputFile):
 	return "\n".join(rules), "\n".join(inits), defns
 
 def saveModel(rules, inits, defns):
-	defns = "\n".join(map(lambda pair: " = ".join(pair), defns))
+	defns = "\n".join(list(map(lambda pair: " = ".join(pair), defns)))
 	return "#! rules\n" + rules + "\n\n#! inits\n" + inits + "\n\n#! definitions\n" + defns
 
 #####################################################################
@@ -96,10 +96,10 @@ def import_rules(inputRulesFile, inputInitsFile):
 	return created_rules, inits, rates
 
 def getPositionOfRule(index, rules):
-	return sum(map(lambda rule: rule.length + 1, rules[:index]))
+	return sum(list(map(lambda rule: rule.length + 1, rules[:index])))
 
 def getPositionOfInit(index, inits):
-	return sum(map(lambda init: init.length + 1, inits[:index]))
+	return sum(list(map(lambda init: init.length + 1, inits[:index])))
 
 def createMessage(unexpected, expected):
 	if unexpected:
@@ -180,7 +180,7 @@ Import state space section
 """
 
 def parseState(state):
-	return tuple(map(int, state.split("|")))
+	return tuple(list(map(int, state.split("|"))))
 
 def importStateSpace(file):
 	states = set()

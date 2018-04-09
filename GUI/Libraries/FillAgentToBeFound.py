@@ -15,7 +15,7 @@ class FillAgentToBeFound(QtGui.QWidget):
 		self.agent.textEdited.connect(self.textEdited)
 
 		model = QtGui.QStringListModel()
-		model.setStringList(data)
+		model.setStringList(list(data))
 
 		completer = CustomQCompleter()
 		completer.setModel(model)

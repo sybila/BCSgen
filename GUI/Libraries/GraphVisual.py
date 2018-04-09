@@ -1,9 +1,10 @@
-from PyQt4 import QtGui, QtCore, QtWebKit
+from PyQt4 import QtGui, QtCore
+from PySide import QtWebKit
 import os.path
 import sys
 import webbrowser
 
-sys.path.append(os.path.abspath('../../Core/'))
+sys.path.append(os.path.abspath('../Core/'))
 
 import Visualisation as Visual
 
@@ -14,7 +15,7 @@ class GraphVisual
 """
 class GraphVisual(QtWebKit.QWebView):
 	def __init__(self, jsonSpace, screenWidth, screenHeight, html, parent = None):
-		super(GraphVisual, self).__init__()
+		# super(GraphVisual, self).__init__()
 
 		path = os.path.dirname(os.path.abspath(__file__))
 
@@ -22,8 +23,9 @@ class GraphVisual(QtWebKit.QWebView):
 
 		#self.setWindowModality(QtCore.Qt.ApplicationModal)
 
-		self.resize(screenWidth,screenHeight)
-		self.load(QtCore.QUrl(self.url))
+		# self.resize(screenWidth,screenHeight)
+		# self.load(QtCore.QUrl(self.url))
+		webbrowser.open(self.url)
 
 
 class ReachableGraphVisual(QtWebKit.QWebView):
@@ -43,3 +45,4 @@ class ReachableGraphVisual(QtWebKit.QWebView):
 		# self.setFixedSize(screenWidth,screenHeight)
 		# self.load(QtCore.QUrl(self.url))
 		# self.show()
+

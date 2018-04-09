@@ -25,7 +25,7 @@ class AnalysisWorker(QtCore.QObject):
 		self.TheWorker.start()
 
 	def compute_reach(self):
-		self.satisfyingStates = filter(lambda state: (self.toBeReached <= state).all(), self.stateWorker.states)
+		self.satisfyingStates = list(filter(lambda state: (self.toBeReached <= state).all(), self.stateWorker.states))
 		if len(self.satisfyingStates) == 1:
 			if self.satisfyingStates[0] == self.stateWorker.initialState:
 				self.satisfyingStates.pop()

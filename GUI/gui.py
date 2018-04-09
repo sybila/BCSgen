@@ -2,16 +2,16 @@ import time
 import sys
 import os.path
 import numpy as np
-from PyQt4 import QtGui, QtCore, QtWebKit
+from PyQt4 import QtGui, QtCore
 from PyQt4.QtGui import *
-from PyQt4.QtWebKit import *
+from PySide.QtWebKit import *
 import signal
-
+from Libraries import *
 sys.path.append(os.path.abspath('../Core/'))
 
 import State_space_generator as Gen
-import Import as Import
-from Libraries import *
+import Import
+
 
 # global
 DELIMITER = "=============================================================\n\n"
@@ -356,7 +356,7 @@ class MainWindow(QtGui.QMainWindow):
 
 		StatesHbox = QHBoxLayout()
 
-		self.display_graph_button = createButton(self, "Show graph", self.showGraph, True)
+		self.display_graph_button = createButton(self, "Show graph - Not Working, yet", self.showGraph, True)
 		self.display_graph_button.setStatusTip("Show interactive graph of current state space.")
 
 		StatesHbox.addWidget(self.display_graph_button)
@@ -656,13 +656,11 @@ class MainWindow(QtGui.QMainWindow):
 		LastRowName = self.tableWidget.item(numOfRows - 1, 0)
 		LastRowDefinition = self.tableWidget.item(numOfRows - 1, 1)
 
-		if (not LastRowName or LastRowName.text().isEmpty()) and \
-		   (not LastRowDefinition or LastRowDefinition.text().isEmpty()):
+		if (not LastRowName) and (not LastRowDefinition):
 			if numOfRows > 2:
 				preLastRowName = self.tableWidget.item(numOfRows - 2, 0)
 				preLastRowDefinition = self.tableWidget.item(numOfRows - 2, 1)
-				if (not preLastRowName or preLastRowName.text().isEmpty()) and \
-				   (not preLastRowDefinition or preLastRowDefinition.text().isEmpty()):
+				if (not preLastRowName) and (not preLastRowDefinition):
 					self.tableWidget.removeRow(numOfRows - 1)
 					self.updateTable()
 		else:
@@ -928,16 +926,16 @@ class MainWindow(QtGui.QMainWindow):
 		
 		# log
 		if self.analysisWorker.satisfyingStates:
-			results = "Satisfying states:\n" + "\n".join([self.markReachbilityPossitions()] + map(str, self.analysisWorker.satisfyingStates))
+			results = "Satisfying states:\n" + "\n".join([self.markReachbilityPossitions()] + list(map(str, self.analysisWorker.satisfyingStates)))
 		else:
 			results = ""
-		unique = "\n".join(['ID -> Name'] + map(str, enumerate(self.stateWorker.uniqueAgents)))
+		unique = "\n".join(['ID -> Name'] + list(map(str, enumerate(self.stateWorker.uniqueAgents))))
 		self.saveToLog(" ... " + str(self.reachabilityResult.text()) + '\n' + results + '\n\n' + unique + '\n')
 
 	def startReachability(self):
 		self.progress_bar_reachability.setRange(0,0)
 		checkWheterReachable = True
-		orderedAgents = map(str, self.stateWorker.uniqueAgents)
+		orderedAgents = list(map(str, self.stateWorker.uniqueAgents))
 		vector = [0] * len(orderedAgents)
 
 		if self.checkAgentFields():
@@ -950,7 +948,7 @@ class MainWindow(QtGui.QMainWindow):
 						vector[orderedAgents.index(agent)] = int(stochio)
 					self.analysisWorker.toBeReached = np.array(vector)
 					# log
-					shouldBeReached = "Testing:\n" + "(" + ", ".join(map(str, self.analysisWorker.toBeReached)) + ")"
+					shouldBeReached = "Testing:\n" + "(" + ", ".join(list(map(str, self.analysisWorker.toBeReached))) + ")"
 					logInfo = time.ctime() + " ~ Checking for reachability...\n"
 					self.saveToLog(DELIMITER + logInfo + shouldBeReached)
 					self.analysisWorker.compute_reach()
@@ -1006,7 +1004,7 @@ class MainWindow(QtGui.QMainWindow):
 	def addDynamicWidget(self):
 		self.resetReachIndicators()
 		self.addButton.deleteLater()
-		self.scrollLayout.addRow(FillAgentToBeFound(map(str, self.stateWorker.uniqueAgents), self))
+		self.scrollLayout.addRow(FillAgentToBeFound(list(map(str, self.stateWorker.uniqueAgents)), self))
 
 		self.addButton = QtGui.QPushButton('+')
 		self.addButton.setMaximumWidth(25)
@@ -1135,7 +1133,7 @@ class MainWindow(QtGui.QMainWindow):
 			if not os.path.splitext(str(file))[1]:
 				file = str(file) + ".txt"
 			f = open(file,'w')
-			f.write("\n".join(map(str, self.importWorker.reactions)))
+			f.write("\n".join(list(map(str, self.importWorker.reactions))))
 			f.close()
 			# log
 			logInfo = time.ctime() + " ~ Exported reactions to file:\n\n"
