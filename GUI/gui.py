@@ -356,7 +356,7 @@ class MainWindow(QtGui.QMainWindow):
 
 		StatesHbox = QHBoxLayout()
 
-		self.display_graph_button = createButton(self, "Show graph - Not Working, yet", self.showGraph, True)
+		self.display_graph_button = createButton(self, "Show graph", self.showGraph, True)
 		self.display_graph_button.setStatusTip("Show interactive graph of current state space.")
 
 		StatesHbox.addWidget(self.display_graph_button)

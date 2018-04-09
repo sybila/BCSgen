@@ -40,7 +40,7 @@ if [ "" == "$PKG_OK" ]; then
   sudo apt-get -y install git
 fi
 
-git clone "https://github.com/sybila/BCSgen.git"
+#git clone "https://github.com/sybila/BCSgen.git"
 
 # download release of RuleParser from this link: https://gitlab.fi.muni.cz/grp-sybila/rule-parser/tags
 # and place it to Core/Import/ directory
