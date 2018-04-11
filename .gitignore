@@ -59,3 +59,4 @@ Core/Import/__pycache__/*
 Core/State_space_generator/__pycache__/*
 Core/Visualisation/__pycache__/*
 GUI/Libraries/__pycache__/
+*.json
