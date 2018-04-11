@@ -44,7 +44,7 @@ Creates collection from given side
 :return: collection
 """
 def create_collection(side):
-    return collections.Counter(flatten(list(map(lambda k_v: [k_v[0]]*int(k_v[1]), iter(side.items())))))
+    return collections.Counter(flatten([k_v[0]*int(k_v[1]) for k_v in iter(side.items())]))
 
 """
 Removes pairs of same agents from left and right side, i.e. creates a reaction.
@@ -59,8 +59,8 @@ def create_reaction(From, To):
     left = From - To
     right = To - From
 
-    left = list(map(lambda a_b: a_b[1].__str__() + " " + a_b[0], iter(left.items())))
-    right = list(map(lambda a_b: a_b[1].__str__() + " " + a_b[0], iter(right.items())))
+    left = [a_b[1].__str__() + " " + a_b[0] for a_b in iter(left.items())]
+    right = [a_b[1].__str__() + " " + a_b[0] for a_b in iter(right.items())]
 
     return " + ".join(left), " + ".join(right)
 

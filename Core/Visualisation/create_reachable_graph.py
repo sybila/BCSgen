@@ -50,10 +50,10 @@ def newReachableGraph(state_space_file, output_file, path, satisfyingStates):
 	return output_file
 
 def convertStatesToStrings(states):
-	return list(map(lambda state: "|".join(list(map(str, state))), states))
+	return ["|".join([str(x) for x in state]) for state in states]
 
 def convertStatesToIDs(states, IDdict):
-	return list(map(lambda state: IDdict[state], states))
+	return [IDdict[state] for state in states]
 
 def fixPath(output_file, path):
 	with open(output_file, 'r') as file :
@@ -90,7 +90,7 @@ Creates collection from given side
 :return: collection
 """
 def create_collection(side):
-	return collections.Counter(flatten(list(map(lambda k_v: [k_v[0]]*int(k_v[1]), side.items()))))
+	return collections.Counter(flatten([[k_v[0]]*int(k_v[1]) for k_v in side.items()]))
 
 """
 Removes pairs of same agents from left and right side, i.e. creates a reaction.
@@ -105,8 +105,8 @@ def create_reaction(From, To):
 	left = From - To
 	right = To - From
 
-	left = list(map(lambda a_b: a_b[1].__str__() + " " + a_b[0], left.items()))
-	right = list(map(lambda a_b: a_b[1].__str__() + " " + a_b[0], right.items()))
+	left = [a_b[1].__str__() + " " + a_b[0] for a_b in left.items()]
+	right = [a_b[1].__str__() + " " + a_b[0] for a_b in right.items()]
 
 	return " + ".join(left), " + ".join(right)
 
