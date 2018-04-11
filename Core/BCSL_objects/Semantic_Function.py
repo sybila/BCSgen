@@ -9,7 +9,7 @@ Static analysis for obtaining signatures
 
 def appendToAtomicSignature(part, atomicSignatures, names):
     if part['children']:
-        states = set(list(map(lambda state: str(state['token']), part['children'])))
+        states = set([str(state['token']) for state in part['children']])
         if str(part['token']) in atomicSignatures.keys():
             atomicSignatures[str(part['token'])] |= states
         else:
@@ -23,14 +23,14 @@ def processComplex(complex, atomicSignatures, structureSignatures, names):
         if part['children']:
             for child in part['children']:
                 atomicSignatures, names = appendToAtomicSignature(child, atomicSignatures, names)
-            atomics = set(list(map(lambda atomic: str(atomic['token']), part['children'])))
+            atomics = set([str(atomic['token']) for atomic in part['children']])
             if str(part['entity']['token']) in structureSignatures.keys():
                 structureSignatures[str(part['entity']['token'])] |= atomics
             else:
                 structureSignatures[str(part['entity']['token'])] = atomics
         else:
             if part['entity']['children']:
-                states = set(list(map(lambda state: str(state['token']), part['entity']['children'])))
+                states = set([str(state['token']) for state in part['entity']['children']])
                 if str(part['entity']['token']) in atomicSignatures.keys():
                     atomicSignatures[str(part['entity']['token'])] |= states
                 else:
@@ -97,16 +97,17 @@ def createRules(rules, initialState, defns):
         else:
             createdRules.append(createRule(lhs, rhs, defns, atomicSignatures, structureSignatures, atomicNames, None))
 
-    initialState, atomicSignatures, structureSignatures = createComplexes(list(map(lambda init: \
-        init['children'][0]['children'][0]['children'][0], initialState)), atomicNames, atomicSignatures, structureSignatures, defns, None)
+    initialState, atomicSignatures, structureSignatures = \
+        createComplexes([init['children'][0]['children'][0]['children'][0] for init in initialState], \
+            atomicNames, atomicSignatures, structureSignatures, defns, None)
 
     return createdRules, atomicSignatures, structureSignatures, initialState
 
 def createRule(lhs, rhs, defns, atomicSignatures, structureSignatures, atomicNames, variable):
-    I = sum(list(map(lambda cx: int(cx['token']), lhs))) - 1
+    I = sum([int(cx['token']) for cx in lhs]) - 1
     chi, atomicSignatures, structureSignatures = \
         createComplexes(lhs + rhs, atomicNames, atomicSignatures, structureSignatures, defns, variable)
-    sequences = list(map(lambda complex: complex.sequence, chi))
+    sequences = [complex.sequence for complex in chi]
     omega = sum(sequences, [])
     indexMap = getIndexmap(sequences)
     indices = getIndices(indexMap[I], len(omega) - 1)
@@ -194,7 +195,7 @@ def createAgents(sequence, atomicNames, defns, variable):
 
 def createStructureAgent(name, atomics):
     if atomics:
-        atoms = list(map(lambda atom: createAtomicAgent(str(atom['token']), atom['children']), atomics))
+        atoms = [createAtomicAgent(str(atom['token']), atom['children']) for atom in atomics]
         return StructureAgent(name, set(atoms))
     else:
         return StructureAgent(name, set())

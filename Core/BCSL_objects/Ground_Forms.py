@@ -9,7 +9,7 @@ from .Complex import *
 
 def atomicGroundForm(agent, allowedStates):
 	if agent.state == "_":
-		return set(list(map(lambda state: AtomicAgent(agent.name, state), allowedStates)))
+		return set([AtomicAgent(agent.name, state) for state in allowedStates])
 	return set([agent])
 
 def structureGroundForm(agent, allowedAtomics, atomicSignatures):
@@ -24,7 +24,7 @@ def structureGroundForm(agent, allowedAtomics, atomicSignatures):
 		cartesian = [tuple(agent.composition)]
 	else:
 		cartesian = itertools.product(*atomics)
-	results = list(map(lambda composition: StructureAgent(agent.name, set(composition)), cartesian))
+	results = [StructureAgent(agent.name, set(composition)) for composition in cartesian]
 	return set(results)
 
 def pairStructuresGroundForm(agent1, agent2, atomicSignatures, structureSignatures):
@@ -32,8 +32,7 @@ def pairStructuresGroundForm(agent1, agent2, atomicSignatures, structureSignatur
 		groundedAgents1 = structureGroundForm(agent1, structureSignatures[agent1.name], atomicSignatures)
 		groundedAgents2 = structureGroundForm(agent2, structureSignatures[agent2.name], atomicSignatures)
 		pairs = itertools.product(groundedAgents1, groundedAgents2)
-		return set(list(filter(lambda agents_grounded: \
-			containsSameNames(agent1, agents_grounded[0], agent2, agents_grounded[1]), pairs)))
+		return set([agents_grounded for agents_grounded in pairs if containsSameNames(agent1, agents_grounded[0], agent2, agents_grounded[1])])
 	return set()
 
 def pairAtomicsGroundForm(agent1, agent2, atomicSignatures):
@@ -76,7 +75,7 @@ def indicesGroundForm(omega, Indices, atomicSignatures, structureSignatures):
 def ruleGroundForm(rule, atomicSignatures, structureSignatures):
 	results = indicesGroundForm(rule.omega, rule.Indices, atomicSignatures, structureSignatures)
 	combinations = list(itertools.product(*results))
-	return list(map(lambda combo: zip(*combo), combinations))
+	return [zip(*combo) for combo in combinations]
 
 def createReactions(rules, atomicSignatures, structureSignatures, inputRates):
 	if len(rules) != len(inputRates):
@@ -87,7 +86,7 @@ def createReactions(rules, atomicSignatures, structureSignatures, inputRates):
 		tmpRxns = ruleGroundForm(rule, atomicSignatures, structureSignatures)
 		for rxn in tmpRxns:
 			sequence = list(itertools.chain.from_iterable(rxn))
-			sequence = list(filter(None, sequence))
+			sequence = [x for x in sequence if x]
 			seq = [Complex(sequence[rule.indexMap[i] + 1:rule.indexMap[i + 1] + 1], rule.chi[i].compartment) for i in range(len(rule.indexMap) - 1)]
 			reaction = Reaction(seq, rule.I)
 			if reaction not in reactions:

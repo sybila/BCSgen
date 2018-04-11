@@ -41,7 +41,7 @@ def loadModel(inputFile):
 	return "\n".join(rules), "\n".join(inits), defns
 
 def saveModel(rules, inits, defns):
-	defns = "\n".join(list(map(lambda pair: " = ".join(pair), defns)))
+	defns = "\n".join([" = ".join(pair) for pair in defns])
 	return "#! rules\n" + rules + "\n\n#! inits\n" + inits + "\n\n#! definitions\n" + defns
 
 #####################################################################
@@ -96,10 +96,10 @@ def import_rules(inputRulesFile, inputInitsFile):
 	return created_rules, inits, rates
 
 def getPositionOfRule(index, rules):
-	return sum(list(map(lambda rule: rule.length + 1, rules[:index])))
+	return sum([rule.length + 1 for rule in rules[:index]])
 
 def getPositionOfInit(index, inits):
-	return sum(list(map(lambda init: init.length + 1, inits[:index])))
+	return sum([init.length + 1 for init in inits[:index]])
 
 def createMessage(unexpected, expected):
 	if unexpected:
@@ -180,7 +180,7 @@ Import state space section
 """
 
 def parseState(state):
-	return tuple(list(map(int, state.split("|"))))
+	return tuple([int(x) for x in state.split("|")])
 
 def importStateSpace(file):
 	states = set()
@@ -191,7 +191,7 @@ def importStateSpace(file):
 	for state, agents in data['nodes'].iteritems():
 		states.add(parseState(state))
 
-	uniqueAgents = list(map(str, data['unique']))
+	uniqueAgents = [str(x) for x in data['unique']]
 
 	for edge_id, value in data['edges'].iteritems():
 		edges.add(Gen.Vector_reaction(np.array(parseState(value['from'])), np.array(parseState(value['to']))))

@@ -10,8 +10,8 @@ class Reaction(object):
         return str(self)
 
     def __str__(self):
-        return " + ".join(list(map(str, self.seq[0:self.I + 1]))) + " => " + \
-               " + ".join(list(map(str, self.seq[self.I + 1:len(self.seq)])))
+        return " + ".join([str(x) for x in self.seq[0:self.I + 1]]) + " => " + \
+               " + ".join([str(x) for x in self.seq[self.I + 1:len(self.seq)]])
 
     def __lt__(self, other):
         return str(self) < str(other)

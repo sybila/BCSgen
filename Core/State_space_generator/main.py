@@ -16,14 +16,14 @@ def reactionToVector(reaction, orderedAgents):
     return Vector_reaction(toVector(orderedAgents, reaction[0]), toVector(orderedAgents, reaction[1]))
 
 def createVectorNetwork(reactions, initialState):
-    parsedReactions = list(map(lambda reaction: reaction.getCounteredSides(), reactions))
+    parsedReactions = [reaction.getCounteredSides() for reaction in reactions]
 
-    orderedAgents = set.union(*list(map(lambda reaction: set(reaction.seq), reactions)))
+    orderedAgents = set.union(*[set(reaction.seq) for reaction in reactions])
     orderedAgents.update(set(initialState))
     orderedAgents = list(orderedAgents)
 
     state = toVector(orderedAgents, collections.Counter(initialState))
-    vectors = list(map(lambda reaction: reactionToVector(reaction, orderedAgents), parsedReactions))
+    vectors = [reactionToVector(reaction, orderedAgents) for reaction in parsedReactions]
     return Vector_network(tuple(state), vectors, orderedAgents)
 
 """
@@ -33,8 +33,8 @@ Creates State from given vector and ordered unique agents
 :return: State
 """
 def createState(state, orderedAgents):
-    multiset = sum(list(map(lambda i: [orderedAgents[i]] * state[i], range(len(orderedAgents)))), [])
-    return ("|".join(list(map(lambda item: str(item), state))), collections.Counter(multiset))
+    multiset = sum([[orderedAgents[i]] * state[i] for i in range(len(orderedAgents))], [])
+    return ("|".join([str(item) for item in state]), collections.Counter(multiset))
 
 def getDictAgents(agents):
     return dict([(str(k), str(v)) for k, v in agents.items()])
@@ -50,7 +50,7 @@ Prints state space to given output files
 def printStateSpace(states, transitions, orderedAgents, stateSpaceFile, initialState):
     nodes = dict()
     edges = dict()
-    for ID, agents in map(lambda s: createState(s, orderedAgents), states):
+    for ID, agents in [createState(s, orderedAgents) for s in states]:
         nodes[ID] = getDictAgents(agents)
 
     transitions = list(transitions)
@@ -58,7 +58,8 @@ def printStateSpace(states, transitions, orderedAgents, stateSpaceFile, initialS
     for i in range(len(transitions)):
         edges[i+1] = transitions[i].getDict()
 
-    data = {'nodes' : nodes, 'edges' : edges, 'unique' : list(map(str, orderedAgents)), 'initial' : "|".join(list(map(str, initialState)))}
+    data = {'nodes' : nodes, 'edges' : edges, 'unique' : [str(x) for x in orderedAgents], \
+        'initial' : "|".join([str(x) for x in initialState])}
 
     with open(stateSpaceFile, 'w') as f:
         json.dump(data, f, indent=4)

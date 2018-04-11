@@ -19,7 +19,7 @@ class Vector_reaction:
         return self.__repr__()
 
     def __repr__(self):
-        return "".join(list(map(lambda item: str(item), self.From))) + " -> " + "".join(list(map(lambda item: str(item), self.To)))
+        return "".join([str(item) for item in self.From]) + " -> " + "".join([str(item) for item in self.To])
 
     def __hash__(self):
         return hash(str(self.From) + str(self.To))
@@ -32,7 +32,7 @@ class Vector_reaction:
                 return tuple(vec)
 
     def getDict(self):
-        return {'from' : "|".join(list(map(str, self.From))), 'to' : "|".join(list(map(str, self.To)))}
+        return {'from' : "|".join([str(x) for x in self.From]), 'to' : "|".join([str(x) for x in self.To])}
 
     def getBound(self):
         return max((max(self.From), max(self.To)))

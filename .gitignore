@@ -54,3 +54,8 @@ Core/BCSL_objects/Signature.pyc
 Core/BCSL_objects/Structure.pyc
 Core/BCSL_objects/__init__.pyc
 Core/BCSL_objects/Ground_Forms.pyc
+Core/BCSL_objects/__pycache__/*
+Core/Import/__pycache__/*
+Core/State_space_generator/__pycache__/*
+Core/Visualisation/__pycache__/*
+GUI/Libraries/__pycache__/

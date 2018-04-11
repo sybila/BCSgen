@@ -17,8 +17,9 @@ class Vector_network:
 		return self.__repr__()
 
 	def __repr__(self):
-		return str(self.State) + "\n ------- \n" + "\n".join(list(map(lambda vector: str(vector), self.Vectors))) + \
-			   "\n ----- \n" + "\n".join(list(map(lambda item: str(self.Translations.index(item) + 1) + " | " + str(item), self.Translations)))
+		return str(self.State) + "\n ------- \n" + "\n".join([str(vector) for vector in self.Vectors]) + \
+			   "\n ----- \n" + "\n".join([str(self.Translations.index(item) + 1) + \
+			   		" | " + str(item) for item in self.Translations])
 
 	def getTranslations(self):
 		return self.Translations
@@ -27,7 +28,7 @@ class Vector_network:
 		return self.State
 
 	def applyVectors(self, state, bound):
-		return list(filter(lambda item: item is not None, list(map(lambda vector: vector.applyVector(state, bound), self.Vectors))))
+		return [item for item in [vector.applyVector(state, bound) for vector in self.Vectors] if item is not None]
 
 	def getBound(self):
-		return max(max(self.State), max(list(map(lambda vector: vector.getBound(), self.Vectors))))
+		return max(max(self.State), max([vector.getBound() for vector in self.Vectors]))
