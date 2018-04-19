@@ -49,9 +49,9 @@ class SimulationWorker(QtCore.QObject):
 		if self.useInterpolation:
 			self.changeSizeOfStep.emit()
 		if not self.useDeterministic:
-			self.simulateGillespieAlgorithm(list(map(lambda r: r.difference, VN.Vectors)), np.array(VN.State), self.rates, self.max_time)
+			self.simulateGillespieAlgorithm([r.difference for r in VN.Vectors], np.array(VN.State), self.rates, self.max_time)
 		else:
-			self.simulateDeterministicAlgorithm(list(map(lambda r: r.difference, VN.Vectors)), np.array(VN.State), self.rates, self.max_time)
+			self.simulateDeterministicAlgorithm([r.difference for r in VN.Vectors], np.array(VN.State), self.rates, self.max_time)
 
 	def simulateDeterministicAlgorithm(self, reactions, y0, rates, max_time):
 		self.deterministicSimulationStarted.emit()
@@ -106,7 +106,7 @@ class SimulationWorker(QtCore.QObject):
 					sendInfoStep += 1
 					self.nextSecondCalculated.emit()
 
-				enumerated_rates = list(map(lambda rate: self.enumerateRate(names, solution, rate), rates))
+				enumerated_rates = [self.enumerateRate(names, solution, rate) for rate in rates]
 				enumerated_rates_sum = sum(enumerated_rates)
 				props = self.enumeratedRatesToTuples(enumerated_rates)
 
@@ -152,7 +152,7 @@ class SimulationWorker(QtCore.QObject):
 			return solution
 
 	def vectorizeRates(self, translations, rates):
-		translations = list(map(lambda trans: "'" + trans + "'", list(map(str, translations))))
+		translations = ["'" + trans + "'" for trans in list(map(str, translations))] 
 		new_rates = []
 		for rate in rates:
 			new_rate = rate
@@ -162,7 +162,7 @@ class SimulationWorker(QtCore.QObject):
 		return new_rates
 
 	def prepareRatesForSolving(self, translations, rates):
-		translations = list(map(lambda trans: "'" + trans + "'", list(map(str, translations))))
+		translations = ["'" + trans + "'" for trans in list(map(str, translations))]
 		new_rates = []
 		for rate in rates:
 			new_rate = rate

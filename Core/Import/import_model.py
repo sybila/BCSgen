@@ -180,7 +180,7 @@ Import state space section
 """
 
 def parseState(state):
-	return tuple([int(x) for x in state.split("|")])
+	return tuple(list(map(int, state.split("|"))))
 
 def importStateSpace(file):
 	states = set()
@@ -191,7 +191,7 @@ def importStateSpace(file):
 	for state, agents in data['nodes'].iteritems():
 		states.add(parseState(state))
 
-	uniqueAgents = [str(x) for x in data['unique']]
+	uniqueAgents = list(map(str, data['unique']))
 
 	for edge_id, value in data['edges'].iteritems():
 		edges.add(Gen.Vector_reaction(np.array(parseState(value['from'])), np.array(parseState(value['to']))))

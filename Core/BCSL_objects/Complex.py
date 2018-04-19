@@ -10,7 +10,7 @@ class Complex(object):
         return str(self)
 
     def __str__(self):
-        return ".".join([str(x) for x in sorted(self.sequence)]) + "::" + self.compartment
+        return ".".join(list(map(str, sorted(self.sequence)))) + "::" + self.compartment
 
     def __lt__(self, other):
         return str(self) < str(other)

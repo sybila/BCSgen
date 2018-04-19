@@ -8,7 +8,7 @@ class StructureAgent(object):
 
 	def __str__(self):
 		if self.composition:
-			return self.name + "(" + ",".join([str(x) for x in self.composition]) + ")"
+			return self.name + "(" + ",".join(list(map(str, sorted(self.composition)))) + ")"
 		else:
 			return self.name
 

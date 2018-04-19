@@ -66,7 +66,7 @@ class StateSpaceWorker(QtCore.QObject):
             results = set()
             for state in new_states:
                 result_states = self.VN.applyVectors(state, bound)
-                edges |= set(list(map(lambda vec: Gen.Vector_reaction(np.array(state), np.array(vec)), result_states)))
+                edges |= set([Gen.Vector_reaction(np.array(state), np.array(vec)) for vec in result_states])
                 results |= set(result_states)
             new_states = results - states
             states |= new_states

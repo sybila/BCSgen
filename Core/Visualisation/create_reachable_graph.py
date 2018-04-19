@@ -50,7 +50,7 @@ def newReachableGraph(state_space_file, output_file, path, satisfyingStates):
 	return output_file
 
 def convertStatesToStrings(states):
-	return ["|".join([str(x) for x in state]) for state in states]
+	return ["|".join(list(map(str, state))) for state in states]
 
 def convertStatesToIDs(states, IDdict):
 	return [IDdict[state] for state in states]

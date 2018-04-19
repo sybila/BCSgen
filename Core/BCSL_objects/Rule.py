@@ -10,11 +10,11 @@ class Rule(object):
 		return str(self)
 
 	def __str__(self):
-		return "chi = [" + ", ".join([str(x) for x in self.chi]) + "]" + "\n" +\
-			   "omega = [" + ", ".join([str(x) for x in self.omega]) + "]" + "\n" +\
+		return "chi = [" + ", ".join(list(map(str, self.chi))) + "]" + "\n" +\
+			   "omega = [" + ", ".join(list(map(str, self.omega))) + "]" + "\n" +\
 			   "I = " + str(self.I) + "\n" +\
-			   "map = (" + ", ".join([str(x) for x in self.indexMap]) + ")\n" +\
-			   "Indices = [" + "; ".join([str(x) for x in self.Indices]) + "]"
+			   "map = (" + ", ".join(list(map(str, self.indexMap))) + ")\n" +\
+			   "Indices = [" + "; ".join(list(map(str, self.Indices))) + "]"
 
 	def __lt__(self, other):
 		return str(self) < str(other)

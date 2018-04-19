@@ -32,7 +32,7 @@ class Vector_reaction:
                 return tuple(vec)
 
     def getDict(self):
-        return {'from' : "|".join([str(x) for x in self.From]), 'to' : "|".join([str(x) for x in self.To])}
+        return {'from' : "|".join(list(map(str, self.From))), 'to' : "|".join(list(map(str, self.To)))}
 
     def getBound(self):
         return max((max(self.From), max(self.To)))
