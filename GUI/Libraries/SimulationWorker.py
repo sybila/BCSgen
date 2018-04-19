@@ -108,6 +108,7 @@ class SimulationWorker(QtCore.QObject):
 
 				enumerated_rates = [self.enumerateRate(names, solution, rate) for rate in rates]
 				enumerated_rates_sum = sum(enumerated_rates)
+				if enumerated_rates_sum == 0: enumerated_rates_sum = 1
 				props = self.enumeratedRatesToTuples(enumerated_rates)
 
 				rand_number = enumerated_rates_sum*random.random()
@@ -115,7 +116,7 @@ class SimulationWorker(QtCore.QObject):
 
 				solution = self.applyReaction(reactions[chosen_reaction], solution)
 				self.data.append(solution)
-				time += random.expovariate(enumerated_rates_sum) # chooses random number from exponentional distribution with lambda = sum
+				time += random.expovariate(enumerated_rates_sum)
 				self.times.append(time)
 
 			if runNumber != 0:
@@ -172,7 +173,7 @@ class SimulationWorker(QtCore.QObject):
 		return new_rates
 
 	def enumerateRate(self, names, solution, rate):
-		return rate.subs(zip(names, solution))
+		return rate.subs(list(zip(names, solution)))
 
 	def pickReaction(self, random_number, enumerated_rates):
 		for q in range(len(enumerated_rates)):
