@@ -285,9 +285,11 @@ secondpart_1 = '''
 			minVelocity: 7.5,
 			solver: 'barnesHut',
 			timestep: 0.5,
+			adaptiveTimestep: true,
 			stabilization: {
 						enabled:true,
-						iterations:5000,
+						iterations:1000,
+						updateInterval:10,
 					},
 		},
 		nodes: {
@@ -349,7 +351,7 @@ secondpart_2 = '''
 	network.on("stabilizationProgress", function(params) {
 				var maxWidth = 500;
 				var minWidth = 20;
-				var widthFactor = params.iterations/params.total*10;
+				var widthFactor = params.iterations/params.total;
 				var width = Math.max(minWidth,maxWidth * widthFactor);
 
 				document.getElementById('bar').style.width = width + 'px';
