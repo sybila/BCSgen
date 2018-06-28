@@ -6,6 +6,8 @@ Biochemical Space language software tool
 
 This tool serves for interpreting basic functionality to maintain Biochemical Space language. It provides __state space__ generating which can be used for analysis and visualisation.
 
+We are going online soon!
+
 ## Graphical User Interface
 
 The most proper way is to run the [binary file](https://github.com/sybila/BCSgen/releases/tag/v2.2) with __Graphical User Interface__ suitable for your platform.
