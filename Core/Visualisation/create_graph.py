@@ -116,11 +116,6 @@ def createHTMLGraph(state_space_file, output_file, path):
     output.close()
 
     for edge_id, value in iter(data['edges'].items()):
-        print("=================1")
-        print(value)
-        print("=================2")
-        print(data['nodes'][value['from']])
-        print("=================3")
         From, To = create_reaction(data['nodes'][value['from']], data['nodes'][value['to']])
         write_reaction(edge_id, IDs[value['from']], IDs[value['to']], From, To, output_file)
 
