@@ -1,0 +1,25 @@
+#! rules
+A(S{u}, T{p}).B::cell => A(S{p}, T{u}).B::cell
+A::cell + B::cell => A.B::cell
+A.B::cell => A::cell + B::cell
+A(S{p}, T{p})::cell => A(S{p}, T{p})::out
+A::out + C::out => A.C::out
+A.C::out => A::out + C::out
+A(T{p}).C{i}::out => A(T{u}).C{a}::out
+A(T{u}).D{a}::cell => A(T{p}).D{i}::cell
+A::cell + D::cell => A.D::cell
+A.D::cell => A::cell + D::cell
+D::cell => D::out
+D::out => D::cell
+C::out + D::out => C.D::out
+C.D::out => C::out + D::out
+C{a}.D{i}::out => C{i}.D{a}::out
+A(S{p}, T{u})::out => A(S{p}, T{u})::cell
+
+#! inits
+1 A(S{u}, T{p})::cell
+1 B::cell
+1 C{i}::out
+1 D{a}::out
+
+#! definitions
